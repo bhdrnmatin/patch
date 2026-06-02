@@ -58,7 +58,7 @@ export default function OnboardingPage() {
       className="flex items-center justify-center min-h-screen bg-black"
       style={{ fontFamily: "var(--font-vazirmatn), Arial, sans-serif" }}
     >
-      <div className="relative w-[390px] h-[844px]">
+      <div className="relative w-[390px] h-[845px]">
         <StorySlide
           backgroundImage={slide.backgroundImage}
           title={slide.title}

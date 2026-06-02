@@ -12,7 +12,7 @@ export default function OnboardingActions({
   onSkip,
 }: OnboardingActionsProps) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-20 flex items-center px-6">
+    <div className="absolute bottom-4 left-0 right-0 h-20 flex items-center px-6">
       {isLast ? (
         <OnboardingButton
           label="شروع کنیم پس!"

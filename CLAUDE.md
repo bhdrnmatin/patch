@@ -2,6 +2,13 @@
 
 # CLAUDE.md
 
+## Project Context
+
+**Patch** is a Progressive Web App (PWA) for padel and tennis players.
+- **Primary target: mobile phones.** Design and build for a ~390px viewport first. Desktop is not a use case.
+- All UI should feel native-mobile: touch targets ≥ 44px, no hover-only interactions, no desktop-only layouts.
+- Frame components at 390×845px (Figma canvas size). Use `max-w-[390px]` containers where applicable.
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
