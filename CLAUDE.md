@@ -9,6 +9,49 @@
 - All UI should feel native-mobile: touch targets ≥ 44px, no hover-only interactions, no desktop-only layouts.
 - Frame components at 390×845px (Figma canvas size). Use `max-w-[390px]` containers where applicable.
 
+## Component Library
+
+Check these before writing new UI — reuse first.
+
+**Onboarding** — `app/(auth)/onboarding/_components/`
+- `OnboardingButton` — pill button, `variant: ghost | primary`, `fullWidth?`, h-12 (48px)
+- `ProgressBar` — 4-segment RTL indicator, props: `total`, `current` (0-indexed)
+- `StoryCard` — glassmorphic bottom card, 362×198px, RTL text
+- `OnboardingActions` — button row (skip+next or full-width CTA), prop: `isLast`
+- `StorySlide` — full-screen slide layout, composes all of the above
+
+**Main app** — `app/(main)/_components/`
+- `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
+
+## Design Tokens
+
+No `tokens.css` — values are inline. Reference when building new components:
+- **Primary blue:** `#33A3FF`
+- **Card bg:** `bg-black/50 backdrop-blur-[3.5px]`
+- **Ghost button:** `bg-black/[0.19] border border-white/15`
+- **Progress active:** `bg-white` · inactive: `bg-white/20`
+- **Font (Persian):** Vazirmatn → `var(--font-vazirmatn)` · apply `dir="rtl"` on text containers
+- **Slide frame:** 390×845px
+
+## Routing
+
+```
+/(auth)/onboarding   → onboarding flow (4 slides, client component)
+/(main)/             → discover (placeholder)
+/(main)/matches      → placeholder
+/(main)/leagues      → placeholder
+/(main)/tournaments  → placeholder
+/(main)/courts       → placeholder
+/profile             → placeholder
+```
+
+## Data
+
+- Types: `lib/types.ts` — `Sport`, `SkillLevel`, `Player`, `Match`, `League`, `Tournament`, `Court`
+- Mock data: `lib/mock/index.ts`
+
+---
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
