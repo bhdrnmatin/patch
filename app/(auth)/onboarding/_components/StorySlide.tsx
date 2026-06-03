@@ -24,7 +24,7 @@ export default function StorySlide({
   onSkip,
 }: StorySlideProps) {
   return (
-    <div className="relative w-full h-full bg-slide-bg overflow-hidden rounded-lg">
+    <div className="relative w-full min-h-dvh bg-slide-bg overflow-hidden rounded-lg">
       {/* Background image */}
       <img
         src={backgroundImage}
@@ -41,11 +41,9 @@ export default function StorySlide({
       {/* Progress bar */}
       <ProgressBar total={total} current={current} />
 
-      {/* Content card */}
-      <StoryCard title={title} description={description} />
-
-      {/* Action buttons */}
-      <OnboardingActions isLast={isLast} onNext={onNext} onSkip={onSkip} />
+      <StoryCard title={title} description={description}>
+        <OnboardingActions isLast={isLast} onNext={onNext} onSkip={onSkip} />
+      </StoryCard>
     </div>
   );
 }
