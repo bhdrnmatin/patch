@@ -45,6 +45,17 @@
 
 ---
 
+---
+
+## Design Token System
+
+- [x] Tokens defined in `app/globals.css` `@theme` block (Tailwind v4)
+- [x] All auth components refactored — no hardcoded hex or arbitrary design values
+- [x] All onboarding components refactored
+- [x] Token reference table in `CLAUDE.md`
+
+---
+
 ## Notes
 - Background images are Figma CDN URLs (expire in 7 days). Move to `public/images/` before production.
 - Post-onboarding destination: `/` (main app discover page).
