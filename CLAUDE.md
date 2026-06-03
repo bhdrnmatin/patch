@@ -13,11 +13,21 @@
 
 Check these before writing new UI — reuse first.
 
+**Shared auth** — `app/(auth)/_components/`
+- `Button` — pill button, `variant: ghost | primary`, `fullWidth?`, h-12 (48px)
+- `AuthInput` — RTL text input, `showLabel?`, `numeric?`, `maxLength?`, `placeholder?`
+- `AuthCard` — glassmorphic bottom card, `title`, `subtitle?`, `children`, w-362px
+- `AuthSlide` — full-screen frame: bg image + status bar spacer + children slot
+- `AuthActions` — button row: full-width primary or ghost(قبلی)+primary, `onBack?`
+- `OtpBox` — single OTP digit cell, `state: empty | active | filled`
+- `OtpInput` — row of 5 `OtpBox` with keyboard focus management
+- `RadioOption` — RTL radio row, `selected?`, dark bg / blue circle when selected
+- `RadioGroup` — radio list container with dividers, `options[]`, `value`, `onChange`
+
 **Onboarding** — `app/(auth)/onboarding/_components/`
-- `OnboardingButton` — pill button, `variant: ghost | primary`, `fullWidth?`, h-12 (48px)
-- `ProgressBar` — 4-segment RTL indicator, props: `total`, `current` (0-indexed)
-- `StoryCard` — glassmorphic bottom card, 362×198px, RTL text
-- `OnboardingActions` — button row (skip+next or full-width CTA), prop: `isLast`
+- `ProgressBar` — 4-segment RTL indicator, `total`, `current` (0-indexed)
+- `StoryCard` — glassmorphic bottom card, fixed 362×198px, RTL text
+- `OnboardingActions` — button row (skip+next or full-width CTA), `isLast`
 - `StorySlide` — full-screen slide layout, composes all of the above
 
 **Main app** — `app/(main)/_components/`
@@ -43,13 +53,17 @@ No `tokens.css` — values are inline. Reference when building new components:
 ## Routing
 
 ```
-/(auth)/onboarding   → onboarding flow (4 slides, client component)
-/(main)/             → discover (placeholder)
-/(main)/matches      → placeholder
-/(main)/leagues      → placeholder
-/(main)/tournaments  → placeholder
-/(main)/courts       → placeholder
-/profile             → placeholder
+/(auth)/onboarding     → onboarding story slides (4 slides)
+/(auth)/login          → phone number entry
+/(auth)/otp            → OTP code entry
+/(auth)/profile-setup  → name / city / gender form
+/(auth)/assessment     → 5-step skill survey
+/(main)/               → discover (placeholder)
+/(main)/matches        → placeholder
+/(main)/leagues        → placeholder
+/(main)/tournaments    → placeholder
+/(main)/courts         → placeholder
+/profile               → placeholder
 ```
 
 ## Data
