@@ -1,4 +1,4 @@
-import OnboardingButton from "./OnboardingButton";
+import OnboardingButton from "../../_components/OnboardingButton";
 
 interface OnboardingActionsProps {
   isLast: boolean;

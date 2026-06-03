@@ -1,4 +1,4 @@
-import OnboardingButton from "../onboarding/_components/OnboardingButton";
+import OnboardingButton from "./OnboardingButton";
 
 interface AuthActionsProps {
   nextLabel: string;
