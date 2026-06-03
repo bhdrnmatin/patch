@@ -41,7 +41,7 @@ export default function OtpPage() {
       className="flex items-center justify-center min-h-screen bg-black"
       style={{ fontFamily: "var(--font-vazirmatn), Arial, sans-serif" }}
     >
-      <div className="relative w-[390px] h-[845px]">
+      <div className="relative w-full min-h-dvh">
         <Suspense>
           <OtpContent />
         </Suspense>
