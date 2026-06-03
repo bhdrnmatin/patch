@@ -12,7 +12,7 @@ export default function RadioGroup({ options, value, onChange, label }: RadioGro
     <div
       role="radiogroup"
       aria-label={label}
-      className="w-full bg-black/[0.32] border border-[#57728E] rounded-[24px] overflow-clip flex flex-col divide-y divide-[#57728E]"
+      className="w-full bg-black/[0.32] border border-group-border rounded-group overflow-clip flex flex-col divide-y divide-group-border"
     >
       {options.map((option) => (
         <RadioOption

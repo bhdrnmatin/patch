@@ -11,6 +11,25 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-vazirmatn: var(--font-vazirmatn);
+
+  /* Patch design tokens */
+  --color-primary: #33A3FF;
+  --color-primary-hover: #1a94f5;
+  --color-input-border: #6783A0;
+  --color-group-border: #57728E;
+  --color-slide-bg: #EEFFFC;
+
+  --radius-pill: 44px;
+  --radius-card: 32px;
+  --radius-group: 24px;
+
+  --blur-card: 5px;
+
+  --text-otp: 21.5px;
+  --text-title: 28px;
+  --text-story-title: 22px;
+
+  --blur-story: 3.5px;
 }
 
 @media (prefers-color-scheme: dark) {

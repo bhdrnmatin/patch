@@ -35,7 +35,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
         <label
           htmlFor={id}
           dir="rtl"
-          className="text-[14px] font-normal leading-6 tracking-normal text-white/80 px-1 cursor-pointer"
+          className="text-sm font-normal leading-6 tracking-normal text-white/80 px-1 cursor-pointer"
         >
           {label}
         </label>
@@ -52,7 +52,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
           disabled={disabled}
           dir="rtl"
           maxLength={maxLength}
-          className="w-full h-full rounded-[32px] bg-black/[0.32] border border-[#6783A0] px-4 text-white text-[14px] leading-4 placeholder-white/40 focus:outline-none focus:border-[#33A3FF] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0px_2px_7px_0px_rgba(0,0,0,0.08)]"
+          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border px-4 text-white text-sm leading-4 placeholder-white/40 focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed shadow-[0px_2px_7px_0px_rgba(0,0,0,0.08)]"
           placeholder={placeholder ?? label}
         />
       </div>

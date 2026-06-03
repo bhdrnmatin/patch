@@ -43,13 +43,30 @@ This is a **Persian-language app**. All numbers displayed or entered in the UI m
 
 ## Design Tokens
 
-No `tokens.css` — values are inline. Reference when building new components:
-- **Primary blue:** `#33A3FF`
-- **Card bg:** `bg-black/50 backdrop-blur-[3.5px]`
+Tokens are defined in `app/globals.css` `@theme` block. Always use the token class — never hardcode hex or arbitrary values.
+
+| Purpose | Class | Value |
+|---|---|---|
+| Primary blue | `bg-primary` / `border-primary` / `text-primary` | `#33A3FF` |
+| Primary hover | `hover:bg-primary-hover` | `#1a94f5` |
+| Input/OTP border | `border-input-border` | `#6783A0` |
+| Radio group border | `border-group-border` / `divide-group-border` | `#57728E` |
+| Slide fallback bg | `bg-slide-bg` | `#EEFFFC` |
+| Button radius | `rounded-pill` | `44px` |
+| Input/card radius | `rounded-card` | `32px` |
+| Radio group radius | `rounded-group` | `24px` |
+| Auth card blur | `backdrop-blur-card` | `5px` |
+| Story card blur | `backdrop-blur-story` | `3.5px` |
+| OTP digit size | `text-otp` | `21.5px` |
+| Card title size | `text-title` | `28px` |
+| Story title size | `text-story-title` | `22px` |
+
+Other recurring values (already in Tailwind's default scale):
+- **Body text:** `text-sm` (14px) · **Small text:** `text-xs` (12px)
+- **Card bg:** `bg-black/50 backdrop-blur-card`
 - **Ghost button:** `bg-black/[0.19] border border-white/15`
 - **Progress active:** `bg-white` · inactive: `bg-white/20`
-- **Font (Persian):** Vazirmatn → `var(--font-vazirmatn)` · apply `dir="rtl"` on text containers
-- **Slide frame:** 390×845px
+- **Font (Persian):** `var(--font-vazirmatn)` · apply `dir="rtl"` on text containers
 
 ## Routing
 
