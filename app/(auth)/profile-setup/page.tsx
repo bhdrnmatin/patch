@@ -31,12 +31,12 @@ export default function ProfileSetupPage() {
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  <AuthInput label="عشاقی" value={form.lastName} onChange={set("lastName")} />
-                  <AuthInput label="سینا" value={form.firstName} onChange={set("firstName")} />
+                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel />
+                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel />
                 </div>
                 <div className="flex gap-4">
-                  <AuthInput label="تهران" value={form.city} onChange={set("city")} />
-                  <AuthInput label="آقا" value={form.gender} onChange={set("gender")} />
+                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel />
+                  <AuthInput placeholder="آقا" label="جنسیت" value={form.gender} onChange={set("gender")} showLabel />
                 </div>
               </div>
               <AuthActions nextLabel="شروع کنیم!" onNext={() => router.push("/assessment")} />
