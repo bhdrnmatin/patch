@@ -19,6 +19,30 @@
 
 ---
 
+## Sign-Up / Login Flow
+
+### Base Components
+- [ ] `AuthInput` — `app/(auth)/_components/AuthInput.tsx`
+- [ ] `OtpBox` — `app/(auth)/_components/OtpBox.tsx`
+- [ ] `RadioOption` — `app/(auth)/_components/RadioOption.tsx`
+
+### Compound Components
+- [ ] `OtpInput` — `app/(auth)/_components/OtpInput.tsx`
+- [ ] `RadioGroup` — `app/(auth)/_components/RadioGroup.tsx`
+- [ ] `AuthActions` — `app/(auth)/_components/AuthActions.tsx`
+
+### Layout Components
+- [ ] `AuthCard` — `app/(auth)/_components/AuthCard.tsx`
+- [ ] `AuthSlide` — `app/(auth)/_components/AuthSlide.tsx`
+
+### Pages
+- [ ] `LoginPage` — `app/(auth)/login/page.tsx`
+- [ ] `OtpPage` — `app/(auth)/otp/page.tsx`
+- [ ] `ProfileSetupPage` — `app/(auth)/profile-setup/page.tsx`
+- [ ] `AssessmentPage` — `app/(auth)/assessment/page.tsx`
+
+---
+
 ## Notes
 - Background images are Figma CDN URLs (expire in 7 days). Move to `public/images/onboarding/` before production.
 - Slide 2 content is inferred — update title/description once confirmed with design.

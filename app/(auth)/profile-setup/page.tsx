@@ -1,0 +1,49 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AuthSlide from "../_components/AuthSlide";
+import AuthCard from "../_components/AuthCard";
+import AuthInput from "../_components/AuthInput";
+import AuthActions from "../_components/AuthActions";
+
+const BG =
+  "https://www.figma.com/api/mcp/asset/54e2de1b-756c-4721-9d64-cbfac1cdfdb9";
+
+export default function ProfileSetupPage() {
+  const router = useRouter();
+  const [form, setForm] = useState({ firstName: "", lastName: "", city: "", gender: "" });
+
+  const set = (key: keyof typeof form) => (val: string) =>
+    setForm((f) => ({ ...f, [key]: val }));
+
+  return (
+    <div
+      className="flex items-center justify-center min-h-screen bg-black"
+      style={{ fontFamily: "var(--font-vazirmatn), Arial, sans-serif" }}
+    >
+      <div className="relative w-[390px] h-[845px]">
+        <AuthSlide backgroundImage={BG}>
+          <AuthCard
+            title="خوش اومدی!"
+            subtitle="بهترین سرمایه‌گذاری روی خودت رو شروع کردی ..."
+          >
+            <div className="flex flex-col gap-10">
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4">
+                  <AuthInput label="عشاقی" value={form.lastName} onChange={set("lastName")} />
+                  <AuthInput label="سینا" value={form.firstName} onChange={set("firstName")} />
+                </div>
+                <div className="flex gap-4">
+                  <AuthInput label="تهران" value={form.city} onChange={set("city")} />
+                  <AuthInput label="آقا" value={form.gender} onChange={set("gender")} />
+                </div>
+              </div>
+              <AuthActions nextLabel="شروع کنیم!" onNext={() => router.push("/assessment")} />
+            </div>
+          </AuthCard>
+        </AuthSlide>
+      </div>
+    </div>
+  );
+}
