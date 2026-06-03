@@ -4,11 +4,16 @@ interface RadioGroupProps {
   options: string[];
   value: string;
   onChange: (val: string) => void;
+  label?: string;
 }
 
-export default function RadioGroup({ options, value, onChange }: RadioGroupProps) {
+export default function RadioGroup({ options, value, onChange, label }: RadioGroupProps) {
   return (
-    <div className="w-full bg-black/[0.32] border border-[#57728E] rounded-[24px] overflow-clip flex flex-col divide-y divide-[#57728E]">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="w-full bg-black/[0.32] border border-[#57728E] rounded-[24px] overflow-clip flex flex-col divide-y divide-[#57728E]"
+    >
       {options.map((option) => (
         <RadioOption
           key={option}

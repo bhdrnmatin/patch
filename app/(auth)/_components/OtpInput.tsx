@@ -31,8 +31,19 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
     if (index < 4) inputs.current[index + 1]?.focus();
   };
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = toPersianDigits(
+      e.clipboardData.getData("text").replace(/[^0-9۰-۹]/g, "")
+    ).slice(0, 5);
+    if (!pasted) return;
+    onChange(pasted);
+    const nextFocus = Math.min(pasted.length, 4);
+    inputs.current[nextFocus]?.focus();
+  };
+
   return (
-    <div className="flex gap-4 h-[49px] w-full">
+    <div className="flex gap-4 h-[49px] w-full" onPaste={handlePaste}>
       {digits.map((digit, i) => {
         const state = digit ? "filled" : i === value.length ? "active" : "empty";
         return (
