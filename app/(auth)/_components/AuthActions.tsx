@@ -1,4 +1,4 @@
-import OnboardingButton from "./OnboardingButton";
+import Button from "./Button";
 
 interface AuthActionsProps {
   nextLabel: string;
@@ -10,13 +10,13 @@ export default function AuthActions({ nextLabel, onNext, onBack }: AuthActionsPr
   if (onBack) {
     return (
       <div className="flex gap-3 w-full">
-        <OnboardingButton label="قبلی" variant="ghost" onClick={onBack} />
-        <OnboardingButton label={nextLabel} variant="primary" onClick={onNext} />
+        <Button label="قبلی" variant="ghost" onClick={onBack} />
+        <Button label={nextLabel} variant="primary" onClick={onNext} />
       </div>
     );
   }
 
   return (
-    <OnboardingButton label={nextLabel} variant="primary" onClick={onNext} fullWidth />
+    <Button label={nextLabel} variant="primary" onClick={onNext} fullWidth />
   );
 }

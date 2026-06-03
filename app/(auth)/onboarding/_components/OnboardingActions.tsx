@@ -1,4 +1,4 @@
-import OnboardingButton from "../../_components/OnboardingButton";
+import Button from "../../_components/Button";
 
 interface OnboardingActionsProps {
   isLast: boolean;
@@ -14,7 +14,7 @@ export default function OnboardingActions({
   return (
     <div className="absolute bottom-4 left-0 right-0 h-20 flex items-center px-6">
       {isLast ? (
-        <OnboardingButton
+        <Button
           label="شروع کنیم پس!"
           variant="primary"
           onClick={onNext}
@@ -22,12 +22,12 @@ export default function OnboardingActions({
         />
       ) : (
         <div className="flex gap-3 w-full">
-          <OnboardingButton
+          <Button
             label="رد کردن"
             variant="ghost"
             onClick={onSkip}
           />
-          <OnboardingButton
+          <Button
             label="بعدی"
             variant="primary"
             onClick={onNext}
