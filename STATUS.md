@@ -56,6 +56,35 @@
 
 ---
 
+---
+
+## Profile Section
+
+### Base Components
+- [x] `PageHeader` — `app/profile/_components/PageHeader.tsx`
+- [x] `StatCard` — `app/profile/_components/StatCard.tsx`
+- [x] `NavRow` — `app/profile/_components/NavRow.tsx`
+
+### Compound Components
+- [x] `StatsGrid` — `app/profile/_components/StatsGrid.tsx`
+- [x] `ProfileMeta` — `app/profile/_components/ProfileMeta.tsx`
+- [x] `ProfileAvatar` — `app/profile/_components/ProfileAvatar.tsx`
+
+### Layout Components
+- [x] `ProfileHero` — `app/profile/_components/ProfileHero.tsx`
+- [x] `SubPageLayout` — `app/profile/_components/SubPageLayout.tsx`
+
+### Pages
+- [x] `ProfilePage` — `app/profile/page.tsx`
+- [x] `EditProfilePage` — `app/profile/edit/page.tsx`
+- [x] `StatisticsPage` — `app/profile/statistics/page.tsx`
+- [x] `SettingsPage` — `app/profile/settings/page.tsx`
+- [x] `SupportPage` — `app/profile/support/page.tsx`
+- [x] `RulesPage` — `app/profile/rules/page.tsx`
+
+---
+
 ## Notes
 - Background images are Figma CDN URLs (expire in 7 days). Move to `public/images/` before production.
+- Profile stat/nav icons are Figma CDN URLs (expire in 7 days). Move to `public/icons/` before production.
 - Post-onboarding destination: `/` (main app discover page).

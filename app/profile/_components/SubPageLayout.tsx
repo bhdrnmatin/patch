@@ -1,0 +1,20 @@
+import PageHeader from "./PageHeader";
+
+interface Props {
+  title: string;
+  onBack?: () => void;
+  children: React.ReactNode;
+}
+
+export default function SubPageLayout({ title, onBack, children }: Props) {
+  return (
+    <div className="w-full min-h-dvh bg-white">
+      {/* status bar spacer */}
+      <div className="h-11" />
+      <div className="px-6 pt-2 pb-10 flex flex-col gap-6">
+        <PageHeader title={title} onBack={onBack} />
+        {children}
+      </div>
+    </div>
+  );
+}
