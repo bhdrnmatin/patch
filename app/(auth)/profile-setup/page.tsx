@@ -7,8 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG =
-  "https://www.figma.com/api/mcp/asset/54e2de1b-756c-4721-9d64-cbfac1cdfdb9";
+const BG = "/images/auth-profile-setup.png";
 
 export default function ProfileSetupPage() {
   const router = useRouter();

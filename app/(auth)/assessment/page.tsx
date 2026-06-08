@@ -9,14 +9,14 @@ import AuthActions from "../_components/AuthActions";
 
 const steps = [
   {
-    bg: "https://www.figma.com/api/mcp/asset/21f4e98d-42fd-4c33-be72-78ebfc5e05fd",
+    bg: "/images/assessment-1.png",
     title: "سنجش سطح",
     subtitle: "در مقیاس زیر، خودتان را کجا قرار می‌دهید؟",
     options: ["مبتدی", "متوسط", "پیشرفته", "حرفه‌ای"],
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "https://www.figma.com/api/mcp/asset/659423ff-036e-4765-8557-4cbf5983770d",
+    bg: "/images/assessment-2.png",
     title: "سابقه‌ی پدل",
     subtitle: "چند سال است پدل یا هر ورزشِ راکتی انجام می‌دهید؟",
     options: [
@@ -29,14 +29,14 @@ const steps = [
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "https://www.figma.com/api/mcp/asset/c2eceb8f-994b-4fbf-9993-d1c2a7b649eb",
+    bg: "/images/assessment-3.png",
     title: "بازه‌ی سنی",
     subtitle: "سن شما چند است؟",
     options: ["۱۸ تا ۳۰ سال", "۳۱ تا ۴۰ سال", "۴۱ تا ۵۰ سال", "بالای ۵۰ سال"],
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "https://www.figma.com/api/mcp/asset/a3a39df0-3e7f-4213-b26a-afefc1afea92",
+    bg: "/images/assessment-4.png",
     title: "مهارت روی «والی»",
     subtitle: "در والی…",
     options: [
@@ -49,7 +49,7 @@ const steps = [
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "https://www.figma.com/api/mcp/asset/f5eb003b-56d9-42da-8129-c071ac4d7aca",
+    bg: "/images/assessment-5.png",
     title: "توپ‌های برگشتی از دیوار",
     subtitle: "در ضربات پس از برخورد توپ به دیوار…",
     options: [

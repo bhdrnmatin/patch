@@ -7,8 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import OtpInput from "../_components/OtpInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG =
-  "https://www.figma.com/api/mcp/asset/23c7b507-a8f3-44ed-ad40-e1c65e1fb8a8";
+const BG = "/images/auth-otp.png";
 
 function OtpContent() {
   const router = useRouter();

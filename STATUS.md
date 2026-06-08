@@ -85,6 +85,6 @@
 ---
 
 ## Notes
-- Profile section assets are local: hero in `public/images/`, stat/nav icons in `public/icons/`, avatar placeholder in `public/images/avatar-placeholder.svg`.
-- Auth/onboarding background images are still Figma CDN URLs (expire in 7 days). Move to `public/images/` before production.
+- All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
+- ⚠️ Auth/onboarding background PNGs are large (~2.5MB each, ~30MB total). Optimize (WebP + resize to mobile dimensions) before production.
 - Post-onboarding destination: `/` (main app discover page).

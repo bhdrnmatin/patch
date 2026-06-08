@@ -7,8 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG =
-  "https://www.figma.com/api/mcp/asset/e2b1063a-39fd-49d2-9f95-fe8151c07c6f";
+const BG = "/images/auth-login.png";
 
 export default function LoginPage() {
   const router = useRouter();
