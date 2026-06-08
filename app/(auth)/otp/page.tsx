@@ -7,7 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import OtpInput from "../_components/OtpInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG = "/images/auth-otp.png";
+const BG = "/images/auth-otp.webp";
 
 function OtpContent() {
   const router = useRouter();

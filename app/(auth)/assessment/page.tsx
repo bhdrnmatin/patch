@@ -9,14 +9,14 @@ import AuthActions from "../_components/AuthActions";
 
 const steps = [
   {
-    bg: "/images/assessment-1.png",
+    bg: "/images/assessment-1.webp",
     title: "سنجش سطح",
     subtitle: "در مقیاس زیر، خودتان را کجا قرار می‌دهید؟",
     options: ["مبتدی", "متوسط", "پیشرفته", "حرفه‌ای"],
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "/images/assessment-2.png",
+    bg: "/images/assessment-2.webp",
     title: "سابقه‌ی پدل",
     subtitle: "چند سال است پدل یا هر ورزشِ راکتی انجام می‌دهید؟",
     options: [
@@ -29,14 +29,14 @@ const steps = [
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "/images/assessment-3.png",
+    bg: "/images/assessment-3.webp",
     title: "بازه‌ی سنی",
     subtitle: "سن شما چند است؟",
     options: ["۱۸ تا ۳۰ سال", "۳۱ تا ۴۰ سال", "۴۱ تا ۵۰ سال", "بالای ۵۰ سال"],
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "/images/assessment-4.png",
+    bg: "/images/assessment-4.webp",
     title: "مهارت روی «والی»",
     subtitle: "در والی…",
     options: [
@@ -49,7 +49,7 @@ const steps = [
     nextLabel: "بریم بعدی",
   },
   {
-    bg: "/images/assessment-5.png",
+    bg: "/images/assessment-5.webp",
     title: "توپ‌های برگشتی از دیوار",
     subtitle: "در ضربات پس از برخورد توپ به دیوار…",
     options: [

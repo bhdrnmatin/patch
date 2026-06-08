@@ -86,5 +86,5 @@
 
 ## Notes
 - All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
-- ⚠️ Auth/onboarding background PNGs are large (~2.5MB each, ~30MB total). Optimize (WebP + resize to mobile dimensions) before production.
+- Background images optimized: WebP, resized to ≤1280px, q80 (~30MB PNG → 1.4MB total).
 - Post-onboarding destination: `/` (main app discover page).

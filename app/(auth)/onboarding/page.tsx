@@ -6,25 +6,25 @@ import StorySlide from "./_components/StorySlide";
 
 const slides = [
   {
-    backgroundImage: "/images/onboarding-1.png",
+    backgroundImage: "/images/onboarding-1.webp",
     title: "هم‌بازی مناسب، بدون دردسر",
     description:
       "با چند پاسخ کوتاه، سطح بازی‌ات مشخص می‌شود و پیشنهاد هم‌تیمی/حریف هم‌سطح می‌گیری.",
   },
   {
-    backgroundImage: "/images/onboarding-2.png",
+    backgroundImage: "/images/onboarding-2.webp",
     title: "پیدا کن، بازی کن",
     description:
       "زمین رزرو کن و با بازیکنان هم‌سطح در اطرافت وصل شو.",
   },
   {
-    backgroundImage: "/images/onboarding-3.png",
+    backgroundImage: "/images/onboarding-3.webp",
     title: "بازی کن و رقابت کن",
     description:
       "از بازی دوستانه تا چالش و تور محلی. نتایج ثبت می‌شود و جدول‌ها به‌روز می‌مانند.",
   },
   {
-    backgroundImage: "/images/onboarding-4.png",
+    backgroundImage: "/images/onboarding-4.webp",
     title: "برنامه‌ریزی هوشمند",
     description:
       "تقویم یکپارچه و اعلان‌های به‌موقع کمک می‌کند هیچ بازی‌ای را از دست ندهی.",

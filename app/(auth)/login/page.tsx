@@ -7,7 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG = "/images/auth-login.png";
+const BG = "/images/auth-login.webp";
 
 export default function LoginPage() {
   const router = useRouter();

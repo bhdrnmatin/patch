@@ -7,7 +7,7 @@ import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthActions from "../_components/AuthActions";
 
-const BG = "/images/auth-profile-setup.png";
+const BG = "/images/auth-profile-setup.webp";
 
 export default function ProfileSetupPage() {
   const router = useRouter();

@@ -36,8 +36,8 @@ function EditIcon() {
 }
 
 export default function ProfileHero({
-  bgSrc = "/images/profile-hero-bg.png",
-  athleteSrc = "/images/profile-athlete.png",
+  bgSrc = "/images/profile-hero-bg.webp",
+  athleteSrc = "/images/profile-athlete.webp",
   onEditHref = "/profile/edit",
 }: Props) {
   return (
