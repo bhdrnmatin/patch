@@ -73,7 +73,7 @@ export default function ProfilePage() {
             <span className="text-[22px] font-bold text-[#253343]" dir="rtl">
               {mockPlayer.name}
             </span>
-            <span className="text-xs text-[#6783A0]">{mockPlayer.username}</span>
+            <span className="text-xs text-[#253343]">{mockPlayer.username}</span>
           </div>
           <ProfileMeta
             city={mockPlayer.city}

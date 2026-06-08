@@ -13,7 +13,9 @@ export default function StatCard({ icon, label, value }: Props) {
           {label}
         </span>
       </div>
-      <span className="text-sm font-semibold text-[#00254D]">{value}</span>
+      <span className="text-sm font-semibold leading-4 text-[#00254D]" dir="rtl">
+        {value}
+      </span>
     </div>
   );
 }

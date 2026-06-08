@@ -20,7 +20,7 @@ function MetaItem({
   return (
     <div className="flex items-center gap-0.5" dir="ltr">
       <span
-        className={`text-xs font-medium ${highlight ? "text-primary" : "text-[#57728E]"}`}
+        className={`text-xs font-bold ${highlight ? "text-primary" : "text-[#57728E]"}`}
       >
         {value}
       </span>
