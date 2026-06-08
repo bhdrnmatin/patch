@@ -24,7 +24,7 @@ function MetaItem({
       >
         {value}
       </span>
-      <span className="text-xs text-[#445A74]">{label}</span>
+      <span className="text-xs text-[#445A74]"> : {label}</span>
     </div>
   );
 }
@@ -32,11 +32,12 @@ function MetaItem({
 export default function ProfileMeta({ city, side, level }: Props) {
   return (
     <div className="flex items-center gap-3" dir="rtl">
-      <MetaItem label="ساید ترجیحی:" value={side} />
+      <MetaItem label="لول" value={String(level)} highlight />
       <Divider />
-      <MetaItem label="شهر:" value={city} />
+      <MetaItem label="شهر" value={city} />
       <Divider />
-      <MetaItem label="لول:" value={String(level)} highlight />
+      <MetaItem label="ساید ترجیحی" value={side} />
+
     </div>
   );
 }
