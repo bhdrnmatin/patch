@@ -85,6 +85,6 @@
 ---
 
 ## Notes
-- Background images are Figma CDN URLs (expire in 7 days). Move to `public/images/` before production.
-- Profile stat/nav icons are Figma CDN URLs (expire in 7 days). Move to `public/icons/` before production.
+- Profile section assets are local: hero in `public/images/`, stat/nav icons in `public/icons/`, avatar placeholder in `public/images/avatar-placeholder.svg`.
+- Auth/onboarding background images are still Figma CDN URLs (expire in 7 days). Move to `public/images/` before production.
 - Post-onboarding destination: `/` (main app discover page).
