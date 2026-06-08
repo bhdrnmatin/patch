@@ -7,7 +7,6 @@ import NavRow from "./_components/NavRow";
 import { toPersianDigits } from "../../lib/persian";
 
 const AVATAR_SRC = "https://www.figma.com/api/mcp/asset/e9c5a8c9-d4fc-4db6-a4bf-0f6706a2e3ce";
-const BG_SRC = "https://www.figma.com/api/mcp/asset/4967c19e-d229-4f6a-bd55-0d87a026fae0";
 
 const STAT_ICONS = {
   wins: "https://www.figma.com/api/mcp/asset/e4539008-d0a1-4a37-82d9-90311ff5c216",
@@ -60,7 +59,7 @@ export default function ProfilePage() {
     <main className="w-full min-h-dvh bg-white pb-24">
       {/* Hero with avatar overlapping bottom edge */}
       <div className="relative mb-12">
-        <ProfileHero bgSrc={BG_SRC} />
+        <ProfileHero />
         <div className="absolute bottom-0 right-6 translate-y-1/2 z-10">
           <ProfileAvatar src={AVATAR_SRC} />
         </div>
