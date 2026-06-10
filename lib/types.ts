@@ -25,6 +25,37 @@ export interface Match {
   pricePerPlayer: number;
 }
 
+export type MatchStatus = "active" | "held" | "not-held";
+
+export interface MatchPlayer {
+  name: string;
+  level: number;
+  avatar?: string;
+}
+
+/** View-model for a card in the Matches list. */
+export interface MatchListItem {
+  id: string;
+  title: string;
+  status: MatchStatus;
+  players: MatchPlayer[];
+  avgLevel: number;
+  capacity: number;
+  /** Persian month label, e.g. "بهمن ۱۴۰۴". */
+  date: string;
+  /** Toman, integer. */
+  price: number;
+}
+
+export interface DayOption {
+  id: string;
+  /** Day of month, Latin digits — converted for display. */
+  day: number;
+  weekday: string;
+  /** Dates before today render dimmed. */
+  past?: boolean;
+}
+
 export interface League {
   id: string;
   name: string;

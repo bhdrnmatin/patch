@@ -71,9 +71,9 @@ type Tab = {
 };
 
 const tabs: Tab[] = [
-  { href: "/", Icon: DiscoverIcon, label: "کاوش", badge: true },
-  { href: "/tournaments", Icon: CupIcon, label: "تورنومنت" },
   { href: "/matches", Icon: MatchesIcon, label: "مسابقات", badge: true },
+  { href: "/tournaments", Icon: CupIcon, label: "تورنومنت" },
+  { href: "/", Icon: DiscoverIcon, label: "کاوش", badge: true },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },
 ];
 
@@ -85,7 +85,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-6 inset-x-0 z-50 flex items-center justify-between gap-3 px-6">
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
       {/* Frosted pill with the four section tabs */}
       <div className="flex-1 flex items-stretch rounded-[48px] border-2 border-white/30 bg-white/60 backdrop-blur-[6px] overflow-hidden">
         {tabs.map(({ href, Icon, label, badge }) => {

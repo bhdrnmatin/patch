@@ -84,6 +84,44 @@
 
 ---
 
+## Matches Flow
+
+Figma: Match page + Sort sheet + Filter sheet → route `/matches` with two modal states.
+All components live in `app/(main)/matches/_components/` unless noted.
+
+### Base Components
+- [x] `icons` — inline Matches icon set (filter-search, sort, calendar, chart, people, close, info)
+- [x] `IconButton` — circular glassmorphic header button
+- [x] `DateCell` — single day cell (selected / default / past states)
+- [x] `StatusBadge` — match status pill (جاری / برگزار شده / برگزار نشده)
+- [x] `PlayerSlot` — avatar + name + level
+- [x] `MetaItem` — icon + label (avg level / players / date)
+- [x] `PriceTag` — amount + تومان in Persian digits
+- [x] `SelectChip` — selectable pill for sheets (selected / unselected)
+
+### Compound Components
+- [x] `DateSelector` — horizontal scroll row of `DateCell`
+- [x] `MatchCard` — full match card (badge + title + player grid + meta + price)
+- [x] `MatchesHeader` — hero header (bg + title + 2 `IconButton` + `DateSelector`)
+- [x] `FilterSection` — labeled group of `SelectChip`
+- [x] `BottomSheet` — modal shell (overlay + sheet + header + footer)
+
+### Layout Components
+- [x] `SortSheet` — `BottomSheet` + sort `FilterSection`s + footer
+- [x] `FilterSheet` — `BottomSheet` + filter `FilterSection`s + footer
+
+### Pages
+- [x] `MatchesPage` — `app/(main)/matches/page.tsx`
+
+### Data
+- [x] `MatchListItem` / `MatchStatus` types — `lib/types.ts`
+- [x] Mock matches + dates — `lib/mock/index.ts`
+
+### Reused (not rebuilt)
+- `BottomNav` (via `(main)/layout.tsx`), `Button` (auth pill, sheet footers), `toPersianDigits`.
+
+---
+
 ## Notes
 - All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
 - Background images optimized: WebP, resized to ≤1280px, q80 (~30MB PNG → 1.4MB total).

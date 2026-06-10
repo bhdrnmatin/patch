@@ -1,4 +1,67 @@
-import type { Player, Match, League, Tournament, Court } from "@/lib/types";
+import type {
+  Player,
+  Match,
+  League,
+  Tournament,
+  Court,
+  MatchListItem,
+  DayOption,
+} from "@/lib/types";
+
+const AVATAR = "/images/avatar-placeholder.svg";
+
+/** Horizontal date strip in the Matches header (۱۵–۲۱ بهمن). */
+export const matchDays: DayOption[] = [
+  { id: "d15", day: 15, weekday: "شنبه", past: true },
+  { id: "d16", day: 16, weekday: "یکشنبه", past: true },
+  { id: "d17", day: 17, weekday: "دوشنبه" },
+  { id: "d18", day: 18, weekday: "سه‌شنبه" },
+  { id: "d19", day: 19, weekday: "چهارشنبه" },
+  { id: "d20", day: 20, weekday: "پنج‌شنبه" },
+  { id: "d21", day: 21, weekday: "جمعه" },
+];
+
+function squad(count: number): MatchListItem["players"] {
+  return Array.from({ length: count }, () => ({
+    name: "سینا عضافی",
+    level: 3,
+    avatar: AVATAR,
+  }));
+}
+
+/** Cards shown on the Matches list page. */
+export const matchList: MatchListItem[] = [
+  {
+    id: "ml1",
+    title: "راکت طلایی",
+    status: "active",
+    players: squad(6),
+    avgLevel: 3,
+    capacity: 20,
+    date: "بهمن ۱۴۰۴",
+    price: 5_250_000_000,
+  },
+  {
+    id: "ml2",
+    title: "راکت طلایی",
+    status: "active",
+    players: squad(6),
+    avgLevel: 3,
+    capacity: 20,
+    date: "بهمن ۱۴۰۴",
+    price: 5_250_000_000,
+  },
+  {
+    id: "ml3",
+    title: "راکت طلایی",
+    status: "active",
+    players: squad(6),
+    avgLevel: 3,
+    capacity: 20,
+    date: "بهمن ۱۴۰۴",
+    price: 5_250_000_000,
+  },
+];
 
 export const players: Player[] = [
   { id: "p1", name: "Sara Ahmadi", avatar: "", sport: ["padel"], skillLevel: "intermediate", location: "Tehran" },
