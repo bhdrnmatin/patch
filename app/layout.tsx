@@ -15,6 +15,9 @@ const yekanBakh = localFont({
     { path: "./fonts/YekanBakhBold.otf", weight: "700", style: "normal" },
   ],
   variable: "--font-yekan-bakh",
+  // This 2019 YekanBakh build draws glyphs ~28% smaller in the em square than
+  // modern Persian fonts (cap height 555 vs ~711/1000) — scale to compensate.
+  declarations: [{ prop: "size-adjust", value: "128%" }],
 });
 
 export const metadata: Metadata = {
