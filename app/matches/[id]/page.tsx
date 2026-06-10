@@ -58,7 +58,7 @@ function MatchDetailsContent() {
         : "middle";
 
   return (
-    <main className="relative mx-auto w-full max-w-[430px] min-h-dvh bg-white pb-36">
+    <main className="relative mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-36">
       <MatchDetailsHeader title={m.title} showEdit={role === "creator"} />
 
       <div className="px-6 pt-4 flex flex-col gap-4">

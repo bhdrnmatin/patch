@@ -15,6 +15,7 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Match Details] New `/matches/[id]` page from 6 Figma frames — creator/player × not-started/started/finished (demo via `?role=&status=`): hero header, stage dial, info grid, schedule, description, players grid, promo, court card with map, share card, FAQ accordion, join requests (creator), sticky CTA bar
 - [Match Details] 20 new components in `app/matches/[id]/_components/`; `MatchDetails`/`JoinRequest`/`FaqEntry` types + mock; hero/promo/map images in `public/images/`
 - [BottomNav] `MatchesIcon`/`WhistleIcon`/`CourtIcon` now exported for reuse
+- [Layout] Page background is `bg-surface` (#F5F7FA) per Figma — `(main)` layout, profile, profile sub-pages, match details; cards keep Figma shadows (white-on-surface gives the contrast)
 
 ---
 

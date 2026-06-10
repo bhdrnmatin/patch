@@ -1,7 +1,7 @@
 /** رنک پلیر ماه promo pill with the athlete image overflowing the top edge. */
 export default function PromoCard() {
   return (
-    <div className="relative w-full h-[110px] mt-[17px] bg-white rounded-full drop-shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)]">
+    <div className="relative w-full h-[110px] mt-[17px] bg-white rounded-full shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)]">
       <img
         src="/images/promo-player-rank.webp"
         alt=""

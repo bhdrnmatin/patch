@@ -9,7 +9,7 @@ interface Props {
 /** اطلاعات زمین card: club name, notice banner, map, and routing button. */
 export default function CourtCard({ club, note }: Props) {
   return (
-    <section className="w-full bg-white rounded-3xl p-3 flex flex-col items-center gap-2 drop-shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)]">
+    <section className="w-full bg-white rounded-3xl p-3 flex flex-col items-center gap-2 shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)]">
       <div className="w-full flex items-center justify-between">
         <button
           type="button"
