@@ -52,6 +52,12 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Input/OTP border | `border-input-border` | `#6783A0` |
 | Radio group border | `border-group-border` / `divide-group-border` | `#57728E` |
 | Slide fallback bg | `bg-slide-bg` | `#EEFFFC` |
+| Headings / primary text | `text-ink` | `#00254D` |
+| Body/meta text, icons | `text-ink-soft` | `#253343` |
+| Secondary text | `text-muted` | `#6783A0` |
+| Light card/chip bg | `bg-surface` | `#F5F7FA` |
+| Separator lines | `bg-divider` | `#E5EAF0` |
+| Light borders, avatar bg | `border-edge` / `bg-edge` | `#D0DDEC` |
 | Button radius | `rounded-pill` | `44px` |
 | Input/card radius | `rounded-card` | `32px` |
 | Radio group radius | `rounded-group` | `24px` |

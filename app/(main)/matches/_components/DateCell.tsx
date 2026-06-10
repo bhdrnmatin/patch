@@ -12,10 +12,10 @@ interface Props {
 /** One day in the Matches date strip. 52×52 glassmorphic cell. */
 export default function DateCell({ day, weekday, selected, past, onClick }: Props) {
   const tone = selected
-    ? "bg-white text-[#253343]"
+    ? "bg-white text-ink-soft"
     : past
       ? "bg-black/40 text-white"
-      : "bg-white/60 text-[#253343]";
+      : "bg-white/60 text-ink-soft";
 
   return (
     <button

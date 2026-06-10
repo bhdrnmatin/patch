@@ -59,17 +59,17 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
             type="button"
             onClick={onClose}
             aria-label="بستن"
-            className="size-8 flex items-center justify-center rounded-[20px] border border-white/15 bg-black/[0.08] text-[#253343]"
+            className="size-8 flex items-center justify-center rounded-[20px] border border-white/15 bg-black/[0.08] text-ink-soft"
           >
             <CloseIcon />
           </button>
           <div className="flex items-center gap-2">
-            <h2 id={titleId} className="text-lg font-bold text-[#253343]">
+            <h2 id={titleId} className="text-lg font-bold text-ink-soft">
               {title}
             </h2>
             <span
               aria-hidden
-              className="size-8 shrink-0 flex items-center justify-center rounded-full bg-black/[0.06] text-[#253343]"
+              className="size-8 shrink-0 flex items-center justify-center rounded-full bg-black/[0.06] text-ink-soft"
             >
               {icon}
             </span>

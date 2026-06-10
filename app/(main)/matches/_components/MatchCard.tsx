@@ -14,7 +14,7 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
     <article className="bg-white rounded-card p-3 flex flex-col gap-4 shadow-[0px_8px_24px_rgba(37,51,67,0.12)]">
       {/* Top row: status badge (left) + title (right) */}
       <div className="flex items-center justify-between" dir="rtl">
-        <h3 className="text-base font-bold text-[#00254D]">{title}</h3>
+        <h3 className="text-base font-bold text-ink">{title}</h3>
         <StatusBadge status={status} />
       </div>
 
@@ -28,9 +28,9 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
       {/* Meta row */}
       <div className="flex items-center justify-center gap-3" dir="rtl">
         <MetaItem icon={<CalendarIcon />} label={date} />
-        <span className="w-px h-4 bg-[#E5EAF0]" />
+        <span className="w-px h-4 bg-divider" />
         <MetaItem icon={<PeopleIcon />} label={`${toPersianDigits(String(capacity))} نفر`} />
-        <span className="w-px h-4 bg-[#E5EAF0]" />
+        <span className="w-px h-4 bg-divider" />
         <MetaItem icon={<ChartIcon />} label={`میانگین لول: ${toPersianDigits(String(avgLevel))}`} />
       </div>
 

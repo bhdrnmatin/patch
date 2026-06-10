@@ -4,7 +4,7 @@ export default function RulesPage() {
   return (
     <SubPageLayout title="قوانین و مقررات">
       <div
-        className="w-full text-sm text-[#253343] leading-relaxed flex flex-col gap-4"
+        className="w-full text-sm text-ink-soft leading-relaxed flex flex-col gap-4"
         dir="rtl"
       >
         <p className="font-bold text-base">شرایط استفاده و قوانین پلتفرم پَدِل</p>

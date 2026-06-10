@@ -9,7 +9,7 @@ const LABELS: Record<MatchStatus, string> = {
 const TONES: Record<MatchStatus, string> = {
   active: "bg-primary text-white",
   held: "bg-[#E8F5E9] text-[#2E7D32]",
-  "not-held": "bg-[#F5F7FA] text-[#6783A0]",
+  "not-held": "bg-surface text-muted",
 };
 
 /** Small status pill shown at the top of a match card. */

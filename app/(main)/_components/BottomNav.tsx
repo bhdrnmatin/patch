@@ -104,7 +104,7 @@ export default function BottomNav() {
                 </span>
               ) : (
                 <span className="relative">
-                  <Icon className="text-[#253343]" />
+                  <Icon className="text-ink-soft" />
                   {badge && (
                     <span className="absolute -top-0.5 -right-1 size-2 rounded-full bg-[#FF4869] border border-white" />
                   )}

@@ -20,7 +20,7 @@ export default function FilterSection({ label, options, value, onChange }: Props
 
   return (
     <div className="flex flex-col gap-3 w-full" dir="rtl" role="group" aria-label={label}>
-      <span className="text-base font-semibold text-[#253343]">{label}</span>
+      <span className="text-base font-semibold text-ink-soft">{label}</span>
       <div className="flex flex-wrap gap-3">
         {options.map((o) => (
           <SelectChip

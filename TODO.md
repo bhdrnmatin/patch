@@ -6,16 +6,17 @@ The Matches components use recurring hardcoded grays with no token (consistent
 with existing components like StatCard/ProfileMeta, which hardcode the same hexes).
 Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or accept.
 
-- [ ] Token gap (gray scale): `#00254D` (ink), `#253343` (meta ink), `#6783A0` (muted —
-      note `--color-input-border` is the same hex but semantically a border), `#F5F7FA`
-      (surface), `#E5EAF0` (divider), `#D0DDEC` (avatar bg) — add semantic tokens
-      (e.g. `--color-ink`, `--color-muted`, `--color-surface`, `--color-divider`) +
-      use across Matches **and** existing profile/auth components.
-- [ ] Token gap (StatusBadge): held `#E8F5E9`/`#2E7D32`, not-held `#F5F7FA`/`#6783A0` —
-      add status tokens or accept as one-offs.
-- [ ] Token gap (radii): `rounded-[40px]` (sheet), `rounded-[20px]` (sheet close),
-      `rounded-b-[24px]` (header) — add `--radius-sheet` / reuse `--radius-group` (24px)?
-- [ ] Token gap (shadows): card, sheet, and chip `shadow-[…]` values — add elevation tokens.
+- [x] Token gap (gray scale) — **done 2026-06-10**: added `--color-ink` (#00254D),
+      `--color-ink-soft` (#253343), `--color-muted` (#6783A0), `--color-surface` (#F5F7FA),
+      `--color-divider` (#E5EAF0), `--color-edge` (#D0DDEC, borders + avatar bg) to `@theme`;
+      all hardcoded usages across Matches/profile/nav replaced with token classes.
+- [x] Token gap (StatusBadge) — **accepted as one-off**: held green pair `#E8F5E9`/`#2E7D32`
+      used in exactly one component; promote to status tokens only if a second consumer appears.
+      (Not-held state now uses `bg-surface text-muted`.)
+- [x] Token gap (radii) — **accepted as one-offs**: sheet 40px / close 20px / header 24px
+      each occur once; `BottomSheet` is shared so the sheet radius lives in one file anyway.
+- [x] Token gap (shadows) — **accepted for now**: three distinct shadows in three places;
+      revisit an elevation scale only when more layers exist.
 
 ## Matches — behavior wiring (post-mock)
 - [ ] Wire SortSheet selections to actually sort `matchList`.

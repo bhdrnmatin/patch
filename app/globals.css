@@ -19,6 +19,14 @@
   --color-group-border: #57728E;
   --color-slide-bg: #EEFFFC;
 
+  /* Neutral scale (light UI) */
+  --color-ink: #00254D;        /* headings, primary text */
+  --color-ink-soft: #253343;   /* body/meta text, icons */
+  --color-muted: #6783A0;      /* secondary text (same hex as input-border, different role) */
+  --color-surface: #F5F7FA;    /* card/chip light background */
+  --color-divider: #E5EAF0;    /* thin separator lines */
+  --color-edge: #D0DDEC;       /* light borders, avatar placeholder bg */
+
   --radius-pill: 44px;
   --radius-card: 32px;
   --radius-group: 24px;

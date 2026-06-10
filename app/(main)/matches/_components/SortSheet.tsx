@@ -30,7 +30,7 @@ export default function SortSheet({ open, onClose }: Props) {
       <button
         type="button"
         onClick={onClose}
-        className="flex-1 min-w-0 h-10 rounded-full bg-black/10 border-[1.5px] border-white/15 text-[#253343] font-bold text-sm active:opacity-80"
+        className="flex-1 min-w-0 h-10 rounded-full bg-black/10 border-[1.5px] border-white/15 text-ink-soft font-bold text-sm active:opacity-80"
       >
         بستن
       </button>

@@ -26,7 +26,7 @@ export default function NavRow({ label, href, icon }: Props) {
   return (
     <Link
       href={href}
-      className={`bg-white border border-[#D0DDEC] flex items-center justify-between w-full overflow-hidden shadow-[0px_1px_2px_0px_rgba(0,0,0,0.06)] ${
+      className={`bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-[0px_1px_2px_0px_rgba(0,0,0,0.06)] ${
         withIcon
           ? "h-14 rounded-[28px] pr-[7px] pl-4"
           : "rounded-[32px] px-4 py-3"
@@ -34,7 +34,7 @@ export default function NavRow({ label, href, icon }: Props) {
     >
       <ArrowLeft />
       <div className="flex items-center gap-3">
-        <span className="text-sm text-[#253343]" dir="rtl">
+        <span className="text-sm text-ink-soft" dir="rtl">
           {label}
         </span>
         {icon && (

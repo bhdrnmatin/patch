@@ -5,7 +5,7 @@ interface Props {
 }
 
 function Divider() {
-  return <div className="w-px h-2 bg-[#6783A0] shrink-0" />;
+  return <div className="w-px h-2 bg-muted shrink-0" />;
 }
 
 function MetaItem({
