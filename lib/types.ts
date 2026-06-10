@@ -91,3 +91,51 @@ export interface Court {
   rating: number;
   availableSlots: string[];
 }
+
+/** Match Details page (/matches/[id]) */
+export type MatchDetailsStatus = "upcoming" | "live" | "finished";
+export type ViewerRole = "creator" | "player";
+
+export interface JoinRequest {
+  id: string;
+  name: string;
+  level: number;
+  /** Preferred side, e.g. "راست". */
+  side: string;
+  avatar?: string;
+}
+
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+/** View-model for the Match Details page. */
+export interface MatchDetails {
+  id: string;
+  title: string;
+  /** Toman, integer. */
+  fee: number;
+  /** e.g. "آمریکانو" */
+  format: string;
+  club: string;
+  capacity: number;
+  filled: number;
+  creator: string;
+  /** Persian date, e.g. "۱۷ بهمن". */
+  date: string;
+  /** Signup deadline, e.g. "۱۵ بهمن". */
+  deadline: string;
+  /** e.g. "۱۴:۰۰ الی ۱۵:۴۵". */
+  timeRange: string;
+  description: string;
+  players: MatchPlayer[];
+  /** Entry restriction, e.g. "بالای لول ۳". */
+  restriction: string;
+  /** Banner text inside the court card. */
+  courtNote: string;
+  /** Banner text under the players grid. */
+  teamNote: string;
+  faq: FaqEntry[];
+  requests: JoinRequest[];
+}

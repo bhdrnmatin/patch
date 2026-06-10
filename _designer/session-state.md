@@ -28,8 +28,20 @@ Desktop-safety + font swap + housekeeping.
   Spec + HTML prototype + audit in `patterns/`. Rows link to section pages
   (`/tournaments`, `/matches`, `/courts`) until real create flows exist.
 
+- **Match Details feature (6 Figma frames):** built `/matches/[id]` — one route,
+  sections toggle/reorder by viewer role × match status (the 6 frames are one page
+  with two axes; pixel-diff confirmed). Demo via `?role=creator|player&status=upcoming|live|finished`.
+  20 components in `app/matches/[id]/_components/` (outside `(main)` → no BottomNav;
+  page has its own sticky `MatchCtaBar`). Reused `IconButton`, matches icon set,
+  BottomNav glyphs (now exported). New types/mock in `lib/`. Hero/promo/map images
+  optimized into `public/images/`. Build + smoke test (200 on both roles) pass.
+
 ### Next
 - Wire AddMenu rows to real create/reserve flows when those pages get designed.
+- Link `MatchCard` in the `/matches` list to `/matches/[id]` (not wired yet).
+- Match Details buttons are cosmetic: share, add-to-calendar, مسیریابی, accept/reject,
+  CTA actions need real behavior; "همه" players link needs a destination.
+- Visual QA of `/matches/[id]` against the 6 frames on a phone viewport.
 - Wire Sort/Filter sheet selections to actually sort/filter `matchList`.
 - Open audit findings (1 each): SortSheet, FilterSheet, MatchCard, ProfilePage.
 - Note: Yekan Bakh ships only 400/700 — `font-medium`/`font-semibold` render

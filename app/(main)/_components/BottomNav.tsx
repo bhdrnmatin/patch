@@ -32,7 +32,7 @@ function CupIcon({ className }: IconProps) {
   );
 }
 
-function MatchesIcon({ className }: IconProps) {
+export function MatchesIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path
@@ -64,7 +64,7 @@ function AddIcon({ className }: IconProps) {
   );
 }
 
-function WhistleIcon({ className }: IconProps) {
+export function WhistleIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path
@@ -77,7 +77,7 @@ function WhistleIcon({ className }: IconProps) {
   );
 }
 
-function CourtIcon({ className }: IconProps) {
+export function CourtIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path

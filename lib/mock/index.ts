@@ -6,6 +6,7 @@ import type {
   Court,
   MatchListItem,
   DayOption,
+  MatchDetails,
 } from "@/lib/types";
 
 const AVATAR = "/images/avatar-placeholder.svg";
@@ -197,3 +198,56 @@ export const courts: Court[] = [
     availableSlots: ["07:00", "09:00", "19:00", "21:00"],
   },
 ];
+
+const mockDetailPlayer = { name: "سینا عشاقی", level: 3, avatar: "/images/avatar-placeholder.svg" };
+
+const mockJoinRequest = (id: string) => ({
+  id,
+  name: "سینا عشاقی",
+  level: 3,
+  side: "راست",
+  avatar: "/images/avatar-placeholder.svg",
+});
+
+export const matchDetails: MatchDetails = {
+  id: "1",
+  title: "راکت طلایی",
+  fee: 23000,
+  format: "آمریکانو",
+  club: "باشگاه انقلاب",
+  capacity: 12,
+  filled: 2,
+  creator: "سینا عشاقی",
+  date: "۱۷ بهمن",
+  deadline: "۱۵ بهمن",
+  timeRange: "۱۴:۰۰ الی ۱۵:۴۵",
+  description:
+    "مچ دوستانه پَدِل برای بازیکنان سطح میانی؛ عصر جمعه در باشگاه انقلاب تهران. تیمی و پرانرژی. بازی متعادل مناسب سطح متوسط؛ اگر کورت نهایی نشده باشد، با هم رزرو می‌کنیم. یک دور پَدِل منصفانه و پرتحرک؛ سطح میانی، حوالی غروب در زمین سبز. مناسب تمرین و رقابت سبک: سطح متوسط، اواخر هفته — ورودی دوستانه.",
+  players: Array.from({ length: 6 }, () => ({ ...mockDetailPlayer })),
+  restriction: "بالای لول ۳",
+  courtNote: "این مسابقه به صورت آزاد برگذار می‌شود و جایزه‌ای ندارد.",
+  teamNote: "تیم کشی در این مسابقه مشخص نشده است.",
+  faq: [
+    {
+      question: "چطور به مسابقه ملحق شوم؟",
+      answer: "درخواست ورود بفرستید؛ بعد از تایید سازنده بازی و پرداخت ورودی، عضو مسابقه می‌شوید.",
+    },
+    {
+      question: "اگر سطح پروفیلم با قوانین مسابقه نخورد چه؟",
+      answer: "سازنده بازی می‌تواند درخواست شما را با توجه به سطح اعلام‌شده رد یا قبول کند.",
+    },
+    {
+      question: "کورت هنوز رزرو نشده؛ چه اتفاقی می‌افتد؟",
+      answer: "اگر کورت نهایی نشود، بازیکنان با هماهنگی سازنده بازی زمین را رزرو می‌کنند.",
+    },
+    {
+      question: "ورودی و پرداخت چطور انجام می‌شود؟",
+      answer: "بعد از تایید درخواست، هزینه ورودی را در اپ پرداخت می‌کنید تا جای شما قطعی شود.",
+    },
+    {
+      question: "قوانین لغو و بازپرداخت چیست؟",
+      answer: "تا قبل از مهلت یارگیری، لغو رایگان است و مبلغ به کیف پول شما برمی‌گردد.",
+    },
+  ],
+  requests: ["r1", "r2", "r3", "r4"].map(mockJoinRequest),
+};

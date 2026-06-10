@@ -12,6 +12,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Tokens] StatusBadge green pair, sheet radii, and shadows reviewed and accepted as one-offs (see TODO.md)
 - [BottomNav] Plus button now opens the AddMenu speed dial (Figma 20211:6526): blurred dim backdrop, three glass action rows — ساخت تورنومنت / ساخت مسابقه / رزرو زمین — closing on backdrop tap, Escape, or selection; new `WhistleIcon` / `CourtIcon` inline icons (breaking: plus no longer links to /courts)
 - [Patterns] AddMenu spec, HTML prototype, and audit in `patterns/`
+- [Match Details] New `/matches/[id]` page from 6 Figma frames — creator/player × not-started/started/finished (demo via `?role=&status=`): hero header, stage dial, info grid, schedule, description, players grid, promo, court card with map, share card, FAQ accordion, join requests (creator), sticky CTA bar
+- [Match Details] 20 new components in `app/matches/[id]/_components/`; `MatchDetails`/`JoinRequest`/`FaqEntry` types + mock; hero/promo/map images in `public/images/`
+- [BottomNav] `MatchesIcon`/`WhistleIcon`/`CourtIcon` now exported for reuse
 
 ---
 

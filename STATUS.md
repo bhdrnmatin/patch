@@ -122,6 +122,53 @@ All components live in `app/(main)/matches/_components/` unless noted.
 
 ---
 
+## Match Details Flow
+
+Figma: 6 frames — creator × (not-started / started / finished): 20206-6873, 20323-6512,
+20323-6971; player × same states: 20323-8354, 20325-30092, 20325-32702.
+One route `/matches/[id]`; sections toggle/reorder by `role` × `status`
+(demo via `?role=creator|player&status=upcoming|live|finished`).
+Components live in `app/matches/[id]/_components/` — outside `(main)` so the
+BottomNav doesn't render; the page has its own sticky CTA bar instead.
+
+### Base Components
+- [x] `ActionPill` — glass icon+label pill (اشتراک گذاری / ویرایش on hero)
+- [x] `SectionCard` — white rounded card shell with icon-circle + title header
+- [x] `InfoItem` — icon + label + value row (اطلاعات grid)
+- [x] `InfoBanner` — blue rounded notice with (i) icon
+- [x] `StageDial` — circular stage progress (مرحله ۱/۳)
+- [x] `PlayerChip` — white card: avatar + name + لول (new; `PlayerSlot` is the gray list-card variant)
+- [x] `FaqItem` — accordion row (question + chevron, expands)
+
+### Compound Components
+- [x] `MatchStageCard` — status pill + next-step text + `StageDial`
+- [x] `MatchInfoCard` — `SectionCard` اطلاعات + 2-col `InfoItem` grid (6 items)
+- [x] `ScheduleCard` — big date, deadline, time range, اضافه به تقویم button
+- [x] `DescriptionCard` — `SectionCard` توضیحات + body text
+- [x] `PlayersSection` — بازیکنان header + همه link + `PlayerChip` grid + team `InfoBanner`
+- [x] `PromoCard` — رنک پلیر ماه promo with athlete image
+- [x] `CourtCard` — اطلاعات زمین: club name, `InfoBanner`, map image, مسیریابی button
+- [x] `ShareCard` — به اشتراک گذاری row + محدودیت ورود meta
+- [x] `FaqSection` — سوالات متداول + `FaqItem` list
+- [x] `JoinRequestRow` — player row + قبول/رد buttons (creator only)
+- [x] `JoinRequestsSection` — درخواست‌های ورود header + rows
+- [x] `MatchCtaBar` — sticky bottom CTA button + optional caption (player variants)
+
+### Layout Components
+- [x] `MatchDetailsHeader` — hero: bg image, back `IconButton`, title, `ActionPill`s
+
+### Pages
+- [x] `MatchDetailsPage` — `app/matches/[id]/page.tsx` — composes by role × status
+
+### Data
+- [x] `MatchDetails` / `JoinRequest` / `FaqEntry` types — `lib/types.ts`
+- [x] Mock match details + FAQ + requests — `lib/mock/index.ts`
+
+### Reused (not rebuilt)
+- `IconButton` (back button), `InfoIcon`/`CalendarIcon`/`CloseIcon`/`TomanIcon`
+  (matches icon set), `WhistleIcon`/`CourtIcon`/`MatchesIcon` (exported from
+  `BottomNav`), `toPersianDigits`, avatar placeholder.
+
 ## Patterns
 
 | Pattern | Status | Spec | Implementation |
