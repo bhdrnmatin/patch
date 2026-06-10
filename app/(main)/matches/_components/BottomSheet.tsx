@@ -6,8 +6,8 @@ import { CloseIcon } from "./icons";
 interface Props {
   open: boolean;
   title: string;
-  /** Glyph shown in the circular badge beside the title (sort / filter). */
-  icon: React.ReactNode;
+  /** Glyph shown in the circular badge beside the title (sort / filter). Omit to hide the badge. */
+  icon?: React.ReactNode;
   onClose: () => void;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -67,12 +67,14 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
             <h2 id={titleId} className="text-lg font-bold text-ink-soft">
               {title}
             </h2>
-            <span
-              aria-hidden
-              className="size-8 shrink-0 flex items-center justify-center rounded-full bg-black/[0.06] text-ink-soft"
-            >
-              {icon}
-            </span>
+            {icon && (
+              <span
+                aria-hidden
+                className="size-8 shrink-0 flex items-center justify-center rounded-full bg-black/[0.06] text-ink-soft"
+              >
+                {icon}
+              </span>
+            )}
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import MatchDetailsHeader from "./_components/MatchDetailsHeader";
 import MatchStageCard from "./_components/MatchStageCard";
@@ -15,6 +15,7 @@ import ShareCard from "./_components/ShareCard";
 import FaqSection from "./_components/FaqSection";
 import JoinRequestsSection from "./_components/JoinRequestsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
+import ResultSheet from "./_components/ResultSheet";
 import { matchDetails } from "../../../lib/mock";
 import type { MatchDetailsStatus, ViewerRole } from "../../../lib/types";
 
@@ -47,6 +48,8 @@ function MatchDetailsContent() {
   const m = matchDetails;
   const stage = STAGE[status];
   const cta = CTA[role][status];
+  const [resultOpen, setResultOpen] = useState(false);
+  const ctaOpensResultSheet = role === "creator" && status === "live";
 
   // Players grid placement varies by frame: player/live+finished show it right under
   // the stage card; creator/live hides it; everything else shows it after توضیحات.
@@ -81,7 +84,12 @@ function MatchDetailsContent() {
         {role === "creator" && <JoinRequestsSection requests={m.requests} />}
       </div>
 
-      <MatchCtaBar label={cta.label} caption={cta.caption} />
+      <MatchCtaBar
+        label={cta.label}
+        caption={cta.caption}
+        onClick={ctaOpensResultSheet ? () => setResultOpen(true) : undefined}
+      />
+      <ResultSheet open={resultOpen} onClose={() => setResultOpen(false)} />
     </main>
   );
 }
