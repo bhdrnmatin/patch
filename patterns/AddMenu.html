@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AddMenu — prototype</title>
+  <style>
+    /* Tokens mirrored from app/globals.css @theme (no standalone tokens.css in this project) */
+    :root {
+      --color-primary: #33A3FF;
+      --color-ink-soft: #253343;
+      --backdrop-dim: rgb(0 0 0 / 0.45);
+      --glass-row-bg: rgb(255 255 255 / 0.1);
+      --glass-row-border: rgb(255 255 255 / 0.2);
+      --glass-icon-bg: rgb(255 255 255 / 0.3);
+      --nav-pill-bg: rgb(255 255 255 / 0.6);
+      --nav-pill-border: rgb(255 255 255 / 0.3);
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-6: 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yekan Bakh", Arial, sans-serif;
+      background: #888 url() center/cover; /* stand-in for the page behind the menu */
+      min-height: 100dvh;
+    }
+    .backdrop {
+      position: fixed; inset: 0; z-index: 40;
+      background: var(--backdrop-dim);
+      backdrop-filter: blur(4px);
+      display: none;
+    }
+    body.open .backdrop { display: block; }
+    nav {
+      position: fixed; bottom: var(--spacing-6); left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--spacing-3); padding: 0 var(--spacing-6);
+    }
+    .menu {
+      position: absolute; bottom: 100%; margin-bottom: var(--spacing-4);
+      left: var(--spacing-6); right: var(--spacing-6);
+      display: none; flex-direction: column; gap: var(--spacing-2);
+    }
+    body.open .menu { display: flex; }
+    .menu a {
+      display: flex; align-items: center; justify-content: flex-start; /* RTL: starts at right */
+      gap: var(--spacing-3); width: 100%; padding: 4px;
+      border-radius: 9999px;
+      background: var(--glass-row-bg);
+      border: 1px solid var(--glass-row-border);
+      color: #fff; text-decoration: none; font-size: 14px; font-weight: 600;
+    }
+    .menu a .icon {
+      width: 40px; height: 40px; flex-shrink: 0; order: -1; /* circle on the right in RTL */
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 9999px; background: var(--glass-icon-bg);
+      font-size: 18px;
+    }
+    .pill {
+      flex: 1; height: 52px; border-radius: 48px;
+      background: var(--nav-pill-bg); border: 2px solid var(--nav-pill-border);
+      backdrop-filter: blur(6px);
+    }
+    .add {
+      width: 52px; height: 52px; flex-shrink: 0; border-radius: 32px;
+      background: var(--color-primary); border: 2px solid rgb(255 255 255 / 0.15);
+      color: #fff; font-size: 24px; line-height: 1; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+  <nav>
+    <div class="menu">
+      <a href="#tournaments"><span class="icon" aria-hidden="true">🏆</span>ساخت تورنومنت</a>
+      <a href="#matches"><span class="icon" aria-hidden="true">🎾</span>ساخت مسابقه</a>
+      <a href="#courts"><span class="icon" aria-hidden="true">📋</span>رزرو زمین</a>
+    </div>
+    <button class="add" type="button" aria-label="افزودن" aria-expanded="false">+</button>
+    <div class="pill" aria-hidden="true"></div>
+  </nav>
+  <script>
+    const btn = document.querySelector(".add");
+    const set = (open) => {
+      document.body.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", String(open));
+    };
+    btn.addEventListener("click", () => set(!document.body.classList.contains("open")));
+    document.querySelector(".backdrop").addEventListener("click", () => set(false));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    document.querySelectorAll(".menu a").forEach((a) => a.addEventListener("click", () => set(false)));
+  </script>
+</body>
+</html>

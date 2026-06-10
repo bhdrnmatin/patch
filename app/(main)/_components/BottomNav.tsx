@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type IconProps = { className?: string };
 
@@ -63,12 +64,48 @@ function AddIcon({ className }: IconProps) {
   );
 }
 
+function WhistleIcon({ className }: IconProps) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M9.74721 5.00051C12.5732 2.17455 17.1665 2.21756 20.006 5.05715C22.8447 7.89663 22.8875 12.4902 20.0617 15.3159C18.8954 16.4822 17.2455 18.1574 15.2501 18.8843C14.2157 19.2613 13.0678 19.3951 11.8439 19.0835C11.2139 18.9233 10.5862 18.651 9.96108 18.2583L7.57046 21.6079C6.82125 22.6548 5.31092 22.7807 4.40054 21.8697L3.1935 20.6626C2.28312 19.7522 2.40808 18.241 3.4562 17.4927L6.80386 15.1011C6.41216 14.4759 6.13888 13.8483 5.97866 13.2193C5.66815 11.9945 5.80184 10.8464 6.17886 9.81301C6.90559 7.81757 8.57987 6.16676 9.74721 5.00051ZM4.66714 19.19L5.87417 20.396L8.33022 16.9585L8.10366 16.732L4.66714 19.19ZM18.5314 6.52981C16.488 4.48742 13.2154 4.48073 11.2209 6.47414C9.97744 7.71755 8.67707 9.04317 8.13686 10.5249C7.87997 11.2292 7.80576 11.9485 7.99819 12.7056C8.19356 13.4724 8.6835 14.3646 9.69057 15.3716C10.6984 16.3793 11.5909 16.8686 12.3576 17.064C13.1146 17.2564 13.833 17.1832 14.5382 16.9263C16.02 16.3861 17.3457 15.0838 18.589 13.8413C20.5825 11.8467 20.5748 8.57326 18.5314 6.52981ZM2.75503 2.41555C3.97605 1.19491 5.955 1.19472 7.17495 2.41555C8.39596 3.63559 8.39596 5.61539 7.17495 6.83645C5.95504 8.05621 3.97608 8.05602 2.75503 6.83645C1.53499 5.61544 1.53499 3.63561 2.75503 2.41555ZM5.70132 3.88918C5.29496 3.48284 4.63501 3.48283 4.22866 3.88918C3.82146 4.29652 3.82139 4.95552 4.22866 5.36184C4.63497 5.76913 5.29495 5.76904 5.70132 5.36184C6.10865 4.95548 6.10865 4.29651 5.70132 3.88918Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function CourtIcon({ className }: IconProps) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path
+        d="M17.0664 21.3398H3.8C3.5789 21.3398 3.4 21.1609 3.4 20.9398V3C3.4 2.7789 3.57891 2.6 3.8 2.6H17.579C17.8001 2.6 17.979 2.77891 17.979 3V14.696C18.547 14.8546 19.0548 15.1577 19.4602 15.5624C20.0727 16.1749 20.4516 17.021 20.4516 17.9554C20.4516 18.8898 20.0727 19.7359 19.4602 20.3484C18.8477 20.9609 18.0016 21.3398 17.0672 21.3398H17.0664ZM18.7031 15.9554V17.5116C18.7031 17.9624 18.5187 18.3718 18.2227 18.6679C17.9266 18.964 17.5172 19.1483 17.0664 19.1483C16.6156 19.1483 16.2063 18.964 15.9102 18.6679C15.6141 18.3718 15.4297 17.9624 15.4297 17.5116V15.9554C15.361 16.0132 15.3039 16.0632 15.2391 16.1281C14.75 16.6171 14.4821 17.2718 14.4821 17.9554C14.4821 18.6687 14.7711 19.3156 15.2391 19.7827C15.7063 20.2499 16.3532 20.5398 17.0664 20.5398C17.7797 20.5398 18.4266 20.2507 18.8938 19.7827C19.361 19.3156 19.6508 18.6687 19.6508 17.9554C19.6508 17.2421 19.3618 16.5952 18.8938 16.1281C18.8328 16.0671 18.7695 16.0101 18.7031 15.9554ZM16.2289 15.5101V17.5125C16.2289 17.7422 16.3235 17.9515 16.475 18.1031C16.6266 18.2547 16.8367 18.3492 17.0664 18.3492C17.2961 18.3492 17.5055 18.2547 17.657 18.1031C17.8086 17.9515 17.9031 17.7422 17.9031 17.5125V15.5101C17.6406 15.4202 17.3594 15.3718 17.0664 15.3718C16.7735 15.3718 16.4922 15.4202 16.2289 15.5101ZM17.1781 14.5734V12.3702H15.4938V14.9584C15.9633 14.7115 16.4984 14.5716 17.0656 14.5716L17.1781 14.5734ZM14.6945 15.5413V12.3695H6.68354V16.9819H13.8241C13.9866 16.439 14.2827 15.953 14.6734 15.5624L14.6945 15.5413ZM13.6867 17.7819H6.69292V20.5397H14.8811C14.8092 20.4788 14.7397 20.4147 14.6733 20.3483C14.0608 19.7358 13.6819 18.8897 13.6819 17.9553C13.6819 17.8975 13.6836 17.8397 13.6867 17.7819ZM14.6945 6.95772H6.68354V11.5701H14.6945V6.95772ZM6.68354 6.15772H14.6945V3.39992H6.68354V6.15772ZM17.1789 11.5695V3.39912H15.4946V11.5695H17.1789ZM4.19994 11.5695H5.88432V3.39912H4.19994V11.5695ZM5.88432 12.3695H4.19994V20.5399H5.88432V12.3695Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 type Tab = {
   href: string;
   Icon: (p: IconProps) => React.ReactElement;
   label: string;
   badge?: boolean;
 };
+
+type AddAction = {
+  href: string;
+  Icon: (p: IconProps) => React.ReactElement;
+  label: string;
+};
+
+const addActions: AddAction[] = [
+  { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت" },
+  { href: "/matches", Icon: MatchesIcon, label: "ساخت مسابقه" },
+  { href: "/courts", Icon: CourtIcon, label: "رزرو زمین" },
+];
 
 const tabs: Tab[] = [
   { href: "/matches", Icon: MatchesIcon, label: "مسابقات", badge: true },
@@ -83,11 +120,51 @@ function isActive(pathname: string, href: string) {
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
+    <>
+      {/* Dimmed blurred backdrop behind the nav while the add menu is open */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[4px]"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden
+        />
+      )}
+
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
+      {/* Add menu anchored above the nav */}
+      {menuOpen && (
+        <div className="absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">
+          {addActions.map(({ href, Icon, label }) => (
+            <Link
+              key={label}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20"
+            >
+              <span className="text-sm font-semibold leading-4 text-white" dir="rtl">
+                {label}
+              </span>
+              <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
+                <Icon />
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
       {/* Frosted pill with the four section tabs */}
-      <div className="flex-1 flex items-stretch rounded-[48px] border-2 border-white/30 bg-white/60 backdrop-blur-[6px] overflow-hidden">
+      <div className="flex-1 flex items-stretch rounded-[48px] border-2 border-white/30 bg-white/35 backdrop-blur-[6px] overflow-hidden">
         {tabs.map(({ href, Icon, label, badge }) => {
           const active = isActive(pathname, href);
           return (
@@ -115,14 +192,17 @@ export default function BottomNav() {
         })}
       </div>
 
-      {/* Standalone add button */}
-      <Link
-        href="/courts"
+      {/* Standalone add button — toggles the add menu */}
+      <button
+        type="button"
+        onClick={() => setMenuOpen((o) => !o)}
         aria-label="افزودن"
+        aria-expanded={menuOpen}
         className="size-[52px] shrink-0 flex items-center justify-center rounded-[32px] border-2 border-white/15 bg-primary backdrop-blur-[10px]"
       >
         <AddIcon className="text-white" />
-      </Link>
-    </nav>
+      </button>
+      </nav>
+    </>
   );
 }

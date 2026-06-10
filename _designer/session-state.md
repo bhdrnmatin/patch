@@ -16,8 +16,20 @@ Desktop-safety + font swap + housekeeping.
 - **Docs:** created `CHANGELOG.md` (full history from git); STATUS.md font line
   fixed + links to TODO.md/CHANGELOG.md added.
 
+### Later in session (2026-06-10)
+- **Token gaps resolved:** neutral scale added to `@theme` (`ink`, `ink-soft`, `muted`,
+  `surface`, `divider`, `edge`); all 32 hardcoded grays swept to token classes;
+  StatusBadge colors / radii / shadows accepted as one-offs. Committed `ebe0dd6`.
+- **CHANGELOG.md created** (`e1e4287`) with full history + Unreleased section.
+- **AddMenu pattern (Figma 20211:6526):** plus button in `BottomNav` now toggles a
+  speed-dial — `bg-black/45 backdrop-blur-[4px]` backdrop (z-40, nav stays at z-50),
+  three glass action rows anchored `bottom-full mb-4` inside the nav. New inline
+  `WhistleIcon`/`CourtIcon`; `MatchesIcon` reused. Closes on backdrop/Escape/selection.
+  Spec + HTML prototype + audit in `patterns/`. Rows link to section pages
+  (`/tournaments`, `/matches`, `/courts`) until real create flows exist.
+
 ### Next
-- Token-gap decision in `TODO.md` (gray scale, status colors, sheet radii, shadows).
+- Wire AddMenu rows to real create/reserve flows when those pages get designed.
 - Wire Sort/Filter sheet selections to actually sort/filter `matchList`.
 - Open audit findings (1 each): SortSheet, FilterSheet, MatchCard, ProfilePage.
 - Note: Yekan Bakh ships only 400/700 — `font-medium`/`font-semibold` render

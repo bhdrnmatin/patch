@@ -122,6 +122,14 @@ All components live in `app/(main)/matches/_components/` unless noted.
 
 ---
 
+## Patterns
+
+| Pattern | Status | Spec | Implementation |
+|---|---|---|---|
+| AddMenu (plus-button speed dial) | ✅ Done | `patterns/AddMenu.spec.md` | `app/(main)/_components/BottomNav.tsx` |
+
+---
+
 ## Notes
 - All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
 - Background images optimized: WebP, resized to ≤1280px, q80 (~30MB PNG → 1.4MB total).

@@ -10,6 +10,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 
 - [Tokens] Added neutral-scale tokens to `@theme`: `ink` #00254D, `ink-soft` #253343, `muted` #6783A0, `surface` #F5F7FA, `divider` #E5EAF0, `edge` #D0DDEC — all hardcoded gray hexes across Matches/profile/nav components replaced with token classes (no visual change)
 - [Tokens] StatusBadge green pair, sheet radii, and shadows reviewed and accepted as one-offs (see TODO.md)
+- [BottomNav] Plus button now opens the AddMenu speed dial (Figma 20211:6526): blurred dim backdrop, three glass action rows — ساخت تورنومنت / ساخت مسابقه / رزرو زمین — closing on backdrop tap, Escape, or selection; new `WhistleIcon` / `CourtIcon` inline icons (breaking: plus no longer links to /courts)
+- [Patterns] AddMenu spec, HTML prototype, and audit in `patterns/`
 
 ---
 
