@@ -19,8 +19,8 @@ export default function MatchInfoCard({ match }: Props) {
       <div className="grid grid-cols-2 gap-3">
         <InfoItem icon={<MoneyIcon />} label="هزینه ورودی">
           <span className="flex items-center gap-1">
-            <TomanIcon className="size-4" />
             {toPersianDigits(match.fee.toLocaleString("en-US"))}
+            <TomanIcon className="size-4" />
           </span>
         </InfoItem>
         <InfoItem icon={<WhistleIcon className="size-5" />} label="فرمت مچ">

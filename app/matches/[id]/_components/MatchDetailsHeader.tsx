@@ -16,6 +16,17 @@ export default function MatchDetailsHeader({ title, showEdit = true }: Props) {
 
   return (
     <header className="relative w-full h-[276px] rounded-b-3xl overflow-hidden bg-primary">
+      {/* Blurred stadium backdrop behind the athlete cutout, mirrored per Figma.
+          Sized relative to the frame (Figma: 502×335 at right -44 in a 390×276 frame)
+          so it tracks the foreground athlete at any frame width. */}
+      <div className="absolute top-0 right-[-11.3%] w-[128.7%] h-[121.4%]">
+        <img
+          src="/images/match-details-hero-bg.webp"
+          alt=""
+          className="size-full object-cover -scale-x-100 blur-[2px]"
+        />
+        <div className="absolute inset-0 bg-primary/55" />
+      </div>
       <img
         src="/images/match-details-hero.webp"
         alt=""

@@ -15,9 +15,15 @@ interface Props {
 export default function MatchesHeader({ days, selectedId, onSelect, onFilter, onSort }: Props) {
   return (
     <header className="relative h-[276px] bg-primary rounded-b-[24px] overflow-hidden">
-      {/* Blurred court backdrop with blue tint */}
-      <div className="absolute inset-0 blur-[2px]">
-        <img src="/images/matches-header-bg.webp" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      {/* Blurred court backdrop with blue tint.
+          Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
+          proportional width keeps the baked-in athlete aligned with the cutout. */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/matches-header-bg.webp"
+          alt=""
+          className="absolute top-0 left-0 h-full w-[106.2%] max-w-none object-cover blur-[2px]"
+        />
         <div className="absolute inset-0 bg-primary/55" />
       </div>
 

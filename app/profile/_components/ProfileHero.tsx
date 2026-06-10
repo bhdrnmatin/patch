@@ -42,13 +42,15 @@ export default function ProfileHero({
 }: Props) {
   return (
     <div className="relative h-[276px] bg-primary rounded-bl-[24px] rounded-br-[24px] overflow-hidden">
-      {/* Blurred court background + blue tint */}
+      {/* Blurred court background + blue tint.
+          Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
+          proportional width keeps the baked-in athlete aligned with the cutout. */}
       {bgSrc && (
-        <div className="absolute inset-0 blur-[2px]">
+        <div className="absolute inset-0">
           <img
             src={bgSrc}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute top-0 left-0 h-full w-[106.2%] max-w-none object-cover blur-[2px]"
           />
           <div className="absolute inset-0 bg-primary/55" />
         </div>
