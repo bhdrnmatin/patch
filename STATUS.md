@@ -17,7 +17,7 @@
 - [x] `OnboardingPage` — `app/(auth)/onboarding/page.tsx`
 
 ### Infrastructure
-- [x] Vazirmatn font — `app/layout.tsx` + `app/globals.css`
+- [x] Yekan Bakh font (local OTF, 400/700) — `app/fonts/` + `app/layout.tsx` + `app/globals.css`
 
 ---
 
@@ -126,3 +126,8 @@ All components live in `app/(main)/matches/_components/` unless noted.
 - All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
 - Background images optimized: WebP, resized to ≤1280px, q80 (~30MB PNG → 1.4MB total).
 - Post-onboarding destination: `/` (main app discover page).
+- All pages render as a centered `max-w-[430px]` column on a black backdrop (desktop-safe).
+
+## Open items
+See [TODO.md](TODO.md) — token gaps from the Matches audit and sort/filter behavior wiring.
+Change history in [CHANGELOG.md](CHANGELOG.md).

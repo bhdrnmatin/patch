@@ -1,6 +1,29 @@
 # Session State
 
-## Last session — 2026-06-08
+## Last session — 2026-06-10
+Desktop-safety + font swap + housekeeping.
+
+- **430px cap everywhere:** all auth pages, `/profile`, profile sub-pages
+  (`SubPageLayout`) now render as a centered `max-w-[430px]` column; body
+  backdrop set to black (`globals.css` + root layout) so the frame is visible
+  on laptop viewports.
+- **Font switched to Yekan Bakh:** local OTFs (400/700) in `app/fonts/` via
+  `next/font/local`, replacing the Vazirmatn Google font. Variable renamed
+  `--font-vazirmatn` → `--font-yekan-bakh` across globals, auth pages, CLAUDE.md.
+  Body font-family now applies it app-wide (main pages were silently Arial before).
+- **Committed:** `268a1c0` (font + width cap), `8a31d1f` (the 2026-06-08 Matches
+  work, previously uncommitted). Working tree clean.
+- **Docs:** created `CHANGELOG.md` (full history from git); STATUS.md font line
+  fixed + links to TODO.md/CHANGELOG.md added.
+
+### Next
+- Token-gap decision in `TODO.md` (gray scale, status colors, sheet radii, shadows).
+- Wire Sort/Filter sheet selections to actually sort/filter `matchList`.
+- Open audit findings (1 each): SortSheet, FilterSheet, MatchCard, ProfilePage.
+- Note: Yekan Bakh ships only 400/700 — `font-medium`/`font-semibold` render
+  synthesized weights; check visuals where those classes are used.
+
+## Previous session — 2026-06-08
 Built the **Matches** feature from Figma, iterated on visuals from user feedback,
 then ran a QA audit + refactor across all Matches components.
 
