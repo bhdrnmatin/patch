@@ -66,7 +66,7 @@ Other recurring values (already in Tailwind's default scale):
 - **Card bg:** `bg-black/50 backdrop-blur-card`
 - **Ghost button:** `bg-black/[0.19] border border-white/15`
 - **Progress active:** `bg-white` · inactive: `bg-white/20`
-- **Font (Persian):** `var(--font-vazirmatn)` · apply `dir="rtl"` on text containers
+- **Font (Persian):** `var(--font-yekan-bakh)` · apply `dir="rtl"` on text containers
 
 ## Routing
 

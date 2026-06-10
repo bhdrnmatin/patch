@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Vazirmatn } from "next/font/google";
+import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import Providers from "./providers";
 import "./globals.css";
 
@@ -8,9 +9,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const vazirmatn = Vazirmatn({
-  variable: "--font-vazirmatn",
-  subsets: ["arabic"],
+const yekanBakh = localFont({
+  src: [
+    { path: "./fonts/YekanBakhRegular.otf", weight: "400", style: "normal" },
+    { path: "./fonts/YekanBakhBold.otf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-yekan-bakh",
 });
 
 export const metadata: Metadata = {
@@ -24,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${vazirmatn.variable} h-full antialiased`}>
-      <body className="min-h-full bg-white">
+    <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
+      <body className="min-h-full bg-black">
         <Providers>{children}</Providers>
       </body>
     </html>

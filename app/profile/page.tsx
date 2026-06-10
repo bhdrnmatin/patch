@@ -56,7 +56,7 @@ const navItems = [
 
 export default function ProfilePage() {
   return (
-    <main className="w-full min-h-dvh bg-white pb-24">
+    <main className="mx-auto w-full max-w-[430px] min-h-dvh bg-white pb-24">
       {/* Hero with avatar overlapping bottom edge */}
       <div className="relative mb-12">
         <ProfileHero />

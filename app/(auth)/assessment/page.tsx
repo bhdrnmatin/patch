@@ -82,9 +82,9 @@ export default function AssessmentPage() {
   return (
     <div
       className="flex items-center justify-center min-h-screen bg-black"
-      style={{ fontFamily: "var(--font-vazirmatn), Arial, sans-serif" }}
+      style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
-      <div className="relative w-full min-h-dvh">
+      <div className="relative w-full max-w-[430px] min-h-dvh">
         <AuthSlide backgroundImage={current.bg}>
           <AuthCard title={current.title} subtitle={current.subtitle}>
             <div className="flex flex-col gap-4">

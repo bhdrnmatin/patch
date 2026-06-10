@@ -8,7 +8,7 @@ interface Props {
 
 export default function SubPageLayout({ title, onBack, children }: Props) {
   return (
-    <div className="w-full min-h-dvh bg-white">
+    <div className="mx-auto w-full max-w-[430px] min-h-dvh bg-white">
       {/* status bar spacer */}
       <div className="h-11" />
       <div className="px-6 pt-2 pb-10 flex flex-col gap-6">
