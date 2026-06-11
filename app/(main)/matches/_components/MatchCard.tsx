@@ -11,7 +11,7 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
   const { title, status, players, avgLevel, capacity, date, price } = match;
 
   return (
-    <article className="bg-white rounded-card p-3 flex flex-col gap-4 shadow-[0px_8px_24px_rgba(37,51,67,0.12)]">
+    <article className="bg-white rounded-card p-3 flex flex-col gap-4 shadow-pop">
       {/* Top row: status badge (left) + title (right) */}
       <div className="flex items-center justify-between" dir="rtl">
         <h3 className="text-base font-bold text-ink">{title}</h3>

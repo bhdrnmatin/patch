@@ -9,3 +9,10 @@
 
 ### Status
 Open: 3 | Fixed: 0 | Accepted: 0
+
+## v2 — 2026-06-11 | fix (token decisions)
+#1 Fixed v2 — `text-display` token added (32px/56px), heading swept.
+#2 Fixed v2 — gray-ramp mapping blessed (documented in CLAUDE.md); substitutions are now the rule.
+
+### Status
+Open: 1 | Fixed: 2 | Accepted: 0

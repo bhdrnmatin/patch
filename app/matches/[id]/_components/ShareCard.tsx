@@ -9,7 +9,7 @@ export default function ShareCard({ restriction }: Props) {
   return (
     <button
       type="button"
-      className="w-full bg-white rounded-full pl-5 pr-1 py-1 flex items-center justify-end gap-4 shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)] active:opacity-80"
+      className="w-full bg-white rounded-full pl-5 pr-1 py-1 flex items-center justify-end gap-4 shadow-card active:opacity-80"
     >
       <div className="flex flex-col items-end gap-1 text-right">
         <span className="text-sm font-bold text-ink-soft" dir="rtl">

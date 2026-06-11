@@ -14,7 +14,7 @@ export default function FaqItem({ question, answer }: Props) {
   const answerId = useId();
 
   return (
-    <div className="w-full bg-white border border-surface rounded-[28px] shadow-[0px_1px_4px_0px_rgba(0,0,0,0.05)]">
+    <div className="w-full bg-white border border-surface rounded-[28px] shadow-card">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -22,9 +22,8 @@ export default function FaqItem({ question, answer }: Props) {
         aria-controls={open ? answerId : undefined}
         className="w-full flex items-center justify-between pl-4 pr-3 py-2"
       >
-        {/* TOKEN GAP (#30445B = Figma Gray/800): see TODO.md */}
         <ChevronDownIcon
-          className={`shrink-0 text-[#30445B] transition-transform ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 text-ink-soft transition-transform ${open ? "rotate-180" : ""}`}
         />
         <span className="text-xs leading-6 text-ink-soft text-right" dir="rtl">
           {question}

@@ -16,6 +16,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Match Details] 20 new components in `app/matches/[id]/_components/`; `MatchDetails`/`JoinRequest`/`FaqEntry` types + mock; hero/promo/map images in `public/images/`
 - [BottomNav] `MatchesIcon`/`WhistleIcon`/`CourtIcon` now exported for reuse
 - [Layout] Page background is `bg-surface` (#F5F7FA) per Figma — `(main)` layout, profile, profile sub-pages, match details; cards keep Figma shadows (white-on-surface gives the contrast)
+- [Tokens] Elevation tokens `shadow-card` / `shadow-pop` added; 14 arbitrary shadow values swept (match details, MatchCard, profile NavRow)
+- [Tokens] `text-display` (32px/56px) added for display headings (CourtCard club name)
+- [Tokens] Gray-ramp mapping blessed: Figma Gray/50–800 render via `surface`/`muted`/`ink-soft` (rule documented in CLAUDE.md); FaqItem chevron `#30445B` → `ink-soft`
 
 ---
 

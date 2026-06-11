@@ -18,3 +18,9 @@ Regression check against v1: #2 (elevation tokens) still open in TODO.md.
 
 ### Status
 Open: 1 | Fixed: 1 | Accepted: 0
+
+## v3 — 2026-06-11 | fix (token decisions)
+#2 Fixed v3 — `--shadow-card`/`--shadow-pop` elevation tokens added; 14 usages swept.
+
+### Status
+Open: 0 | Fixed: 2 | Accepted: 0

@@ -3,7 +3,7 @@
 export default function PromoCard() {
   return (
     <div className="w-full pt-[17px]">
-      <div className="relative w-full h-[110px] bg-white rounded-full shadow-[0px_2px_1.5px_rgba(0,0,0,0.05)]">
+      <div className="relative w-full h-[110px] bg-white rounded-full shadow-card">
         <img
         src="/images/promo-player-rank.webp"
         alt=""

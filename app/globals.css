@@ -36,6 +36,12 @@
   --text-otp: 21.5px;
   --text-title: 28px;
   --text-story-title: 22px;
+  --text-display: 32px;
+  --text-display--line-height: 56px;
+
+  /* Elevation */
+  --shadow-card: 0px 2px 3px 0px rgba(0, 0, 0, 0.05);   /* resting cards, chips, rows */
+  --shadow-pop: 0px 8px 24px 0px rgba(37, 51, 67, 0.12); /* prominent cards (match list) */
 
   --blur-story: 3.5px;
 }

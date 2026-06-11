@@ -47,8 +47,11 @@ Desktop-safety + font swap + housekeeping.
   (size-6), ScheduleCard gap-4.5, PromoCard root margin (now margin-free 127px wrapper),
   PlayersSection ul/li. Open: MatchInfoCard icon-import home + the TODO token decisions.
 
+- **Token decisions applied (2026-06-11):** gray-ramp mapping blessed (rule in CLAUDE.md),
+  `--shadow-card`/`--shadow-pop` elevation tokens (14 usages swept), `--text-display`
+  (32px/56px) for CourtCard heading, `#30445B` → `ink-soft`. All four TODO items closed.
+
 ### Next
-- Decide TODO.md token items: gray ramp mapping, elevation tokens, #30445B, 32px display size.
 - Wire AddMenu rows to real create/reserve flows when those pages get designed.
 - Link `MatchCard` in the `/matches` list to `/matches/[id]` (not wired yet).
 - Match Details buttons are cosmetic: share, add-to-calendar, مسیریابی, accept/reject,

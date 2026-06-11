@@ -66,6 +66,13 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | OTP digit size | `text-otp` | `21.5px` |
 | Card title size | `text-title` | `28px` |
 | Story title size | `text-story-title` | `22px` |
+| Display heading | `text-display` | `32px / 56px` |
+| Card elevation | `shadow-card` | `0 2px 3px rgba(0,0,0,0.05)` |
+| Prominent elevation | `shadow-pop` | `0 8px 24px rgba(37,51,67,0.12)` |
+
+**Gray-ramp mapping (blessed 2026-06-11):** Figma grays without a token render with the
+nearest one — Gray/300 `#92A7C1` and Gray/400 `#7B93AF` → `muted`, Gray/600 `#57728E` and
+Gray/800 `#30445B` → `ink-soft`/`muted`, Gray/50 `#E9EDF5` → `surface`. Don't add ramp tokens.
 
 Other recurring values (already in Tailwind's default scale):
 - **Body text:** `text-sm` (14px) · **Small text:** `text-xs` (12px)
