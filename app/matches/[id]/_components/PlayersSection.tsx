@@ -19,11 +19,13 @@ export default function PlayersSection({ players }: Props) {
           بازیکنان
         </h2>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <ul className="grid grid-cols-2 gap-3">
         {players.map((p, i) => (
-          <PlayerChip key={i} player={p} />
+          <li key={i}>
+            <PlayerChip player={p} />
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

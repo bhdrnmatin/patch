@@ -22,3 +22,17 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] Wire SortSheet selections to actually sort `matchList`.
 - [ ] Wire FilterSheet selections to actually filter `matchList`.
 - [ ] MatchCard: consider `<ul>/<li>` list semantics + `<h2>` heading order.
+
+## Token gaps — Match Details audit (2026-06-10)
+- [ ] Token gap (FaqItem): `#30445B` chevron (Figma Gray/800) — add e.g. `--color-ink-strong`
+      or bless `ink-soft` as the substitute.
+- [ ] Token gap (CourtCard): `32px/56px` display heading — largest type token is
+      `--text-title` (28px); add `--text-display` or accept the one-off.
+- [ ] Token gap (elevation, REOPENED): the "accepted as one-offs" call from 2026-06-08
+      is stale — match details adds 4 recurring shadow values across 12+ usages
+      (`0 2px 1.5px/5%`, `0 1px 2px/6%`, `0 2px 3px/5%`, `0 1px 4px/5%`) plus MatchCard's
+      deepened `0 8px 24px/12%`. Add `--shadow-card` / `--shadow-chip` elevation tokens.
+- [ ] Decision (gray ramp): during the match-details build, Figma grays with no token were
+      mapped to nearest existing tokens — `#7B93AF` (Gray/400) and `#92A7C1` (Gray/300) →
+      `muted`, `#57728E` (Gray/600) → `ink-soft`/`muted`, `#E9EDF5` (Gray/50) → `surface`.
+      Bless these mappings or extend the neutral scale with ramp tokens.

@@ -22,6 +22,7 @@ export default function CourtCard({ club, note }: Props) {
           اطلاعات زمین
         </span>
       </div>
+      {/* TOKEN GAP (32px/56px display size — largest type token is text-title 28px): see TODO.md */}
       <h2 className="text-[32px] leading-[56px] font-bold text-ink-soft" dir="rtl">
         {club}
       </h2>

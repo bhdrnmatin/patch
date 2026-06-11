@@ -36,7 +36,19 @@ Desktop-safety + font swap + housekeeping.
   BottomNav glyphs (now exported). New types/mock in `lib/`. Hero/promo/map images
   optimized into `public/images/`. Build + smoke test (200 on both roles) pass.
 
+- **QA audit of Match Details (ds-qa-tw, 22 components):** 0 Critical, 5 Warning,
+  6 Suggestion. Per-component audits in `_designer/audits/` (12 new files), index
+  updated. Token gaps + gray-ramp decision logged in TODO.md; elevation-shadow
+  "accepted" decision REOPENED (now 4 recurring values × 12+ uses). TOKEN GAP
+  comments added at FaqItem chevron + CourtCard display heading. No code fixes
+  applied (audit mode).
+
+- **Refactor pass (2026-06-11):** fixed FaqItem aria-controls, SectionCard icon size
+  (size-6), ScheduleCard gap-4.5, PromoCard root margin (now margin-free 127px wrapper),
+  PlayersSection ul/li. Open: MatchInfoCard icon-import home + the TODO token decisions.
+
 ### Next
+- Decide TODO.md token items: gray ramp mapping, elevation tokens, #30445B, 32px display size.
 - Wire AddMenu rows to real create/reserve flows when those pages get designed.
 - Link `MatchCard` in the `/matches` list to `/matches/[id]` (not wired yet).
 - Match Details buttons are cosmetic: share, add-to-calendar, مسیریابی, accept/reject,
