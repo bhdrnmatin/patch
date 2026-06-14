@@ -26,7 +26,7 @@ export default function NavRow({ label, href, icon }: Props) {
   return (
     <Link
       href={href}
-      className={`bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-card ${
+      className={`bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-[0px_1px_2px_0px_rgba(0,0,0,0.06)] ${
         withIcon
           ? "h-14 rounded-[28px] pr-[7px] pl-4"
           : "rounded-[32px] px-4 py-3"
