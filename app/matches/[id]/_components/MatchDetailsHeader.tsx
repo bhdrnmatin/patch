@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import IconButton from "../../../(main)/matches/_components/IconButton";
+import IconButton from "../../../(main)/_components/IconButton";
 import ActionPill from "./ActionPill";
 import { ArrowLeftIcon, SendIcon, EditIcon } from "./icons";
 

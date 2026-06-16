@@ -47,7 +47,7 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 ### Refactor candidates (Warnings)
 - [x] PosterBadge duplicated StatusBadge's status→Persian labels — **fixed 2026-06-16**: extracted to
       `lib/status.ts` (`statusLabels`); both components import it.
-- [ ] SportPageHeader (in `(main)/_components`) imports leaves from `../matches/_components`
-      (inverted dependency). Consider relocating shared leaves (IconButton, DateCell/DateSelector, icons)
-      into `(main)/_components/` so both features import from the shared layer. (Accepted for now —
-      same cross-folder pattern as Match Details.)
+- [x] SportPageHeader inverted dependency — **fixed 2026-06-16**: relocated `icons`, `IconButton`,
+      `DateCell`, `DateSelector` from `matches/_components` to the shared `(main)/_components/`; all
+      importers (matches, tournaments, match-details `[id]`) repointed. `PriceTag` + sheets stay in
+      matches (feature→feature reuse). CLAUDE.md component-library section updated.

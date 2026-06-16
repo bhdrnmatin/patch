@@ -16,3 +16,19 @@ Notes:
 
 ### Status
 Open: 1 (accepted pattern) | Fixed: 0 | Accepted: 1
+
+## v2 — 2026-06-16 | fix
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 1 | Warning | Inverted dependency (shared layer → matches feature) | Fixed v2 |
+
+Relocated the shared leaves `icons`, `IconButton`, `DateCell`, `DateSelector` from
+`(main)/matches/_components/` to the shared `(main)/_components/`. SportPageHeader now imports
+only from its own shared dir. All importers repointed (matches, tournaments, and the match-details
+`[id]` components, which now reach the shared layer instead of the matches feature). `PriceTag` +
+the filter/sort sheets remain in matches (feature→feature reuse, not the inversion). Verified:
+tsc clean, `/matches` + `/tournaments` + `/matches/[id]` all 200, header renders unchanged.
+
+### Status
+Open: 0 | Fixed: 1 | Accepted: 1
+

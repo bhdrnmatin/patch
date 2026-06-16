@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { CloseIcon } from "./icons";
+import { CloseIcon } from "../../_components/icons";
 
 interface Props {
   open: boolean;

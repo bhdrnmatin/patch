@@ -1,7 +1,7 @@
 import SectionCard from "./SectionCard";
 import InfoItem from "./InfoItem";
 import { MoneyIcon, TwoUsersIcon } from "./icons";
-import { CalendarIcon, TomanIcon } from "../../../(main)/matches/_components/icons";
+import { CalendarIcon, TomanIcon } from "../../../(main)/_components/icons";
 import { WhistleIcon, CourtIcon, MatchesIcon } from "../../../(main)/_components/BottomNav";
 import { toPersianDigits } from "../../../../lib/persian";
 import type { MatchDetails } from "../../../../lib/types";

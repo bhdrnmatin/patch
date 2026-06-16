@@ -1,4 +1,4 @@
-import { InfoIcon } from "../../../(main)/matches/_components/icons";
+import { InfoIcon } from "../../../(main)/_components/icons";
 
 interface Props {
   title: string;

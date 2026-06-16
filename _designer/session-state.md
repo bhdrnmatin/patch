@@ -83,12 +83,20 @@ then ran a QA audit.
   StatusBadge labels, TournamentCard CTA is a dead button. Token gaps logged: `rounded-[20px]`,
   `backdrop-blur-[4px]`.
 
+- **Refactor pass (2026-06-16):** shared `statusLabels` map (`lib/status.ts`, used by StatusBadge +
+  PosterBadge); dropped the no-op CTA `backdrop-blur-[4px]`; `InfoPair.label` → ReactNode. Token gaps
+  `rounded-[20px]`/`blur-[4px]` accepted as one-offs. Committed `45050c1`.
+- **Dependency-inversion fix (2026-06-16):** relocated the shared leaves `icons`, `IconButton`,
+  `DateCell`, `DateSelector` from `(main)/matches/_components/` → shared `(main)/_components/`.
+  SportPageHeader (shared) no longer reaches into the matches feature. ~15 importers repointed across
+  matches, tournaments, and match-details (`app/matches/[id]`). `PriceTag` + filter/sort sheets stay
+  in matches (feature→feature reuse, not the inversion). CLAUDE.md component library + tournaments
+  STATUS.md updated. Verified: tsc clean, three routes 200, headers render unchanged.
+
 ### Next
-- Refactor pass (when requested): share a `statusLabels` map (PosterBadge↔StatusBadge); drop the
-  no-op `backdrop-blur-[4px]` on the CTA; decide the `rounded-[20px]`/`blur-[4px]` token gaps.
 - Wire the TournamentCard CTA to `/tournaments/[id]` once that route is designed.
-- Consider relocating shared leaves (IconButton, DateCell/DateSelector, icons) into `(main)/_components`
-  to fix the matches→(main) dependency inversion for both features.
+- Optional further cleanup: PriceTag + Filter/SortSheet are still imported by tournaments from
+  matches (feature→feature). Move to the shared layer only if a third consumer appears.
 
 ## Previous session — 2026-06-08
 Built the **Matches** feature from Figma, iterated on visuals from user feedback,

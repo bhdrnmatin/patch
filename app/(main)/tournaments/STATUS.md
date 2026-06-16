@@ -25,11 +25,11 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[R]` reused (no work)
 - [x] `tournaments/page.tsx` — header + card list + filter/sort sheets
 
 ## Reused as-is (do NOT recreate)
-- [R] `IconButton`, `DateCell`, `DateSelector`, `PriceTag` — matches/_components
+- [R] `IconButton`, `DateCell`, `DateSelector`, `icons` — **(main)/_components** (shared layer)
+- [R] `PriceTag` — matches/_components (feature-shared)
 - [R] `BottomSheet`, `FilterSection`, `SelectChip` — matches/_components
 - [R] `FilterSheet`, `SortSheet` — matches/_components (match facets; revisit if tournament-specific facets needed)
 - [R] `BottomNav` — (main)/_components (global in layout)
-- [R] icons: `FilterSearchIcon`, `SortIcon`, `TomanIcon` — matches/_components/icons
 - [R] `public/images/matches-header-athlete.webp` + `matches-header-bg.webp` — hero image
 
 ## Assets

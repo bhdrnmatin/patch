@@ -3,7 +3,7 @@
 import { useState } from "react";
 import BottomSheet from "./BottomSheet";
 import FilterSection, { type ChipOption } from "./FilterSection";
-import { SortIcon } from "./icons";
+import { SortIcon } from "../../_components/icons";
 
 const DIRECTION: ChipOption[] = [
   { id: "near", label: "نزدیک‌ترین" },

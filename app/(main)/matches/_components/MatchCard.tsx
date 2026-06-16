@@ -4,7 +4,7 @@ import StatusBadge from "./StatusBadge";
 import PlayerSlot from "./PlayerSlot";
 import MetaItem from "./MetaItem";
 import PriceTag from "./PriceTag";
-import { ChartIcon, PeopleIcon, CalendarIcon } from "./icons";
+import { ChartIcon, PeopleIcon, CalendarIcon } from "../../_components/icons";
 
 /** Full match card: status + title, 2×3 roster grid, meta row, price action. */
 export default function MatchCard({ match }: { match: MatchListItem }) {

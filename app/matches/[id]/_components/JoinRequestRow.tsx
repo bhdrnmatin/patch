@@ -1,5 +1,5 @@
 import { CheckIcon } from "./icons";
-import { CloseIcon } from "../../../(main)/matches/_components/icons";
+import { CloseIcon } from "../../../(main)/_components/icons";
 import { toPersianDigits } from "../../../../lib/persian";
 import type { JoinRequest } from "../../../../lib/types";
 

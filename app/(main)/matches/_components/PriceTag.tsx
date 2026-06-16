@@ -1,5 +1,5 @@
 import { toPersianDigits } from "@/lib/persian";
-import { TomanIcon } from "./icons";
+import { TomanIcon } from "../../_components/icons";
 
 interface Props {
   amount: number;

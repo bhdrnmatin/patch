@@ -31,8 +31,13 @@ Check these before writing new UI — reuse first.
 - `OnboardingActions` — button row (skip+next or full-width CTA), `isLast`
 - `StorySlide` — full-screen slide layout, composes all of the above
 
-**Main app** — `app/(main)/_components/`
+**Main app (shared across features)** — `app/(main)/_components/`
 - `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
+- `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and /tournaments
+- `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
+- `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
+- `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
+- Consumed by /matches, /tournaments, and /matches/[id]. Feature-local leaves still live in each feature's `_components/`.
 
 ## Localization
 

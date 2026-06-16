@@ -1,7 +1,7 @@
 import type { DayOption } from "@/lib/types";
-import IconButton from "../matches/_components/IconButton";
-import DateSelector from "../matches/_components/DateSelector";
-import { FilterSearchIcon, SortIcon } from "../matches/_components/icons";
+import IconButton from "./IconButton";
+import DateSelector from "./DateSelector";
+import { FilterSearchIcon, SortIcon } from "./icons";
 
 interface Props {
   /** Hero heading, e.g. "مسابقه" or "تورنمنت". */

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toPersianDigits } from "@/lib/persian";
 import BottomSheet from "./BottomSheet";
 import FilterSection, { type ChipOption } from "./FilterSection";
-import { FilterSearchIcon } from "./icons";
+import { FilterSearchIcon } from "../../_components/icons";
 
 const STATUS: ChipOption[] = [
   { id: "active", label: "جاری" },
