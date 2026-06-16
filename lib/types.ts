@@ -82,6 +82,25 @@ export interface Tournament {
   maxTeams: number;
 }
 
+/** View-model for a card in the Tournaments list. */
+export interface TournamentListItem {
+  id: string;
+  title: string;
+  status: MatchStatus;
+  poster: string;
+  /** Teams registered / capacity, pre-formatted Persian, e.g. "۲۱/۲ تیم". */
+  teams: string;
+  /** Toman, integer. */
+  prize: number;
+  /** Persian date range, e.g. "۱۵-۱۷ آذر ۱۴۰۴". */
+  startDate: string;
+  /** e.g. "لول ۳" — pre-formatted. */
+  level: string;
+  organizer: string;
+  /** Entry fee, Toman, integer. */
+  entryFee: number;
+}
+
 export interface Court {
   id: string;
   name: string;

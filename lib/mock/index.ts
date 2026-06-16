@@ -5,6 +5,7 @@ import type {
   Tournament,
   Court,
   MatchListItem,
+  TournamentListItem,
   DayOption,
   MatchDetails,
 } from "@/lib/types";
@@ -168,6 +169,23 @@ export const tournaments: Tournament[] = [
     maxTeams: 8,
   },
 ];
+
+/** Cards shown on the Tournaments list page. */
+export const tournamentList: TournamentListItem[] = Array.from(
+  { length: 3 },
+  (_, i): TournamentListItem => ({
+    id: `tl${i + 1}`,
+    title: "راکت طلایی",
+    status: "active",
+    poster: "/images/tournament-poster.webp",
+    teams: "۲۱/۲ تیم",
+    prize: 5_250_000,
+    startDate: "۱۵-۱۷ آذر ۱۴۰۴",
+    level: "لول ۳",
+    organizer: "باشگاه انقلاب",
+    entryFee: 5_250_000,
+  }),
+);
 
 export const courts: Court[] = [
   {
