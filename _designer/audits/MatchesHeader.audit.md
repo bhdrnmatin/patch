@@ -8,3 +8,14 @@
 
 ### Status
 Open: 0 | Fixed: 0 | Accepted: 2
+
+## v2 — 2026-06-16 | fix
+Refactored to a thin wrapper over the new [[SportPageHeader]] (`title="مسابقه"`); the hero
+implementation moved to `(main)/_components/SportPageHeader.tsx` so `/tournaments` can reuse it.
+Public API and rendered output unchanged.
+
+Regression check against v1: findings #1–3 still clean — they now live in SportPageHeader
+(see SportPageHeader.audit.md) and remain accepted.
+
+### Status
+Open: 0 | Fixed: 0 | Accepted: 2

@@ -39,3 +39,8 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-06-10 | **ResultSheet** | audit | clean (placeholder-design note) | — | [details](audits/ResultSheet.audit.md)
 - 2026-06-10 | **MatchDetailsHeader** | audit | 0 Critical, 0 Warning, 1 Suggestion | 1 open, 1 accepted | [details](audits/MatchDetailsHeader.audit.md)
 - 2026-06-10 | **match-details misc (12 components)** | audit | clean | 3 systemic confirmed | [details](audits/match-details-misc.audit.md)
+- 2026-06-16 | **TournamentCard** | audit+refactor | 0 Critical, 1 Warning, 3 Suggestion | 1 fixed, 2 open, 2 accepted | [details](audits/TournamentCard.audit.md)
+- 2026-06-16 | **SportPageHeader** | audit | 0 Critical, 1 Warning, 1 Suggestion | 1 open (accepted pattern), 1 accepted | [details](audits/SportPageHeader.audit.md)
+- 2026-06-16 | **tournaments misc (InfoPair, PosterBadge, TournamentPoster)** | audit+refactor | 0 Critical, 1 Warning, 2 Suggestion | 2 fixed, 1 open, 3 accepted | [details](audits/tournaments-misc.audit.md)
+- 2026-06-16 | **MatchesHeader** | fix | refactored to SportPageHeader wrapper | regression clean | [details](audits/MatchesHeader.audit.md)
+- 2026-06-16 | **StatusBadge** | fix | label map → shared `lib/status.ts` | clean | [details](audits/StatusBadge.audit.md)

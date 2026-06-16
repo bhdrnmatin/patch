@@ -7,3 +7,8 @@
 
 ### Status
 Open: 0 | Fixed: 0 | Accepted: 0
+
+## v2 — 2026-06-16 | fix
+Label map extracted to shared `lib/status.ts` (`statusLabels`) so PosterBadge (tournaments) can
+reuse it. `TONES` stay local (StatusBadge is the only consumer of the colored-pill tones).
+No findings; visuals unchanged.

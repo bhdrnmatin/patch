@@ -35,7 +35,7 @@ export default function TournamentCard({ tournament }: { tournament: TournamentL
       {/* Details CTA */}
       <button
         type="button"
-        className="h-10 w-full rounded-pill border-[1.5px] border-white/15 bg-primary text-sm font-bold text-white backdrop-blur-[4px] hover:bg-primary-hover active:opacity-80"
+        className="h-10 w-full rounded-pill border-[1.5px] border-white/15 bg-primary text-sm font-bold text-white hover:bg-primary-hover active:opacity-80"
       >
         جزئیات تورنومنت
       </button>

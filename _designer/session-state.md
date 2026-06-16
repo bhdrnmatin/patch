@@ -62,6 +62,34 @@ Desktop-safety + font swap + housekeeping.
 - Note: Yekan Bakh ships only 400/700 — `font-medium`/`font-semibold` render
   synthesized weights; check visuals where those classes are used.
 
+## Session — 2026-06-16
+Built the **Tournaments** list page (`/tournaments`) from Figma (`node-id=20176-13411`),
+then ran a QA audit.
+
+- **Reuse-first build:** ~70% reused from Matches — `IconButton`, `DateSelector`/`DateCell`,
+  `PriceTag`, `BottomSheet`/`FilterSection`/`SelectChip`, `FilterSheet`/`SortSheet`, icons,
+  the hero image, and the global `BottomNav`. New components: `TournamentCard`, `TournamentPoster`,
+  `PosterBadge`, `InfoPair` (tournaments/_components) + `SportPageHeader` ((main)/_components).
+- **Header generalized:** extracted the Matches hero into shared `SportPageHeader` (title prop);
+  `MatchesHeader` is now a thin wrapper — Matches output unchanged.
+- **Data:** `TournamentListItem` type + `tournamentList` mock; reused `matchDays`. Poster asset
+  `public/images/tournament-poster.webp` (740px, q80).
+- **RTL fixes from user feedback:** title + info-grid were left-aligned because `dir="rtl"` flips
+  `justify-end`/`items-end` to the left — fixed by keeping those wrappers LTR with RTL on the text.
+  Verified against Figma via headless-Chrome screenshots. Committed `4717740` on `feat/tournaments-page`.
+- **QA audit (this skill):** 0 Critical, 3 Warning, 5 Suggestion across 5 components. No code changes
+  (audit mode). 3 new audit files + MatchesHeader v2 (wrapper) note; index + TODO updated.
+  Warnings: SportPageHeader inverted dependency (accepted cross-folder pattern), PosterBadge duplicates
+  StatusBadge labels, TournamentCard CTA is a dead button. Token gaps logged: `rounded-[20px]`,
+  `backdrop-blur-[4px]`.
+
+### Next
+- Refactor pass (when requested): share a `statusLabels` map (PosterBadge↔StatusBadge); drop the
+  no-op `backdrop-blur-[4px]` on the CTA; decide the `rounded-[20px]`/`blur-[4px]` token gaps.
+- Wire the TournamentCard CTA to `/tournaments/[id]` once that route is designed.
+- Consider relocating shared leaves (IconButton, DateCell/DateSelector, icons) into `(main)/_components`
+  to fix the matches→(main) dependency inversion for both features.
+
 ## Previous session — 2026-06-08
 Built the **Matches** feature from Figma, iterated on visuals from user feedback,
 then ran a QA audit + refactor across all Matches components.

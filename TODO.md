@@ -34,3 +34,20 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       deepened `0 8px 24px/12%`. Add `--shadow-card` / `--shadow-chip` elevation tokens.
 - [x] Decision (gray ramp) — **blessed 2026-06-11**: nearest-token mapping is the rule
       (documented in CLAUDE.md Design Tokens); no ramp tokens added.
+
+## Tournaments — audit (2026-06-16)
+### Behavior wiring (post-mock)
+- [ ] TournamentCard: make the "جزئیات تورنومنت" CTA a `<Link href="/tournaments/{id}">`
+      once the detail route exists (currently a dead `<button>`). Same shape as the MatchCard CTA item.
+### Token gaps
+- [x] Token gap (TournamentPoster): `rounded-[20px]` (20px radius) — **accepted as one-off 2026-06-16**
+      (consistent with sheet 40px / close 20px single-use radii). Revisit if a second consumer appears.
+- [x] Token gap (PosterBadge): `backdrop-blur-[4px]` — **accepted as one-off 2026-06-16** (meaningful
+      over the poster). The TournamentCard CTA's no-op copy was **removed** in the refactor.
+### Refactor candidates (Warnings)
+- [x] PosterBadge duplicated StatusBadge's status→Persian labels — **fixed 2026-06-16**: extracted to
+      `lib/status.ts` (`statusLabels`); both components import it.
+- [ ] SportPageHeader (in `(main)/_components`) imports leaves from `../matches/_components`
+      (inverted dependency). Consider relocating shared leaves (IconButton, DateCell/DateSelector, icons)
+      into `(main)/_components/` so both features import from the shared layer. (Accepted for now —
+      same cross-folder pattern as Match Details.)
