@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { activitySections } from "@/lib/mock";
+import { useQuery } from "@tanstack/react-query";
+import { getActivitySections } from "@/lib/data";
 import SportPageHeader from "../_components/SportPageHeader";
 import FilterSheet from "../matches/_components/FilterSheet";
 import SortSheet from "../matches/_components/SortSheet";
@@ -11,6 +12,10 @@ import SectionDivider from "./_components/SectionDivider";
 type Sheet = "sort" | "filter" | null;
 
 export default function ActivityPage() {
+  const { data: activitySections = [] } = useQuery({
+    queryKey: ["activitySections"],
+    queryFn: getActivitySections,
+  });
   const [sheet, setSheet] = useState<Sheet>(null);
 
   return (

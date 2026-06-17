@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import MatchDetailsHeader from "./_components/MatchDetailsHeader";
 import MatchStageCard from "./_components/MatchStageCard";
 import MatchInfoCard from "./_components/MatchInfoCard";
@@ -16,7 +17,7 @@ import FaqSection from "./_components/FaqSection";
 import JoinRequestsSection from "./_components/JoinRequestsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
 import ResultSheet from "./_components/ResultSheet";
-import { matchDetails } from "../../../lib/mock";
+import { getMatchDetails } from "@/lib/data";
 import type { MatchDetailsStatus, ViewerRole } from "../../../lib/types";
 
 const STAGE = {
@@ -45,7 +46,11 @@ function MatchDetailsContent() {
   const status: MatchDetailsStatus =
     statusParam === "live" || statusParam === "finished" ? statusParam : "upcoming";
 
-  const m = matchDetails;
+  const { id } = useParams<{ id: string }>();
+  const { data: m } = useSuspenseQuery({
+    queryKey: ["matchDetails", id],
+    queryFn: () => getMatchDetails(id),
+  });
   const stage = STAGE[status];
   const cta = CTA[role][status];
   const [resultOpen, setResultOpen] = useState(false);
