@@ -24,7 +24,7 @@ export default function StorySlide({
   onSkip,
 }: StorySlideProps) {
   return (
-    <div className="relative w-full min-h-dvh bg-slide-bg overflow-hidden rounded-lg">
+    <div className="relative w-full h-full bg-slide-bg overflow-hidden rounded-lg">
       {/* Background image */}
       <img
         src={backgroundImage}

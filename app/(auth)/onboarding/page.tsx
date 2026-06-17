@@ -37,24 +37,24 @@ export default function OnboardingPage() {
 
   const handleNext = () => {
     if (current === slides.length - 1) {
-      router.push("/");
+      router.push("/login");
     } else {
       setCurrent((c) => c + 1);
     }
   };
 
   const handleSkip = () => {
-    router.push("/");
+    router.push("/login");
   };
 
   const slide = slides[current];
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-black"
+      className="flex items-center justify-center h-dvh overflow-hidden bg-black"
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
-      <div className="relative w-full max-w-[430px] min-h-dvh">
+      <div className="relative w-full max-w-[430px] h-full">
         <StorySlide
           backgroundImage={slide.backgroundImage}
           title={slide.title}

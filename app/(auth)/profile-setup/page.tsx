@@ -18,11 +18,11 @@ export default function ProfileSetupPage() {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-black"
+      className="flex items-center justify-center h-dvh overflow-hidden bg-black"
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
-      <div className="relative w-full max-w-[430px] min-h-dvh">
-        <AuthSlide backgroundImage={BG}>
+      <div className="relative w-full max-w-[430px] h-full">
+        <AuthSlide backgroundImage={BG} objectPosition="35% 50%">
           <AuthCard
             title="خوش اومدی!"
             subtitle="بهترین سرمایه‌گذاری روی خودت رو شروع کردی ..."

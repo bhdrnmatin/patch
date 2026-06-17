@@ -12,13 +12,14 @@ export default function RadioGroup({ options, value, onChange, label }: RadioGro
     <div
       role="radiogroup"
       aria-label={label}
-      className="w-full bg-black/[0.32] border border-group-border rounded-group overflow-clip flex flex-col divide-y divide-group-border"
+      className="w-full bg-black/[0.32] border border-group-border rounded-group overflow-clip p-1.5 flex flex-col"
     >
-      {options.map((option) => (
+      {options.map((option, i) => (
         <RadioOption
           key={option}
           label={option}
           selected={value === option}
+          divider={i > 0 && value !== option && value !== options[i - 1]}
           onClick={() => onChange(option)}
         />
       ))}

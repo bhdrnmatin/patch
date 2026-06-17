@@ -30,10 +30,22 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
+
+    // Make the hardware/browser back button close the sheet instead of
+    // navigating to the previous URL: push a throwaway history entry and
+    // close when it's popped.
+    window.history.pushState({ sheet: true }, "");
+    const onPop = () => onClose();
+    window.addEventListener("popstate", onPop);
+
     panelRef.current?.focus();
     return () => {
       document.body.style.overflow = prevOverflow;
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("popstate", onPop);
+      // Closed via UI (not the back button) — drop the entry we pushed so the
+      // history stack stays balanced.
+      if (window.history.state?.sheet) window.history.back();
     };
   }, [open, onClose]);
 
@@ -51,10 +63,10 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="relative w-[calc(100%-32px)] max-w-[398px] mb-4 rounded-[40px] bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-[0px_8px_32px_rgba(37,51,67,0.16)] outline-none"
+        className="relative w-[calc(100%-32px)] max-w-[398px] mb-4 max-h-[calc(100dvh-32px)] rounded-[40px] bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-[0px_8px_32px_rgba(37,51,67,0.16)] outline-none"
       >
         {/* Header */}
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between w-full shrink-0">
           <button
             type="button"
             onClick={onClose}
@@ -78,9 +90,9 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 w-full">{children}</div>
+        <div className="flex flex-col gap-5 w-full flex-1 min-h-0 overflow-y-auto">{children}</div>
 
-        {footer && <div className="flex items-center gap-4 w-full">{footer}</div>}
+        {footer && <div className="flex items-center gap-4 w-full shrink-0">{footer}</div>}
       </div>
     </div>
   );

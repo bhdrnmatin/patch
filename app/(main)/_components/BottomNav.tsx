@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type IconProps = { className?: string };
 
@@ -121,6 +121,9 @@ function isActive(pathname: string, href: string) {
 export default function BottomNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Set when the menu closes because the user tapped one of its links — that
+  // navigation supersedes the history entry we pushed, so skip the rollback.
+  const navigatingRef = useRef(false);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -128,7 +131,24 @@ export default function BottomNav() {
       if (e.key === "Escape") setMenuOpen(false);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+
+    // Make the hardware/browser back button close the menu instead of
+    // navigating to the previous URL.
+    window.history.pushState({ addMenu: true }, "");
+    const onPop = () => setMenuOpen(false);
+    window.addEventListener("popstate", onPop);
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("popstate", onPop);
+      // Closed via the UI (backdrop / toggle / Escape) — drop the entry we
+      // pushed. Skip it when a link is navigating away or the back button
+      // already popped it.
+      if (!navigatingRef.current && window.history.state?.addMenu) {
+        window.history.back();
+      }
+      navigatingRef.current = false;
+    };
   }, [menuOpen]);
 
   return (
@@ -150,7 +170,10 @@ export default function BottomNav() {
             <Link
               key={label}
               href={href}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                navigatingRef.current = true;
+                setMenuOpen(false);
+              }}
               className="flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20"
             >
               <span className="text-sm font-semibold leading-4 text-white" dir="rtl">

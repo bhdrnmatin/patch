@@ -10,6 +10,7 @@ import AuthActions from "../_components/AuthActions";
 const steps = [
   {
     bg: "/images/assessment-1.webp",
+    pos: "72% 50%",
     title: "سنجش سطح",
     subtitle: "در مقیاس زیر، خودتان را کجا قرار می‌دهید؟",
     options: ["مبتدی", "متوسط", "پیشرفته", "حرفه‌ای"],
@@ -17,6 +18,7 @@ const steps = [
   },
   {
     bg: "/images/assessment-2.webp",
+    pos: "70% 50%",
     title: "سابقه‌ی پدل",
     subtitle: "چند سال است پدل یا هر ورزشِ راکتی انجام می‌دهید؟",
     options: [
@@ -30,6 +32,7 @@ const steps = [
   },
   {
     bg: "/images/assessment-3.webp",
+    pos: "65% 50%",
     title: "بازه‌ی سنی",
     subtitle: "سن شما چند است؟",
     options: ["۱۸ تا ۳۰ سال", "۳۱ تا ۴۰ سال", "۴۱ تا ۵۰ سال", "بالای ۵۰ سال"],
@@ -37,6 +40,7 @@ const steps = [
   },
   {
     bg: "/images/assessment-4.webp",
+    pos: "30% 50%",
     title: "مهارت روی «والی»",
     subtitle: "در والی…",
     options: [
@@ -50,6 +54,7 @@ const steps = [
   },
   {
     bg: "/images/assessment-5.webp",
+    pos: "50% 50%",
     title: "توپ‌های برگشتی از دیوار",
     subtitle: "در ضربات پس از برخورد توپ به دیوار…",
     options: [
@@ -81,24 +86,26 @@ export default function AssessmentPage() {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-black"
+      className="flex items-center justify-center h-dvh overflow-hidden bg-black"
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
-      <div className="relative w-full max-w-[430px] min-h-dvh">
-        <AuthSlide backgroundImage={current.bg}>
+      <div className="relative w-full max-w-[430px] h-full">
+        <AuthSlide backgroundImage={current.bg} objectPosition={current.pos}>
           <AuthCard title={current.title} subtitle={current.subtitle}>
             <div className="flex flex-col gap-4">
-              <RadioGroup
-                options={current.options}
-                value={answers[step]}
-                onChange={(val) =>
-                  setAnswers((a) => {
-                    const next = [...a];
-                    next[step] = val;
-                    return next;
-                  })
-                }
-              />
+              <div className="max-h-[40dvh] overflow-y-auto overscroll-contain">
+                <RadioGroup
+                  options={current.options}
+                  value={answers[step]}
+                  onChange={(val) =>
+                    setAnswers((a) => {
+                      const next = [...a];
+                      next[step] = val;
+                      return next;
+                    })
+                  }
+                />
+              </div>
               <AuthActions
                 nextLabel={current.nextLabel}
                 onNext={handleNext}
