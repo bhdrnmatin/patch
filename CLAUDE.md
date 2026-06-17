@@ -46,6 +46,34 @@ This is a **Persian-language app**. All numbers displayed or entered in the UI m
 - Apply it in `onChange` handlers for any input that accepts numbers, and when rendering numeric values in JSX.
 - Persian placeholder examples: `۰۹۱۲۳۴۵۶۷۸۹`, not `09123456789`.
 
+## RTL layout — the `dir="rtl"` flex trap
+
+On a flex container with `dir="rtl"`, the horizontal alignment utilities **flip**: `justify-end`
+and `items-end` resolve to the **left**, `justify-start`/`items-start` to the right. This silently
+left-aligns content you meant to pin right (bit us on titles + meta rows multiple times).
+
+**Rule:** keep alignment wrappers **LTR** (so `justify-end`/`items-end` mean right) and put
+`dir="rtl"` only on the **text elements** for correct Persian shaping.
+
+```tsx
+// ❌ meta ends up left-aligned
+<div dir="rtl" className="flex flex-col items-end">{lines}</div>
+
+// ✅ LTR wrapper right-aligns; dir on the text
+<div className="flex flex-col items-end text-right">
+  {lines.map((t) => <span dir="rtl">{t}</span>)}
+</div>
+```
+
+## Hero header art (matches / tournaments / activity)
+
+`SportPageHeader` layers a blurred backdrop + a sharp foreground. The no-ghost rule: the **backdrop
+must be subject-free**, or the sharp subject must sit exactly over its blurred self. When the Figma
+backdrop bakes the subject in (tournaments podium, activity player), **pre-bake one opaque image** at
+Figma's exact layer geometry — scene blurred + tinted with the sharp cutout composited on top,
+aligned — and pass it as `athleteImage`. Don't pass a transparent cutout over a backdrop that already
+contains the subject (→ offset ghost).
+
 ## Design Tokens
 
 Tokens are defined in `app/globals.css` `@theme` block. Always use the token class — never hardcode hex or arbitrary values.
