@@ -17,6 +17,7 @@ export default function TournamentsPage() {
     <div className="w-full min-h-dvh">
       <SportPageHeader
         title="تورنمنت"
+        athleteImage="/images/tournaments-header.webp"
         days={matchDays}
         selectedId={selectedDay}
         onSelect={setSelectedDay}

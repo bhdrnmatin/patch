@@ -30,7 +30,9 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[R]` reused (no work)
 - [R] `BottomSheet`, `FilterSection`, `SelectChip` — matches/_components
 - [R] `FilterSheet`, `SortSheet` — matches/_components (match facets; revisit if tournament-specific facets needed)
 - [R] `BottomNav` — (main)/_components (global in layout)
-- [R] `public/images/matches-header-athlete.webp` + `matches-header-bg.webp` — hero image
+- [x] `public/images/tournaments-header.webp` — baked hero (podium/trophy scene blurred+tinted +
+      sharp medalist cutout composited on top, Figma geometry); passed as `athleteImage`.
+      (Was wrongly reusing the matches action scene — fixed 2026-06-17.)
 
 ## Assets
 - [x] `public/images/tournament-poster.webp` — card poster (740px, q80)
