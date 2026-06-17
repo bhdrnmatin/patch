@@ -6,15 +6,29 @@ import { FilterSearchIcon, SortIcon } from "./icons";
 interface Props {
   /** Hero heading, e.g. "مسابقه" or "تورنمنت". */
   title: string;
-  days: DayOption[];
-  selectedId: string;
-  onSelect: (id: string) => void;
+  /** Date strip days. Omit to render the hero without a date strip (e.g. Activity). */
+  days?: DayOption[];
+  selectedId?: string;
+  onSelect?: (id: string) => void;
   onFilter: () => void;
   onSort: () => void;
+  /** Blurred backdrop image. Defaults to the shared court scene. */
+  bgImage?: string;
+  /** Sharp foreground athlete image. Defaults to the shared two-athlete scene. */
+  athleteImage?: string;
 }
 
-/** Shared list-page hero: athlete background + title + filter/sort buttons + date strip. */
-export default function SportPageHeader({ title, days, selectedId, onSelect, onFilter, onSort }: Props) {
+/** Shared list-page hero: athlete background + title + filter/sort buttons + optional date strip. */
+export default function SportPageHeader({
+  title,
+  days,
+  selectedId,
+  onSelect,
+  onFilter,
+  onSort,
+  bgImage = "/images/matches-header-bg.webp",
+  athleteImage = "/images/matches-header-athlete.webp",
+}: Props) {
   return (
     <header className="relative h-[276px] bg-primary rounded-b-[24px] overflow-hidden">
       {/* Blurred court backdrop with blue tint.
@@ -22,7 +36,7 @@ export default function SportPageHeader({ title, days, selectedId, onSelect, onF
           proportional width keeps the baked-in athlete aligned with the cutout. */}
       <div className="absolute inset-0">
         <img
-          src="/images/matches-header-bg.webp"
+          src={bgImage}
           alt=""
           className="absolute top-0 left-0 h-full w-[106.2%] max-w-none object-cover blur-[2px]"
         />
@@ -30,7 +44,7 @@ export default function SportPageHeader({ title, days, selectedId, onSelect, onF
       </div>
 
       {/* Sharp athlete foreground */}
-      <img src="/images/matches-header-athlete.webp" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={athleteImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
 
       {/* Top darkening gradient for contrast */}
       <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
@@ -48,10 +62,12 @@ export default function SportPageHeader({ title, days, selectedId, onSelect, onF
         {title}
       </h1>
 
-      {/* Date strip overlapping the bottom of the hero */}
-      <div className="absolute inset-x-0 bottom-3">
-        <DateSelector days={days} selectedId={selectedId} onSelect={onSelect} />
-      </div>
+      {/* Date strip overlapping the bottom of the hero (omitted when no days) */}
+      {days && (
+        <div className="absolute inset-x-0 bottom-3">
+          <DateSelector days={days} selectedId={selectedId ?? ""} onSelect={onSelect ?? (() => {})} />
+        </div>
+      )}
     </header>
   );
 }

@@ -101,6 +101,38 @@ export interface TournamentListItem {
   entryFee: number;
 }
 
+/** A bottom action on an Activity card. */
+export interface ActivityAction {
+  label: string;
+  variant: "outline" | "filled";
+}
+
+/** One meta line on an Activity card; tone drives its color/weight. */
+export interface ActivityMetaLine {
+  text: string;
+  /** strong = bold ink · muted = secondary · faint = tertiary (renders as muted per gray-ramp rule). */
+  tone: "strong" | "muted" | "faint";
+}
+
+/** View-model for a card on the Activity list. */
+export interface ActivityItem {
+  id: string;
+  image: string;
+  /** Overlay label on the thumbnail, e.g. "در انتظار واریز". */
+  status: string;
+  /** Title parts; two parts render with a vertical separator between them. */
+  title: string[];
+  meta: ActivityMetaLine[];
+  /** One or two bottom actions. */
+  actions: ActivityAction[];
+}
+
+/** A titled group of Activity cards. `heading` omitted for the first (untitled) group. */
+export interface ActivitySection {
+  heading?: { right?: string; left?: string };
+  items: ActivityItem[];
+}
+
 export interface Court {
   id: string;
   name: string;

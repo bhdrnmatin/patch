@@ -51,3 +51,19 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       `DateCell`, `DateSelector` from `matches/_components` to the shared `(main)/_components/`; all
       importers (matches, tournaments, match-details `[id]`) repointed. `PriceTag` + sheets stay in
       matches (feature→feature reuse). CLAUDE.md component-library section updated.
+
+## Activity — audit (2026-06-17)
+### Behavior wiring (post-mock)
+- [ ] ActivityCard actions are placeholder `<button>`s (no onClick/navigation) — wire to the relevant
+      flows (cancel/pay/approve/details) when those exist.
+- [ ] Wire `/activity` into BottomNav (nav has 4 tabs + add; no Activity slot — page shows no active tab).
+### Refactor candidates
+- [x] ActivityCard (Warning): card title `<span>`s → **fixed 2026-06-17**: wrapped in `<h3>`.
+- [x] ActivityCard: `rounded-3xl` → `rounded-group` token — **fixed 2026-06-17**.
+- [x] ActivityButton: filled hover — **fixed 2026-06-17** (`hover:bg-primary-hover` / outline `hover:bg-surface`).
+      `flex-1` layout opinion kept (intended row-fill, inert standalone).
+### Token gaps
+- [x] Token gap (StatusThumb): `w-[91px]`, `text-[10px]` — **accepted as one-offs 2026-06-17** (Figma
+      dimension / DateCell precedent).
+- [x] Token gap (ActivityCard): `border-divider` for the #E9EDF5 card border — **accepted 2026-06-17**
+      (nearest visible token; blessed map's #E9EDF5→surface is too light for a border).

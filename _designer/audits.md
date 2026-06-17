@@ -44,3 +44,7 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-06-16 | **tournaments misc (InfoPair, PosterBadge, TournamentPoster)** | audit+refactor | 0 Critical, 1 Warning, 2 Suggestion | 2 fixed, 1 open, 3 accepted | [details](audits/tournaments-misc.audit.md)
 - 2026-06-16 | **MatchesHeader** | fix | refactored to SportPageHeader wrapper | regression clean | [details](audits/MatchesHeader.audit.md)
 - 2026-06-16 | **StatusBadge** | fix | label map → shared `lib/status.ts` | clean | [details](audits/StatusBadge.audit.md)
+- 2026-06-17 | **ActivityCard** | audit+refactor | 0 Critical, 1 Warning, 3 Suggestion | 2 fixed, 2 open, 2 accepted | [details](audits/ActivityCard.audit.md)
+- 2026-06-17 | **ActivityButton** | audit+refactor | 0 Critical, 0 Warning, 3 Suggestion | 1 fixed, 1 open, 1 systemic | [details](audits/ActivityButton.audit.md)
+- 2026-06-17 | **activity misc (StatusThumb, SectionDivider)** | audit | 0 Critical, 0 Warning, 2 Suggestion | 1 open, 2 accepted | [details](audits/activity-misc.audit.md)
+- 2026-06-17 | **SportPageHeader** | fix | optional date strip + configurable header images (Activity) | regression clean | [details](audits/SportPageHeader.audit.md)

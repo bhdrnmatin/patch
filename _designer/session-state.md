@@ -1,6 +1,30 @@
 # Session State
 
-## Last session — 2026-06-10
+## Session — 2026-06-17
+Built the **Activity** list page (`/activity`) from Figma (`node-id=20176-13603`), then audited it.
+
+- **Components** (`activity/_components/`): `StatusThumb` (91×112 court thumb + status overlay),
+  `ActivityButton` (compact pill, outline/filled), `SectionDivider` (hairline + optional labels),
+  `ActivityCard` (title + 3 meta lines + thumb + 1–2 actions). Page = 3 sections of cards + dividers.
+- **SportPageHeader** extended (3rd consumer): optional date strip (`days?`) + configurable
+  `bgImage`/`athleteImage` (default to matches scene). `/matches` + `/tournaments` unchanged.
+- **Data:** `ActivityItem`/`ActivityAction`/`ActivityMetaLine`/`ActivitySection` + `activitySections` mock.
+- **Header art (user feedback, 2 rounds):** the Figma backdrop bakes the player into the scene, so a
+  plain blurred-bg + cutout ghosted. Fixed by baking ONE image at Figma's exact layer geometry —
+  scene blurred+tinted (right-anchored w-413) with the sharp player (left, object-cover) composited on
+  top, aligned so he covers his blurred self. `public/images/activity-header.webp` (12KB).
+- **Meta alignment (user feedback):** fixed the RTL `items-end` trap (was pinning text left).
+- **QA audit (ds-qa-tw):** 0 Critical, 1 Warning (card title not an `<h3>`), 6 Suggestions. 3 audit
+  files + SportPageHeader v3 note; index + TODO updated.
+- **Refactor pass (ds-qa-tw):** fixed the Warning + 2 suggestions — ActivityCard title → `<h3>`,
+  `rounded-3xl` → `rounded-group`; ActivityButton filled/outline hover states. tsc + lint clean,
+  card renders unchanged. Remaining open are systemic (focus-visible, heading semantics) or accepted.
+
+### Next
+- Wire `/activity` into BottomNav + card actions to real flows.
+- **Commit:** the whole Activity feature is still UNCOMMITTED on `main` (build + header fixes + audit docs).
+
+## Previous session — 2026-06-10
 Desktop-safety + font swap + housekeeping.
 
 - **430px cap everywhere:** all auth pages, `/profile`, profile sub-pages

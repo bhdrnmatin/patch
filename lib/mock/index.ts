@@ -8,9 +8,11 @@ import type {
   TournamentListItem,
   DayOption,
   MatchDetails,
+  ActivitySection,
 } from "@/lib/types";
 
 const AVATAR = "/images/avatar-placeholder.svg";
+const COURT_THUMB = "/images/activity-court.webp";
 
 /** Horizontal date strip in the Matches header (۱۵–۲۱ بهمن). */
 export const matchDays: DayOption[] = [
@@ -186,6 +188,141 @@ export const tournamentList: TournamentListItem[] = Array.from(
     entryFee: 5_250_000,
   }),
 );
+
+/** Sections shown on the Activity list page. */
+export const activitySections: ActivitySection[] = [
+  {
+    items: [
+      {
+        id: "a1",
+        image: COURT_THUMB,
+        status: "در انتظار واریز",
+        title: ["باشگاه انقلاب", "زمین شماره ۲"],
+        meta: [
+          { text: "زمین رزرو شده", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "بدون مسابقه", tone: "faint" },
+        ],
+        actions: [
+          { label: "کنسل کردن", variant: "outline" },
+          { label: "واریز پیش‌پرداخت", variant: "filled" },
+        ],
+      },
+      {
+        id: "a2",
+        image: COURT_THUMB,
+        status: "در انتظار تایید",
+        title: ["درخواست ورود", "سینا عشاقی"],
+        meta: [
+          { text: "زمین رزرو شده", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "مسابقه دوستانه {عنوان مسابقه}", tone: "faint" },
+        ],
+        actions: [
+          { label: "رد کردن بازیکن", variant: "outline" },
+          { label: "تایید بازیکن", variant: "filled" },
+        ],
+      },
+    ],
+  },
+  {
+    heading: { right: "زمین‌ها" },
+    items: [
+      {
+        id: "a3",
+        image: COURT_THUMB,
+        status: "در انتظار تایید",
+        title: ["زمین ۳", "باشگاه انقلاب"],
+        meta: [
+          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "بدون مسابقه", tone: "faint" },
+        ],
+        actions: [
+          { label: "لغو درخواست", variant: "outline" },
+          { label: "مشاهده جزئیات", variant: "filled" },
+        ],
+      },
+      {
+        id: "a4",
+        image: COURT_THUMB,
+        status: "در انتظار پرداخت",
+        title: ["زمین ۳", "باشگاه انقلاب"],
+        meta: [
+          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "بدون مسابقه", tone: "faint" },
+        ],
+        actions: [
+          { label: "لغو رزرو", variant: "outline" },
+          { label: "پرداخت", variant: "filled" },
+        ],
+      },
+      {
+        id: "a5",
+        image: COURT_THUMB,
+        status: "پرداخت شده",
+        title: ["زمین ۳", "باشگاه انقلاب"],
+        meta: [
+          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "بدون مسابقه", tone: "faint" },
+        ],
+        actions: [
+          { label: "لغو رزرو", variant: "outline" },
+          { label: "مشاهده جزئیات", variant: "filled" },
+        ],
+      },
+      {
+        id: "a6",
+        image: COURT_THUMB,
+        status: "لغو شده",
+        title: ["زمین ۳", "باشگاه انقلاب"],
+        meta: [
+          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
+          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "هزینه رزرو به کیف پول شما عودت داده شد", tone: "faint" },
+        ],
+        actions: [{ label: "مشاهده جزئیات لغو", variant: "filled" }],
+      },
+    ],
+  },
+  {
+    heading: { left: "سازنده بازی", right: "مسابقه" },
+    items: [
+      {
+        id: "a7",
+        image: COURT_THUMB,
+        status: "شروع نشده",
+        title: ["عنوان مسابقه"],
+        meta: [
+          { text: "در حال یارگیری: ۲ از ۳", tone: "strong" },
+          { text: "تاریخ شروع: ۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "مسابقه رقابتی {عنوان مسابقه}", tone: "faint" },
+        ],
+        actions: [
+          { label: "مشاهده جزئیات", variant: "outline" },
+          { label: "لغو", variant: "filled" },
+        ],
+      },
+      {
+        id: "a8",
+        image: COURT_THUMB,
+        status: "شروع نشده",
+        title: ["عنوان مسابقه"],
+        meta: [
+          { text: "در حال یارگیری: ۲ از ۳", tone: "strong" },
+          { text: "تاریخ شروع: ۱۴۰۴/۸/۱۶", tone: "muted" },
+          { text: "مسابقه رقابتی {عنوان مسابقه}", tone: "faint" },
+        ],
+        actions: [
+          { label: "مشاهده جزئیات", variant: "outline" },
+          { label: "لغو", variant: "filled" },
+        ],
+      },
+    ],
+  },
+];
 
 export const courts: Court[] = [
   {

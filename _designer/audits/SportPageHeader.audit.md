@@ -32,3 +32,12 @@ tsc clean, `/matches` + `/tournaments` + `/matches/[id]` all 200, header renders
 ### Status
 Open: 0 | Fixed: 1 | Accepted: 1
 
+## v3 — 2026-06-17 | fix
+Extended for the Activity page (3rd consumer): `days`/`selectedId`/`onSelect` made optional (hero
+renders without the date strip when `days` is omitted); added optional `bgImage`/`athleteImage` props
+defaulting to the matches scene. Backward-compatible — `/matches` + `/tournaments` pass the same props
+and are visually unchanged. No new findings.
+
+### Status
+Open: 0 | Fixed: 1 | Accepted: 1
+
