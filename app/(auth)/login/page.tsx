@@ -13,6 +13,9 @@ export default function LoginPage() {
   const router = useRouter();
   const [phone, setPhone] = useState("");
 
+  // Iranian mobile: 11 Persian digits starting with ۰۹ (AuthInput stores Persian digits).
+  const isValidPhone = /^۰۹[۰-۹]{9}$/.test(phone);
+
   const handleNext = () => {
     router.push(`/otp?phone=${encodeURIComponent(phone)}`);
   };
@@ -37,7 +40,7 @@ export default function LoginPage() {
                 numeric
                 maxLength={11}
               />
-              <AuthActions nextLabel="ارسال کد" onNext={handleNext} />
+              <AuthActions nextLabel="ارسال کد" onNext={handleNext} disabled={!isValidPhone} />
             </div>
           </AuthCard>
         </AuthSlide>

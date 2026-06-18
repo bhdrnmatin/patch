@@ -15,6 +15,9 @@ function OtpContent() {
   const phone = params.get("phone") ?? "";
   const [otp, setOtp] = useState("");
 
+  // Field completeness only; the code's correctness is verified by the API.
+  const isComplete = otp.length === 5;
+
   const handleNext = () => {
     router.push("/profile-setup");
   };
@@ -27,7 +30,7 @@ function OtpContent() {
       >
         <div className="flex flex-col gap-4">
           <OtpInput value={otp} onChange={setOtp} />
-          <AuthActions nextLabel="ورود" onNext={handleNext} />
+          <AuthActions nextLabel="ورود" onNext={handleNext} disabled={!isComplete} />
         </div>
       </AuthCard>
     </AuthSlide>
