@@ -86,7 +86,7 @@ function MatchDetailsContent() {
         <ShareCard restriction={m.restriction} />
         <FaqSection faq={m.faq} />
 
-        {role === "creator" && <JoinRequestsSection requests={m.requests} />}
+        {role === "creator" && <JoinRequestsSection requests={m.requests} matchId={id} />}
       </div>
 
       <MatchCtaBar

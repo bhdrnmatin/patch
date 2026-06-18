@@ -17,5 +17,7 @@ export async function getMatchList(): Promise<MatchListItem[]> {
 export async function getMatchDetails(id: string): Promise<MatchDetails> {
   // One mock record for now; the real endpoint will key off `id`.
   void id;
-  return matchDetails;
+  // Clone so mutations to the in-memory mock surface as a new reference on
+  // refetch (React Query's structural sharing skips same-reference results).
+  return structuredClone(matchDetails);
 }
