@@ -16,6 +16,8 @@ export default function ProfileSetupPage() {
   const set = (key: keyof typeof form) => (val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
 
+  const isComplete = Object.values(form).every((v) => v.trim() !== "");
+
   return (
     <div
       className="flex items-center justify-center h-dvh overflow-hidden bg-black"
@@ -38,7 +40,7 @@ export default function ProfileSetupPage() {
                   <AuthInput placeholder="آقا" label="جنسیت" value={form.gender} onChange={set("gender")} showLabel />
                 </div>
               </div>
-              <AuthActions nextLabel="شروع کنیم!" onNext={() => router.push("/assessment")} />
+              <AuthActions nextLabel="شروع کنیم!" onNext={() => router.push("/assessment")} disabled={!isComplete} />
             </div>
           </AuthCard>
         </AuthSlide>

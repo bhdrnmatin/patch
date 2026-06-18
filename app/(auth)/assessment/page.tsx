@@ -110,6 +110,7 @@ export default function AssessmentPage() {
                 nextLabel={current.nextLabel}
                 onNext={handleNext}
                 onBack={step > 0 ? handleBack : undefined}
+                disabled={!answers[step]}
               />
             </div>
           </AuthCard>
