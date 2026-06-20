@@ -110,7 +110,7 @@ const addActions: AddAction[] = [
 const tabs: Tab[] = [
   { href: "/matches", Icon: MatchesIcon, label: "مسابقات", badge: true },
   { href: "/tournaments", Icon: CupIcon, label: "تورنومنت" },
-  { href: "/", Icon: DiscoverIcon, label: "کاوش", badge: true },
+  { href: "/activity", Icon: DiscoverIcon, label: "کاوش", badge: true },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },
 ];
 
