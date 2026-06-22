@@ -11,7 +11,7 @@ leagues, tournaments, and courts. The app is **Persian-language** and
 Prerequisites: **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (Mac / Windows / Linux).
 
 ```bash
-git clone https://github.com/<your-org>/patch.git
+git clone https://github.com/bhdrnmatin/patch.git
 cd patch
 docker compose up --build
 ```
