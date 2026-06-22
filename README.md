@@ -6,6 +6,20 @@ leagues, tournaments, and courts. The app is **Persian-language** and
 
 ## Getting Started
 
+### Option A — Docker (recommended, no Node.js required)
+
+Prerequisites: **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (Mac / Windows / Linux).
+
+```bash
+git clone https://github.com/<your-org>/patch.git
+cd patch
+docker compose up --build
+```
+
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+### Option B — Node.js
+
 Prerequisites: **Node.js 20+** and npm.
 
 ```bash
