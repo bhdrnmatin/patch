@@ -12,7 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build and run
+      - name: Build Docker image
+        run: docker build --no-cache -t app-client:latest .
+
+      - name: Stop old container
+        run: docker stop app-client || true && docker rm app-client || true
+
+      - name: Run new container
         run: |
-          docker compose down
-          docker compose up --build -d
+          docker run -d \
+            --name app-client \
+            --restart always \
+            -p 3002:3000 \
+            app-client:latest
