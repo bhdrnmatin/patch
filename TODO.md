@@ -52,6 +52,22 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       importers (matches, tournaments, match-details `[id]`) repointed. `PriceTag` + sheets stay in
       matches (feature→feature reuse). CLAUDE.md component-library section updated.
 
+## Results entry — audit (2026-07-11)
+### Behavior wiring (post-mock)
+- [ ] "ثبت نهایی نتایج" CTA on `/matches/[id]/results` is cosmetic — persist games/sets when the API exists.
+- [ ] Player identity in results state is the array index into `matchDetails.players` — `MatchPlayer`
+      has no `id`. Switch to real player ids when the API defines them (affects GameCard/PlayerPickerSheet).
+### Refactor candidates (Warnings)
+- [x] ScoreStepper: silent value changes — **fixed 2026-07-11** (`aria-live="polite"`; − hover parity added,
+      floor-disable rejected: dropping focus mid-interaction is worse than a no-op tap).
+- [x] PlayerSlotButton: repeated accessible names — **fixed 2026-07-11** (required `slotLabel` prop).
+- [x] GameCard: set-button context + `rounded-group` + h2 heading — **fixed 2026-07-11**.
+- [x] PlayerPickerSheet: `aria-pressed` on rows — **fixed 2026-07-11**.
+- [x] SectionCard `rounded-3xl` decision — **swept 2026-07-11**: ALL `rounded-3xl` (+ `rounded-t/b-3xl`)
+      replaced with `rounded-group` variants app-wide (SectionCard, FaqSection, ScheduleCard ×3,
+      CourtCard ×2, StoryCard, MatchCtaBar, MatchDetailsHeader). Rule documented in CLAUDE.md:
+      24px radius = `rounded-group`, never raw `rounded-3xl`.
+
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)
 - [ ] ActivityCard actions are placeholder `<button>`s (no onClick/navigation) — wire to the relevant

@@ -8,6 +8,11 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Results] New `/matches/[id]/results` page — the creator of a live match registers game results: any number of 2v2 games, each with player slots (picker sheet disables already-placed players; tapping the current player clears the slot) and any number of sets scored via −/+ steppers; the live-creator CTA "وارد کردن نتیجه" now navigates here (breaking: the placeholder `ResultSheet` was removed)
+- [Results] 4 new components in `app/matches/[id]/results/_components/`: `GameCard`, `PlayerSlotButton`, `ScoreStepper`, `PlayerPickerSheet`; QA pass applied — `aria-live` score announcements, contextual aria-labels on repeated slots/set buttons, `aria-pressed` on picker rows
+- [Mock] `matchDetails.players` are now 6 distinct players (were identical clones — picker was untestable)
+- [Tokens] 24px radius consolidated: every `rounded-3xl` / `rounded-t-3xl` / `rounded-b-3xl` app-wide → `rounded-group` variants (SectionCard, FaqSection, ScheduleCard, CourtCard, StoryCard, MatchCtaBar, MatchDetailsHeader); rule documented in CLAUDE.md — no visual change
+
 - [Tokens] Added neutral-scale tokens to `@theme`: `ink` #00254D, `ink-soft` #253343, `muted` #6783A0, `surface` #F5F7FA, `divider` #E5EAF0, `edge` #D0DDEC — all hardcoded gray hexes across Matches/profile/nav components replaced with token classes (no visual change)
 - [Tokens] StatusBadge green pair, sheet radii, and shadows reviewed and accepted as one-offs (see TODO.md)
 - [BottomNav] Plus button now opens the AddMenu speed dial (Figma 20211:6526): blurred dim backdrop, three glass action rows — ساخت تورنومنت / ساخت مسابقه / رزرو زمین — closing on backdrop tap, Escape, or selection; new `WhistleIcon` / `CourtIcon` inline icons (breaking: plus no longer links to /courts)

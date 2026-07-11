@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import MatchDetailsHeader from "./_components/MatchDetailsHeader";
 import MatchStageCard from "./_components/MatchStageCard";
@@ -16,7 +16,6 @@ import ShareCard from "./_components/ShareCard";
 import FaqSection from "./_components/FaqSection";
 import JoinRequestsSection from "./_components/JoinRequestsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
-import ResultSheet from "./_components/ResultSheet";
 import { getMatchDetails } from "@/lib/data";
 import type { MatchDetailsStatus, ViewerRole } from "../../../lib/types";
 
@@ -53,8 +52,8 @@ function MatchDetailsContent() {
   });
   const stage = STAGE[status];
   const cta = CTA[role][status];
-  const [resultOpen, setResultOpen] = useState(false);
-  const ctaOpensResultSheet = role === "creator" && status === "live";
+  const router = useRouter();
+  const ctaGoesToResults = role === "creator" && status === "live";
 
   // Players grid placement varies by frame: player/live+finished show it right under
   // the stage card; creator/live hides it; everything else shows it after توضیحات.
@@ -92,9 +91,8 @@ function MatchDetailsContent() {
       <MatchCtaBar
         label={cta.label}
         caption={cta.caption}
-        onClick={ctaOpensResultSheet ? () => setResultOpen(true) : undefined}
+        onClick={ctaGoesToResults ? () => router.push(`/matches/${id}/results`) : undefined}
       />
-      <ResultSheet open={resultOpen} onClose={() => setResultOpen(false)} />
     </main>
   );
 }

@@ -1,5 +1,43 @@
 # Session State
 
+## Session — 2026-07-11
+Built the **result-entry** feature (`/matches/[id]/results`) — no Figma; designed from the
+existing system + user decisions (points-per-team steppers, inline game cards), then user
+correction: each game holds **multiple sets** (5+), not one score.
+
+- **Flow:** creator × live CTA "وارد کردن نتیجه" now `router.push`es to the new page. The old
+  `ResultSheet` (a filter-chip placeholder from Figma 20323:8226) was **deleted**; its audit file
+  is marked REMOVED.
+- **Components** (`results/_components/`): `GameCard` (h3 بازی N + 2 team columns of 2 slots +
+  set list + افزودن ست), `PlayerSlotButton` (filled chip / dashed empty), `ScoreStepper`
+  (−/value/+ per team per set), `PlayerPickerSheet` (BottomSheet + rows, used players disabled,
+  tap current = clear slot). Page reuses profile `SubPageLayout` + `MatchCtaBar` (caption counts
+  complete games). State: `GameEntry { teams: [TeamSlots×2], sets: [t1,t2][] }`, players are
+  **indexes** into `matchDetails.players` (no id on `MatchPlayer` — TODO for API era).
+- **Mock:** `matchDetails.players` were 6 identical clones — now 6 distinct names/levels
+  (`detailPlayer()` helper) so the picker demo works.
+- **Verified:** tsc + lint clean; headless-Firefox screenshots at 390px (empty, filled+picker,
+  multi-set). Note: user's own snap Firefox blocks headless — use the raw binary
+  (`/snap/firefox/*/usr/lib/firefox/firefox --headless --profile ~/.ff-headless-tmp`).
+- **QA audit (ds-qa-tw):** 0 Critical, 5 Warning, 4 Suggestion across 4 components + page.
+  5 audit files written; index + TODO.md updated.
+- **Refactor pass (ds-qa-tw):** all 5 Warnings fixed — ScoreStepper `aria-live="polite"` +
+  `hover:bg-edge` (floor-disable REJECTED: drops focus mid-interaction); PlayerSlotButton
+  required `slotLabel` prop (breaking, only consumer updated); GameCard set-button aria-labels
+  gained game context, `rounded-3xl` → `rounded-group`, h3 → h2; PlayerPickerSheet
+  `aria-pressed`. tsc + lint clean, screenshot pixel-identical. Remaining open: set index keys
+  (safe while controlled).
+- **24px-radius sweep (user: "i want consistency"):** ALL `rounded-3xl` + `rounded-t/b-3xl`
+  → `rounded-group` variants, app-wide (7 files: SectionCard, FaqSection, ScheduleCard,
+  CourtCard, StoryCard, MatchCtaBar, MatchDetailsHeader). Corner variants compile in
+  Tailwind v4 (verified via details-page screenshot). Rule added to CLAUDE.md token table:
+  24px radius = `rounded-group`, never raw `rounded-3xl`.
+
+### Next
+- Update STATUS.md + CHANGELOG.md (feature not yet logged) and **commit** — everything is
+  uncommitted on `main`.
+- Wire real submit + player ids when API exists (TODO.md).
+
 ## Session — 2026-06-17
 Built the **Activity** list page (`/activity`) from Figma (`node-id=20176-13603`), then audited it.
 

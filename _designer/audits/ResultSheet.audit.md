@@ -1,5 +1,9 @@
 # ResultSheet — Audit
 
+> **REMOVED 2026-07-11** — the placeholder sheet was replaced by the real result-entry page
+> `/matches/[id]/results` (GameCard / PlayerSlotButton / ScoreStepper / PlayerPickerSheet).
+> The live-creator CTA now navigates there instead of opening this sheet.
+
 ## v1 — 2026-06-10 | audit
 | # | Severity | Finding | Status |
 |---|----------|---------|--------|

@@ -48,3 +48,10 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-06-17 | **ActivityButton** | audit+refactor | 0 Critical, 0 Warning, 3 Suggestion | 1 fixed, 1 open, 1 systemic | [details](audits/ActivityButton.audit.md)
 - 2026-06-17 | **activity misc (StatusThumb, SectionDivider)** | audit | 0 Critical, 0 Warning, 2 Suggestion | 1 open, 2 accepted | [details](audits/activity-misc.audit.md)
 - 2026-06-17 | **SportPageHeader** | fix | optional date strip + configurable header images (Activity) | regression clean | [details](audits/SportPageHeader.audit.md)
+- 2026-07-11 | **ScoreStepper** | audit+refactor | 0 Critical, 1 Warning, 1 Suggestion | 1 fixed, 0 open, 1 systemic | [details](audits/ScoreStepper.audit.md)
+- 2026-07-11 | **PlayerSlotButton** | audit+refactor | 0 Critical, 1 Warning, 0 Suggestion | 1 fixed, 0 open, 2 accepted | [details](audits/PlayerSlotButton.audit.md)
+- 2026-07-11 | **GameCard** | audit+refactor | 0 Critical, 2 Warning, 2 Suggestion | 3 fixed, 1 open, 1 accepted | [details](audits/GameCard.audit.md)
+- 2026-07-11 | **PlayerPickerSheet** | audit+refactor | 0 Critical, 1 Warning, 0 Suggestion | 1 fixed, 0 open, 1 accepted | [details](audits/PlayerPickerSheet.audit.md)
+- 2026-07-11 | **results misc (page)** | audit | 0 Critical, 0 Warning, 1 Suggestion | 1 open, 3 accepted | [details](audits/results-misc.audit.md)
+- 2026-07-11 | **ResultSheet** | removed | placeholder replaced by /matches/[id]/results page | — | [details](audits/ResultSheet.audit.md)
+- 2026-07-11 | **24px-radius sweep (SectionCard, FaqSection, ScheduleCard, CourtCard, StoryCard, MatchCtaBar, MatchDetailsHeader)** | fix | all `rounded-3xl` / `rounded-t-3xl` / `rounded-b-3xl` → `rounded-group` variants | zero visual change, rule in CLAUDE.md | closes GameCard v2 #1 follow-up
