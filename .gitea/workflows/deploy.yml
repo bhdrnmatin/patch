@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Clone repository
         run: |
-          rm -rf app-client
-          git clone --depth 1 --branch main https://git.patchapp.ir/patch/frontend.git app-client
+          rm -rf frontend
+          git clone --depth 1 --branch main https://git.patchapp.ir/patch/frontend.git frontend
 
       - name: Build Docker image
-        run: docker build --no-cache -t frontend:latest ./app-client
+        run: docker build --no-cache -t frontend:latest ./frontend
 
       - name: Deploy
         run: docker compose -f ~/apps/docker-compose.yml up -d --no-deps --force-recreate frontend
