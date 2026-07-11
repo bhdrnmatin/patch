@@ -12,7 +12,7 @@ jobs:
       - name: Clone repository
         run: |
           rm -rf app-client
-          git clone --depth 1 --branch main https://git.patchapp.ir/patch/app-client.git app-client
+          git clone --depth 1 --branch main https://git.patchapp.ir/patch/frontend.git app-client
 
       - name: Build Docker image
         run: docker build --no-cache -t frontend:latest ./app-client
