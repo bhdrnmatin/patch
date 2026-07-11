@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build --no-cache -t app:latest .
+        run: docker build --no-cache -t frontend:latest .
 
       - name: Deploy
-        run: docker compose -f ~/apps/docker-compose.yml up -d --no-deps --force-recreate app
+        run: docker compose -f ~/apps/docker-compose.yml up -d --no-deps --force-recreate frontend
