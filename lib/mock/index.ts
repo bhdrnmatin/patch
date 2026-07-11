@@ -354,7 +354,11 @@ export const courts: Court[] = [
   },
 ];
 
-const mockDetailPlayer = { name: "سینا عشاقی", level: 3, avatar: "/images/avatar-placeholder.svg" };
+const detailPlayer = (name: string, level: number) => ({
+  name,
+  level,
+  avatar: "/images/avatar-placeholder.svg",
+});
 
 const mockJoinRequest = (id: string) => ({
   id,
@@ -378,7 +382,14 @@ export const matchDetails: MatchDetails = {
   timeRange: "۱۴:۰۰ الی ۱۵:۴۵",
   description:
     "مچ دوستانه پَدِل برای بازیکنان سطح میانی؛ عصر جمعه در باشگاه انقلاب تهران. تیمی و پرانرژی. بازی متعادل مناسب سطح متوسط؛ اگر کورت نهایی نشده باشد، با هم رزرو می‌کنیم. یک دور پَدِل منصفانه و پرتحرک؛ سطح میانی، حوالی غروب در زمین سبز. مناسب تمرین و رقابت سبک: سطح متوسط، اواخر هفته — ورودی دوستانه.",
-  players: Array.from({ length: 6 }, () => ({ ...mockDetailPlayer })),
+  players: [
+    detailPlayer("سینا عشاقی", 3),
+    detailPlayer("علی رستمی", 4),
+    detailPlayer("مهدی کریمی", 2),
+    detailPlayer("آرش نادری", 3),
+    detailPlayer("رضا توکلی", 5),
+    detailPlayer("کیان مرادی", 3),
+  ],
   restriction: "بالای لول ۳",
   courtNote: "این مسابقه به صورت آزاد برگذار می‌شود و جایزه‌ای ندارد.",
   teamNote: "تیم کشی در این مسابقه مشخص نشده است.",

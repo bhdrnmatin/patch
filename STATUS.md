@@ -169,6 +169,35 @@ BottomNav doesn't render; the page has its own sticky CTA bar instead.
   (matches icon set), `WhistleIcon`/`CourtIcon`/`MatchesIcon` (exported from
   `BottomNav`), `toPersianDigits`, avatar placeholder.
 
+## Results Entry Flow
+
+Figma: none — designed from the system + user decisions (multi-set 2v2 games, inline cards,
+score steppers). Route `/matches/[id]/results`, reached from the live-match creator CTA
+("وارد کردن نتیجه"). Components live in `app/matches/[id]/results/_components/`.
+
+### Base Components
+- [x] `ScoreStepper` — −/value/+ per team per set, `aria-live` value announcements
+- [x] `PlayerSlotButton` — filled player chip / dashed empty slot; `slotLabel` a11y context
+
+### Compound Components
+- [x] `GameCard` — بازی N: two team columns × 2 player slots + set list + افزودن ست
+- [x] `PlayerPickerSheet` — `BottomSheet` + match players; used players disabled, tap current = clear slot
+
+### Pages
+- [x] `MatchResultsPage` — `app/matches/[id]/results/page.tsx` — client-side `GameEntry[]` state, add/remove games
+
+### Data
+- [x] `GameEntry` / `TeamSlots` / `SetScores` types — exported from `GameCard.tsx` (client state; players are indexes into `matchDetails.players` until the API defines ids)
+- [x] `matchDetails.players` mock — 6 distinct names/levels (was 6 identical clones)
+
+### Reused (not rebuilt)
+- `SubPageLayout` (profile), `MatchCtaBar`, `BottomSheet`, shared icons, `toPersianDigits`.
+
+### Removed
+- `ResultSheet` — the filter-chip placeholder sheet; the live-creator CTA now navigates to this page instead.
+
+---
+
 ## Patterns
 
 | Pattern | Status | Spec | Implementation |
