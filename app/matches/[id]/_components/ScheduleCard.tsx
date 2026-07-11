@@ -7,7 +7,7 @@ interface Props {
 /** Schedule card: big date banner, signup deadline, time range + add-to-calendar. */
 export default function ScheduleCard({ date, deadline, timeRange }: Props) {
   return (
-    <section className="w-full bg-white rounded-3xl p-3 flex flex-col gap-4.5 shadow-card">
+    <section className="w-full bg-white rounded-group p-3 flex flex-col gap-4.5 shadow-card">
       <div className="w-full h-[72px] bg-surface rounded-2xl flex items-center justify-center">
         <span className="text-title font-bold text-primary" dir="rtl">
           {date}
@@ -22,12 +22,12 @@ export default function ScheduleCard({ date, deadline, timeRange }: Props) {
         </span>
       </div>
       <div className="w-full flex gap-2">
-        <div className="flex-1 min-w-0 h-10 bg-surface rounded-3xl flex items-center justify-center text-sm text-ink-soft" dir="rtl">
+        <div className="flex-1 min-w-0 h-10 bg-surface rounded-group flex items-center justify-center text-sm text-ink-soft" dir="rtl">
           {timeRange}
         </div>
         <button
           type="button"
-          className="flex-1 min-w-0 h-10 bg-white border border-primary rounded-3xl flex items-center justify-center text-sm font-semibold text-primary active:opacity-80"
+          className="flex-1 min-w-0 h-10 bg-white border border-primary rounded-group flex items-center justify-center text-sm font-semibold text-primary active:opacity-80"
           dir="rtl"
         >
           اضافه به تقویم

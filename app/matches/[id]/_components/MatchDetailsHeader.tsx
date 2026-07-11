@@ -15,7 +15,7 @@ export default function MatchDetailsHeader({ title, showEdit = true }: Props) {
   const router = useRouter();
 
   return (
-    <header className="relative w-full h-[276px] rounded-b-3xl overflow-hidden bg-primary">
+    <header className="relative w-full h-[276px] rounded-b-group overflow-hidden bg-primary">
       {/* Blurred stadium backdrop behind the athlete cutout, mirrored per Figma.
           Sized relative to the frame (Figma: 502×335 at right -44 in a 390×276 frame)
           so it tracks the foreground athlete at any frame width. */}

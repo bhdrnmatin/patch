@@ -93,7 +93,7 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Light borders, avatar bg | `border-edge` / `bg-edge` | `#D0DDEC` |
 | Button radius | `rounded-pill` | `44px` |
 | Input/card radius | `rounded-card` | `32px` |
-| Radio group radius | `rounded-group` | `24px` |
+| 24px radius — cards, radio groups, header/CTA corners (`rounded-group`, `rounded-t-group`, `rounded-b-group`; never raw `rounded-3xl`) | `rounded-group` | `24px` |
 | Auth card blur | `backdrop-blur-card` | `5px` |
 | Story card blur | `backdrop-blur-story` | `3.5px` |
 | OTP digit size | `text-otp` | `21.5px` |

@@ -9,12 +9,12 @@ interface Props {
 /** اطلاعات زمین card: club name, notice banner, map, and routing button. */
 export default function CourtCard({ club, note }: Props) {
   return (
-    <section className="w-full bg-white rounded-3xl p-3 flex flex-col items-center gap-2 shadow-card">
+    <section className="w-full bg-white rounded-group p-3 flex flex-col items-center gap-2 shadow-card">
       <div className="w-full flex items-center justify-between">
         <button
           type="button"
           aria-label="ویرایش زمین"
-          className="p-2 rounded-3xl bg-surface text-ink-soft active:opacity-70"
+          className="p-2 rounded-group bg-surface text-ink-soft active:opacity-70"
         >
           <EditIcon className="size-4" />
         </button>
