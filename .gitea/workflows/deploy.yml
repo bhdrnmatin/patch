@@ -9,11 +9,13 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Clone repository
+        run: |
+          rm -rf app-client
+          git clone --depth 1 --branch main https://git.patchapp.ir/patch/app-client.git app-client
 
       - name: Build Docker image
-        run: docker build --no-cache -t frontend:latest .
+        run: docker build --no-cache -t frontend:latest ./app-client
 
       - name: Deploy
         run: docker compose -f ~/apps/docker-compose.yml up -d --no-deps --force-recreate frontend
