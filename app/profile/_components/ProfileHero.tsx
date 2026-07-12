@@ -41,12 +41,12 @@ export default function ProfileHero({
   onEditHref = "/profile/edit",
 }: Props) {
   return (
-    <div className="relative h-[276px] bg-primary rounded-bl-[24px] rounded-br-[24px] overflow-hidden">
+    <div className="relative h-[276px] bg-primary rounded-b-group overflow-hidden">
       {/* Blurred court background + blue tint.
           Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
           proportional width keeps the baked-in athlete aligned with the cutout. */}
       {bgSrc && (
-        <div className="absolute inset-0">
+        <div className="brand-media absolute inset-0">
           <img
             src={bgSrc}
             alt=""
@@ -58,11 +58,9 @@ export default function ProfileHero({
 
       {/* Sharp athlete foreground */}
       {athleteSrc && (
-        <img
-          src={athleteSrc}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <div className="brand-media absolute inset-0">
+          <img src={athleteSrc} alt="" className="w-full h-full object-cover" />
+        </div>
       )}
 
       {/* Top darkening gradient for title/button contrast */}
@@ -77,7 +75,7 @@ export default function ProfileHero({
       </Link>
 
       <h1
-        className="absolute right-6 top-20 -translate-y-1/2 text-white text-2xl font-bold leading-8 drop-shadow-[0px_1px_4px_rgba(0,0,0,0.35)]"
+        className="absolute right-6 top-20 -translate-y-1/2 text-white text-2xl font-bold leading-8 drop-shadow-hero"
         dir="rtl"
       >
         پروفایل

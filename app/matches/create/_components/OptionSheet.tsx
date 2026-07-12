@@ -35,7 +35,7 @@ export default function OptionSheet({ open, title, options, value, onSelect, onC
                 }`}
               >
                 {isSelected && <CheckIcon className="size-4 shrink-0 text-primary mr-auto" />}
-                <span className="text-sm font-semibold text-ink-soft" dir="rtl">
+                <span className="text-sm font-bold text-ink-soft" dir="rtl">
                   {option.label}
                 </span>
               </button>

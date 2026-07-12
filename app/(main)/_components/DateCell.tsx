@@ -32,7 +32,7 @@ export default function DateCell({ day, weekday, selected, past, tone = "glass",
       className={`size-[52px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl border ${skin}`}
     >
       <span className="text-sm font-bold leading-none">{toPersianDigits(String(day))}</span>
-      <span className="text-[10px] leading-none">{weekday}</span>
+      <span className="text-tiny leading-none">{weekday}</span>
     </button>
   );
 }

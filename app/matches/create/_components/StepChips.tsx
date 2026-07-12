@@ -29,7 +29,7 @@ export default function StepChips({ labels, current, onJump }: Props) {
             disabled={i > current}
             aria-current={i === current ? "step" : undefined}
             onClick={() => i < current && onJump(i)}
-            className={`h-11 px-4 shrink-0 rounded-full border text-xs font-semibold whitespace-nowrap ${tone}`}
+            className={`h-11 px-4 shrink-0 rounded-full border text-xs font-bold whitespace-nowrap ${tone}`}
           >
             {label}
           </button>

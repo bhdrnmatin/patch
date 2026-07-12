@@ -22,7 +22,7 @@ export default function TextField({ label, value, onChange, placeholder, numeric
 
   return (
     <label className="w-full flex flex-col gap-2">
-      <span className="text-sm font-semibold text-ink-soft text-right" dir="rtl">
+      <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
         {label}
       </span>
       <input

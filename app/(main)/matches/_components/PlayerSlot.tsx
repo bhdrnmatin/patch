@@ -14,8 +14,8 @@ export default function PlayerSlot({ name, level, avatar }: Props) {
         {avatar && <img src={avatar} alt="" className="w-full h-full object-cover" />}
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[12px] font-semibold leading-[11px] text-ink truncate">{name}</span>
-        <span className="text-[11px] leading-none text-muted">
+        <span className="text-xs font-bold leading-none text-ink truncate">{name}</span>
+        <span className="text-xs leading-none text-muted">
           لول {toPersianDigits(String(level))}
         </span>
       </div>

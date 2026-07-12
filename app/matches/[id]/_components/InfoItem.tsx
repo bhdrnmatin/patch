@@ -14,7 +14,7 @@ export default function InfoItem({ icon, label, children }: Props) {
           {label}
         </span>
       </div>
-      <div className="text-sm font-semibold leading-4 text-ink" dir="rtl">
+      <div className="text-sm font-bold leading-4 text-ink" dir="rtl">
         {children}
       </div>
     </div>

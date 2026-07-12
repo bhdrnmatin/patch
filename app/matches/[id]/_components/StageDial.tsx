@@ -28,7 +28,7 @@ export default function StageDial({ current, total }: Props) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-        <span className="text-[10px] leading-none text-ink" dir="rtl">
+        <span className="text-tiny leading-none text-ink" dir="rtl">
           مرحله
         </span>
         <span className="text-sm leading-none text-primary" dir="rtl">

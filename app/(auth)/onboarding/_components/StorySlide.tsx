@@ -26,11 +26,9 @@ export default function StorySlide({
   return (
     <div className="relative w-full h-full bg-slide-bg overflow-hidden rounded-lg">
       {/* Background image */}
-      <img
-        src={backgroundImage}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-      />
+      <div className="brand-media absolute inset-0 pointer-events-none">
+        <img src={backgroundImage} alt="" className="w-full h-full object-cover" />
+      </div>
 
       {/* Top gradient overlay (dark at top, fades out) */}
       <div className="absolute top-0 left-0 right-0 h-[130px] bg-gradient-to-b from-black to-transparent" />

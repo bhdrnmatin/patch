@@ -32,10 +32,9 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       for `#30445B`; chevron swept.
 - [x] Token gap (CourtCard) — **resolved 2026-06-11**: added `--text-display` (32px/56px)
       to `@theme`; club heading uses `text-display`.
-- [ ] Token gap (elevation, REOPENED): the "accepted as one-offs" call from 2026-06-08
-      is stale — match details adds 4 recurring shadow values across 12+ usages
-      (`0 2px 1.5px/5%`, `0 1px 2px/6%`, `0 2px 3px/5%`, `0 1px 4px/5%`) plus MatchCard's
-      deepened `0 8px 24px/12%`. Add `--shadow-card` / `--shadow-chip` elevation tokens.
+- [x] Token gap (elevation, REOPENED) — **done**: `--shadow-card`/`--shadow-pop` landed 2026-06-11;
+      the 2026-07-12 polish pass swept the six remaining one-off shadows and added
+      `--shadow-sheet` + `--drop-shadow-hero` (checkbox was stale).
 - [x] Decision (gray ramp) — **blessed 2026-06-11**: nearest-token mapping is the rule
       (documented in CLAUDE.md Design Tokens); no ramp tokens added.
 
@@ -83,6 +82,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [x] AvailabilityHeatmap `role="grid"` removed + `SWATCH_TONE` legend map — **fixed 2026-07-12**.
 - [x] WizardFooter `aria-busy={pending}` — **fixed 2026-07-12**.
 - [x] SelectField `aria-haspopup="dialog"` — **fixed 2026-07-12**.
+
+## Design polish pass (2026-07-12, branch design/polish-pass)
+- [ ] MatchCtaBar renders destructive actions (لغو مسابقه) in primary blue — consider a
+      `danger` variant now that the token exists (behavior semantics, deliberately not
+      changed in the polish pass).
+- [ ] Sheets unmount on close, so only the entrance animates — add exit animation if the
+      instant close ever feels abrupt on device.
+- [ ] Tournament posters are duotoned in list view (they read as content, not ads); show
+      original posters on the future detail page if brand fidelity matters there.
 
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)

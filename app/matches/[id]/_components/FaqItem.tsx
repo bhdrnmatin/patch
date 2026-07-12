@@ -14,7 +14,7 @@ export default function FaqItem({ question, answer }: Props) {
   const answerId = useId();
 
   return (
-    <div className="w-full bg-white border border-surface rounded-[28px] shadow-card">
+    <div className="w-full bg-white border border-surface rounded-group shadow-card">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}

@@ -70,7 +70,7 @@ export default function ProfilePage() {
         {/* Name + username + meta */}
         <div className="flex flex-col gap-1 items-end w-full">
           <div className="flex flex-col items-end">
-            <span className="text-[22px] font-bold text-ink-soft" dir="rtl">
+            <span className="text-story-title font-bold text-ink-soft" dir="rtl">
               {mockPlayer.name}
             </span>
             <span className="text-xs text-ink-soft">{mockPlayer.username}</span>

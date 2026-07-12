@@ -10,7 +10,7 @@ export default function PlayerChip({ player }: Props) {
   return (
     <div className="bg-white border border-white/15 rounded-2xl pl-3 pr-2 py-2 flex items-center justify-end gap-2 shadow-card">
       <div className="flex flex-col items-end gap-2 min-w-0">
-        <span className="text-xs font-semibold leading-[11px] text-ink-soft truncate" dir="rtl">
+        <span className="text-xs font-bold leading-[11px] text-ink-soft truncate" dir="rtl">
           {player.name}
         </span>
         <span className="text-xs leading-[11px] text-ink-soft/50" dir="rtl">

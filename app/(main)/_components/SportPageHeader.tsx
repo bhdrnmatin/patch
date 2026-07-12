@@ -30,11 +30,11 @@ export default function SportPageHeader({
   athleteImage = "/images/matches-header-athlete.webp",
 }: Props) {
   return (
-    <header className="relative h-[276px] bg-primary rounded-b-[24px] overflow-hidden">
+    <header className="relative h-[276px] bg-primary rounded-b-group overflow-hidden">
       {/* Blurred court backdrop with blue tint.
           Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
           proportional width keeps the baked-in athlete aligned with the cutout. */}
-      <div className="absolute inset-0">
+      <div className="brand-media absolute inset-0">
         <img
           src={bgImage}
           alt=""
@@ -44,7 +44,9 @@ export default function SportPageHeader({
       </div>
 
       {/* Sharp athlete foreground */}
-      <img src={athleteImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="brand-media absolute inset-0">
+        <img src={athleteImage} alt="" className="w-full h-full object-cover" />
+      </div>
 
       {/* Top darkening gradient for contrast */}
       <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
@@ -57,7 +59,7 @@ export default function SportPageHeader({
 
       <h1
         dir="rtl"
-        className="absolute right-6 top-20 -translate-y-1/2 text-white text-2xl font-bold leading-8 drop-shadow-[0px_1px_4px_rgba(0,0,0,0.35)]"
+        className="absolute right-6 top-20 -translate-y-1/2 text-white text-2xl font-bold leading-8 drop-shadow-hero"
       >
         {title}
       </h1>

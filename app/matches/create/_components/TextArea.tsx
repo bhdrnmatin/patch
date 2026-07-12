@@ -11,7 +11,7 @@ interface Props {
 export default function TextArea({ label, value, onChange, placeholder }: Props) {
   return (
     <label className="w-full flex flex-col gap-2">
-      <span className="text-sm font-semibold text-ink-soft text-right" dir="rtl">
+      <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
         {label}
       </span>
       <textarea
