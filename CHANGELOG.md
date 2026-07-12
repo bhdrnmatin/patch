@@ -8,6 +8,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Matches] Sort/Filter sheets now actually work on `/matches` — filter by وضعیت and رده‌بندی, sort by هزینه ورودی (least/most), with an empty-state message; sheets became controlled components (`MatchSort`/`MatchFilter`), and the tournaments/activity pages hold their own sheet state (facets without backing data select but don't narrow yet)
+- [Mock] The three list matches now have distinct titles, statuses, levels, and prices (were identical clones — filtering was undemonstrable)
 - [Create Match] New 6-step wizard at `/matches/create` (مشخصات → مکان → زمان‌بندی → بازیکنان → تنظیمات → اتمام), designed from wireframes with the site design system: step chips + progress ring, per-step validation gating, court search grid or custom address + map, court-availability heatmap (7 days × 4 dayparts, tap to pick the slot), teammate picking with team preview, بله/خیر settings toggles, and a review step composed from the existing match-details cards; "تایید و ثبت" creates the match (mock mutation) and lands on its details page as creator
 - [Create Match] 16 new components in `app/matches/create/_components/`, including the app's first light-theme form primitives (`TextField`, `TextArea`, `SelectField`, `OptionSheet`, `ToggleSetting`); new wizard types/mocks/accessors + `createMatch` in the data layer
 - [BottomNav] AddMenu's "ساخت مسابقه" now opens `/matches/create` (was the matches list)

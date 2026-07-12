@@ -19,8 +19,12 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       revisit an elevation scale only when more layers exist.
 
 ## Matches — behavior wiring (post-mock)
-- [ ] Wire SortSheet selections to actually sort `matchList`.
-- [ ] Wire FilterSheet selections to actually filter `matchList`.
+- [x] Wire SortSheet selections to actually sort `matchList` — **done 2026-07-12**: sheets are
+      controlled (`MatchSort`/`MatchFilter` + exported defaults); /matches sorts by fee and filters
+      by status + level; tournaments/activity pass their own (still-cosmetic) state.
+- [x] Wire FilterSheet selections to actually filter `matchList` — **done 2026-07-12** (see above).
+- [ ] Sort by مسافت/تاریخ and filter by مسافت/تاریخ/نوع select but don't narrow — `MatchListItem`
+      has no backing fields; wire when the API adds them. Same for tournaments/activity lists.
 - [ ] MatchCard: consider `<ul>/<li>` list semantics + `<h2>` heading order.
 
 ## Token gaps — Match Details audit (2026-06-10)

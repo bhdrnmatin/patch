@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { toPersianDigits } from "@/lib/persian";
 import BottomSheet from "./BottomSheet";
 import FilterSection, { type ChipOption } from "./FilterSection";
@@ -29,36 +28,45 @@ const TYPE: ChipOption[] = [
   { id: "friendly", label: "دوستانه" },
 ];
 
+/** Multi-select per facet; empty array = facet not filtering. */
+export interface MatchFilter {
+  status: string[];
+  levels: string[];
+  distance: string[];
+  date: string[];
+  type: string[];
+}
+
+export const DEFAULT_MATCH_FILTER: MatchFilter = {
+  status: [],
+  levels: [],
+  distance: [],
+  date: [],
+  type: [],
+};
+
 interface Props {
   open: boolean;
   onClose: () => void;
+  value: MatchFilter;
+  onChange: (value: MatchFilter) => void;
 }
 
 /** Filter bottom-sheet: multi-select chips per facet. */
-export default function FilterSheet({ open, onClose }: Props) {
-  const [status, setStatus] = useState<string[]>(["active"]);
-  const [levels, setLevels] = useState<string[]>([]);
-  const [distance, setDistance] = useState<string[]>([]);
-  const [date, setDate] = useState<string[]>([]);
-  const [type, setType] = useState<string[]>(["competitive"]);
-
-  const toggle =
-    (setter: React.Dispatch<React.SetStateAction<string[]>>) => (id: string) =>
-      setter((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-
-  const clearAll = () => {
-    setStatus([]);
-    setLevels([]);
-    setDistance([]);
-    setDate([]);
-    setType([]);
+export default function FilterSheet({ open, onClose, value, onChange }: Props) {
+  const toggle = (key: keyof MatchFilter) => (id: string) => {
+    const current = value[key];
+    onChange({
+      ...value,
+      [key]: current.includes(id) ? current.filter((x) => x !== id) : [...current, id],
+    });
   };
 
   const footer = (
     <>
       <button
         type="button"
-        onClick={clearAll}
+        onClick={() => onChange(DEFAULT_MATCH_FILTER)}
         className="flex-1 min-w-0 h-10 rounded-full bg-black/10 border-[1.5px] border-white/15 text-ink-soft font-bold text-sm active:opacity-80"
       >
         حذف فیلتر
@@ -75,11 +83,11 @@ export default function FilterSheet({ open, onClose }: Props) {
 
   return (
     <BottomSheet open={open} onClose={onClose} title="فیلتر" icon={<FilterSearchIcon className="size-4" />} footer={footer}>
-      <FilterSection label="وضعیت" options={STATUS} value={status} onChange={toggle(setStatus)} />
-      <FilterSection label="رده‌بندی" options={LEVELS} value={levels} onChange={toggle(setLevels)} />
-      <FilterSection label="مسافت" options={DISTANCE} value={distance} onChange={toggle(setDistance)} />
-      <FilterSection label="تاریخ" options={DATE} value={date} onChange={toggle(setDate)} />
-      <FilterSection label="نوع مسابقه" options={TYPE} value={type} onChange={toggle(setType)} />
+      <FilterSection label="وضعیت" options={STATUS} value={value.status} onChange={toggle("status")} />
+      <FilterSection label="رده‌بندی" options={LEVELS} value={value.levels} onChange={toggle("levels")} />
+      <FilterSection label="مسافت" options={DISTANCE} value={value.distance} onChange={toggle("distance")} />
+      <FilterSection label="تاریخ" options={DATE} value={value.date} onChange={toggle("date")} />
+      <FilterSection label="نوع مسابقه" options={TYPE} value={value.type} onChange={toggle("type")} />
     </BottomSheet>
   );
 }

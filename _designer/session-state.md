@@ -29,9 +29,20 @@ month sheet instead of date wheel; heatmap built; map static/cosmetic). Plan in
   WizardFooter `aria-busy`; SelectField `aria-haspopup="dialog"`. tsc + lint clean, chips
   screenshot-verified. Audit files → v2, index + TODO.md updated.
 
+- **Committed + pushed:** wizard merged as `616eb1b`, pushed with the results work (`0206fb8..616eb1b`).
+- **Colleague review (oshaghisina/Patch):** fetched their fork (one commit `ca4f50c`: courts+booking,
+  tournament details, recruiting, faithful-wireframe wizard at /matches/new, reworked ResultSheet,
+  leaflet+jalaali deps). Ran side-by-side in a worktree on :3001; user REJECTED ("lots of problems").
+  Worktree + remote removed. NOTE: `patchapp` remote has a plaintext password in .git/config — flagged.
+- **Sort/Filter wired (/matches):** SortSheet/FilterSheet are now controlled (`MatchSort`/`MatchFilter`
+  + exported DEFAULTs); page filters by status+levels, sorts by fee, empty-state message. Tournaments +
+  activity pages (other sheet consumers) hold their own still-cosmetic state. Mock matchList
+  diversified (distinct titles/statuses/levels/prices). Facets without backing fields stay inert
+  (TODO.md). Verified via temp-default screenshot; tsc+lint clean. UNCOMMITTED.
+
 ### Next
-- STATUS.md + CHANGELOG.md entries, then **commit** (everything uncommitted on `main`).
-- Post-mock wiring in TODO.md: map picker, per-id storage, player ids.
+- Commit the sort/filter wiring (+ optional ds-qa-tw pass on the changed sheets).
+- Post-mock wiring in TODO.md: map picker, per-id storage, player ids, remaining facets.
 
 ## Session — 2026-07-11
 Built the **result-entry** feature (`/matches/[id]/results`) — no Figma; designed from the
