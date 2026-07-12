@@ -17,3 +17,12 @@ Open: 2 | Fixed: 0 | Accepted: 0
 
 ### Status
 Open: 1 | Fixed: 1 | Accepted: 0
+
+## v3 — 2026-07-12 | fix
+`deadline` made optional — the مهلت یارگیری row renders only when provided. Needed by the
+create-wizard review step (collects no deadline); the match-details caller passes it as before.
+
+Regression check: details page renders unchanged (deadline still shown there).
+
+### Status
+Open: 0 | Fixed: 1 | Accepted: 0

@@ -8,3 +8,14 @@
 
 ### Status
 Open: 0 | Fixed: 0 | Accepted: 1
+
+## v2 — 2026-07-12 | fix
+Added optional `tone?: "glass" | "light"` (default glass — existing headers pixel-identical).
+Light variant for bg-surface pages: selected `bg-primary text-white`, past `bg-surface text-muted`,
+default `bg-white border-edge` — fixes invisible selected state outside hero imagery (flagged risk
+in the create-wizard plan; first consumer: /matches/create step ۳).
+
+Regression check against v1: aria-pressed, native button, tokens still clean; glass tones untouched.
+
+### Status
+Open: 0 | Fixed: 0 | Accepted: 1

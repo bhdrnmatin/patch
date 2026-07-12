@@ -1,5 +1,38 @@
 # Session State
 
+## Session — 2026-07-12
+Built the **create-match wizard** (`/matches/create`) from two Figma WIREFRAMES (19946-34262 long
+form, 19946-34346 review) — no styled design; translated into the system per user decisions:
+6-step wizard (مشخصات→مکان→زمان‌بندی→بازیکنان→تنظیمات→اتمام) + simplified widgets (day strip +
+month sheet instead of date wheel; heatmap built; map static/cosmetic). Plan in
+`~/.claude/plans/we-want-to-work-smooth-barto.md`.
+
+- **16 new components** in `app/matches/create/_components/` — first LIGHT-theme form primitives
+  (TextField/TextArea/SelectField/OptionSheet/ToggleSetting), chrome (WizardHeader+StageDial reuse,
+  StepChips, WizardFooter), 6 step components, AvailabilityHeatmap (7×4, free/half/blocked),
+  TeamPreview, ReviewPlayers. Review step reuses DescriptionCard/ScheduleCard/CourtCard/InfoBanner.
+- **Data:** `CreateMatchDraft`/`CourtOption`/`SlotAvailability`/`MonthOption`/`Daypart`/`ToggleSetting<T>`
+  types; mocks `courtOptions`/`courtAvailability`/`wizardMonths`/`pickablePlayers`; accessors +
+  `createMatch` mutation (unshifts into matchList, returns id → redirect to details as creator).
+- **Shared tweaks (backward compatible):** ScheduleCard `deadline?`; DateCell/DateSelector
+  `tone="light"` (glass selected-state was invisible on bg-surface — screenshots confirmed fix).
+- **AddMenu rewired:** ساخت مسابقه → /matches/create.
+- **Verified:** tsc+lint clean; all 6 steps screenshot-verified at 390px via temp `?demo=N` seed
+  (reverted). Gating, RTL, chips, heatmap states all correct.
+- **QA audit (ds-qa-tw, audit mode):** 0 Critical, 3 Warning, 3 Suggestion — StepChips 36px touch
+  target, heatmap invalid `role="grid"`, footer missing `aria-busy`; SelectField aria-haspopup,
+  current-chip keyboard access, legend-swatch fragility. 4 new audit files + 3 fix entries
+  (DateCell/DateSelector/ScheduleCard); index + TODO.md updated.
+
+- **Refactor pass (ds-qa-tw):** all 6 findings fixed — StepChips `h-11` + current chip enabled
+  no-op; heatmap `role="grid"` removed (cells self-labeled) + `SWATCH_TONE` legend map;
+  WizardFooter `aria-busy`; SelectField `aria-haspopup="dialog"`. tsc + lint clean, chips
+  screenshot-verified. Audit files → v2, index + TODO.md updated.
+
+### Next
+- STATUS.md + CHANGELOG.md entries, then **commit** (everything uncommitted on `main`).
+- Post-mock wiring in TODO.md: map picker, per-id storage, player ids.
+
 ## Session — 2026-07-11
 Built the **result-entry** feature (`/matches/[id]/results`) — no Figma; designed from the
 existing system + user decisions (points-per-team steppers, inline game cards), then user

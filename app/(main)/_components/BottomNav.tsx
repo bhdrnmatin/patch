@@ -103,7 +103,7 @@ type AddAction = {
 
 const addActions: AddAction[] = [
   { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت" },
-  { href: "/matches", Icon: MatchesIcon, label: "ساخت مسابقه" },
+  { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مسابقه" },
   { href: "/courts", Icon: CourtIcon, label: "رزرو زمین" },
 ];
 
