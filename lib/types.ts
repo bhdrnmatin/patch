@@ -161,6 +161,61 @@ export interface FaqEntry {
   answer: string;
 }
 
+/** Create-match wizard (/matches/create) */
+export interface CourtOption {
+  id: string;
+  /** Pre-formatted Persian, e.g. "زمین ۳". */
+  name: string;
+  club: string;
+}
+
+export type SlotAvailability = "free" | "half" | "blocked";
+
+export interface MonthOption {
+  id: string;
+  /** e.g. "بهمن ۱۴۰۴". */
+  label: string;
+}
+
+export type Daypart = "morning" | "noon" | "evening" | "night";
+
+/** A بله/خیر setting with a dependent value; null = unanswered. */
+export interface ToggleSetting<T> {
+  enabled: boolean | null;
+  value: T | null;
+}
+
+/** Draft state collected across the 6 wizard steps. */
+export interface CreateMatchDraft {
+  // ۱ مشخصات
+  format: "americano" | "friendly" | "competitive" | null;
+  title: string;
+  description: string;
+  // ۲ مکان
+  customCourt: boolean | null;
+  /** Set when customCourt === false. */
+  courtId: string | null;
+  courtSearch: string;
+  /** Set when customCourt === true. */
+  address: string;
+  // ۳ زمان‌بندی
+  monthId: string;
+  dayId: string | null;
+  daypart: Daypart | null;
+  // ۴ بازیکنان
+  myRole: "captain" | "player" | null;
+  /** Indexes into the pickable-players list; null = empty slot. */
+  teammates: [number | null, number | null, number | null];
+  // ۵ تنظیمات
+  invite: "public" | "private" | "invite-only" | null;
+  minLevel: ToggleSetting<number>;
+  maxLevel: ToggleSetting<number>;
+  gender: ToggleSetting<"male" | "female" | "mixed">;
+  /** Toman. */
+  entryFee: ToggleSetting<number>;
+  autoApprove: boolean | null;
+}
+
 /** View-model for the Match Details page. */
 export interface MatchDetails {
   id: string;

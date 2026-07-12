@@ -8,6 +8,12 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Create Match] New 6-step wizard at `/matches/create` (مشخصات → مکان → زمان‌بندی → بازیکنان → تنظیمات → اتمام), designed from wireframes with the site design system: step chips + progress ring, per-step validation gating, court search grid or custom address + map, court-availability heatmap (7 days × 4 dayparts, tap to pick the slot), teammate picking with team preview, بله/خیر settings toggles, and a review step composed from the existing match-details cards; "تایید و ثبت" creates the match (mock mutation) and lands on its details page as creator
+- [Create Match] 16 new components in `app/matches/create/_components/`, including the app's first light-theme form primitives (`TextField`, `TextArea`, `SelectField`, `OptionSheet`, `ToggleSetting`); new wizard types/mocks/accessors + `createMatch` in the data layer
+- [BottomNav] AddMenu's "ساخت مسابقه" now opens `/matches/create` (was the matches list)
+- [ScheduleCard] `deadline` prop now optional — the مهلت یارگیری row hides when absent
+- [DateCell/DateSelector] New `tone="light"` variant for bg-surface pages (selected day renders solid primary); default glass rendering unchanged
+
 - [Results] New `/matches/[id]/results` page — the creator of a live match registers game results: any number of 2v2 games, each with player slots (picker sheet disables already-placed players; tapping the current player clears the slot) and any number of sets scored via −/+ steppers; the live-creator CTA "وارد کردن نتیجه" now navigates here (breaking: the placeholder `ResultSheet` was removed)
 - [Results] 4 new components in `app/matches/[id]/results/_components/`: `GameCard`, `PlayerSlotButton`, `ScoreStepper`, `PlayerPickerSheet`; QA pass applied — `aria-live` score announcements, contextual aria-labels on repeated slots/set buttons, `aria-pressed` on picker rows
 - [Mock] `matchDetails.players` are now 6 distinct players (were identical clones — picker was untestable)

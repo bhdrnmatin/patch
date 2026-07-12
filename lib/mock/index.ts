@@ -9,6 +9,10 @@ import type {
   DayOption,
   MatchDetails,
   ActivitySection,
+  CourtOption,
+  SlotAvailability,
+  MonthOption,
+  MatchPlayer,
 } from "@/lib/types";
 
 const AVATAR = "/images/avatar-placeholder.svg";
@@ -417,3 +421,28 @@ export const matchDetails: MatchDetails = {
   ],
   requests: ["r1", "r2", "r3", "r4"].map(mockJoinRequest),
 };
+
+/** Create-match wizard (/matches/create) */
+
+export const courtOptions: CourtOption[] = ["۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸"].map(
+  (n, i) => ({ id: `c${i + 1}`, name: `زمین ${n}`, club: "باشگاه انقلاب" }),
+);
+
+/** Availability per matchDays id — [morning, noon, evening, night]; past days fully blocked. */
+export const courtAvailability: Record<string, SlotAvailability[]> = {
+  d15: ["blocked", "blocked", "blocked", "blocked"],
+  d16: ["blocked", "blocked", "blocked", "blocked"],
+  d17: ["free", "half", "blocked", "free"],
+  d18: ["free", "free", "half", "blocked"],
+  d19: ["half", "blocked", "free", "free"],
+  d20: ["blocked", "half", "half", "free"],
+  d21: ["free", "free", "free", "half"],
+};
+
+export const wizardMonths: MonthOption[] = [
+  { id: "bahman", label: "بهمن ۱۴۰۴" },
+  { id: "esfand", label: "اسفند ۱۴۰۴" },
+];
+
+/** Players the creator can pre-fill into teams — excludes the current user. */
+export const pickablePlayers: MatchPlayer[] = matchDetails.players.slice(1);

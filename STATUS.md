@@ -198,6 +198,47 @@ score steppers). Route `/matches/[id]/results`, reached from the live-match crea
 
 ---
 
+## Create Match Wizard
+
+Figma: two WIREFRAMES only (19946-34262 long form, 19946-34346 review) — styled from the design
+system, not the wireframe. Route `/matches/create` (no BottomNav), reached from the AddMenu's
+"ساخت مسابقه". 6 steps: مشخصات → مکان → زمان‌بندی → بازیکنان → تنظیمات → اتمام.
+Components live in `app/matches/create/_components/`.
+
+### Base Components (first light-theme form primitives)
+- [x] `TextField` — light single-line input, `numeric?` → Persian digits
+- [x] `TextArea` — light multiline input
+- [x] `SelectField` — select trigger (chevron + value), `aria-haspopup="dialog"`, opens a sheet
+- [x] `OptionSheet` — generic pick-one list in `BottomSheet`
+- [x] `ToggleSetting` — white card: بله/خیر chips + conditional dependent control
+
+### Compound Components
+- [x] `WizardHeader` — × close + title/step subtitle + `StageDial` ring
+- [x] `StepChips` — RTL step strip; past steps jump back, current keyboard-reachable
+- [x] `WizardFooter` — fixed قبلی/بعدی bar, gated advance, `aria-busy` submit
+- [x] `AvailabilityHeatmap` — 7 days × 4 dayparts, free/half/blocked states + legend, tap-to-pick
+- [x] `TeamPreview` — 2×2 team grid with "تور" divider
+- [x] `ReviewPlayers` — اعضا list with کاپیتان/یار role tags
+- [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepSettings` / `StepReview`
+
+### Pages
+- [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator)
+
+### Data
+- [x] `CreateMatchDraft` / `CourtOption` / `SlotAvailability` / `MonthOption` / `Daypart` / `ToggleSetting<T>` — `lib/types.ts`
+- [x] `courtOptions` / `courtAvailability` / `wizardMonths` / `pickablePlayers` mocks + accessors
+- [x] `createMatch` mutation — `lib/data/mutations.ts` (unshifts into `matchList`, returns id)
+
+### Reused (not rebuilt)
+- `StageDial`, `BottomSheet`, `SelectChip`/`FilterSection`, `PlayerPickerSheet`, `DateSelector`/`DateCell`,
+  `DescriptionCard`/`ScheduleCard`/`CourtCard`/`InfoBanner` (review step), icons, `toPersianDigits`.
+
+### Shared components extended (backward compatible)
+- `ScheduleCard` — `deadline?` now optional
+- `DateCell`/`DateSelector` — `tone="light"` variant for bg-surface pages
+
+---
+
 ## Patterns
 
 | Pattern | Status | Spec | Implementation |

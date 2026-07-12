@@ -1,6 +1,7 @@
 interface Props {
   date: string;
-  deadline: string;
+  /** Signup deadline; omitted → the مهلت یارگیری row is hidden. */
+  deadline?: string;
   timeRange: string;
 }
 
@@ -13,14 +14,16 @@ export default function ScheduleCard({ date, deadline, timeRange }: Props) {
           {date}
         </span>
       </div>
-      <div className="w-full flex items-center justify-between">
-        <span className="text-base leading-4 text-ink-soft" dir="rtl">
-          {deadline}
-        </span>
-        <span className="text-sm leading-4 text-muted" dir="rtl">
-          مهلت یارگیری
-        </span>
-      </div>
+      {deadline && (
+        <div className="w-full flex items-center justify-between">
+          <span className="text-base leading-4 text-ink-soft" dir="rtl">
+            {deadline}
+          </span>
+          <span className="text-sm leading-4 text-muted" dir="rtl">
+            مهلت یارگیری
+          </span>
+        </div>
+      )}
       <div className="w-full flex gap-2">
         <div className="flex-1 min-w-0 h-10 bg-surface rounded-group flex items-center justify-center text-sm text-ink-soft" dir="rtl">
           {timeRange}

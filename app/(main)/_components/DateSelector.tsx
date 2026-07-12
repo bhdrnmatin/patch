@@ -4,11 +4,13 @@ import DateCell from "./DateCell";
 interface Props {
   days: DayOption[];
   selectedId: string;
+  /** Passed through to each DateCell; light = on bg-surface pages. */
+  tone?: "glass" | "light";
   onSelect: (id: string) => void;
 }
 
 /** Horizontally scrollable RTL row of day cells. */
-export default function DateSelector({ days, selectedId, onSelect }: Props) {
+export default function DateSelector({ days, selectedId, tone, onSelect }: Props) {
   return (
     <div
       dir="rtl"
@@ -20,6 +22,7 @@ export default function DateSelector({ days, selectedId, onSelect }: Props) {
           day={d.day}
           weekday={d.weekday}
           past={d.past}
+          tone={tone}
           selected={d.id === selectedId}
           onClick={() => onSelect(d.id)}
         />

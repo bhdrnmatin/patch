@@ -68,6 +68,18 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       CourtCard ×2, StoryCard, MatchCtaBar, MatchDetailsHeader). Rule documented in CLAUDE.md:
       24px radius = `rounded-group`, never raw `rounded-3xl`.
 
+## Create match — audit (2026-07-12)
+### Behavior wiring (post-mock)
+- [ ] "انتخاب روی نقشه" (StepLocation) is a dead button — wire to a real map picker when a maps SDK exists.
+- [ ] createMatch stores only a MatchListItem; the details page still renders the shared mock for any id —
+      per-id match storage when the API lands.
+- [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
+### Refactor candidates
+- [x] StepChips 44px chips + keyboard-reachable current chip — **fixed 2026-07-12**.
+- [x] AvailabilityHeatmap `role="grid"` removed + `SWATCH_TONE` legend map — **fixed 2026-07-12**.
+- [x] WizardFooter `aria-busy={pending}` — **fixed 2026-07-12**.
+- [x] SelectField `aria-haspopup="dialog"` — **fixed 2026-07-12**.
+
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)
 - [ ] ActivityCard actions are placeholder `<button>`s (no onClick/navigation) — wire to the relevant

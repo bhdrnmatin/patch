@@ -55,3 +55,9 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-07-11 | **results misc (page)** | audit | 0 Critical, 0 Warning, 1 Suggestion | 1 open, 3 accepted | [details](audits/results-misc.audit.md)
 - 2026-07-11 | **ResultSheet** | removed | placeholder replaced by /matches/[id]/results page | — | [details](audits/ResultSheet.audit.md)
 - 2026-07-11 | **24px-radius sweep (SectionCard, FaqSection, ScheduleCard, CourtCard, StoryCard, MatchCtaBar, MatchDetailsHeader)** | fix | all `rounded-3xl` / `rounded-t-3xl` / `rounded-b-3xl` → `rounded-group` variants | zero visual change, rule in CLAUDE.md | closes GameCard v2 #1 follow-up
+- 2026-07-12 | **create form primitives (TextField, TextArea, SelectField, OptionSheet, ToggleSetting)** | audit+refactor | 0 Critical, 0 Warning, 1 Suggestion | 1 fixed, 0 open, 1 systemic | [details](audits/create-form-primitives.audit.md)
+- 2026-07-12 | **create wizard chrome (WizardHeader, StepChips, WizardFooter)** | audit+refactor | 0 Critical, 2 Warning, 1 Suggestion | 3 fixed, 0 open | [details](audits/create-wizard-chrome.audit.md)
+- 2026-07-12 | **AvailabilityHeatmap** | audit+refactor | 0 Critical, 1 Warning, 1 Suggestion | 2 fixed, 0 open, 2 accepted | [details](audits/AvailabilityHeatmap.audit.md)
+- 2026-07-12 | **create misc (steps, TeamPreview, ReviewPlayers, page)** | audit | 0 Critical, 0 Warning, 0 Suggestion | 4 accepted | [details](audits/create-misc.audit.md)
+- 2026-07-12 | **DateCell / DateSelector** | fix | optional `tone="light"` variant for bg-surface pages | regression clean | [details](audits/DateCell.audit.md)
+- 2026-07-12 | **ScheduleCard** | fix | `deadline` now optional (create-wizard review) | regression clean | [details](audits/ScheduleCard.audit.md)
