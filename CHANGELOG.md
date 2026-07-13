@@ -8,9 +8,7 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
-- [Design polish] App-wide Stripe-inspired refinement pass on `design/polish-pass` (audit + plan in `_designer/polish-pass.md`, before/after screenshots of all 18 routes):
-  - [Imagery] New "night match" art direction — every photo/illustration (auth backgrounds, onboarding, list-page heroes, match-details hero, profile hero, promo athlete, tournament posters, activity thumbs) is pulled into the navy/brand-blue world by a shared `.brand-media` wrapper (desaturate + colorize toward brand hue); the court map is desaturated. Fixes the clashing purple/pink/green AI art styles
-  - [Color] Solid `bg-primary` is now reserved for the screen's primary action; info banners, section icon circles, match-card price rows, the active status badge, مسیریابی, and the score-stepper `+` demoted to `bg-primary/10 text-primary` tints — visual hierarchy on match details went from six competing blue blocks to one CTA
+- [Design polish] Consistency pass on `design/polish-pass` (audit + plan in `_designer/polish-pass.md`; the color-discipline and imagery-duotone phases were built, reviewed, and rejected by the user — solid-blue usage and original imagery restored):
   - [Motion] Bottom sheets and the AddMenu now animate in (slide-up panel + fading backdrop, `prefers-reduced-motion` respected); all buttons/links ease their pressed states; keyboard focus shows a visible primary outline
   - [Tokens] New: `success`/`success-soft`/`success-deep` + `danger` status colors (StatusBadge, JoinRequestRow, BottomNav dot), `rounded-sheet` 40px, `shadow-sheet`, `drop-shadow-hero`, `text-tiny` 10px. Swept the last hardcoded hexes (`#445A74` ×13 etc.), 6 one-off shadows, 14 arbitrary radii, and one-off text sizes to token classes
   - [Typography] `font-medium`/`font-semibold` removed app-wide — Yekan Bakh only ships 400/700, so those classes rendered synthesized fakes; hierarchy now uses honest `font-bold`/regular

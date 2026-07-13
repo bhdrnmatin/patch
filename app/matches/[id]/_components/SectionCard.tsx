@@ -13,7 +13,7 @@ export default function SectionCard({ title, children }: Props) {
         <h2 className="text-lg font-bold text-ink leading-6" dir="rtl">
           {title}
         </h2>
-        <span className="size-8 shrink-0 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+        <span className="size-8 shrink-0 flex items-center justify-center rounded-full bg-primary text-white">
           <InfoIcon className="size-6" />
         </span>
       </div>

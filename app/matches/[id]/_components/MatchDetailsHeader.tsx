@@ -19,7 +19,7 @@ export default function MatchDetailsHeader({ title, showEdit = true }: Props) {
       {/* Blurred stadium backdrop behind the athlete cutout, mirrored per Figma.
           Sized relative to the frame (Figma: 502×335 at right -44 in a 390×276 frame)
           so it tracks the foreground athlete at any frame width. */}
-      <div className="brand-media absolute top-0 right-[-11.3%] w-[128.7%] h-[121.4%]">
+      <div className="absolute top-0 right-[-11.3%] w-[128.7%] h-[121.4%]">
         <img
           src="/images/match-details-hero-bg.webp"
           alt=""
@@ -27,13 +27,11 @@ export default function MatchDetailsHeader({ title, showEdit = true }: Props) {
         />
         <div className="absolute inset-0 bg-primary/55" />
       </div>
-      <div className="brand-media absolute inset-0">
-        <img
-          src="/images/match-details-hero.webp"
-          alt=""
-          className="size-full object-cover"
-        />
-      </div>
+      <img
+        src="/images/match-details-hero.webp"
+        alt=""
+        className="absolute inset-0 size-full object-cover"
+      />
       <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
       <div className="absolute left-6 top-14">
         <IconButton icon={<ArrowLeftIcon />} label="برگشت" onClick={() => router.back()} />

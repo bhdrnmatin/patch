@@ -62,15 +62,6 @@ body {
   font-family: var(--font-yekan-bakh), Arial, Helvetica, sans-serif;
 }
 
-/* Brand imagery treatment ("night match" art direction): wraps any photo or
-   illustration and pulls it into the navy/brand-blue world — slight desaturation,
-   then a colorize pass toward the brand hue. Monochrome overlays (black scrims,
-   white text) inside the wrapper keep their appearance under the color blend. */
-/* The wrapper must also carry a positioning class (relative/absolute). */
-.brand-media {
-  isolation: isolate;
-}
-
 /* Motion: pressed states ease instead of snapping; keyboard focus is visible. */
 @layer base {
   button,
@@ -123,16 +114,4 @@ body {
   .animate-fade-in {
     animation: none;
   }
-}
-.brand-media > img {
-  filter: saturate(0.72);
-}
-.brand-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #2f7fc2;
-  mix-blend-mode: color;
-  opacity: 0.62;
-  pointer-events: none;
 }

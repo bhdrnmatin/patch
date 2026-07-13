@@ -1,5 +1,12 @@
 # Session State
 
+## Session — 2026-07-13: polish-pass review — P2 + P3 REJECTED and reverted
+User kept P1 (tokens) + P4 (motion) but rejected P2 (tint demotions) and P3 (navy
+duotone imagery): solid `bg-primary` fills and the original untreated imagery ARE the
+intended look. All P2/P3 changes reverted (components + globals.css `.brand-media`
+removed); the invisible font-weight sweep (medium/semibold → 400/700) was kept.
+Rule recorded in CLAUDE.md ("Solid blue is the brand look") — don't redo these.
+
 ## Session — 2026-07-12 (later): design polish pass — branch `design/polish-pass`
 User asked for an app-wide design-consistency + aesthetic pass ("act as a pro UI/UX
 designer"). Approved direction: **Stripe-inspired refinement**, keep the palette, navy tint

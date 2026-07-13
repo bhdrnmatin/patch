@@ -28,7 +28,7 @@ export default function ScoreStepper({ label, value, onChange }: Props) {
         type="button"
         onClick={() => onChange(Math.min(99, value + 1))}
         aria-label={`زیاد کردن امتیاز ${label}`}
-        className="size-11 shrink-0 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/15 text-primary text-xl font-bold active:opacity-80"
+        className="size-11 shrink-0 flex items-center justify-center rounded-full bg-primary hover:bg-primary-hover text-white text-xl font-bold active:opacity-80"
       >
         +
       </button>

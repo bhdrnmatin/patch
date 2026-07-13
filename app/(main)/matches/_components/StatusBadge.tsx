@@ -2,7 +2,7 @@ import type { MatchStatus } from "@/lib/types";
 import { statusLabels } from "@/lib/status";
 
 const TONES: Record<MatchStatus, string> = {
-  active: "bg-primary/10 text-primary",
+  active: "bg-primary text-white",
   held: "bg-success-soft text-success-deep",
   "not-held": "bg-surface text-muted",
 };

@@ -1,5 +1,10 @@
 # Design Polish Pass — audit + plan (2026-07-12, branch `design/polish-pass`)
 
+> **Outcome (2026-07-13):** Phases 1 (tokens) and 4 (motion) shipped. Phases 2
+> (color discipline / tint demotions) and 3 (navy duotone imagery) were built,
+> reviewed by the user, and **rejected** — solid-blue fills and the original
+> imagery are the intended look. Reverted in the follow-up commit; do not redo.
+
 Direction approved by user: **Stripe-inspired refinement** (light surfaces, one confident blue,
 soft layered shadows, disciplined spacing), **keep the existing palette**, **navy tint treatment**
 over the AI imagery, and **code becomes the source of truth** (deliberate departures from Figma

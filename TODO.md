@@ -89,8 +89,6 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       changed in the polish pass).
 - [ ] Sheets unmount on close, so only the entrance animates — add exit animation if the
       instant close ever feels abrupt on device.
-- [ ] Tournament posters are duotoned in list view (they read as content, not ads); show
-      original posters on the future detail page if brand fidelity matters there.
 
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)

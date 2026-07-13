@@ -114,19 +114,12 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 nearest one — Gray/300 `#92A7C1` and Gray/400 `#7B93AF` → `muted`, Gray/600 `#57728E` and
 Gray/800 `#30445B` → `ink-soft`/`muted`, Gray/50 `#E9EDF5` → `surface`. Don't add ramp tokens.
 
-**Color discipline (2026-07-12 polish pass):** solid `bg-primary` is reserved for the ONE
-primary action per screen (sticky CTA, sheet apply, wizard بعدی) and for selection states
-(chips, date cells, nav active). Everything else that needs blue — info banners, icon
-circles, price rows, secondary buttons — uses the tint pair `bg-primary/10 text-primary`.
-
 **Font weights:** Yekan Bakh ships 400/700 only. Use `font-bold` or nothing — never
 `font-medium`/`font-semibold` (they render synthesized fakes).
 
-**Imagery (`brand-media`):** every photo/illustration must sit inside a
-`.brand-media` wrapper (defined in globals.css) plus a positioning class
-(`relative`/`absolute`) — it desaturates and colorizes the image toward the brand blue so
-all art shares the "night match" direction. Monochrome overlays (black scrims, white text)
-inside the wrapper are unaffected. Maps get plain `saturate-50` instead (legibility).
+**Solid blue is the brand look (user decision 2026-07-13):** saturated `bg-primary` fills
+on banners, badges, icon circles, and per-card CTAs are intentional. Do NOT demote them to
+`bg-primary/10` tints, and do NOT tint/duotone the imagery — both were tried and rejected.
 
 Other recurring values (already in Tailwind's default scale):
 - **Body text:** `text-sm` (14px) · **Small text:** `text-xs` (12px)

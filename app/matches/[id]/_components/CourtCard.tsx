@@ -26,10 +26,10 @@ export default function CourtCard({ club, note }: Props) {
         {club}
       </h2>
       <InfoBanner text={note} />
-      <img src="/images/court-map.webp" alt={`نقشه ${club}`} className="w-full h-[203px] rounded-xl object-cover saturate-50" />
+      <img src="/images/court-map.webp" alt={`نقشه ${club}`} className="w-full h-[203px] rounded-xl object-cover" />
       <button
         type="button"
-        className="w-full bg-primary/10 rounded-card px-4 py-3 text-sm font-bold leading-4 text-primary active:bg-primary/20"
+        className="w-full bg-primary rounded-card px-4 py-3 text-sm font-bold leading-4 text-white active:opacity-90"
         dir="rtl"
       >
         مسیریابی

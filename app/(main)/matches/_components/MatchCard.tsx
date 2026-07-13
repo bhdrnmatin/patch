@@ -37,7 +37,7 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
       {/* Price action */}
       <button
         type="button"
-        className="h-10 w-full rounded-pill bg-primary/10 hover:bg-primary/15 active:bg-primary/20 flex items-center justify-center text-primary font-bold text-sm"
+        className="h-10 w-full rounded-pill bg-primary hover:bg-primary-hover active:opacity-80 flex items-center justify-center text-white font-bold text-sm"
       >
         <PriceTag amount={price} />
       </button>

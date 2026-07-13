@@ -46,7 +46,7 @@ export default function ProfileHero({
           Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
           proportional width keeps the baked-in athlete aligned with the cutout. */}
       {bgSrc && (
-        <div className="brand-media absolute inset-0">
+        <div className="absolute inset-0">
           <img
             src={bgSrc}
             alt=""
@@ -58,9 +58,11 @@ export default function ProfileHero({
 
       {/* Sharp athlete foreground */}
       {athleteSrc && (
-        <div className="brand-media absolute inset-0">
-          <img src={athleteSrc} alt="" className="w-full h-full object-cover" />
-        </div>
+        <img
+          src={athleteSrc}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       )}
 
       {/* Top darkening gradient for title/button contrast */}
