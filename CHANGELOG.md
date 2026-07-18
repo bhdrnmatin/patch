@@ -8,6 +8,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Repo] Merged `design/polish-pass` into `main` (`--no-ff`, `7f56c21`); reconciled with the `patchapp` remote (Gitea) by pulling its 18 deploy/infra commits — `.gitea/workflows/deploy.yml`, `Dockerfile`, `docker-compose.yml` (removed) — into `main` via a clean, disjoint merge. `main` pushed to both `patchapp` and `origin` (GitHub); the push to `patchapp/main` triggers the Gitea deploy workflow. Merged branches (`design/polish-pass`, three `feat/*`) deleted — `main` is now the only branch.
+
 - [Design polish] Consistency pass on `design/polish-pass` (audit + plan in `_designer/polish-pass.md`; the color-discipline and imagery-duotone phases were built, reviewed, and rejected by the user — solid-blue usage and original imagery restored):
   - [Motion] Bottom sheets and the AddMenu now animate in (slide-up panel + fading backdrop, `prefers-reduced-motion` respected); all buttons/links ease their pressed states; keyboard focus shows a visible primary outline
   - [Tokens] New: `success`/`success-soft`/`success-deep` + `danger` status colors (StatusBadge, JoinRequestRow, BottomNav dot), `rounded-sheet` 40px, `shadow-sheet`, `drop-shadow-hero`, `text-tiny` 10px. Swept the last hardcoded hexes (`#445A74` ×13 etc.), 6 one-off shadows, 14 arbitrary radii, and one-off text sizes to token classes

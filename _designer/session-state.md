@@ -1,5 +1,25 @@
 # Session State
 
+## Session — 2026-07-18: merge polish-pass to main + sync remotes
+Shipped the `design/polish-pass` branch and reconciled the two remotes.
+
+- **Merged** `design/polish-pass` → `main` with `--no-ff` (`7f56c21`), matching the repo's
+  merge-commit convention. 50 files, +310/−91 (P1 tokens + P4 motion, with the P2/P3 revert
+  already folded in).
+- **Reconciled `patchapp` (Gitea):** local `main` and `patchapp/main` had diverged into disjoint
+  histories — `patchapp/main` carried 18 deploy/infra commits (`.gitea/workflows/deploy.yml`,
+  `Dockerfile`, `docker-compose.yml`) with none of the app work; local `main` had all the
+  app/design work with none of the CI. Pulled + merged (clean, disjoint file sets).
+- **Pushed** `main` to `patchapp` (`a59c98f..1bc0c2a`) — this triggers the Gitea deploy
+  workflow — and to `origin`/GitHub (`616eb1b..1bc0c2a`). All three in sync.
+- **Cleanup:** deleted `design/polish-pass` + the three merged `feat/*` branches. `main` is the
+  only branch now. Updated CHANGELOG (Unreleased) + this file.
+- **Reminder:** the `patchapp` remote URL still embeds a plaintext credential in `.git/config`
+  (flagged 2026-07-12) — move to a credential helper when convenient.
+
+### Next
+- MatchCtaBar `danger` variant for لغو مسابقه (token exists); sheet exit animation. Both in TODO.md.
+
 ## Session — 2026-07-13: polish-pass review — P2 + P3 REJECTED and reverted
 User kept P1 (tokens) + P4 (motion) but rejected P2 (tint demotions) and P3 (navy
 duotone imagery): solid `bg-primary` fills and the original untreated imagery ARE the
