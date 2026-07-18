@@ -1,7 +1,7 @@
 import BottomNav from "../(main)/_components/BottomNav";
 import ProfileHero from "./_components/ProfileHero";
 import ProfileAvatar from "./_components/ProfileAvatar";
-import ProfileMeta from "./_components/ProfileMeta";
+import ProfileIdentity from "./_components/ProfileIdentity";
 import StatsGrid from "./_components/StatsGrid";
 import NavRow from "./_components/NavRow";
 import { toPersianDigits } from "../../lib/persian";
@@ -67,20 +67,14 @@ export default function ProfilePage() {
 
       {/* Main content */}
       <div className="px-6 flex flex-col gap-6 items-end">
-        {/* Name + username + meta */}
-        <div className="flex flex-col gap-1 items-end w-full">
-          <div className="flex flex-col items-end">
-            <span className="text-story-title font-bold text-ink-soft" dir="rtl">
-              {mockPlayer.name}
-            </span>
-            <span className="text-xs text-ink-soft">{mockPlayer.username}</span>
-          </div>
-          <ProfileMeta
-            city={mockPlayer.city}
-            side={mockPlayer.side}
-            level={mockPlayer.level}
-          />
-        </div>
+        {/* Name (live) + username/meta (placeholders — no API field yet) */}
+        <ProfileIdentity
+          fallbackName={mockPlayer.name}
+          username={mockPlayer.username}
+          city={mockPlayer.city}
+          side={mockPlayer.side}
+          level={mockPlayer.level}
+        />
 
         {/* Stats */}
         <StatsGrid stats={stats} />

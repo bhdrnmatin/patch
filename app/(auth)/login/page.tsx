@@ -2,23 +2,38 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthActions from "../_components/AuthActions";
+import { requestOtp } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
+import { useRedirectIfAuthed } from "@/lib/api/useAuth";
+import { toLatinDigits } from "@/lib/persian";
 
 const BG = "/images/auth-login.webp";
 
 export default function LoginPage() {
+  useRedirectIfAuthed();
   const router = useRouter();
   const [phone, setPhone] = useState("");
 
   // Iranian mobile: 11 Persian digits starting with ۰۹ (AuthInput stores Persian digits).
   const isValidPhone = /^۰۹[۰-۹]{9}$/.test(phone);
 
-  const handleNext = () => {
-    router.push(`/otp?phone=${encodeURIComponent(phone)}`);
-  };
+  const { mutate, isPending, error } = useMutation({
+    // The API needs Latin digits; pass the same normalized number to /otp so the
+    // OTP page can verify against it.
+    mutationFn: () => requestOtp(toLatinDigits(phone)),
+    onSuccess: () =>
+      router.push(`/otp?phone=${encodeURIComponent(toLatinDigits(phone))}`),
+  });
+
+  const errorMessage =
+    error instanceof ApiError ? error.message : error ? "خطا در ارسال کد. دوباره تلاش کنید." : null;
+
+  const handleNext = () => mutate();
 
   return (
     <div
@@ -40,7 +55,16 @@ export default function LoginPage() {
                 numeric
                 maxLength={11}
               />
-              <AuthActions nextLabel="ارسال کد" onNext={handleNext} disabled={!isValidPhone} />
+              {errorMessage && (
+                <p className="text-xs text-danger text-center" dir="rtl">
+                  {errorMessage}
+                </p>
+              )}
+              <AuthActions
+                nextLabel={isPending ? "در حال ارسال..." : "ارسال کد"}
+                onNext={handleNext}
+                disabled={!isValidPhone || isPending}
+              />
             </div>
           </AuthCard>
         </AuthSlide>
