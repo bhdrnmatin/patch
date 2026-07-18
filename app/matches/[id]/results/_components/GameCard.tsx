@@ -49,7 +49,7 @@ export default function GameCard({
 
   const renderTeam = (team: 0 | 1) => (
     <div className="flex-1 min-w-0 flex flex-col gap-2">
-      <span className="text-center text-xs font-semibold text-muted" dir="rtl">
+      <span className="text-center text-xs font-bold text-muted" dir="rtl">
         {TEAM_LABELS[team]}
       </span>
       {([0, 1] as const).map((slot) => {
@@ -114,7 +114,7 @@ export default function GameCard({
                 ) : (
                   <span className="size-8" aria-hidden />
                 )}
-                <span className="text-xs font-semibold text-muted" dir="rtl">
+                <span className="text-xs font-bold text-muted" dir="rtl">
                   ست {setNo}
                 </span>
               </div>

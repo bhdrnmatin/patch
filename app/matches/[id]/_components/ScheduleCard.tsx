@@ -30,7 +30,7 @@ export default function ScheduleCard({ date, deadline, timeRange }: Props) {
         </div>
         <button
           type="button"
-          className="flex-1 min-w-0 h-10 bg-white border border-primary rounded-group flex items-center justify-center text-sm font-semibold text-primary active:opacity-80"
+          className="flex-1 min-w-0 h-10 bg-white border border-primary rounded-group flex items-center justify-center text-sm font-bold text-primary active:opacity-80"
           dir="rtl"
         >
           اضافه به تقویم

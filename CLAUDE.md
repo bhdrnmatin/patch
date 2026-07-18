@@ -102,10 +102,24 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Display heading | `text-display` | `32px / 56px` |
 | Card elevation | `shadow-card` | `0 2px 3px rgba(0,0,0,0.05)` |
 | Prominent elevation | `shadow-pop` | `0 8px 24px rgba(37,51,67,0.12)` |
+| Sheet elevation | `shadow-sheet` | `0 8px 32px rgba(37,51,67,0.16)` |
+| Hero title shadow | `drop-shadow-hero` | `0 1px 4px rgba(0,0,0,0.35)` |
+| Sheet radius | `rounded-sheet` | `40px` |
+| Tiny captions (badges, day strips) | `text-tiny` | `10px` |
+| Success (fills/icons) | `text-success` / `bg-success` | `#00B86B` |
+| Success badge pair | `bg-success-soft` + `text-success-deep` | `#E8F5E9` / `#2E7D32` |
+| Danger accents | `bg-danger` / `text-danger` | `#FF4869` |
 
 **Gray-ramp mapping (blessed 2026-06-11):** Figma grays without a token render with the
 nearest one — Gray/300 `#92A7C1` and Gray/400 `#7B93AF` → `muted`, Gray/600 `#57728E` and
 Gray/800 `#30445B` → `ink-soft`/`muted`, Gray/50 `#E9EDF5` → `surface`. Don't add ramp tokens.
+
+**Font weights:** Yekan Bakh ships 400/700 only. Use `font-bold` or nothing — never
+`font-medium`/`font-semibold` (they render synthesized fakes).
+
+**Solid blue is the brand look (user decision 2026-07-13):** saturated `bg-primary` fills
+on banners, badges, icon circles, and per-card CTAs are intentional. Do NOT demote them to
+`bg-primary/10` tints, and do NOT tint/duotone the imagery — both were tried and rejected.
 
 Other recurring values (already in Tailwind's default scale):
 - **Body text:** `text-sm` (14px) · **Small text:** `text-xs` (12px)

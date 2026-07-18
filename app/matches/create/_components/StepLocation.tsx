@@ -35,7 +35,7 @@ export default function StepLocation({ draft, patch, courts }: Props) {
 
       {draft.customCourt === false && (
         <div className="w-full bg-white rounded-group p-3 flex flex-col gap-3 shadow-card">
-          <h2 className="text-base font-semibold text-ink-soft text-right" dir="rtl">
+          <h2 className="text-base font-bold text-ink-soft text-right" dir="rtl">
             جستجو در زمین‌ها
           </h2>
           <input
@@ -56,7 +56,7 @@ export default function StepLocation({ draft, patch, courts }: Props) {
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => patch({ courtId: court.id })}
-                  className={`h-11 rounded-full border text-sm font-semibold active:opacity-80 ${
+                  className={`h-11 rounded-full border text-sm font-bold active:opacity-80 ${
                     isSelected
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-edge bg-white text-ink-soft"
@@ -91,7 +91,7 @@ export default function StepLocation({ draft, patch, courts }: Props) {
           />
           <button
             type="button"
-            className="w-full h-10 bg-white border border-primary rounded-group text-sm font-semibold text-primary active:opacity-80"
+            className="w-full h-10 bg-white border border-primary rounded-group text-sm font-bold text-primary active:opacity-80"
             dir="rtl"
           >
             انتخاب روی نقشه

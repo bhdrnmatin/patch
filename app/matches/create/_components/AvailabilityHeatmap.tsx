@@ -47,7 +47,7 @@ export default function AvailabilityHeatmap({
 }: Props) {
   return (
     <div className="w-full bg-white rounded-group p-3 flex flex-col gap-3 shadow-card">
-      <h2 className="text-base font-semibold text-ink-soft text-right" dir="rtl">
+      <h2 className="text-base font-bold text-ink-soft text-right" dir="rtl">
         زمان‌بندی براساس زمین
       </h2>
 
@@ -78,7 +78,7 @@ export default function AvailabilityHeatmap({
               d.past ? "text-muted/60" : "text-ink-soft"
             }`}
           >
-            <span className="text-[10px] leading-none">{d.weekday}</span>
+            <span className="text-tiny leading-none">{d.weekday}</span>
             <span className="text-xs font-bold leading-none">
               {toPersianDigits(String(d.day))}
             </span>
@@ -88,10 +88,10 @@ export default function AvailabilityHeatmap({
         {DAYPARTS.map((part, row) => (
           <div key={part.id} className="contents">
             <span className="flex flex-col items-end justify-center gap-0.5 pl-2">
-              <span className="text-xs font-semibold text-ink-soft leading-none" dir="rtl">
+              <span className="text-xs font-bold text-ink-soft leading-none" dir="rtl">
                 {part.label}
               </span>
-              <span className="text-[10px] text-muted leading-none" dir="rtl">
+              <span className="text-tiny text-muted leading-none" dir="rtl">
                 {part.range}
               </span>
             </span>

@@ -28,7 +28,7 @@ export default function ActivityCard({ item }: { item: ActivityItem }) {
           </h3>
           <div className="flex flex-col items-end gap-2">
             {meta.map((line, i) => (
-              <span key={i} dir="rtl" className={`text-[10px] leading-none ${META_TONE[line.tone]}`}>
+              <span key={i} dir="rtl" className={`text-tiny leading-none ${META_TONE[line.tone]}`}>
                 {line.text}
               </span>
             ))}

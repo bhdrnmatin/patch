@@ -8,7 +8,7 @@ interface Props {
 export default function InfoBanner({ text }: Props) {
   return (
     <div className="w-full bg-primary rounded-pill p-1 flex items-center justify-end gap-2">
-      <p className="flex-1 min-w-0 text-xs font-semibold leading-4 text-white text-right" dir="rtl">
+      <p className="flex-1 min-w-0 text-xs font-bold leading-4 text-white text-right" dir="rtl">
         {text}
       </p>
       <span className="shrink-0 p-2 rounded-full bg-white/20 text-white">

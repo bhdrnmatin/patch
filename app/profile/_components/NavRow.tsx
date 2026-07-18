@@ -8,10 +8,10 @@ interface Props {
 
 function ArrowLeft() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="text-primary">
       <path
         d="M9 12L5 8L9 4"
-        stroke="#33A3FF"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -26,10 +26,10 @@ export default function NavRow({ label, href, icon }: Props) {
   return (
     <Link
       href={href}
-      className={`bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-[0px_1px_2px_0px_rgba(0,0,0,0.06)] ${
+      className={`bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-card ${
         withIcon
-          ? "h-14 rounded-[28px] pr-[7px] pl-4"
-          : "rounded-[32px] px-4 py-3"
+          ? "h-14 rounded-full pr-[7px] pl-4"
+          : "rounded-card px-4 py-3"
       }`}
     >
       <ArrowLeft />
@@ -38,7 +38,7 @@ export default function NavRow({ label, href, icon }: Props) {
           {label}
         </span>
         {icon && (
-          <div className="bg-[#F9F9F9] rounded-[24px] p-2 shrink-0">
+          <div className="bg-surface rounded-full p-2 shrink-0">
             <img src={icon} alt="" className="size-6" aria-hidden />
           </div>
         )}

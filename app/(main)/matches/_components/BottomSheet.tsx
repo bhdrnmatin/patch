@@ -54,7 +54,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
       {/* Dim + blur overlay (click to dismiss; the close button handles keyboard) */}
-      <div aria-hidden onClick={onClose} className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+      <div aria-hidden onClick={onClose} className="animate-fade-in absolute inset-0 bg-black/20 backdrop-blur-sm" />
 
       {/* Sheet card */}
       <div
@@ -63,7 +63,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="relative w-[calc(100%-32px)] max-w-[398px] mb-4 max-h-[calc(100dvh-32px)] rounded-[40px] bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-[0px_8px_32px_rgba(37,51,67,0.16)] outline-none"
+        className="animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 max-h-[calc(100dvh-32px)] rounded-sheet bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-sheet outline-none"
       >
         {/* Header */}
         <div className="flex items-center justify-between w-full shrink-0">
@@ -71,7 +71,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
             type="button"
             onClick={onClose}
             aria-label="بستن"
-            className="size-8 flex items-center justify-center rounded-[20px] border border-white/15 bg-black/[0.08] text-ink-soft"
+            className="size-8 flex items-center justify-center rounded-full border border-white/15 bg-black/[0.08] text-ink-soft"
           >
             <CloseIcon />
           </button>

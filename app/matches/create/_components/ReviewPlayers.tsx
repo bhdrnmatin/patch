@@ -28,13 +28,13 @@ export default function ReviewPlayers({ rows }: Props) {
             className="w-full bg-white border border-edge rounded-full p-2 flex items-center justify-end gap-3 shadow-card"
           >
             <span
-              className="mr-auto shrink-0 text-xs font-semibold bg-primary/10 text-primary rounded-full px-2.5 py-1"
+              className="mr-auto shrink-0 text-xs font-bold bg-primary/10 text-primary rounded-full px-2.5 py-1"
               dir="rtl"
             >
               {row.role}
             </span>
             <span className="flex flex-col items-end gap-0.5 min-w-0 text-right">
-              <span className="text-xs font-semibold text-ink-soft truncate" dir="rtl">
+              <span className="text-xs font-bold text-ink-soft truncate" dir="rtl">
                 {row.name}
               </span>
               {row.level !== undefined && (

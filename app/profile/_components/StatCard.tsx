@@ -13,7 +13,7 @@ export default function StatCard({ icon, label, value }: Props) {
           {label}
         </span>
       </div>
-      <span className="text-sm font-semibold leading-4 text-ink" dir="rtl">
+      <span className="text-sm font-bold leading-4 text-ink" dir="rtl">
         {value}
       </span>
     </div>

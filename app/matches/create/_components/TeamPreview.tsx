@@ -14,7 +14,7 @@ interface Props {
 function Cell({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="h-16 rounded-2xl bg-surface border border-edge flex flex-col items-center justify-center gap-1">
-      <span className="text-sm font-semibold text-ink-soft" dir="rtl">
+      <span className="text-sm font-bold text-ink-soft" dir="rtl">
         {title}
       </span>
       {subtitle && (

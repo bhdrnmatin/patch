@@ -19,7 +19,7 @@ export default function PlayerSlotButton({ player, slotLabel, onClick }: Props) 
         type="button"
         onClick={onClick}
         aria-label={`افزودن بازیکن به ${slotLabel}`}
-        className="w-full h-14 rounded-2xl border-2 border-dashed border-edge flex items-center justify-center text-xs font-semibold text-muted active:opacity-80"
+        className="w-full h-14 rounded-2xl border-2 border-dashed border-edge flex items-center justify-center text-xs font-bold text-muted active:opacity-80"
         dir="rtl"
       >
         + افزودن بازیکن
@@ -35,7 +35,7 @@ export default function PlayerSlotButton({ player, slotLabel, onClick }: Props) 
       className="w-full h-14 rounded-2xl bg-surface border border-edge px-2 flex items-center justify-end gap-2 active:opacity-80"
     >
       <span className="flex flex-col items-end gap-1 min-w-0 text-right">
-        <span className="w-full text-xs font-semibold leading-[11px] text-ink-soft truncate" dir="rtl">
+        <span className="w-full text-xs font-bold leading-[11px] text-ink-soft truncate" dir="rtl">
           {player.name}
         </span>
         <span className="text-xs leading-[11px] text-muted" dir="rtl">

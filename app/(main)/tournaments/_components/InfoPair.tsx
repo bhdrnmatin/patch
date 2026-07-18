@@ -7,7 +7,7 @@ interface Props {
 export default function InfoPair({ label, value }: Props) {
   return (
     <div dir="rtl" className="flex items-center gap-[7px] whitespace-nowrap">
-      <span className="text-[10px] text-muted">{label}</span>
+      <span className="text-tiny text-muted">{label}</span>
       <span className="text-xs font-bold text-ink-soft">{value}</span>
     </div>
   );

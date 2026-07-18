@@ -18,7 +18,7 @@ export default function SelectField({ label, value, placeholder = "انتخاب 
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <span id={labelId} className="text-sm font-semibold text-ink-soft text-right" dir="rtl">
+      <span id={labelId} className="text-sm font-bold text-ink-soft text-right" dir="rtl">
         {label}
       </span>
       <button

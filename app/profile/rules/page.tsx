@@ -11,7 +11,7 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۱) تعاریف</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>کاربر: شخصی که حساب ایجاد می‌کند یا از خدمات استفاده می‌کند.</li>
             <li>باشگاه/کلوپ: مالک یا بهره‌بردار کورت که ظرفیت و قوانین خود را در پلتفرم ارائه می‌کند.</li>
             <li>کورت: زمین پدل قابل رزرو.</li>
@@ -23,14 +23,14 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۲) پذیرش شرایط</p>
-          <p className="text-[#445A74]">
+          <p className="text-ink-soft">
             با ایجاد حساب یا استفاده از خدمات، شما این شرایط و «سیاست حریم خصوصی» را می‌پذیرید. اگر با بخشی موافق نیستید، از خدمات استفاده نکنید.
           </p>
         </section>
 
         <section>
           <p className="font-bold mb-2">۳) حساب کاربری و احراز هویت</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>ورود از طریق شماره موبایل + کد یک‌بارمصرف (OTP) انجام می‌شود.</li>
             <li>شما مسئول حفظ محرمانگی حساب و هر فعالیت مرتبط با آن هستید.</li>
             <li>حداقل سن مجاز: ۱۸ سال.</li>
@@ -40,7 +40,7 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۴) استفاده مجاز و رفتار حرفه‌ای</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>رعایت احترام، پرهیز از آزار، تبعیض، تهدید یا هر رفتار خلاف عرف/قانون الزامی است.</li>
             <li>تقلب در نتایج یا No-Show مکرر می‌تواند به تعلیق یا کاهش «نمرهٔ رفتاری» بینجامد.</li>
             <li>محتوا/نظرات شما باید با حقوق اشخاص و دستورالعمل‌های پلتفرم سازگار باشد.</li>
@@ -49,7 +49,7 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۵) رزرو کورت</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>نقش پلتفرم واسطهٔ فناوری است؛ مالک کورت‌ها نیست.</li>
             <li>برخی رزروها نیازمند تأیید باشگاه هستند.</li>
             <li>قیمت، تجهیزات، ایمنی و سیاست کنسلی باشگاه روی صفحهٔ هر رزرو نمایش داده می‌شود.</li>
@@ -58,7 +58,7 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۶) مسابقه‌ها و تورنومنت‌ها</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>ساخت مَچ عمومی/خصوصی با تعیین سطح و ظرفیت امکان‌پذیر است.</li>
             <li>کاپیتان تیم نتیجه را ثبت و تیم مقابل تأیید می‌کند.</li>
             <li>قوانین تورنومنت در صفحهٔ رویداد درج می‌شود.</li>
@@ -67,7 +67,7 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۷) لغو و بازپرداخت</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>لغو تا ۲۴ ساعت مانده به شروع: بازپرداخت کامل.</li>
             <li>لغو بین ۶–۲۴ ساعت مانده: بازپرداخت ۵۰٪.</li>
             <li>کمتر از ۶ ساعت یا No-Show: بازپرداخت ندارد.</li>
@@ -77,14 +77,14 @@ export default function RulesPage() {
 
         <section>
           <p className="font-bold mb-2">۸) محدودیت مسئولیت</p>
-          <p className="text-[#445A74]">
+          <p className="text-ink-soft">
             تا حداکثر میزان مجاز قانون، مسئولیت کلی پلتفرم نسبت به شما از مجموع مبالغی که در سه ماه گذشته به پلتفرم پرداخت کرده‌اید بیشتر نخواهد بود.
           </p>
         </section>
 
         <section>
           <p className="font-bold mb-2">۹) تماس با ما</p>
-          <ul className="list-disc list-inside flex flex-col gap-1 text-[#445A74]">
+          <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>ایمیل پشتیبانی: support@patchapp.ir</li>
           </ul>
         </section>

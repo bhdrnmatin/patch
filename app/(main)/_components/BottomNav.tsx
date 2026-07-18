@@ -156,7 +156,7 @@ export default function BottomNav() {
       {/* Dimmed blurred backdrop behind the nav while the add menu is open */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[4px]"
+          className="animate-fade-in fixed inset-0 z-40 bg-black/45 backdrop-blur-[4px]"
           onClick={() => setMenuOpen(false)}
           aria-hidden
         />
@@ -165,7 +165,7 @@ export default function BottomNav() {
       <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
       {/* Add menu anchored above the nav */}
       {menuOpen && (
-        <div className="absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">
+        <div className="animate-sheet-in absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">
           {addActions.map(({ href, Icon, label }) => (
             <Link
               key={label}
@@ -176,7 +176,7 @@ export default function BottomNav() {
               }}
               className="flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20"
             >
-              <span className="text-sm font-semibold leading-4 text-white" dir="rtl">
+              <span className="text-sm font-bold leading-4 text-white" dir="rtl">
                 {label}
               </span>
               <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
@@ -187,7 +187,7 @@ export default function BottomNav() {
         </div>
       )}
       {/* Frosted pill with the four section tabs */}
-      <div className="flex-1 flex items-stretch rounded-[48px] border-2 border-white/30 bg-white/35 backdrop-blur-[6px] overflow-hidden">
+      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px] overflow-hidden">
         {tabs.map(({ href, Icon, label, badge }) => {
           const active = isActive(pathname, href);
           return (
@@ -199,14 +199,14 @@ export default function BottomNav() {
               className="relative flex-1 h-[52px] flex items-center justify-center"
             >
               {active ? (
-                <span className="absolute inset-1 rounded-[32px] bg-primary flex items-center justify-center">
+                <span className="absolute inset-1 rounded-full bg-primary flex items-center justify-center">
                   <Icon className="text-white" />
                 </span>
               ) : (
                 <span className="relative">
                   <Icon className="text-ink-soft" />
                   {badge && (
-                    <span className="absolute -top-0.5 -right-1 size-2 rounded-full bg-[#FF4869] border border-white" />
+                    <span className="absolute -top-0.5 -right-1 size-2 rounded-full bg-danger border border-white" />
                   )}
                 </span>
               )}
@@ -221,7 +221,7 @@ export default function BottomNav() {
         onClick={() => setMenuOpen((o) => !o)}
         aria-label="افزودن"
         aria-expanded={menuOpen}
-        className="size-[52px] shrink-0 flex items-center justify-center rounded-[32px] border-2 border-white/15 bg-primary backdrop-blur-[10px]"
+        className="size-[52px] shrink-0 flex items-center justify-center rounded-full border-2 border-white/15 bg-primary backdrop-blur-[10px]"
       >
         <AddIcon className="text-white" />
       </button>

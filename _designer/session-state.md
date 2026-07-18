@@ -1,5 +1,48 @@
 # Session State
 
+## Session — 2026-07-13: polish-pass review — P2 + P3 REJECTED and reverted
+User kept P1 (tokens) + P4 (motion) but rejected P2 (tint demotions) and P3 (navy
+duotone imagery): solid `bg-primary` fills and the original untreated imagery ARE the
+intended look. All P2/P3 changes reverted (components + globals.css `.brand-media`
+removed); the invisible font-weight sweep (medium/semibold → 400/700) was kept.
+Rule recorded in CLAUDE.md ("Solid blue is the brand look") — don't redo these.
+
+## Session — 2026-07-12 (later): design polish pass — branch `design/polish-pass`
+User asked for an app-wide design-consistency + aesthetic pass ("act as a pro UI/UX
+designer"). Approved direction: **Stripe-inspired refinement**, keep the palette, navy tint
+over the AI imagery, **code becomes source of truth** (deliberate Figma departures OK).
+Audit + plan in `_designer/polish-pass.md`; before/after full-page shots of all 18 routes in
+scratchpad `audit-before/` / `audit-after/`. Installed the `frontend-design` skill
+(~/.claude/skills, from anthropics/skills) and Playwright+Firefox in the scratchpad
+(`shoot.mjs` — Firefox `--screenshot` fires before react-query hydration, don't use it for
+list pages).
+
+- **P1 tokens:** added success/success-soft/success-deep, danger, rounded-sheet 40px,
+  shadow-sheet, drop-shadow-hero, text-tiny 10px; swept ALL hardcoded hexes, 6 one-off
+  shadows, 14 arbitrary radii, one-off text sizes. CLAUDE.md token table updated.
+- **P2 color discipline:** solid bg-primary only for the screen's primary action +
+  selection states; InfoBanner/SectionCard icons/MatchCard price/StatusBadge-active/
+  مسیریابی/ScoreStepper "+" → `bg-primary/10 text-primary`. Also removed ALL
+  font-medium/font-semibold (Yekan Bakh has only 400/700 — they were synthesized).
+- **P3 imagery ("night match" signature):** `.brand-media` wrapper in globals.css
+  (saturate .72 + #2f7fc2 mix-blend-color at .62) applied to AuthSlide, StorySlide,
+  SportPageHeader, MatchDetailsHeader, ProfileHero, PromoCard, TournamentPoster,
+  StatusThumb; court map `saturate-50`. GOTCHA: unlayered CSS beats Tailwind's
+  `@layer utilities`, so `.brand-media` must NOT set `position` — wrappers carry their own
+  `relative`/`absolute` class (login bg collapsed to intrinsic height until fixed).
+- **P4 motion:** sheet-in/fade-in keyframes (BottomSheet panel+overlay, AddMenu),
+  base transition on button/a pressed states, global `:focus-visible` primary outline,
+  `prefers-reduced-motion` respected everywhere.
+- **Verified:** tsc clean, lint 0 errors (22 pre-existing img warnings), all routes
+  re-screenshotted, sheet animation exercised via Playwright with zero console errors.
+
+### Next
+- Commit is pending user review (branch `design/polish-pass`, everything uncommitted).
+- TODO.md additions: MatchCtaBar danger variant for لغو مسابقه; sheet exit animation;
+  original posters on the future tournament-details page.
+- Consider `ds-qa-tw` audit refresh on the touched shared components (BottomSheet,
+  StatusBadge, InfoBanner, SportPageHeader…) — audit files predate the polish.
+
 ## Session — 2026-07-12
 Built the **create-match wizard** (`/matches/create`) from two Figma WIREFRAMES (19946-34262 long
 form, 19946-34346 review) — no styled design; translated into the system per user decisions:

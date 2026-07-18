@@ -26,7 +26,7 @@ export default function JoinRequestRow({ request, matchId }: Props) {
     <div className="w-full flex flex-col gap-3">
       <div className="w-full bg-white border border-white/15 rounded-full p-2 flex items-center justify-end gap-3 shadow-card">
         <div className="flex flex-col items-end gap-0.5 min-w-0 text-right">
-          <span className="text-xs font-semibold text-ink-soft" dir="rtl">
+          <span className="text-xs font-bold text-ink-soft" dir="rtl">
             {request.name}
           </span>
           <span className="flex items-center gap-3 text-xs text-muted">
@@ -46,7 +46,7 @@ export default function JoinRequestRow({ request, matchId }: Props) {
           type="button"
           onClick={() => mutate(false)}
           disabled={isPending}
-          className="flex-1 min-w-0 h-11 px-[13px] bg-white border border-white/15 rounded-full flex items-center justify-between shadow-card text-xs font-semibold text-ink-soft active:opacity-80 disabled:opacity-50"
+          className="flex-1 min-w-0 h-11 px-3 bg-white border border-white/15 rounded-full flex items-center justify-between shadow-card text-xs font-bold text-ink-soft active:opacity-80 disabled:opacity-50"
         >
           <CloseIcon className="size-4" />
           <span dir="rtl">رد درخواست</span>
@@ -55,9 +55,9 @@ export default function JoinRequestRow({ request, matchId }: Props) {
           type="button"
           onClick={() => mutate(true)}
           disabled={isPending}
-          className="flex-1 min-w-0 h-11 px-[13px] bg-white border border-white/15 rounded-full flex items-center justify-between shadow-card text-xs font-semibold text-ink-soft active:opacity-80 disabled:opacity-50"
+          className="flex-1 min-w-0 h-11 px-3 bg-white border border-white/15 rounded-full flex items-center justify-between shadow-card text-xs font-bold text-ink-soft active:opacity-80 disabled:opacity-50"
         >
-          <CheckIcon className="size-4 text-[#00B86B]" />
+          <CheckIcon className="size-4 text-success" />
           <span dir="rtl">قبول درخواست</span>
         </button>
       </div>

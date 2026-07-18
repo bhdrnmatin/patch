@@ -43,7 +43,7 @@ export default function PlayerPickerSheet({
               >
                 {isSelected && <CheckIcon className="size-4 shrink-0 text-primary mr-auto" />}
                 <span className="flex flex-col items-end gap-0.5 min-w-0 text-right">
-                  <span className="text-xs font-semibold text-ink-soft" dir="rtl">
+                  <span className="text-xs font-bold text-ink-soft" dir="rtl">
                     {player.name}
                   </span>
                   <span className="text-xs text-muted" dir="rtl">
