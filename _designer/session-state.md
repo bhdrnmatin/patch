@@ -1,5 +1,33 @@
 # Session State
 
+## Session — 2026-07-18 (later): connect auth + profile to the live API
+Wired the first real API calls to `api.patchapp.ir` — branch `feat/api-auth-profile`
+(committed `dfeb717`, pushed). The API is early: only auth (OTP) + player profile exist,
+so everything else stays on the mock `lib/data` seam.
+
+- **Infra (`lib/api/`):** `session` (localStorage bearer, SSR-guarded, reactive via
+  subscribe/emit), `client` (`apiFetch`, typed `ApiError` reading the API's `errorMessage`
+  envelope, 401 → clear+redirect, 204), `auth`/`players` modules, `useAuth` +
+  `useRequireAuth`/`useRedirectIfAuthed`, `AuthGuard`. `toLatinDigits` added to `lib/persian.ts`.
+- **CORS is OFF on the API** → proxy via `next.config.ts` `rewrites()` same-origin `/api/v1/*` →
+  upstream (`API_BASE_URL`, server-only env; `.env.example` committed, `.env.local` ignored).
+  Verified the proxy forwards (localhost `/api/v1/players/me` → upstream 401).
+- **Wired:** login (requestOtp), otp (verify → tokens → route by profile completeness),
+  profile-setup (`PUT` name+gender; city/assessment deferred), profile page live name
+  (`ProfileIdentity` client island). Guards on `(main)`/`/profile`/`/matches/*`.
+- **Verified:** tsc + lint clean, all 11 routes 200, no server errors. Endpoint health probed:
+  ALL behave correctly EXCEPT **`POST /otp/request` 500s for every number** (backend SMS-send bug —
+  it even sets the rate-limit then throws). Confirmed not a format issue (API normalizes
+  `09…`/`+98…`/`98…` to one rate-limit bucket). verify 410s an expired code; profile endpoints 401;
+  logout 204. So the frontend is correct; the live OTP path is blocked on the backend fix.
+- **Decision:** left the 429 `retryAfter` UI until the endpoint works (no point polishing a broken one).
+- **Memory:** saved `project_api_integration.md`. Docs updated (CHANGELOG/STATUS/TODO/this file).
+
+### Next
+- Backend must fix `/otp/request` before the flow can complete end-to-end.
+- Then confirm gender string (enum vs Persian), switch OTP routing to real `profileStatus`, and
+  verify the authed endpoints accept our payloads. Full follow-up list in TODO.md.
+
 ## Session — 2026-07-18: merge polish-pass to main + sync remotes
 Shipped the `design/polish-pass` branch and reconciled the two remotes.
 
