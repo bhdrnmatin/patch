@@ -21,8 +21,8 @@ so everything else stays on the mock `lib/data` seam.
   `09…`/`+98…`/`98…` to one rate-limit bucket). verify 410s an expired code; profile endpoints 401;
   logout 204. So the frontend is correct; the live OTP path is blocked on the backend fix.
 - **Decision:** left the 429 `retryAfter` UI until the endpoint works (no point polishing a broken one).
-- **Fix:** OTP is 6 digits (the API's code length), not 5 — hoisted to `OTP_LENGTH` in `OtpInput`
-  (commit `1fd90ce`). Note: 6 boxes in the same card width render a touch narrower.
+- **OTP length:** hoisted to `OTP_LENGTH` in `OtpInput` (removed the magic 5/4). Briefly set to 6,
+  then reverted to **5** per user — the length now lives in one constant either way.
 - **Memory:** saved `project_api_integration.md`. Docs updated (CHANGELOG/STATUS/TODO/this file).
 
 ### Next

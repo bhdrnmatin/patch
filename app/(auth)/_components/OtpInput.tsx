@@ -4,8 +4,8 @@ import { useRef } from "react";
 import OtpBox from "./OtpBox";
 import { toPersianDigits } from "@/lib/persian";
 
-/** Verification codes from the API are 6 digits. */
-export const OTP_LENGTH = 6;
+/** OTP code length. */
+export const OTP_LENGTH = 5;
 
 interface OtpInputProps {
   value: string;
