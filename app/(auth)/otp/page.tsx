@@ -5,7 +5,7 @@ import { useState, Suspense } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
-import OtpInput from "../_components/OtpInput";
+import OtpInput, { OTP_LENGTH } from "../_components/OtpInput";
 import AuthActions from "../_components/AuthActions";
 import { verifyOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
@@ -24,7 +24,7 @@ function OtpContent() {
   const [otp, setOtp] = useState("");
 
   // Field completeness only; the code's correctness is verified by the API.
-  const isComplete = otp.length === 5;
+  const isComplete = otp.length === OTP_LENGTH;
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: () => verifyOtp(phone, toLatinDigits(otp)),
