@@ -4,6 +4,9 @@ import { useRef } from "react";
 import OtpBox from "./OtpBox";
 import { toPersianDigits } from "@/lib/persian";
 
+/** OTP code length. */
+export const OTP_LENGTH = 5;
+
 interface OtpInputProps {
   value: string;
   onChange: (val: string) => void;
@@ -12,7 +15,7 @@ interface OtpInputProps {
 export default function OtpInput({ value, onChange }: OtpInputProps) {
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const digits = Array.from({ length: 5 }, (_, i) => value[i] ?? "");
+  const digits = Array.from({ length: OTP_LENGTH }, (_, i) => value[i] ?? "");
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace") {
@@ -27,18 +30,18 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
     const raw = toPersianDigits(e.target.value.replace(/[^0-9۰-۹]/g, "")).slice(-1);
     if (!raw) return;
     const next = value.slice(0, index) + raw + value.slice(index + 1);
-    onChange(next.slice(0, 5));
-    if (index < 4) inputs.current[index + 1]?.focus();
+    onChange(next.slice(0, OTP_LENGTH));
+    if (index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pasted = toPersianDigits(
       e.clipboardData.getData("text").replace(/[^0-9۰-۹]/g, "")
-    ).slice(0, 5);
+    ).slice(0, OTP_LENGTH);
     if (!pasted) return;
     onChange(pasted);
-    const nextFocus = Math.min(pasted.length, 4);
+    const nextFocus = Math.min(pasted.length, OTP_LENGTH - 1);
     inputs.current[nextFocus]?.focus();
   };
 

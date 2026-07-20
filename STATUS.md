@@ -239,6 +239,31 @@ Components live in `app/matches/create/_components/`.
 
 ---
 
+## API Integration (auth + profile)
+
+Branch `feat/api-auth-profile`. Wires the auth/profile flows to `api.patchapp.ir`;
+all other features stay on the mock `lib/data` seam (no endpoints yet). The API sends
+no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upstream.
+
+### Infrastructure — `lib/api/`
+- [x] `config` / `session` (localStorage bearer, SSR-guarded, reactive) / `client` (`apiFetch`, `ApiError`, 401 handling)
+- [x] `types` (API DTOs) / `auth` (requestOtp/verifyOtp/logout) / `players` (getMe + profile updates)
+- [x] `useAuth` hook + `useRequireAuth`/`useRedirectIfAuthed`; `AuthGuard` — `app/_components/AuthGuard.tsx`
+- [x] `toLatinDigits` — `lib/persian.ts`; proxy rewrite — `next.config.ts`; `.env.example`
+
+### Wired flows
+- [x] Login (request OTP), OTP (verify → tokens → route by profile completeness)
+- [x] Profile-setup (`PUT` name+gender; city/assessment deferred), profile page live name (`ProfileIdentity` client island)
+- [x] Route guards: `(main)`, `/profile`, `/matches/*` layouts; login/otp redirect when authed
+
+### Status
+- tsc + lint clean; all routes 200; same-origin proxy verified forwarding to upstream.
+- **Blocked:** `POST /otp/request` 500s on the backend for every number (SMS send throws) — the
+  live OTP happy path can't complete until that endpoint is fixed. All other endpoints behave
+  correctly. See TODO.md for the follow-ups.
+
+---
+
 ## Patterns
 
 | Pattern | Status | Spec | Implementation |

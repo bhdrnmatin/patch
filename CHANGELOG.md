@@ -8,6 +8,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [API] Connected the auth + profile flows to the live backend (`api.patchapp.ir`), on branch `feat/api-auth-profile`. The API is early — only auth (OTP) and player profile exist, so every other feature stays on the mock `lib/data` seam:
+  - [Infra] New `lib/api/` module — `session` (localStorage bearer tokens, SSR-guarded, reactive), `client` (`apiFetch` with typed `ApiError` reading the API's `errorMessage` envelope, 401 → clear session + redirect, 204 handling), `auth`/`players` endpoint modules, and a `useAuth` hook with `useRequireAuth`/`useRedirectIfAuthed` guards + an `AuthGuard` wrapper
+  - [Infra] The API sends no CORS headers, so `next.config.ts` rewrites same-origin `/api/v1/*` to the upstream host (server-only `API_BASE_URL`); `.env.example` documents it. Added `toLatinDigits` to normalize Persian phone/OTP input
+  - [Auth] Login requests an OTP; the OTP page verifies → stores tokens → routes by profile completeness; profile-setup `PUT`s name+gender (city + the assessment stay local/deferred — no fields yet); the profile page shows the live name via a client island. Protected routes ((main), /profile, /matches/*) redirect to /login; login/otp redirect home when already authed
+  - [Auth] OTP length hoisted to an `OTP_LENGTH` constant in `OtpInput` (5 digits; was a hardcoded magic number)
+  - [Status] tsc + lint clean, all routes 200, the same-origin proxy is verified forwarding to the upstream. The live OTP happy path is **blocked on a backend bug** — `POST /otp/request` 500s for every number (SMS send throws); all other endpoints behave correctly (verify 410s an expired code, profile endpoints enforce 401, logout 204)
+
 - [Repo] Merged `design/polish-pass` into `main` (`--no-ff`, `7f56c21`); reconciled with the `patchapp` remote (Gitea) by pulling its 18 deploy/infra commits — `.gitea/workflows/deploy.yml`, `Dockerfile`, `docker-compose.yml` (removed) — into `main` via a clean, disjoint merge. `main` pushed to both `patchapp` and `origin` (GitHub); the push to `patchapp/main` triggers the Gitea deploy workflow. Merged branches (`design/polish-pass`, three `feat/*`) deleted — `main` is now the only branch.
 
 - [Design polish] Consistency pass on `design/polish-pass` (audit + plan in `_designer/polish-pass.md`; the color-discipline and imagery-duotone phases were built, reviewed, and rejected by the user — solid-blue usage and original imagery restored):
