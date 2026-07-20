@@ -31,6 +31,11 @@ export function useAuth() {
     queryKey: ["me"],
     queryFn: getMe,
     enabled: isAuthenticated,
+    // Don't refetch /me on every tab refocus — a transient 401 from this flaky
+    // backend shouldn't churn the session. Retry once to ride out blips.
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
   });
 
   const logout = useCallback(async () => {
