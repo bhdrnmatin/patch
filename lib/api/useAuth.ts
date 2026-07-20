@@ -39,7 +39,13 @@ export function useAuth() {
   });
 
   const logout = useCallback(async () => {
-    await apiLogout();
+    // apiLogout clears the local session even if the server call fails; swallow
+    // any error so we always clear the cache and redirect.
+    try {
+      await apiLogout();
+    } catch {
+      // already logged out locally
+    }
     queryClient.removeQueries({ queryKey: ["me"] });
     router.replace("/login");
   }, [queryClient, router]);
