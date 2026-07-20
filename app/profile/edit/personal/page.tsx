@@ -8,6 +8,7 @@ import Button from "../../../(auth)/_components/Button";
 import { ApiError } from "@/lib/api/client";
 import { getMe, updateDisplayInfo, uploadProfilePhoto } from "@/lib/api/players";
 import type { PlayerResponse } from "@/lib/api/types";
+import { toPersianOnly } from "@/lib/persian";
 
 const AVATAR_FALLBACK = "/images/avatar-placeholder.svg";
 
@@ -91,7 +92,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
         <textarea
           id="bio"
           value={bio}
-          onChange={(e) => setBio(e.target.value)}
+          onChange={(e) => setBio(toPersianOnly(e.target.value))}
           dir="rtl"
           rows={4}
           placeholder="چند خط درباره خودت بنویس"

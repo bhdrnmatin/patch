@@ -9,3 +9,9 @@ export function toPersianDigits(value: string): string {
 export function toLatinDigits(value: string): string {
   return value.replace(/[۰-۹]/g, (d) => String(FA.indexOf(d)));
 }
+
+// Keep only Persian/Arabic letters (U+0600–U+06FF), ZWNJ (نیم‌فاصله), and
+// whitespace — drops Latin letters/digits and symbols as they're typed.
+export function toPersianOnly(value: string): string {
+  return value.replace(/[^؀-ۿ‌\s]/g, "");
+}

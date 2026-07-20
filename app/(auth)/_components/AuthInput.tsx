@@ -1,5 +1,5 @@
 import { forwardRef, useId } from "react";
-import { toPersianDigits } from "@/lib/persian";
+import { toPersianDigits, toPersianOnly } from "@/lib/persian";
 
 interface AuthInputProps {
   label: string;
@@ -27,8 +27,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
       next = next.replace(/[^0-9۰-۹]/g, "");
       next = toPersianDigits(next);
     } else if (persianOnly) {
-      // Keep Persian/Arabic letters (U+0600–U+06FF), ZWNJ (نیم‌فاصله), and spaces.
-      next = next.replace(/[^؀-ۿ‌\s]/g, "");
+      next = toPersianOnly(next);
     }
     if (maxLength) next = next.slice(0, maxLength);
     onChange(next);
