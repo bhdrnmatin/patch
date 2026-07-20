@@ -1,3 +1,10 @@
-<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 91.5239 91.5239" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle id="Ellipse 1117" cx="45.762" cy="45.762" r="45.762" fill="var(--fill-0, #C4C4C4)"/>
+<svg width="100%" height="100%" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:block">
+  <defs>
+    <clipPath id="avatarCircle"><circle cx="46" cy="46" r="46"/></clipPath>
+  </defs>
+  <g clip-path="url(#avatarCircle)">
+    <rect width="92" height="92" fill="#E5EAF0"/>
+    <circle cx="46" cy="35" r="16" fill="#92A7C1"/>
+    <path d="M13 92C13 72 28 60 46 60C64 60 79 72 79 92Z" fill="#92A7C1"/>
+  </g>
 </svg>

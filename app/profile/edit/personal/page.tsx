@@ -10,8 +10,6 @@ import { getMe, updateDisplayInfo, uploadProfilePhoto } from "@/lib/api/players"
 import type { PlayerResponse } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
 
-const AVATAR_FALLBACK = "/images/avatar-placeholder.svg";
-
 export default function PersonalInfoPage() {
   const { data: player, isLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
 
@@ -60,7 +58,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
     <div className="flex flex-col gap-8 w-full">
       {/* Profile photo */}
       <div className="flex flex-col items-center gap-3">
-        <ProfileAvatar src={player.avatarUrl || AVATAR_FALLBACK} />
+        <ProfileAvatar src={player.avatarUrl} />
         <input
           ref={fileInput}
           type="file"
