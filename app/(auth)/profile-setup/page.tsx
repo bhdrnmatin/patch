@@ -54,11 +54,11 @@ export default function ProfileSetupPage() {
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel />
-                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel />
+                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly />
+                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly />
                 </div>
                 <div className="flex gap-4">
-                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel />
+                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel persianOnly />
                   <AuthSelect
                     label="جنسیت"
                     placeholder="انتخاب"

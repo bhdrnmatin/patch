@@ -7,6 +7,8 @@ interface AuthInputProps {
   onChange: (val: string) => void;
   placeholder?: string;
   numeric?: boolean;
+  /** Restrict to Persian text — strips Latin letters/digits as they're typed. */
+  persianOnly?: boolean;
   maxLength?: number;
   showLabel?: boolean;
   name?: string;
@@ -14,7 +16,7 @@ interface AuthInputProps {
 }
 
 const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInput(
-  { label, value, onChange, placeholder, numeric, maxLength, showLabel, name, disabled },
+  { label, value, onChange, placeholder, numeric, persianOnly, maxLength, showLabel, name, disabled },
   ref
 ) {
   const id = useId();
@@ -24,6 +26,9 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
     if (numeric) {
       next = next.replace(/[^0-9۰-۹]/g, "");
       next = toPersianDigits(next);
+    } else if (persianOnly) {
+      // Keep Persian/Arabic letters (U+0600–U+06FF), ZWNJ (نیم‌فاصله), and spaces.
+      next = next.replace(/[^؀-ۿ‌\s]/g, "");
     }
     if (maxLength) next = next.slice(0, maxLength);
     onChange(next);
