@@ -1,12 +1,10 @@
 import BottomNav from "../(main)/_components/BottomNav";
 import ProfileHero from "./_components/ProfileHero";
-import ProfileAvatar from "./_components/ProfileAvatar";
+import ProfileAvatarLive from "./_components/ProfileAvatarLive";
 import ProfileIdentity from "./_components/ProfileIdentity";
 import StatsGrid from "./_components/StatsGrid";
 import NavRow from "./_components/NavRow";
 import { toPersianDigits } from "../../lib/persian";
-
-const AVATAR_SRC = "/images/avatar-placeholder.svg";
 
 const STAT_ICONS = {
   wins: "/icons/stat-wins.svg",
@@ -61,7 +59,7 @@ export default function ProfilePage() {
       <div className="relative mb-12">
         <ProfileHero />
         <div className="absolute bottom-0 right-6 translate-y-1/2 z-10">
-          <ProfileAvatar src={AVATAR_SRC} />
+          <ProfileAvatarLive />
         </div>
       </div>
 

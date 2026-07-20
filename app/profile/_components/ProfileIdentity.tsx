@@ -30,6 +30,11 @@ export default function ProfileIdentity({ fallbackName, username, city, side, le
         <span className="text-xs text-ink-soft">{username}</span>
       </div>
       <ProfileMeta city={city} side={side} level={level} />
+      {player?.bio && (
+        <p className="text-sm text-ink-soft text-right leading-6 mt-1" dir="rtl">
+          {player.bio}
+        </p>
+      )}
     </div>
   );
 }
