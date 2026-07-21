@@ -1,12 +1,10 @@
 import BottomNav from "../(main)/_components/BottomNav";
 import ProfileHero from "./_components/ProfileHero";
-import ProfileAvatar from "./_components/ProfileAvatar";
+import ProfileAvatarLive from "./_components/ProfileAvatarLive";
 import ProfileIdentity from "./_components/ProfileIdentity";
 import StatsGrid from "./_components/StatsGrid";
 import NavRow from "./_components/NavRow";
 import { toPersianDigits } from "../../lib/persian";
-
-const AVATAR_SRC = "/images/avatar-placeholder.svg";
 
 const STAT_ICONS = {
   wins: "/icons/stat-wins.svg",
@@ -48,7 +46,7 @@ const stats = [
 
 const navItems = [
   { label: "ویرایش حساب کاربری", href: "/profile/edit", icon: NAV_ICONS.edit },
-  { label: "مشاهده آمار", href: "/profile/statistics", icon: NAV_ICONS.chart },
+  { label: "مشاهده آمار", href: "/profile/statistics", icon: NAV_ICONS.chart, comingSoon: true },
   { label: "تنظیمات", href: "/profile/settings", icon: NAV_ICONS.settings },
   { label: "پشتیبانی", href: "/profile/support", icon: NAV_ICONS.support },
   { label: "قوانین و مقررات", href: "/profile/rules", icon: NAV_ICONS.rules },
@@ -61,7 +59,7 @@ export default function ProfilePage() {
       <div className="relative mb-12">
         <ProfileHero />
         <div className="absolute bottom-0 right-6 translate-y-1/2 z-10">
-          <ProfileAvatar src={AVATAR_SRC} />
+          <ProfileAvatarLive />
         </div>
       </div>
 

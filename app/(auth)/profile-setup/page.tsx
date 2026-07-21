@@ -6,11 +6,18 @@ import { useMutation } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
+import AuthSelect, { type SelectOption } from "../_components/AuthSelect";
 import AuthActions from "../_components/AuthActions";
 import { updateProfile } from "@/lib/api/players";
 import { ApiError } from "@/lib/api/client";
 
 const BG = "/images/auth-profile-setup.webp";
+
+// Displayed in Persian; the value is the backend enum sent as-is.
+const GENDER_OPTIONS: SelectOption[] = [
+  { value: "MALE", label: "آقا" },
+  { value: "FEMALE", label: "خانم" },
+];
 
 export default function ProfileSetupPage() {
   const router = useRouter();
@@ -22,10 +29,9 @@ export default function ProfileSetupPage() {
   const isComplete = Object.values(form).every((v) => v.trim() !== "");
 
   const { mutate, isPending, error } = useMutation({
-    // The API profile takes only name + gender. `city` is collected for later
-    // (no field for it yet) and the assessment stays local/deferred.
-    // TODO(gender): confirm the accepted gender string (raw Persian vs an enum)
-    // against the live API and map here if needed.
+    // The API profile takes only name + gender (MALE/FEMALE, already the stored
+    // value). `city` is collected for later (no field yet) and the assessment
+    // stays local/deferred.
     mutationFn: () =>
       updateProfile({ firstName: form.firstName, lastName: form.lastName, gender: form.gender }),
     onSuccess: () => router.push("/assessment"),
@@ -48,12 +54,19 @@ export default function ProfileSetupPage() {
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel />
-                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel />
+                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly />
+                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly />
                 </div>
                 <div className="flex gap-4">
-                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel />
-                  <AuthInput placeholder="آقا" label="جنسیت" value={form.gender} onChange={set("gender")} showLabel />
+                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel persianOnly />
+                  <AuthSelect
+                    label="جنسیت"
+                    placeholder="انتخاب"
+                    value={form.gender}
+                    onChange={set("gender")}
+                    options={GENDER_OPTIONS}
+                    showLabel
+                  />
                 </div>
               </div>
               <div className="flex flex-col gap-4">

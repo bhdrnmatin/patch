@@ -1,5 +1,5 @@
 import { forwardRef, useId } from "react";
-import { toPersianDigits } from "@/lib/persian";
+import { toPersianDigits, toPersianOnly } from "@/lib/persian";
 
 interface AuthInputProps {
   label: string;
@@ -7,6 +7,8 @@ interface AuthInputProps {
   onChange: (val: string) => void;
   placeholder?: string;
   numeric?: boolean;
+  /** Restrict to Persian text — strips Latin letters/digits as they're typed. */
+  persianOnly?: boolean;
   maxLength?: number;
   showLabel?: boolean;
   name?: string;
@@ -14,7 +16,7 @@ interface AuthInputProps {
 }
 
 const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInput(
-  { label, value, onChange, placeholder, numeric, maxLength, showLabel, name, disabled },
+  { label, value, onChange, placeholder, numeric, persianOnly, maxLength, showLabel, name, disabled },
   ref
 ) {
   const id = useId();
@@ -24,6 +26,8 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
     if (numeric) {
       next = next.replace(/[^0-9۰-۹]/g, "");
       next = toPersianDigits(next);
+    } else if (persianOnly) {
+      next = toPersianOnly(next);
     }
     if (maxLength) next = next.slice(0, maxLength);
     onChange(next);

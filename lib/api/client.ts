@@ -1,5 +1,5 @@
 import { API_PREFIX } from "./config";
-import { clearSession, getAccessToken } from "./session";
+import { clearSession, getAccessToken, isAccessTokenExpired } from "./session";
 
 /** A non-2xx API response. `body` is the parsed error payload when present. */
 export class ApiError extends Error {
@@ -68,11 +68,16 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
   const res = await fetch(`${API_PREFIX}${path}`, { method, headers, body: payload });
 
   if (res.status === 401 && auth) {
-    // Session is invalid/expired. TODO(refresh): when POST /auth/refresh ships,
-    // attempt a refresh-token exchange here before clearing and redirecting.
-    clearSession();
-    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-      window.location.assign("/login");
+    // Only end the session when the token is actually gone/expired. This backend
+    // is flaky (frequent 5xx), and a 401 on a still-valid token is usually a
+    // transient hiccup — clearing + redirecting on those logged users out on
+    // every background refetch. TODO(refresh): exchange the refresh token here
+    // when POST /auth/refresh ships.
+    if (isAccessTokenExpired()) {
+      clearSession();
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        window.location.assign("/login");
+      }
     }
     throw new ApiError(401, "نشست شما منقضی شده است.", null);
   }

@@ -47,3 +47,28 @@ export function clearSession(): void {
 export function hasSession(): boolean {
   return getAccessToken() !== null;
 }
+
+/** Read the `exp` (ms) from a JWT access token, or null if not decodable. */
+function accessTokenExpiryMs(): number | null {
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(
+      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+    return typeof payload.exp === "number" ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * True only when there's no token or its `exp` has passed. A non-decodable
+ * token is treated as NOT expired — let the server be the judge. Used to tell a
+ * genuine "session ended" from a transient backend 401.
+ */
+export function isAccessTokenExpired(): boolean {
+  if (!getAccessToken()) return true;
+  const exp = accessTokenExpiryMs();
+  return exp !== null && exp <= Date.now();
+}
