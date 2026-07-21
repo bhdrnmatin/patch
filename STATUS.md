@@ -253,14 +253,19 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 
 ### Wired flows
 - [x] Login (request OTP), OTP (verify → tokens → route by profile completeness)
-- [x] Profile-setup (`PUT` name+gender; city/assessment deferred), profile page live name (`ProfileIdentity` client island)
+- [x] Profile-setup (`PUT` name+gender via `AuthSelect` MALE/FEMALE dropdown; Persian-only inputs; city/assessment deferred)
+- [x] Edit profile → `/profile/edit/personal`: photo upload (`uploadProfilePhoto`) + bio (`updateDisplayInfo`); email/password rows hidden
+- [x] `/profile`: live avatar (`ProfileAvatarLive`, silhouette fallback) + bio (`ProfileIdentity`); `@username` hidden
+- [x] Settings: `LogoutRow` → `POST /auth/logout`; language/privacy hidden. Statistics row "به زودی"
 - [x] Route guards: `(main)`, `/profile`, `/matches/*` layouts; login/otp redirect when authed
 
 ### Status
 - tsc + lint clean; all routes 200; same-origin proxy verified forwarding to upstream.
-- **Blocked:** `POST /otp/request` 500s on the backend for every number (SMS send throws) — the
-  live OTP happy path can't complete until that endpoint is fixed. All other endpoints behave
-  correctly. See TODO.md for the follow-ups.
+- `dev` pinned to `-p 3000` (stable origin so the localStorage token survives restarts).
+- **Blocked (backend):** access-token TTL is only **15 min** and there's no `/auth/refresh`, so
+  users get logged out ~15 min in — needs a backend TTL bump or refresh endpoint. Frontend already
+  only clears on a genuinely-expired token. (`/otp/request`'s earlier 500 now appears resolved —
+  login completes end-to-end.) See TODO.md.
 
 ---
 

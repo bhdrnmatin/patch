@@ -1,5 +1,32 @@
 # Session State
 
+## Session — 2026-07-20: profile-editing pass + logout diagnosis
+Built out profile editing against the live API on `feat/profile-gender-select` (12 commits, merged
+to `main` as `b09e815`, pushed to origin + patchapp; branch deleted, plus the stale
+`patchapp/feat/api-auth-profile` cleaned up).
+
+- **Profile-setup:** gender → `AuthSelect` dropdown (آقا/خانم → `MALE`/`FEMALE`); name/city/bio
+  Persian-only via shared `toPersianOnly` (`lib/persian.ts`).
+- **Edit profile:** new `/profile/edit/personal` (photo upload + bio, both invalidate `["me"]`);
+  email/password rows commented out. Settings: delete-account → `LogoutRow` (`POST /auth/logout`),
+  language/privacy commented out. Statistics row → "به زودی" (`NavRow comingSoon`).
+- **/profile:** live avatar (`ProfileAvatarLive`) + bio (`ProfileIdentity`); `@username` hidden.
+  Default `avatar-placeholder.svg` is now a Facebook-style silhouette; `ProfileAvatar` falls back to
+  it on empty src **and** on `onError`.
+- **Logout bug — DIAGNOSED (backend blocker):** used a temporary localStorage breadcrumb to catch
+  it. Cause = **access-token TTL is 15 min** and there's **no `/auth/refresh`** (confirmed against
+  live spec: 9 endpoints, refreshToken only used by logout). Not frontend-fixable. Frontend hardened
+  meanwhile: 401 only logs out when the token is genuinely expired (`isAccessTokenExpired` decodes
+  JWT `exp`), `["me"]` no longer refetches on focus, and `dev` pinned to `-p 3000` (port bounce was a
+  separate origin-loss cause). Debug breadcrumb removed after diagnosis. Recorded in
+  `project_api_integration.md`.
+- **`/otp/request`** now completes (login works end-to-end) — the earlier 500 appears backend-fixed.
+
+### Next
+- Backend must raise the token TTL or ship `POST /auth/refresh`; then wire rotation in the marked
+  `lib/api/client.ts` seam. Other follow-ups (profileStatus routing, 429 UI, assessment persistence)
+  in TODO.md.
+
 ## Session — 2026-07-18 (later): connect auth + profile to the live API
 Wired the first real API calls to `api.patchapp.ir` — branch `feat/api-auth-profile`
 (committed `dfeb717`, pushed). The API is early: only auth (OTP) + player profile exist,

@@ -8,6 +8,15 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Profile] Profile-editing pass wired to the live API (branch `feat/profile-gender-select`, merged to `main`):
+  - [Profile-setup] Gender is now a dropdown (`AuthSelect`) with آقا/خانم storing the backend enum `MALE`/`FEMALE` directly. Name/lastname/city inputs are Persian-only (a shared `toPersianOnly` in `lib/persian.ts` strips Latin letters/digits, keeps ZWNJ/spaces)
+  - [Edit profile] New `/profile/edit/personal` page (the اطلاعات فردی row now works): profile-photo upload (`POST /players/me/profile-photo`, multipart) + bio editor (`PUT /players/me/display-info`), both invalidating the shared `["me"]` query; bio is Persian-only. Email + change-password rows commented out (flows don't exist yet)
+  - [Profile] `/profile` shows the live avatar and bio (`ProfileAvatarLive` island + bio in `ProfileIdentity`); `@username` line hidden. Default avatar is now a Facebook-style silhouette (`avatar-placeholder.svg`), used when no photo is set **or** a photo URL fails to load (`onError`)
+  - [Settings] Replaced the delete-account row with a **خروج از حساب** logout row (`LogoutRow` → `POST /auth/logout`, clears session, redirects to /login; resilient to a failed server call); commented out انتخاب زبان and حریم شخصی
+  - [Statistics] مشاهده آمار deactivated with a "به زودی" label (`NavRow` `comingSoon`); route/page kept
+  - [Auth] Hardened against spurious logouts — a 401 only ends the session when the token is genuinely missing/expired (`isAccessTokenExpired` decodes the JWT `exp`), not on transient backend 401s; the `["me"]` query no longer refetches on tab refocus. **Known backend blocker:** access-token TTL is only **15 min** and there's no `/auth/refresh`, so users still get logged out ~15 min in — needs a backend TTL bump or a refresh endpoint (see TODO)
+  - [DX] `dev` script pinned to `-p 3000` so the dev server can't silently bounce to :3001 (which changed the origin and wiped the per-origin localStorage token)
+
 - [API] Connected the auth + profile flows to the live backend (`api.patchapp.ir`), on branch `feat/api-auth-profile`. The API is early — only auth (OTP) and player profile exist, so every other feature stays on the mock `lib/data` seam:
   - [Infra] New `lib/api/` module — `session` (localStorage bearer tokens, SSR-guarded, reactive), `client` (`apiFetch` with typed `ApiError` reading the API's `errorMessage` envelope, 401 → clear session + redirect, 204 handling), `auth`/`players` endpoint modules, and a `useAuth` hook with `useRequireAuth`/`useRedirectIfAuthed` guards + an `AuthGuard` wrapper
   - [Infra] The API sends no CORS headers, so `next.config.ts` rewrites same-origin `/api/v1/*` to the upstream host (server-only `API_BASE_URL`); `.env.example` documents it. Added `toLatinDigits` to normalize Persian phone/OTP input

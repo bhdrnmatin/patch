@@ -92,12 +92,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
-- [ ] `POST /api/v1/otp/request` 500s for every number (SMS send throws server-side) — the live OTP
-      flow can't complete until the backend fixes it. Frontend is correct (proxy delivers, API
-      rate-limits, then 500s). Escalate to the backend team.
+- [ ] **15-min logout (diagnosed 2026-07-20):** access-token TTL is only 15 min and there's no
+      `/auth/refresh` endpoint, so users get logged out ~15 min into a session. NOT frontend-fixable.
+      Backend must raise the TTL or add `POST /auth/refresh` (refreshToken → new accessToken); then
+      wire rotation in the marked seam in `lib/api/client.ts`. Frontend already only clears on a
+      genuinely expired token so transient 401s don't log out.
+- [~] `POST /api/v1/otp/request` was 500ing for every number — appears **resolved** (login now
+      completes end-to-end; tokens are issued). Re-confirm if it recurs.
 ### Confirm once OTP works (a real token is reachable)
-- [ ] Gender value: profile-setup sends the raw Persian text — confirm the accepted string (enum like
-      `MALE`/`FEMALE`?) and map in `updateProfile` if needed.
+- [x] Gender value — **done**: profile-setup sends `MALE`/`FEMALE` via the `AuthSelect` dropdown.
 - [ ] OTP routing uses empty firstName/lastName to detect "needs setup" — switch to the real
       `profileStatus` values once confirmed against a live `/players/me`.
 - [ ] Verify the authed endpoints accept our payloads / return expected data (getMe, profile PUTs) —
@@ -106,9 +109,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] 429 rate-limit UI: surface the `retryAfter` countdown on the OTP request — left until the
       endpoint actually works.
 - [ ] Refresh-token rotation: no `/auth/refresh` endpoint exists; 401 currently clears session +
-      redirects. Add rotation in `lib/api/client.ts` (seam marked) when it ships.
-- [ ] Profile avatar still uses the placeholder — wire `avatarUrl` + a photo-upload UI
-      (`uploadProfilePhoto` already exists).
+      redirects. Add rotation in `lib/api/client.ts` (seam marked) when it ships. (Same blocker as the
+      15-min logout above.)
+- [x] Profile avatar — **done**: `/profile` shows `avatarUrl` (default silhouette fallback) and
+      `/profile/edit/personal` uploads via `uploadProfilePhoto`.
 - [ ] City + the 5-step assessment are collected but not persisted (no API fields) — send when added.
 - [ ] Swap the mock `lib/data/*` accessor bodies to `fetch` as matches/tournaments/courts/activity
       endpoints ship (the seam is already in place).
