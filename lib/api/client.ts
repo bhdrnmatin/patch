@@ -1,5 +1,11 @@
 import { API_PREFIX } from "./config";
-import { clearSession, getAccessToken, isAccessTokenExpired } from "./session";
+import {
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  isAccessTokenExpired,
+  setTokens,
+} from "./session";
 
 /** A non-2xx API response. `body` is the parsed error payload when present. */
 export class ApiError extends Error {
@@ -21,6 +27,8 @@ interface RequestOptions {
   form?: FormData;
   /** Attach the bearer token. Default true; pass false for public endpoints. */
   auth?: boolean;
+  /** Internal: set on the single replay after a token refresh (prevents loops). */
+  _retry?: boolean;
 }
 
 function safeJson(text: string): unknown {
@@ -42,14 +50,65 @@ function errorMessageOf(data: unknown, status: number): string {
   return `خطای سرور (${status})`;
 }
 
+// --- Token refresh (rotating) -------------------------------------------------
+// Single-flight: concurrent 401s (or proactive refreshes) share one in-flight
+// /auth/refresh call rather than each firing their own.
+let refreshInFlight: Promise<boolean> | null = null;
+
+function refreshTokens(): Promise<boolean> {
+  if (!refreshInFlight) {
+    refreshInFlight = doRefresh().finally(() => {
+      refreshInFlight = null;
+    });
+  }
+  return refreshInFlight;
+}
+
+async function doRefresh(): Promise<boolean> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
+  try {
+    // Raw fetch (not apiFetch) so it can never recurse through the 401 path.
+    const res = await fetch(`${API_PREFIX}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json().catch(() => null);
+    // Rotating refresh: the response carries a fresh access AND refresh token.
+    if (data && typeof data.accessToken === "string" && typeof data.refreshToken === "string") {
+      setTokens(data);
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+function endSession(): void {
+  clearSession();
+  if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+    window.location.assign("/login");
+  }
+}
+
 /**
  * Fetch a same-origin `/api/v1` path (proxied to the upstream API by
- * next.config.ts). Throws {@link ApiError} on non-2xx. On a 401 for an
- * authenticated request, clears the session and bounces to /login — there is no
- * refresh endpoint yet (see TODO below).
+ * next.config.ts). Throws {@link ApiError} on non-2xx. Keeps the session alive
+ * across the short access-token TTL: refreshes a known-expired token before the
+ * request, and on a 401 refreshes once and replays. Only when the refresh token
+ * itself is invalid does it clear the session and bounce to /login.
  */
 export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, form, auth = true } = opts;
+  const { method = "GET", body, form, auth = true, _retry = false } = opts;
+
+  // Proactive: if the access token is already expired, refresh before spending a
+  // request on a guaranteed 401 (tokens are short-lived).
+  if (auth && !_retry && isAccessTokenExpired() && getRefreshToken()) {
+    await refreshTokens();
+  }
 
   const headers: Record<string, string> = {};
   if (auth) {
@@ -68,17 +127,12 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
   const res = await fetch(`${API_PREFIX}${path}`, { method, headers, body: payload });
 
   if (res.status === 401 && auth) {
-    // Only end the session when the token is actually gone/expired. This backend
-    // is flaky (frequent 5xx), and a 401 on a still-valid token is usually a
-    // transient hiccup — clearing + redirecting on those logged users out on
-    // every background refetch. TODO(refresh): exchange the refresh token here
-    // when POST /auth/refresh ships.
-    if (isAccessTokenExpired()) {
-      clearSession();
-      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-        window.location.assign("/login");
-      }
+    // Reactive: refresh once and replay the request. If refresh fails (or the
+    // replay still 401s), the refresh token is dead — end the session.
+    if (!_retry && (await refreshTokens())) {
+      return apiFetch<T>(path, { ...opts, _retry: true });
     }
+    endSession();
     throw new ApiError(401, "نشست شما منقضی شده است.", null);
   }
 

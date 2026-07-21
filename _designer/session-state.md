@@ -1,5 +1,15 @@
 # Session State
 
+## Session — 2026-07-21: token refresh rotation (15-min logout fixed)
+Backend shipped `POST /auth/refresh` (`{refreshToken}` → `{accessToken, refreshToken}`, rotating;
+verified via live spec + a bad-token 401 probe). Wired rotation in `lib/api/client.ts`:
+proactive refresh of an expired token, reactive refresh-and-replay on 401, single-flight (concurrent
+401s share one refresh), stores the rotated refresh token; only a dead refresh token calls
+`endSession()`. `doRefresh` uses raw fetch (not apiFetch) to avoid recursion; `_retry` flag prevents
+replay loops. This resolves the diagnosed 15-min-TTL logout. tsc + lint clean. Docs
+(CHANGELOG/STATUS/TODO/memory) updated. Also noted: backend added `/provinces` + `/provinces/{id}/cities`
+and `/players/me` gained fields — not wired yet (candidate for the city field).
+
 ## Session — 2026-07-20: profile-editing pass + logout diagnosis
 Built out profile editing against the live API on `feat/profile-gender-select` (12 commits, merged
 to `main` as `b09e815`, pushed to origin + patchapp; branch deleted, plus the stale

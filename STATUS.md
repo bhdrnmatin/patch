@@ -262,10 +262,10 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 ### Status
 - tsc + lint clean; all routes 200; same-origin proxy verified forwarding to upstream.
 - `dev` pinned to `-p 3000` (stable origin so the localStorage token survives restarts).
-- **Blocked (backend):** access-token TTL is only **15 min** and there's no `/auth/refresh`, so
-  users get logged out ~15 min in — needs a backend TTL bump or refresh endpoint. Frontend already
-  only clears on a genuinely-expired token. (`/otp/request`'s earlier 500 now appears resolved —
-  login completes end-to-end.) See TODO.md.
+- [x] **Token refresh (2026-07-21):** `POST /auth/refresh` is wired in `lib/api/client.ts` — proactive
+  refresh of an expired token + reactive refresh-and-replay on 401, single-flight, rotating. Sessions
+  now survive the 15-min access-token TTL; only a dead refresh token logs the user out.
+- (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 
 ---
 
