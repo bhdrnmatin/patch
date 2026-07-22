@@ -49,6 +49,8 @@ export interface UpdateDisplayInfoRequest {
   bio: string;
 }
 
+export type PhotoVisibility = "PUBLIC" | "PRIVATE";
+
 export interface ProfilePhotoVisibilityRequest {
-  visibility: string;
+  visibility: PhotoVisibility;
 }

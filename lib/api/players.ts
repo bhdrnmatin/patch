@@ -1,5 +1,6 @@
 import { apiFetch } from "./client";
 import type {
+  PhotoVisibility,
   PlayerResponse,
   UpdateDisplayInfoRequest,
   UpdateProfileRequest,
@@ -10,7 +11,7 @@ export function getMe(): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me");
 }
 
-/** Set name + gender (profile-setup and the edit flow). */
+/** Update the profile — all of firstName/lastName/gender/residenceCityId/username are required. */
 export function updateProfile(body: UpdateProfileRequest): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me/profile", { method: "PUT", body });
 }
@@ -20,7 +21,7 @@ export function updateDisplayInfo(body: UpdateDisplayInfoRequest): Promise<Playe
   return apiFetch<PlayerResponse>("/players/me/display-info", { method: "PUT", body });
 }
 
-export function updatePhotoVisibility(visibility: string): Promise<PlayerResponse> {
+export function updatePhotoVisibility(visibility: PhotoVisibility): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me/profile-photo/visibility", {
     method: "PUT",
     body: { visibility },

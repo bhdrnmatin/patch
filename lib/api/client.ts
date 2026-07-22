@@ -126,14 +126,19 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
 
   const res = await fetch(`${API_PREFIX}${path}`, { method, headers, body: payload });
 
-  if (res.status === 401 && auth) {
-    // Reactive: refresh once and replay the request. If refresh fails (or the
-    // replay still 401s), the refresh token is dead — end the session.
-    if (!_retry && (await refreshTokens())) {
+  if (res.status === 401 && auth && !_retry) {
+    // Reactive: refresh once and replay the original request.
+    if (await refreshTokens()) {
       return apiFetch<T>(path, { ...opts, _retry: true });
     }
-    endSession();
-    throw new ApiError(401, "نشست شما منقضی شده است.", null);
+    // Refresh didn't help. Only end the session when the token is genuinely
+    // gone/expired — a 401 while still holding a valid token is an
+    // authorization/transient error (not session death), so let it surface
+    // through the normal error path instead of logging the user out.
+    if (isAccessTokenExpired()) {
+      endSession();
+      throw new ApiError(401, "نشست شما منقضی شده است.", null);
+    }
   }
 
   if (res.status === 204) return undefined as T;
