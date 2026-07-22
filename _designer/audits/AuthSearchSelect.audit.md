@@ -14,5 +14,8 @@ Full-screen searchable picker (long lists: province/city), rendered via portal.
 
 Note: Escape close, `overflow:hidden` body-scroll lock, backdrop, "موردی یافت نشد" empty state, and top-pinned search (keyboard-stable) are all correct/good.
 
+## v2 — 2026-07-22 | refactor
+Fixed all: #1 dialog semantics (`role="dialog"` + `aria-modal` + `aria-label`) + Tab focus trap; #2 Arrow/Home/End nav over options (ArrowDown from the search input enters the list); #3 `aria-controls` on the trigger; #4 focus trap completes the autoFocus management.
+
 ### Status
-Open: 4 (2 Warning, 2 Suggestion) | Fixed: 0 | Accepted: 1
+Open: 0 | Fixed: 4 | Accepted: 1

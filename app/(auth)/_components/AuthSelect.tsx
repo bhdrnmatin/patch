@@ -31,10 +31,35 @@ export default function AuthSelect({
   showLabel,
 }: AuthSelectProps) {
   const id = useId();
+  const listId = `${id}-list`;
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   const selected = options.find((o) => o.value === value);
+
+  const focusOption = (idx: number) => {
+    const btns = Array.from(listRef.current?.querySelectorAll<HTMLElement>("li > button") ?? []);
+    if (btns.length === 0) return;
+    btns[Math.max(0, Math.min(idx, btns.length - 1))].focus();
+  };
+  const onListKeyDown = (e: React.KeyboardEvent) => {
+    const btns = Array.from(listRef.current?.querySelectorAll<HTMLElement>("li > button") ?? []);
+    const cur = btns.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusOption(cur + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      focusOption(cur <= 0 ? 0 : cur - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusOption(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusOption(btns.length - 1);
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -70,7 +95,14 @@ export default function AuthSelect({
           dir="rtl"
           aria-haspopup="listbox"
           aria-expanded={open}
+          aria-controls={open ? listId : undefined}
           onClick={() => setOpen((o) => !o)}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown" && open) {
+              e.preventDefault();
+              focusOption(0);
+            }
+          }}
           className="w-full h-full rounded-card bg-black/[0.32] border border-input-border pr-4 pl-9 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
         >
           <span className={selected ? "text-white" : "text-white/40"}>
@@ -90,8 +122,11 @@ export default function AuthSelect({
 
         {open && (
           <ul
+            id={listId}
+            ref={listRef}
             role="listbox"
             dir="rtl"
+            onKeyDown={onListKeyDown}
             className="absolute top-full mt-2 w-full z-20 rounded-card bg-black/80 backdrop-blur-card border border-input-border shadow-pop overflow-y-auto max-h-60 py-1"
           >
             {options.map((o) => {

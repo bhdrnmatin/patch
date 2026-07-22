@@ -16,5 +16,8 @@ Clean. Thin client wrapper reading `useAuth().player?.avatarUrl` with fallback. 
 ## ProfileIdentity — `app/profile/_components/ProfileIdentity.tsx`
 Clean. Reads live name/username/bio from `useAuth().player`; `@username` in `dir="ltr"`; RTL text handled. No findings.
 
+## fix — 2026-07-22
+AuthGuard: replaced the blank `null` with a centered spinner (`role="status"`) during the checking phase.
+
 ### Status
-Open: 1 (Suggestion, AuthGuard) | others clean
+Open: 0 | AuthGuard fixed | others clean

@@ -67,3 +67,4 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-07-22 | **LogoutRow** | audit | 0 Critical, 0 Warning, 1 Suggestion | 0 fixed, 1 open | [details](audits/LogoutRow.audit.md)
 - 2026-07-22 | **NavRow** | audit | 0 Critical, 0 Warning, 1 Suggestion | 0 fixed, 1 open | [details](audits/NavRow.audit.md)
 - 2026-07-22 | **AuthGuard/ProfileAvatar/ProfileIdentity** | audit | 0 Critical, 0 Warning, 1 Suggestion | mostly clean | [details](audits/auth-profile-misc.audit.md)
+- 2026-07-22 | **AuthSelect + AuthSearchSelect (a11y)** | refactor | fixed 3 Warning + 4 Suggestion (dialog semantics, focus trap, arrow-nav, aria-controls, aria-busy, guard loader) | 0 open | [details](audits/AuthSearchSelect.audit.md)
