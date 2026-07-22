@@ -32,9 +32,15 @@ function OtpContent() {
       // Tokens are now stored; fetch the profile to decide where to land.
       // Routing off the returned name is robust without pinning the exact
       // profileStatus enum values (confirmed against a live /me later).
-      const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
-      const needsSetup = !me.firstName?.trim() || !me.lastName?.trim();
-      router.replace(needsSetup ? "/profile-setup" : "/");
+      try {
+        const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
+        const needsSetup = !me.firstName?.trim() || !me.lastName?.trim();
+        router.replace(needsSetup ? "/profile-setup" : "/");
+      } catch {
+        // Profile fetch failed (e.g. a brand-new user with no profile record
+        // yet) — default to setup rather than stranding them on this screen.
+        router.replace("/profile-setup");
+      }
     },
   });
 

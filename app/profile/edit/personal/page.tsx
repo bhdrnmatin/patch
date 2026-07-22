@@ -12,13 +12,12 @@ import {
   updatePhotoVisibility,
   uploadProfilePhoto,
 } from "@/lib/api/players";
-import type { PlayerResponse } from "@/lib/api/types";
+import type { PhotoVisibility, PlayerResponse } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
 
 // TODO(visibility): confirm the accepted strings against the live API, and read
 // the current value from PlayerResponse once the backend exposes it (it isn't in
 // /players/me yet, so the toggle defaults to public each load).
-type PhotoVisibility = "PUBLIC" | "PRIVATE";
 
 export default function PersonalInfoPage() {
   const { data: player, isLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
