@@ -6,7 +6,9 @@ import type { NextConfig } from "next";
 const API_BASE_URL = process.env.API_BASE_URL ?? "https://api.patchapp.ir";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.1.36"],
+  // LAN IPs allowed to load dev resources (phones on the local network).
+  // Add your machine's current LAN IP here if it changes (DHCP).
+  allowedDevOrigins: ["192.168.1.36", "192.168.1.44"],
   output: "standalone",
   async rewrites() {
     return [
