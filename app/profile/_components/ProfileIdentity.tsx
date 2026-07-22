@@ -13,19 +13,28 @@ interface Props {
 /**
  * Name + username + meta block. Name and username come from the live
  * /players/me profile; city/side/level have no API field yet, so they stay as
- * the passed-in placeholders. Falls back to the placeholder name while loading.
+ * the passed-in placeholders. While /players/me is loading we show a skeleton
+ * bar rather than the mock name, so a real-looking placeholder never flashes
+ * before the user's own name resolves.
  */
 export default function ProfileIdentity({ fallbackName, city, side, level }: Props) {
-  const { player } = useAuth();
+  const { player, isLoading } = useAuth();
   const apiName = player ? `${player.firstName} ${player.lastName}`.trim() : "";
   const name = apiName || fallbackName;
 
   return (
     <div className="flex flex-col gap-1 items-end w-full">
       <div className="flex flex-col items-end">
-        <span className="text-story-title font-bold text-ink-soft" dir="rtl">
-          {name}
-        </span>
+        {isLoading && !apiName ? (
+          <span
+            className="h-7 w-32 rounded bg-edge/70 animate-pulse"
+            aria-label="در حال بارگذاری"
+          />
+        ) : (
+          <span className="text-story-title font-bold text-ink-soft" dir="rtl">
+            {name}
+          </span>
+        )}
         {player?.username && (
           <span className="text-xs text-ink-soft" dir="ltr">
             @{player.username}
