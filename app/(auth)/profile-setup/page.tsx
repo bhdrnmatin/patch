@@ -2,14 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthSelect, { type SelectOption } from "../_components/AuthSelect";
+import AuthSearchSelect from "../_components/AuthSearchSelect";
 import AuthActions from "../_components/AuthActions";
 import { updateProfile } from "@/lib/api/players";
+import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
+import { toPersianOnly } from "@/lib/persian";
 
 const BG = "/images/auth-profile-setup.webp";
 
@@ -19,26 +22,91 @@ const GENDER_OPTIONS: SelectOption[] = [
   { value: "FEMALE", label: "خانم" },
 ];
 
+// API pattern: ^[a-zA-Z0-9_]{3,20}$ — strip everything but letters/digits/_
+const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9_]/g, "").toLowerCase();
+
 export default function ProfileSetupPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ firstName: "", lastName: "", city: "", gender: "" });
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    username: "",
+    provinceId: "",
+    cityId: "",
+  });
 
   const set = (key: keyof typeof form) => (val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
 
-  const isComplete = Object.values(form).every((v) => v.trim() !== "");
+  const provincesQuery = useQuery({ queryKey: ["provinces"], queryFn: getProvinces });
+  const citiesQuery = useQuery({
+    queryKey: ["cities", form.provinceId],
+    queryFn: () => getCities(form.provinceId),
+    enabled: Boolean(form.provinceId),
+  });
+  const provinces = provincesQuery.data ?? [];
+  const cities = citiesQuery.data ?? [];
+
+  const provinceOptions: SelectOption[] = provinces.map((p) => ({ value: p.id, label: p.name }));
+  const cityOptions: SelectOption[] = cities.map((c) => ({ value: c.id, label: c.name }));
+
+  const provincePlaceholder = provincesQuery.isLoading
+    ? "در حال بارگذاری..."
+    : provinces.length === 0
+      ? "استانی یافت نشد"
+      : "انتخاب";
+  const cityPlaceholder = !form.provinceId
+    ? "ابتدا استان"
+    : citiesQuery.isLoading
+      ? "در حال بارگذاری..."
+      : cities.length === 0
+        ? "شهری یافت نشد"
+        : "انتخاب";
+  const geoError =
+    provincesQuery.error instanceof ApiError
+      ? `استان: ${provincesQuery.error.message}`
+      : citiesQuery.error instanceof ApiError
+        ? `شهر: ${citiesQuery.error.message}`
+        : null;
+
+  // residenceCityId (cityId) is what the API needs; province just scopes the city list.
+  const isComplete =
+    form.firstName.trim() !== "" &&
+    form.lastName.trim() !== "" &&
+    form.gender !== "" &&
+    form.username.trim() !== "" &&
+    form.cityId !== "";
+
+  // Submit-time guard: the live filter can slip on some mobile keyboards, so
+  // block if a name still contains Latin, and always send the cleaned value.
+  const nameError =
+    /[a-zA-Z]/.test(form.firstName) || /[a-zA-Z]/.test(form.lastName)
+      ? "نام و نام خانوادگی باید فارسی باشند."
+      : null;
+
+  // API requires the username to be 3–20 chars.
+  const usernameError =
+    form.username.trim() !== "" && form.username.length < 3
+      ? "نام کاربری باید حداقل ۳ کاراکتر باشد."
+      : null;
 
   const { mutate, isPending, error } = useMutation({
-    // The API profile takes only name + gender (MALE/FEMALE, already the stored
-    // value). `city` is collected for later (no field yet) and the assessment
-    // stays local/deferred.
     mutationFn: () =>
-      updateProfile({ firstName: form.firstName, lastName: form.lastName, gender: form.gender }),
+      updateProfile({
+        firstName: toPersianOnly(form.firstName),
+        lastName: toPersianOnly(form.lastName),
+        gender: form.gender,
+        username: form.username,
+        residenceCityId: form.cityId,
+      }),
     onSuccess: () => router.push("/assessment"),
   });
 
   const errorMessage =
     error instanceof ApiError ? error.message : error ? "خطا در ثبت اطلاعات. دوباره تلاش کنید." : null;
+
+  const onProvince = (id: string) => setForm((f) => ({ ...f, provinceId: id, cityId: "" }));
 
   return (
     <div
@@ -51,14 +119,21 @@ export default function ProfileSetupPage() {
             title="خوش اومدی!"
             subtitle="بهترین سرمایه‌گذاری روی خودت رو شروع کردی ..."
           >
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly />
-                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly />
+                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly maxLength={20} />
+                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly maxLength={20} />
                 </div>
                 <div className="flex gap-4">
-                  <AuthInput placeholder="تهران" label="شهر" value={form.city} onChange={set("city")} showLabel persianOnly />
+                  <AuthInput
+                    placeholder="sina_padel"
+                    label="نام کاربری"
+                    value={form.username}
+                    onChange={(v) => set("username")(sanitizeUsername(v))}
+                    showLabel
+                    maxLength={20}
+                  />
                   <AuthSelect
                     label="جنسیت"
                     placeholder="انتخاب"
@@ -68,17 +143,38 @@ export default function ProfileSetupPage() {
                     showLabel
                   />
                 </div>
+                <div className="flex gap-4">
+                  <AuthSearchSelect
+                    label="شهر"
+                    placeholder={cityPlaceholder}
+                    searchPlaceholder="جستجوی شهر..."
+                    value={form.cityId}
+                    onChange={set("cityId")}
+                    options={cityOptions}
+                    disabled={!form.provinceId}
+                    showLabel
+                  />
+                  <AuthSearchSelect
+                    label="استان"
+                    placeholder={provincePlaceholder}
+                    searchPlaceholder="جستجوی استان..."
+                    value={form.provinceId}
+                    onChange={onProvince}
+                    options={provinceOptions}
+                    showLabel
+                  />
+                </div>
               </div>
               <div className="flex flex-col gap-4">
-                {errorMessage && (
+                {(nameError || usernameError || geoError || errorMessage) && (
                   <p className="text-xs text-danger text-center" dir="rtl">
-                    {errorMessage}
+                    {nameError ?? usernameError ?? geoError ?? errorMessage}
                   </p>
                 )}
                 <AuthActions
                   nextLabel={isPending ? "در حال ثبت..." : "شروع کنیم!"}
                   onNext={() => mutate()}
-                  disabled={!isComplete || isPending}
+                  disabled={!isComplete || isPending || !!nameError || !!usernameError}
                 />
               </div>
             </div>

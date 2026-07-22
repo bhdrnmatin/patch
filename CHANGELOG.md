@@ -8,6 +8,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Auth] Token refresh rotation (`POST /auth/refresh`, `{refreshToken}` → `{accessToken, refreshToken}`) wired in `lib/api/client.ts`: a known-expired access token is refreshed before the request, a 401 triggers one refresh + replay, concurrent 401s share a single in-flight refresh, and the rotated refresh token is stored. Only a dead refresh token clears the session and redirects to /login. Resolves the 15-min access-token logout.
+
 - [Profile] Profile-editing pass wired to the live API (branch `feat/profile-gender-select`, merged to `main`):
   - [Profile-setup] Gender is now a dropdown (`AuthSelect`) with آقا/خانم storing the backend enum `MALE`/`FEMALE` directly. Name/lastname/city inputs are Persian-only (a shared `toPersianOnly` in `lib/persian.ts` strips Latin letters/digits, keeps ZWNJ/spaces)
   - [Edit profile] New `/profile/edit/personal` page (the اطلاعات فردی row now works): profile-photo upload (`POST /players/me/profile-photo`, multipart) + bio editor (`PUT /players/me/display-info`), both invalidating the shared `["me"]` query; bio is Persian-only. Email + change-password rows commented out (flows don't exist yet)

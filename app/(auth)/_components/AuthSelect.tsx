@@ -18,7 +18,10 @@ interface AuthSelectProps {
   showLabel?: boolean;
 }
 
-/** Dark-glass dropdown matching AuthInput; opens a small option menu. */
+/**
+ * Dark-glass dropdown matching AuthInput; opens a small inline option menu.
+ * Best for short lists (e.g. gender) — long/searchable lists use AuthSearchSelect.
+ */
 export default function AuthSelect({
   label,
   value,
@@ -68,28 +71,28 @@ export default function AuthSelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
-          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border px-4 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
+          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border pr-4 pl-9 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
         >
           <span className={selected ? "text-white" : "text-white/40"}>
             {selected ? selected.label : placeholder ?? label}
           </span>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden
-            className={`text-white/60 transition-transform ${open ? "rotate-180" : ""}`}
-          >
-            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
         </button>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden
+          className={`absolute left-3 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
 
         {open && (
           <ul
             role="listbox"
             dir="rtl"
-            className="absolute top-full mt-2 w-full z-10 rounded-card bg-black/80 backdrop-blur-card border border-input-border shadow-pop overflow-hidden py-1"
+            className="absolute top-full mt-2 w-full z-20 rounded-card bg-black/80 backdrop-blur-card border border-input-border shadow-pop overflow-y-auto max-h-60 py-1"
           >
             {options.map((o) => {
               const isSelected = o.value === value;

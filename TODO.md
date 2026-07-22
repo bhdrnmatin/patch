@@ -92,11 +92,11 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
-- [ ] **15-min logout (diagnosed 2026-07-20):** access-token TTL is only 15 min and there's no
-      `/auth/refresh` endpoint, so users get logged out ~15 min into a session. NOT frontend-fixable.
-      Backend must raise the TTL or add `POST /auth/refresh` (refreshToken → new accessToken); then
-      wire rotation in the marked seam in `lib/api/client.ts`. Frontend already only clears on a
-      genuinely expired token so transient 401s don't log out.
+- [x] **15-min logout — RESOLVED 2026-07-21:** the backend shipped `POST /auth/refresh`
+      (`{refreshToken}` → `{accessToken, refreshToken}`, rotating). Token rotation is now wired in
+      `lib/api/client.ts` (proactive refresh of an expired token + reactive refresh-and-replay on
+      401, single-flight; only a dead refresh token ends the session). Sessions now survive the
+      15-min access-token TTL.
 - [~] `POST /api/v1/otp/request` was 500ing for every number — appears **resolved** (login now
       completes end-to-end; tokens are issued). Re-confirm if it recurs.
 ### Confirm once OTP works (a real token is reachable)
@@ -108,9 +108,7 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 ### Deferred (intentional)
 - [ ] 429 rate-limit UI: surface the `retryAfter` countdown on the OTP request — left until the
       endpoint actually works.
-- [ ] Refresh-token rotation: no `/auth/refresh` endpoint exists; 401 currently clears session +
-      redirects. Add rotation in `lib/api/client.ts` (seam marked) when it ships. (Same blocker as the
-      15-min logout above.)
+- [x] Refresh-token rotation — **done 2026-07-21** (see the resolved 15-min-logout item above).
 - [x] Profile avatar — **done**: `/profile` shows `avatarUrl` (default silhouette fallback) and
       `/profile/edit/personal` uploads via `uploadProfilePhoto`.
 - [ ] City + the 5-step assessment are collected but not persisted (no API fields) — send when added.

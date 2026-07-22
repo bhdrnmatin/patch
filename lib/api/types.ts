@@ -17,16 +17,32 @@ export interface PlayerResponse {
   firstName: string;
   lastName: string;
   gender: string;
+  residenceCityId: string;
+  username: string;
   avatarUrl: string;
   bio: string;
   status: string;
   profileStatus: string;
 }
 
+// All fields are required by the API.
 export interface UpdateProfileRequest {
   firstName: string;
   lastName: string;
   gender: string;
+  residenceCityId: string;
+  username: string;
+}
+
+export interface ProvinceResponse {
+  id: string;
+  name: string;
+  telPrefix: string;
+}
+
+export interface CityResponse {
+  id: string;
+  name: string;
 }
 
 export interface UpdateDisplayInfoRequest {
