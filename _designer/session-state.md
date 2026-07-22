@@ -23,9 +23,16 @@ Merged `feat/token-refresh` → `main` (`3eb84ad`, 8 commits, pushed origin + pa
   `updatePhotoVisibility`, fixed JSDoc. Skipped (low): fetchQuery staleness after account switch,
   `retry:1` double-getMe — both logged in TODO.md.
 
+- **Component QA** (`ds-qa-tw`, audit mode) on the new auth/profile components: 0 Critical, 3 Warning,
+  ~5 Suggestion. Warnings = AuthSearchSelect modal needs dialog semantics + focus trap; AuthSelect/
+  AuthSearchSelect option lists not keyboard-navigable (Tab+Enter works). Audit files written
+  (AuthSelect, AuthSearchSelect, AuthInput v3, LogoutRow, NavRow, auth-profile-misc); index + TODO
+  updated. No refactor applied (audit only).
+
 ### Next
 - Assessment persistence + photo-visibility read side await backend fields (TODO.md). Consider a shared
   BottomSheet/portal picker if more searchable selects appear.
+- Optional: refactor the ds-qa-tw Warnings (dropdown a11y) — dialog semantics + focus trap + keyboard nav.
 
 ## Session — 2026-07-21: token refresh rotation (15-min logout fixed)
 Backend shipped `POST /auth/refresh` (`{refreshToken}` → `{accessToken, refreshToken}`, rotating;

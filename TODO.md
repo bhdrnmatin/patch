@@ -139,3 +139,12 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       dimension / DateCell precedent).
 - [x] Token gap (ActivityCard): `border-divider` for the #E9EDF5 card border — **accepted 2026-06-17**
       (nearest visible token; blessed map's #E9EDF5→surface is too light for a border).
+
+## Component QA — ds-qa-tw audit (2026-07-22)
+Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. Actionable:
+- [ ] AuthSearchSelect: give the full-screen picker dialog semantics (`role="dialog"` + `aria-modal` +
+      accessible name) and a focus trap so keyboard focus can't leave into the page behind it.
+- [ ] AuthSelect + AuthSearchSelect: option lists are `role="listbox"` but not keyboard-navigable
+      (no Arrow/Home/End, no `aria-activedescendant`) — usable via Tab+Enter; make conformant or accept.
+- [ ] Minor (suggestions): AuthGuard blank-flash loader; LogoutRow `aria-busy`; `aria-controls` on the
+      dropdown triggers. Details in _designer/audits/.

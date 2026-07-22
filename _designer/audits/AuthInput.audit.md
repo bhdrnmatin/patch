@@ -15,3 +15,13 @@
 
 ### Status
 Open: 0 | Fixed: 5 | Accepted: 2
+
+## v3 — 2026-07-22 | audit (persianOnly + compositionend)
+Regression check vs v2: findings #1–7 still clean (label/id, forwardRef, name, disabled all intact).
+
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 8 | Suggestion | `persianOnly` filter uses `onChange` + `compositionend` + imperative `e.target.value` reset to survive Android/Gboard composition. Pragmatic and sound; per-keystroke masking on mobile IMEs is inherently best-effort (submit-time guard in profile-setup backs it up). | Accepted — documented mobile fix |
+
+### Status
+Open: 0 | Fixed: 5 | Accepted: 3
