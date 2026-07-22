@@ -72,8 +72,8 @@ export default function ProfilePage() {
           level={mockPlayer.level}
         />
 
-        {/* Stats */}
-        <StatsGrid stats={stats} />
+        {/* Stats — mock only; no real data for launch, so overlaid "به زودی" */}
+        <StatsGrid stats={stats} comingSoon />
 
         {/* Navigation menu */}
         <div className="flex flex-col gap-2 w-full">
