@@ -7,6 +7,7 @@ import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
 import AuthSelect, { type SelectOption } from "../_components/AuthSelect";
+import AuthSearchSelect from "../_components/AuthSearchSelect";
 import AuthActions from "../_components/AuthActions";
 import { updateProfile } from "@/lib/api/players";
 import { getCities, getProvinces } from "@/lib/api/geo";
@@ -143,17 +144,20 @@ export default function ProfileSetupPage() {
                   />
                 </div>
                 <div className="flex gap-4">
-                  <AuthSelect
+                  <AuthSearchSelect
                     label="شهر"
                     placeholder={cityPlaceholder}
+                    searchPlaceholder="جستجوی شهر..."
                     value={form.cityId}
                     onChange={set("cityId")}
                     options={cityOptions}
+                    disabled={!form.provinceId}
                     showLabel
                   />
-                  <AuthSelect
+                  <AuthSearchSelect
                     label="استان"
                     placeholder={provincePlaceholder}
+                    searchPlaceholder="جستجوی استان..."
                     value={form.provinceId}
                     onChange={onProvince}
                     options={provinceOptions}
