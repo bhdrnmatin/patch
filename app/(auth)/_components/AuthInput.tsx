@@ -21,8 +21,8 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
 ) {
   const id = useId();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let next = e.target.value;
+  const filter = (raw: string) => {
+    let next = raw;
     if (numeric) {
       next = next.replace(/[^0-9۰-۹]/g, "");
       next = toPersianDigits(next);
@@ -30,8 +30,23 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
       next = toPersianOnly(next);
     }
     if (maxLength) next = next.slice(0, maxLength);
+    return next;
+  };
+
+  // Apply the filter and keep the DOM in sync. When `next` equals the controlled
+  // value React skips the re-render, so on mobile the rejected character would
+  // stay in the field — reset it imperatively.
+  const apply = (el: HTMLInputElement) => {
+    const next = filter(el.value);
+    if (el.value !== next) el.value = next;
     onChange(next);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => apply(e.currentTarget);
+  // Android/Gboard commits predicted words via composition, which re-inserts the
+  // characters after onChange strips them — re-filter once composition ends.
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) =>
+    apply(e.currentTarget);
 
   return (
     <div className="flex flex-col gap-1 w-full">
@@ -53,6 +68,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
           inputMode={numeric ? "numeric" : "text"}
           value={value}
           onChange={handleChange}
+          onCompositionEnd={handleCompositionEnd}
           disabled={disabled}
           dir="rtl"
           maxLength={maxLength}

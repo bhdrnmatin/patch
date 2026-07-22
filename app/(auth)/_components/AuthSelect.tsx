@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId } from "react";
 
 export interface SelectOption {
   /** Stored value — sent to the backend (e.g. "MALE"). */
@@ -18,7 +18,10 @@ interface AuthSelectProps {
   showLabel?: boolean;
 }
 
-/** Dark-glass dropdown matching AuthInput; opens a small option menu. */
+/**
+ * Dark-glass select matching AuthInput. Uses a native <select> so the OS picker
+ * handles opening — reliable on mobile, and long lists scroll natively.
+ */
 export default function AuthSelect({
   label,
   value,
@@ -28,29 +31,9 @@ export default function AuthSelect({
   showLabel,
 }: AuthSelectProps) {
   const id = useId();
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  const selected = options.find((o) => o.value === value);
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointerDown = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
 
   return (
-    <div className="flex flex-col gap-1 w-full" ref={rootRef}>
+    <div className="flex flex-col gap-1 w-full">
       {showLabel && (
         <label
           htmlFor={id}
@@ -61,57 +44,36 @@ export default function AuthSelect({
         </label>
       )}
       <div className="relative h-12 w-full">
-        <button
+        <select
           id={id}
-          type="button"
           dir="rtl"
-          aria-haspopup="listbox"
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
-          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border px-4 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`w-full h-full rounded-card bg-black/[0.32] border border-input-border pr-4 pl-9 text-sm leading-4 appearance-none focus:outline-none focus:border-primary shadow-card ${
+            value ? "text-white" : "text-white/40"
+          }`}
         >
-          <span className={selected ? "text-white" : "text-white/40"}>
-            {selected ? selected.label : placeholder ?? label}
-          </span>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden
-            className={`text-white/60 transition-transform ${open ? "rotate-180" : ""}`}
-          >
-            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-
-        {open && (
-          <ul
-            role="listbox"
-            dir="rtl"
-            className="absolute top-full mt-2 w-full z-10 rounded-card bg-black/80 backdrop-blur-card border border-input-border shadow-pop overflow-hidden py-1"
-          >
-            {options.map((o) => {
-              const isSelected = o.value === value;
-              return (
-                <li key={o.value} role="option" aria-selected={isSelected}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onChange(o.value);
-                      setOpen(false);
-                    }}
-                    className={`w-full text-right px-4 py-3 text-sm leading-4 transition-colors active:bg-white/10 ${
-                      isSelected ? "text-primary" : "text-white hover:bg-white/5"
-                    }`}
-                  >
-                    {o.label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+          <option value="" disabled hidden>
+            {placeholder ?? label}
+          </option>
+          {options.map((o) => (
+            // Explicit colors so the open list stays readable on desktop
+            // (mobile uses the OS picker and ignores these).
+            <option key={o.value} value={o.value} style={{ color: "#00254D", background: "#fff" }}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none"
+        >
+          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
     </div>
   );

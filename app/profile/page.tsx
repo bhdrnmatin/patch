@@ -27,7 +27,6 @@ const NAV_ICONS = {
 
 const mockPlayer = {
   name: "سینا عشاقی",
-  username: "@sinaoshaghi",
   city: "تهران",
   side: "راست",
   level: toPersianDigits("4"),
@@ -68,7 +67,6 @@ export default function ProfilePage() {
         {/* Name (live) + username/meta (placeholders — no API field yet) */}
         <ProfileIdentity
           fallbackName={mockPlayer.name}
-          username={mockPlayer.username}
           city={mockPlayer.city}
           side={mockPlayer.side}
           level={mockPlayer.level}

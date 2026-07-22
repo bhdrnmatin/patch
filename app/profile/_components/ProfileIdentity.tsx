@@ -5,18 +5,16 @@ import ProfileMeta from "./ProfileMeta";
 
 interface Props {
   fallbackName: string;
-  username: string;
   city: string;
   side: string;
   level: string;
 }
 
 /**
- * Name + username + meta block. The name comes from the live /players/me
- * profile; username/city/side/level have no API field yet, so they stay as the
- * passed-in placeholders. Falls back to the placeholder name while loading.
+ * Name + username + meta block. Name and username come from the live
+ * /players/me profile; city/side/level have no API field yet, so they stay as
+ * the passed-in placeholders. Falls back to the placeholder name while loading.
  */
-// `username` stays in Props (caller still passes it) but is unused while hidden.
 export default function ProfileIdentity({ fallbackName, city, side, level }: Props) {
   const { player } = useAuth();
   const apiName = player ? `${player.firstName} ${player.lastName}`.trim() : "";
@@ -28,8 +26,11 @@ export default function ProfileIdentity({ fallbackName, city, side, level }: Pro
         <span className="text-story-title font-bold text-ink-soft" dir="rtl">
           {name}
         </span>
-        {/* Hidden for now — no username field on the profile yet. */}
-        {/* <span className="text-xs text-ink-soft">{username}</span> */}
+        {player?.username && (
+          <span className="text-xs text-ink-soft" dir="ltr">
+            @{player.username}
+          </span>
+        )}
       </div>
       <ProfileMeta city={city} side={side} level={level} />
       {player?.bio && (
