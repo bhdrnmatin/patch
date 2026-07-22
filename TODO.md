@@ -111,7 +111,9 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [x] Refresh-token rotation — **done 2026-07-21** (see the resolved 15-min-logout item above).
 - [x] Profile avatar — **done**: `/profile` shows `avatarUrl` (default silhouette fallback) and
       `/profile/edit/personal` uploads via `uploadProfilePhoto`.
-- [ ] City + the 5-step assessment are collected but not persisted (no API fields) — send when added.
+- [x] City — **done 2026-07-22**: profile-setup sends `residenceCityId` via a searchable province→city picker (`/provinces`, `/provinces/{id}/cities`).
+- [ ] The 5-step assessment is still collected but not persisted (no API field) — send when added.
+- [ ] Photo visibility toggle is write-only — `/players/me` has no visibility field, so it can't reflect the saved state; wire the read side when the backend adds it.
 - [ ] Swap the mock `lib/data/*` accessor bodies to `fetch` as matches/tournaments/courts/activity
       endpoints ship (the seam is already in place).
 

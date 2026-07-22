@@ -1,5 +1,26 @@
 # Session State
 
+## Session — 2026-07-22: profile-setup location/username + mobile fixes
+Merged `feat/token-refresh` → `main` (`3eb84ad`, 8 commits, pushed origin + patchapp; branch deleted).
+
+- **Profile-setup** now sends all API-required fields. New `lib/api/geo.ts` (`getProvinces`/`getCities`);
+  province→city is a **full-screen searchable picker** `AuthSearchSelect` (portal + top-pinned search so
+  the mobile keyboard doesn't resize it — bottom-sheet resized on typing, rejected). Gender = inline
+  dropdown `AuthSelect` (native `<select>` was tried for mobile reliability, then reverted to inline per
+  user). New username field (`^[a-zA-Z0-9_]{3,20}$`); names ≤20 Persian-only; submit-guard + re-filter.
+- **Live `@username`** on `/profile`. `PlayerResponse`/`UpdateProfileRequest` types updated (+username,
+  residenceCityId; +Province/City). Photo **public/private toggle** (write-only — `/players/me` has no
+  visibility field yet).
+- **Mobile root-cause found:** the phone (192.168.1.44) wasn't in `allowedDevOrigins` (only .36), so Next
+  **blocked its dev JS** — that (not the code) was breaking mobile input filters + dropdowns. Adding the IP
+  fixed the cascade. Also hardened `AuthInput` Persian-only for Android/Gboard composition (`compositionend`
+  + imperative DOM reset). NOTE: dev tools puppeteer-core is `--no-save` in node_modules (not committed).
+- **Token refresh** (from 2026-07-21, same branch): `/auth/refresh` rotation in `lib/api/client.ts`.
+
+### Next
+- Assessment persistence + photo-visibility read side await backend fields (TODO.md). Consider a shared
+  BottomSheet/portal picker if more searchable selects appear.
+
 ## Session — 2026-07-21: token refresh rotation (15-min logout fixed)
 Backend shipped `POST /auth/refresh` (`{refreshToken}` → `{accessToken, refreshToken}`, rotating;
 verified via live spec + a bad-token 401 probe). Wired rotation in `lib/api/client.ts`:

@@ -265,6 +265,10 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 - [x] **Token refresh (2026-07-21):** `POST /auth/refresh` is wired in `lib/api/client.ts` — proactive
   refresh of an expired token + reactive refresh-and-replay on 401, single-flight, rotating. Sessions
   now survive the 15-min access-token TTL; only a dead refresh token logs the user out.
+- [x] **Profile-setup complete (2026-07-22):** sends all required fields incl. `username` + `residenceCityId`
+  (searchable province→city picker `AuthSearchSelect`; gender inline `AuthSelect`); constraints
+  (username `[a-zA-Z0-9_]{3,20}`, names ≤20 Persian-only); live `@username` on `/profile`; photo
+  public/private toggle. Mobile: Persian-input hardened (compositionend), `allowedDevOrigins` + phone IP.
 - (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 
 ---

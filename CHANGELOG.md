@@ -10,6 +10,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 
 - [Auth] Token refresh rotation (`POST /auth/refresh`, `{refreshToken}` → `{accessToken, refreshToken}`) wired in `lib/api/client.ts`: a known-expired access token is refreshed before the request, a 401 triggers one refresh + replay, concurrent 401s share a single in-flight refresh, and the rotated refresh token is stored. Only a dead refresh token clears the session and redirects to /login. Resolves the 15-min access-token logout.
 
+- [Profile] Profile-setup now sends all API-required fields (`firstName/lastName/gender/residenceCityId/username`) and adds location:
+  - [Location] New `lib/api/geo.ts` (`getProvinces`/`getCities`); province→city dependent selection sent as `residenceCityId`. Province/city are a **full-screen searchable picker** (`AuthSearchSelect`, rendered in a portal with a top-pinned search field so the mobile keyboard doesn't resize it). Gender uses the inline dropdown (`AuthSelect`); both share one styled trigger.
+  - [Username] New username field (`^[a-zA-Z0-9_]{3,20}$` — Latin-sanitized, 3–20). Names capped at 20 (`maxLength`), Persian-only, min 1; invalid input disables submit with an inline message and names are re-filtered on send.
+  - [Profile] `/profile` shows the live `@username` (was hidden). `PlayerResponse`/`UpdateProfileRequest` types updated (+ `residenceCityId`, `username`; + `Province`/`City`).
+- [Profile] Public/private profile-photo toggle on `/profile/edit/personal` (`PUT /players/me/profile-photo/visibility`); the API doesn't return current visibility yet, so it defaults to public.
+- [Mobile] `AuthInput` also filters on `compositionend` and resets the DOM imperatively so Persian-only sticks through Android/Gboard predictive text. `allowedDevOrigins` gained the phone's LAN IP (`192.168.1.44`) — without it Next blocked dev JS on the phone, which had been breaking mobile input/dropdowns.
+
 - [Profile] Profile-editing pass wired to the live API (branch `feat/profile-gender-select`, merged to `main`):
   - [Profile-setup] Gender is now a dropdown (`AuthSelect`) with آقا/خانم storing the backend enum `MALE`/`FEMALE` directly. Name/lastname/city inputs are Persian-only (a shared `toPersianOnly` in `lib/persian.ts` strips Latin letters/digits, keeps ZWNJ/spaces)
   - [Edit profile] New `/profile/edit/personal` page (the اطلاعات فردی row now works): profile-photo upload (`POST /players/me/profile-photo`, multipart) + bio editor (`PUT /players/me/display-info`), both invalidating the shared `["me"]` query; bio is Persian-only. Email + change-password rows commented out (flows don't exist yet)
