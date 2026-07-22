@@ -21,8 +21,8 @@ const GENDER_OPTIONS: SelectOption[] = [
   { value: "FEMALE", label: "خانم" },
 ];
 
-// Usernames are Latin handles — strip everything but a-z 0-9 . _
-const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9._]/g, "").toLowerCase();
+// API pattern: ^[a-zA-Z0-9_]{3,20}$ — strip everything but letters/digits/_
+const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9_]/g, "").toLowerCase();
 
 export default function ProfileSetupPage() {
   const router = useRouter();
@@ -84,6 +84,12 @@ export default function ProfileSetupPage() {
       ? "نام و نام خانوادگی باید فارسی باشند."
       : null;
 
+  // API requires the username to be 3–20 chars.
+  const usernameError =
+    form.username.trim() !== "" && form.username.length < 3
+      ? "نام کاربری باید حداقل ۳ کاراکتر باشد."
+      : null;
+
   const { mutate, isPending, error } = useMutation({
     mutationFn: () =>
       updateProfile({
@@ -115,8 +121,8 @@ export default function ProfileSetupPage() {
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly />
-                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly />
+                  <AuthInput placeholder="عشاقی" label="نام خانوادگی" value={form.lastName} onChange={set("lastName")} showLabel persianOnly maxLength={20} />
+                  <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly maxLength={20} />
                 </div>
                 <div className="flex gap-4">
                   <AuthInput
@@ -125,6 +131,7 @@ export default function ProfileSetupPage() {
                     value={form.username}
                     onChange={(v) => set("username")(sanitizeUsername(v))}
                     showLabel
+                    maxLength={20}
                   />
                   <AuthSelect
                     label="جنسیت"
@@ -155,15 +162,15 @@ export default function ProfileSetupPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-4">
-                {(nameError || geoError || errorMessage) && (
+                {(nameError || usernameError || geoError || errorMessage) && (
                   <p className="text-xs text-danger text-center" dir="rtl">
-                    {nameError ?? geoError ?? errorMessage}
+                    {nameError ?? usernameError ?? geoError ?? errorMessage}
                   </p>
                 )}
                 <AuthActions
                   nextLabel={isPending ? "در حال ثبت..." : "شروع کنیم!"}
                   onNext={() => mutate()}
-                  disabled={!isComplete || isPending || !!nameError}
+                  disabled={!isComplete || isPending || !!nameError || !!usernameError}
                 />
               </div>
             </div>
