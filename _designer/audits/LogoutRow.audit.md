@@ -9,5 +9,8 @@ Settings row that logs out (`POST /auth/logout`). `app/profile/settings/_compone
 
 Clean otherwise: native `<button>`, logout icon `aria-hidden` + `currentColor` on `text-danger`, disabled during pending, redirect handled in `useAuth().logout`.
 
+## v2 — 2026-07-22 | fix
+Added `aria-busy={pending}` on the logout button.
+
 ### Status
-Open: 1 (Suggestion) | Fixed: 0 | Accepted: 0
+Open: 0 | Fixed: 1 | Accepted: 0

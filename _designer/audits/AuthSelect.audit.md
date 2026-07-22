@@ -13,5 +13,8 @@ Inline dark-glass dropdown (short lists, e.g. gender). `app/(auth)/_components/A
 
 Note: outside-click (pointerdown) + Escape close are correct; selected option marked `aria-selected` + `text-primary`.
 
+## v2 — 2026-07-22 | refactor
+Fixed #1 (Arrow/Home/End roving focus over the option buttons; ArrowDown on the trigger enters the list) and #2 (`aria-controls` links the trigger to the `<ul id>`). #3 covered by ArrowDown-to-enter.
+
 ### Status
-Open: 3 (1 Warning, 2 Suggestion) | Fixed: 0 | Accepted: 2
+Open: 0 | Fixed: 3 | Accepted: 2

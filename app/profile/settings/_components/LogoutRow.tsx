@@ -18,6 +18,7 @@ export default function LogoutRow() {
       type="button"
       onClick={onClick}
       disabled={pending}
+      aria-busy={pending}
       className="bg-white border border-edge rounded-card px-4 py-3 flex items-center justify-between w-full shadow-card active:opacity-90 disabled:opacity-60"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden className="text-danger">
