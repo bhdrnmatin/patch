@@ -1,0 +1,7 @@
+deploy:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - docker build --no-cache -t frontend:latest .
+    - docker compose -f /apps/docker-compose.yml up -d --no-deps --force-recreate frontend
