@@ -137,19 +137,19 @@ export default function ProfileSetupPage() {
                 </div>
                 <div className="flex gap-4">
                   <AuthSelect
-                    label="استان"
-                    placeholder={provincePlaceholder}
-                    value={form.provinceId}
-                    onChange={onProvince}
-                    options={provinceOptions}
-                    showLabel
-                  />
-                  <AuthSelect
                     label="شهر"
                     placeholder={cityPlaceholder}
                     value={form.cityId}
                     onChange={set("cityId")}
                     options={cityOptions}
+                    showLabel
+                  />
+                  <AuthSelect
+                    label="استان"
+                    placeholder={provincePlaceholder}
+                    value={form.provinceId}
+                    onChange={onProvince}
+                    options={provinceOptions}
                     showLabel
                   />
                 </div>
