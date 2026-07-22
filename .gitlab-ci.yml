@@ -1,7 +1,9 @@
-deploy:
-  stage: deploy
+build_test:
+  stage: build
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
+      when: manual
   script:
-    - docker build --no-cache -t frontend:latest .
-    - docker compose -f /apps/docker-compose.yml up -d --no-deps --force-recreate frontend
+    - docker build --no-cache -t frontend:ci-validation-test .
+    - docker image rm frontend:ci-validation-test
+    - echo "build-only validation OK, no deploy performed"
