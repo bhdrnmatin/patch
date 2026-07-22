@@ -8,6 +8,11 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+- [Fix] API/auth review (`/code-review` over the API layer) — fixes applied:
+  - [Auth] A 401 now only ends the session when the access token is genuinely gone/expired; a 401 while holding a valid token (authorization, transient, or a just-refreshed token not yet propagated) surfaces as a normal error instead of logging the user out (`lib/api/client.ts`)
+  - [Auth] OTP verify handles a `getMe` failure — falls back to `/profile-setup` instead of stranding the user on the OTP screen (e.g. a brand-new profile 404)
+  - [Types] `updatePhotoVisibility` is typed `PhotoVisibility` (`"PUBLIC" | "PRIVATE"`, shared from `types.ts`); corrected the stale `updateProfile` JSDoc
+
 - [Auth] Token refresh rotation (`POST /auth/refresh`, `{refreshToken}` → `{accessToken, refreshToken}`) wired in `lib/api/client.ts`: a known-expired access token is refreshed before the request, a 401 triggers one refresh + replay, concurrent 401s share a single in-flight refresh, and the rotated refresh token is stored. Only a dead refresh token clears the session and redirects to /login. Resolves the 15-min access-token logout.
 
 - [Profile] Profile-setup now sends all API-required fields (`firstName/lastName/gender/residenceCityId/username`) and adds location:

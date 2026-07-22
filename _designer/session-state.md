@@ -17,6 +17,12 @@ Merged `feat/token-refresh` → `main` (`3eb84ad`, 8 commits, pushed origin + pa
   + imperative DOM reset). NOTE: dev tools puppeteer-core is `--no-save` in node_modules (not committed).
 - **Token refresh** (from 2026-07-21, same branch): `/auth/refresh` rotation in `lib/api/client.ts`.
 
+- **API/auth code review** (`/code-review`, high, over `4b5c5b6..HEAD` API surface): 6 findings, top 4
+  fixed on `fix/api-review` (merged `f823e27`) — 401 no longer over-logs-out (only genuine
+  expiry ends the session), OTP-verify getMe failure → `/profile-setup` fallback, typed
+  `updatePhotoVisibility`, fixed JSDoc. Skipped (low): fetchQuery staleness after account switch,
+  `retry:1` double-getMe — both logged in TODO.md.
+
 ### Next
 - Assessment persistence + photo-visibility read side await backend fields (TODO.md). Consider a shared
   BottomSheet/portal picker if more searchable selects appear.

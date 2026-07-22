@@ -90,6 +90,13 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] Sheets unmount on close, so only the entrance animates — add exit animation if the
       instant close ever feels abrupt on device.
 
+## API/auth code review (2026-07-22) — deferred (low priority)
+- [ ] OTP-verify routing uses `queryClient.fetchQuery(["me"])`, which honors staleTime — an account
+      switch within the stale window could route off the previous user's profile. Pass
+      `staleTime: 0` (or `refetchQuery`) if account-switching without a full reload becomes a case.
+- [ ] `useAuth` `["me"]` query `retry: 1` fires a second `getMe` after a hard-401 already ran
+      `endSession()`/redirect — harmless (already navigating); set `retry: false` to tidy.
+
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
 - [x] **15-min logout — RESOLVED 2026-07-21:** the backend shipped `POST /auth/refresh`
