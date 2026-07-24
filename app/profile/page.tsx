@@ -2,20 +2,21 @@ import BottomNav from "../(main)/_components/BottomNav";
 import ProfileHero from "./_components/ProfileHero";
 import ProfileAvatarLive from "./_components/ProfileAvatarLive";
 import ProfileIdentity from "./_components/ProfileIdentity";
-import StatsGrid from "./_components/StatsGrid";
+// import StatsGrid from "./_components/StatsGrid"; // hidden until real stats exist
 import NavRow from "./_components/NavRow";
 import { toPersianDigits } from "../../lib/persian";
 
-const STAT_ICONS = {
-  wins: "/icons/stat-wins.svg",
-  matches: "/icons/stat-matches.svg",
-  partners: "/icons/stat-partners.svg",
-  winRate: "/icons/stat-win-rate.svg",
-  streak: "/icons/stat-streak.svg",
-  joinDate: "/icons/stat-join-date.svg",
-  courts: "/icons/stat-courts.svg",
-  tournaments: "/icons/stat-tournaments.svg",
-};
+// Stat-card icons — unused while the stats grid is hidden (mock-only for launch).
+// const STAT_ICONS = {
+//   wins: "/icons/stat-wins.svg",
+//   matches: "/icons/stat-matches.svg",
+//   partners: "/icons/stat-partners.svg",
+//   winRate: "/icons/stat-win-rate.svg",
+//   streak: "/icons/stat-streak.svg",
+//   joinDate: "/icons/stat-join-date.svg",
+//   courts: "/icons/stat-courts.svg",
+//   tournaments: "/icons/stat-tournaments.svg",
+// };
 
 const NAV_ICONS = {
   edit: "/icons/nav-edit.svg",
@@ -32,16 +33,17 @@ const mockPlayer = {
   level: toPersianDigits("4"),
 };
 
-const stats = [
-  { icon: STAT_ICONS.wins, label: "برد‌ها", value: toPersianDigits("43") },
-  { icon: STAT_ICONS.matches, label: "مسابقه‌ها", value: toPersianDigits("32") },
-  { icon: STAT_ICONS.partners, label: "یار بازی", value: toPersianDigits("56") },
-  { icon: STAT_ICONS.winRate, label: "نرخ برد", value: toPersianDigits("32") + "٪" },
-  { icon: STAT_ICONS.streak, label: "برد پشت سرهم", value: toPersianDigits("12") },
-  { icon: STAT_ICONS.joinDate, label: "تاریخ عضویت", value: "۲ بهمن ۱۴۰۴" },
-  { icon: STAT_ICONS.courts, label: "زمین رزرو شده", value: toPersianDigits("43") },
-  { icon: STAT_ICONS.tournaments, label: "تورنومنت", value: toPersianDigits("23") },
-];
+// Stats are mock-only and hidden until the backend provides real data.
+// const stats = [
+//   { icon: STAT_ICONS.wins, label: "برد‌ها", value: toPersianDigits("43") },
+//   { icon: STAT_ICONS.matches, label: "مسابقه‌ها", value: toPersianDigits("32") },
+//   { icon: STAT_ICONS.partners, label: "یار بازی", value: toPersianDigits("56") },
+//   { icon: STAT_ICONS.winRate, label: "نرخ برد", value: toPersianDigits("32") + "٪" },
+//   { icon: STAT_ICONS.streak, label: "برد پشت سرهم", value: toPersianDigits("12") },
+//   { icon: STAT_ICONS.joinDate, label: "تاریخ عضویت", value: "۲ بهمن ۱۴۰۴" },
+//   { icon: STAT_ICONS.courts, label: "زمین رزرو شده", value: toPersianDigits("43") },
+//   { icon: STAT_ICONS.tournaments, label: "تورنومنت", value: toPersianDigits("23") },
+// ];
 
 const navItems = [
   { label: "ویرایش حساب کاربری", href: "/profile/edit", icon: NAV_ICONS.edit },
@@ -72,8 +74,8 @@ export default function ProfilePage() {
           level={mockPlayer.level}
         />
 
-        {/* Stats — mock only; no real data for launch, so overlaid "به زودی" */}
-        <StatsGrid stats={stats} comingSoon />
+        {/* Stats hidden until real data exists (mock-only for launch) */}
+        {/* <StatsGrid stats={stats} /> */}
 
         {/* Navigation menu */}
         <div className="flex flex-col gap-2 w-full">
