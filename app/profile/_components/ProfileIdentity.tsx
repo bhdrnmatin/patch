@@ -27,14 +27,14 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
     player?.gender === "MALE" ? "آقا" : player?.gender === "FEMALE" ? "خانم" : "—";
 
   return (
-    <div className="relative z-10 w-full flex flex-col items-center">
-      {/* Avatar overlaps the hero above */}
+    <div className="relative z-10 w-full flex flex-col items-end">
+      {/* Avatar (right) overlaps the hero above */}
       <div className="-mt-12">
         <ProfileAvatarLive />
       </div>
 
-      {/* Name + handle, centered under the avatar */}
-      <div className="mt-3 flex flex-col items-center">
+      {/* Name + handle, stacked under the avatar, right-aligned */}
+      <div className="mt-3 flex flex-col items-end">
         {isLoading && !apiName ? (
           <span
             className="h-8 w-36 rounded bg-edge/70 animate-pulse"
@@ -58,7 +58,7 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
       </div>
 
       {player?.bio && (
-        <p className="text-sm text-ink-soft text-center leading-6 mt-3 max-w-[300px]" dir="rtl">
+        <p className="text-sm text-ink-soft text-right leading-6 mt-3" dir="rtl">
           {player.bio}
         </p>
       )}

@@ -38,10 +38,10 @@ function Chip({ icon, value }: { icon: React.ReactNode; value: string }) {
   );
 }
 
-/** City + gender as attribute chips, centered under the identity. */
+/** City + gender as attribute chips (LTR wrapper so justify-end pins them right). */
 export default function ProfileMeta({ city, gender }: Props) {
   return (
-    <div className="flex justify-center gap-2 w-full">
+    <div className="flex justify-end gap-2 w-full">
       <Chip icon={<PersonIcon />} value={gender} />
       <Chip icon={<PinIcon />} value={city} />
     </div>
