@@ -3,8 +3,8 @@ import NavRow from "../_components/NavRow";
 
 const items = [
   { label: "اطلاعات فردی", href: "/profile/edit/personal" },
-  { label: "شماره موبایل", href: "/profile/edit/phone" },
   // Hidden for now — re-enable when these flows exist.
+  // { label: "شماره موبایل", href: "/profile/edit/phone" },
   // { label: "ایمیل", href: "/profile/edit/email" },
   // { label: "تغییر پسورد", href: "/profile/edit/password" },
 ];

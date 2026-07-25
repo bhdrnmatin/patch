@@ -49,7 +49,8 @@ const navItems = [
   { label: "ویرایش حساب کاربری", href: "/profile/edit", icon: NAV_ICONS.edit },
   { label: "مشاهده آمار", href: "/profile/statistics", icon: NAV_ICONS.chart, comingSoon: true },
   { label: "تنظیمات", href: "/profile/settings", icon: NAV_ICONS.settings },
-  { label: "پشتیبانی", href: "/profile/support", icon: NAV_ICONS.support },
+  // Hidden for now:
+  // { label: "پشتیبانی", href: "/profile/support", icon: NAV_ICONS.support },
   { label: "قوانین و مقررات", href: "/profile/rules", icon: NAV_ICONS.rules },
 ];
 
