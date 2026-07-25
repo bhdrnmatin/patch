@@ -1,6 +1,5 @@
 import BottomNav from "../(main)/_components/BottomNav";
 import ProfileHero from "./_components/ProfileHero";
-import ProfileAvatarLive from "./_components/ProfileAvatarLive";
 import ProfileIdentity from "./_components/ProfileIdentity";
 // import StatsGrid from "./_components/StatsGrid"; // hidden until real stats exist
 import NavRow from "./_components/NavRow";
@@ -57,17 +56,11 @@ const navItems = [
 export default function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-24">
-      {/* Hero with avatar overlapping bottom edge */}
-      <div className="relative mb-12">
-        <ProfileHero />
-        <div className="absolute bottom-0 right-6 translate-y-1/2 z-10">
-          <ProfileAvatarLive />
-        </div>
-      </div>
+      <ProfileHero />
 
-      {/* Main content */}
+      {/* Main content — identity overlaps the hero via its own -mt-12 */}
       <div className="px-6 flex flex-col gap-6 items-end">
-        {/* Name (live) + username/meta (placeholders — no API field yet) */}
+        {/* Avatar + name (live) + city/gender chips */}
         <ProfileIdentity
           fallbackName={mockPlayer.name}
           city={mockPlayer.city}
