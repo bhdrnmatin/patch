@@ -17,10 +17,13 @@ interface Props {
  * bar rather than the mock name, so a real-looking placeholder never flashes
  * before the user's own name resolves.
  */
-export default function ProfileIdentity({ fallbackName, city, side, level }: Props) {
+export default function ProfileIdentity({ fallbackName, city }: Props) {
   const { player, isLoading } = useAuth();
   const apiName = player ? `${player.firstName} ${player.lastName}`.trim() : "";
   const name = apiName || fallbackName;
+  // Live gender (MALE/FEMALE → آقا/خانم, matching profile-setup labels).
+  const gender =
+    player?.gender === "MALE" ? "آقا" : player?.gender === "FEMALE" ? "خانم" : "—";
 
   return (
     <div className="flex flex-col gap-1 items-end w-full">
@@ -41,7 +44,7 @@ export default function ProfileIdentity({ fallbackName, city, side, level }: Pro
           </span>
         )}
       </div>
-      <ProfileMeta city={city} side={side} level={level} />
+      <ProfileMeta city={city} gender={gender} />
       {player?.bio && (
         <p className="text-sm text-ink-soft text-right leading-6 mt-1" dir="rtl">
           {player.bio}

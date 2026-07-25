@@ -1,7 +1,9 @@
 interface Props {
   city: string;
-  side: string;
-  level: string | number;
+  gender: string;
+  // Hidden for now — no real data yet:
+  // side: string;
+  // level: string | number;
 }
 
 function Divider() {
@@ -29,15 +31,18 @@ function MetaItem({
   );
 }
 
-export default function ProfileMeta({ city, side, level }: Props) {
+export default function ProfileMeta({ city, gender }: Props) {
   return (
     <div className="flex items-center gap-3" dir="rtl">
+      {/* Hidden for now — no real data yet:
       <MetaItem label="لول" value={String(level)} highlight />
-      <Divider />
+      <Divider /> */}
       <MetaItem label="شهر" value={city} />
       <Divider />
-      <MetaItem label="ساید ترجیحی" value={side} />
-
+      <MetaItem label="جنسیت" value={gender} />
+      {/* Hidden for now — no real data yet:
+      <Divider />
+      <MetaItem label="ساید ترجیحی" value={side} /> */}
     </div>
   );
 }
