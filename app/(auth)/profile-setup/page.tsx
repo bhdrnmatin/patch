@@ -100,7 +100,7 @@ export default function ProfileSetupPage() {
         username: form.username,
         residenceCityId: form.cityId,
       }),
-    onSuccess: () => router.push("/assessment"),
+    onSuccess: () => router.push("/"), // TODO: restore "/assessment" when assessment is enabled
   });
 
   const errorMessage =
