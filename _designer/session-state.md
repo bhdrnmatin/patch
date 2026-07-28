@@ -21,6 +21,14 @@ Four small branches merged → `main` and **pushed to origin** (`fcf1327`): `cho
   as validity per request — revisit if a resend button is added.
 - **Skip assessment** — profile-setup no longer redirects to `/assessment` (deferred); assessment
   page/route kept intact with a `TODO` to restore.
+- **Add-menu (BottomNav +)** reordered → ساخت مسابقه · رزرو زمین · ساخت تورنومنت. Only create-match
+  navigates; رزرو زمین + ساخت تورنومنت are non-navigating "به زودی" rows (`aria-disabled`, dimmed, the
+  `NavRow` coming-soon pattern). Added `comingSoon?` to the `AddAction` type (`feat/add-menu-order-comingsoon`,
+  merged `b11fdc1`).
+- **Bottom-nav 2nd tab → باشگاه‌ها** (`/clubs`), coming-soon: new stroke `ClubsIcon` (clubhouse), renders
+  as a non-navigating `<span>` (icon at 40% opacity, `aria-disabled`, `aria-label="باشگاه‌ها (به زودی)"`).
+  Tournaments removed from the nav; orphaned `CupIcon` deleted (`feat/nav-clubs-tab`, merged `786ec65`,
+  pushed origin).
 - **Dev-env (not committed):** `.next` was on the HDD (`/home` = `sda`, rotational) → "Slow filesystem"
   warning. Now a **bind mount** of `/var/tmp/patch-next` (NVMe) onto the in-project `.next` path, persisted
   in `/etc/fstab`. A plain symlink was tried first but broke Turbopack module resolution (`@tailwindcss/postcss`

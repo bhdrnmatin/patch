@@ -8,12 +8,14 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
-### 2026-07-28 — auth routing + OTP countdown
+### 2026-07-28 — auth routing, OTP countdown, bottom-nav
 
 - [Auth] Protected routes now require a **complete profile**. `useRequireAuth` (in `AuthGuard`) fetches `/players/me` and redirects to `/profile-setup` when `profileStatus !== "complete"`; a complete profile passes through, and an errored/unreachable `/me` lets the user through rather than trapping them on a spinner. OTP-verify routes by the same field, and profile-setup seeds the `["me"]` cache with the returned player on success so the guard doesn't bounce the user straight back. Shared `/me` query options and the completeness check are centralized as `meQuery` / `isProfileComplete` in `lib/api/useAuth.ts` (`feat/profile-status-guard`).
 - [Auth] Post-auth landing moved from `/` (empty for now) to `/matches`, via a single `POST_AUTH_ROUTE` constant in `lib/routes.ts` — used by OTP-verify, profile-setup, assessment-finish, and the already-authed guard so the destination lives in one place (`feat/post-auth-route`).
 - [Auth] OTP page shows a live **code-validity countdown** (`mm:ss`, Persian digits): login forwards `nextResendAllowedAt` from `/otp/request` to `/otp` as an `expires` param, which counts down to it and shows "اعتبار کد به پایان رسید" at zero (`feat/otp-countdown`).
 - [Auth] After profile-setup, redirect no longer goes to `/assessment` (deferred) — routes to the app instead; assessment page/route left intact with a TODO to restore (`chore/skip-assessment-redirect`).
+- [Nav] Add-menu reordered to ساخت مسابقه · رزرو زمین · ساخت تورنومنت; only create-match is live, the other two render as non-navigating "به زودی" rows (`aria-disabled`, dimmed — the `NavRow` pattern) (`feat/add-menu-order-comingsoon`).
+- [Nav] Second bottom-nav tab is now باشگاه‌ها (`/clubs`) with a new `ClubsIcon`, rendered disabled/non-navigating ("به زودی", icon at 40% opacity, `aria-label` notes it). Tournaments dropped from the nav; the now-unused `CupIcon` removed (`feat/nav-clubs-tab`).
 
 - [Fix] API/auth review (`/code-review` over the API layer) — fixes applied:
   - [Auth] A 401 now only ends the session when the access token is genuinely gone/expired; a 401 while holding a valid token (authorization, transient, or a just-refreshed token not yet propagated) surfaces as a normal error instead of logging the user out (`lib/api/client.ts`)
