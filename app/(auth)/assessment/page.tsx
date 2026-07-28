@@ -6,6 +6,7 @@ import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import RadioGroup from "../_components/RadioGroup";
 import AuthActions from "../_components/AuthActions";
+import { POST_AUTH_ROUTE } from "@/lib/routes";
 
 const steps = [
   {
@@ -76,7 +77,7 @@ export default function AssessmentPage() {
 
   const handleNext = () => {
     if (step === steps.length - 1) {
-      router.push("/");
+      router.push(POST_AUTH_ROUTE);
     } else {
       setStep((s) => s + 1);
     }

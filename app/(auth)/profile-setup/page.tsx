@@ -13,6 +13,7 @@ import { updateProfile } from "@/lib/api/players";
 import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
 import { toPersianOnly } from "@/lib/persian";
+import { POST_AUTH_ROUTE } from "@/lib/routes";
 
 const BG = "/images/auth-profile-setup.webp";
 
@@ -105,7 +106,7 @@ export default function ProfileSetupPage() {
       // Seed the /me cache with the now-complete profile so AuthGuard doesn't
       // read a stale "incomplete" and bounce us straight back here.
       queryClient.setQueryData(["me"], updated);
-      router.push("/"); // TODO: restore "/assessment" when assessment is enabled
+      router.push(POST_AUTH_ROUTE); // TODO: restore "/assessment" when assessment is enabled
     },
   });
 

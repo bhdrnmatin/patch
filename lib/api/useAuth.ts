@@ -7,6 +7,7 @@ import { logout as apiLogout } from "./auth";
 import { getMe } from "./players";
 import type { PlayerResponse } from "./types";
 import { hasSession, subscribeSession } from "./session";
+import { POST_AUTH_ROUTE } from "../routes";
 
 /**
  * Shared options for the cached /me query. Both useAuth and useRequireAuth
@@ -96,11 +97,11 @@ export function useRequireAuth(): "checking" | "authed" {
   return "authed";
 }
 
-/** For public auth pages (login/otp): send already-signed-in users home. */
+/** For public auth pages (login/otp): send already-signed-in users into the app. */
 export function useRedirectIfAuthed(): void {
   const router = useRouter();
 
   useEffect(() => {
-    if (hasSession()) router.replace("/");
+    if (hasSession()) router.replace(POST_AUTH_ROUTE);
   }, [router]);
 }
