@@ -26,8 +26,11 @@ export default function LoginPage() {
     // The API needs Latin digits; pass the same normalized number to /otp so the
     // OTP page can verify against it.
     mutationFn: () => requestOtp(toLatinDigits(phone)),
-    onSuccess: () =>
-      router.push(`/otp?phone=${encodeURIComponent(toLatinDigits(phone))}`),
+    onSuccess: (data) =>
+      router.push(
+        `/otp?phone=${encodeURIComponent(toLatinDigits(phone))}` +
+          `&expires=${encodeURIComponent(data.nextResendAllowedAt)}`,
+      ),
   });
 
   const errorMessage =
