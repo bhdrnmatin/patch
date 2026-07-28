@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
@@ -27,6 +27,7 @@ const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9_]/g, "").toLowerC
 
 export default function ProfileSetupPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -100,7 +101,12 @@ export default function ProfileSetupPage() {
         username: form.username,
         residenceCityId: form.cityId,
       }),
-    onSuccess: () => router.push("/"), // TODO: restore "/assessment" when assessment is enabled
+    onSuccess: (updated) => {
+      // Seed the /me cache with the now-complete profile so AuthGuard doesn't
+      // read a stale "incomplete" and bounce us straight back here.
+      queryClient.setQueryData(["me"], updated);
+      router.push("/"); // TODO: restore "/assessment" when assessment is enabled
+    },
   });
 
   const errorMessage =

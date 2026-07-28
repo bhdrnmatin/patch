@@ -10,7 +10,7 @@ import AuthActions from "../_components/AuthActions";
 import { verifyOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { getMe } from "@/lib/api/players";
-import { useRedirectIfAuthed } from "@/lib/api/useAuth";
+import { useRedirectIfAuthed, isProfileComplete } from "@/lib/api/useAuth";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian";
 
 const BG = "/images/auth-otp.webp";
@@ -49,13 +49,11 @@ function OtpContent() {
   const { mutate, isPending, error } = useMutation({
     mutationFn: () => verifyOtp(phone, toLatinDigits(otp)),
     onSuccess: async () => {
-      // Tokens are now stored; fetch the profile to decide where to land.
-      // Routing off the returned name is robust without pinning the exact
-      // profileStatus enum values (confirmed against a live /me later).
+      // Tokens are now stored; fetch the profile to decide where to land:
+      // a complete profile goes home, anything else to /profile-setup.
       try {
         const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
-        const needsSetup = !me.firstName?.trim() || !me.lastName?.trim();
-        router.replace(needsSetup ? "/profile-setup" : "/");
+        router.replace(isProfileComplete(me) ? "/" : "/profile-setup");
       } catch {
         // Profile fetch failed (e.g. a brand-new user with no profile record
         // yet) — default to setup rather than stranding them on this screen.
