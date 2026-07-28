@@ -99,12 +99,14 @@ type AddAction = {
   href: string;
   Icon: (p: IconProps) => React.ReactElement;
   label: string;
+  /** Render inactive with a "به زودی" label instead of navigating. */
+  comingSoon?: boolean;
 };
 
 const addActions: AddAction[] = [
-  { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت" },
   { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مسابقه" },
-  { href: "/courts", Icon: CourtIcon, label: "رزرو زمین" },
+  { href: "/courts", Icon: CourtIcon, label: "رزرو زمین", comingSoon: true },
+  { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت", comingSoon: true },
 ];
 
 const tabs: Tab[] = [
@@ -166,24 +168,42 @@ export default function BottomNav() {
       {/* Add menu anchored above the nav */}
       {menuOpen && (
         <div className="animate-sheet-in absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">
-          {addActions.map(({ href, Icon, label }) => (
-            <Link
-              key={label}
-              href={href}
-              onClick={() => {
-                navigatingRef.current = true;
-                setMenuOpen(false);
-              }}
-              className="flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20"
-            >
-              <span className="text-sm font-bold leading-4 text-white" dir="rtl">
-                {label}
-              </span>
-              <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
-                <Icon />
-              </span>
-            </Link>
-          ))}
+          {addActions.map(({ href, Icon, label, comingSoon }) => {
+            const rowClass =
+              "flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20";
+            const content = (
+              <>
+                {comingSoon && (
+                  <span className="mr-auto pl-3 text-xs text-white/70" dir="rtl">
+                    به زودی
+                  </span>
+                )}
+                <span className="text-sm font-bold leading-4 text-white" dir="rtl">
+                  {label}
+                </span>
+                <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
+                  <Icon />
+                </span>
+              </>
+            );
+            return comingSoon ? (
+              <div key={label} className={`${rowClass} cursor-default opacity-60`} aria-disabled="true">
+                {content}
+              </div>
+            ) : (
+              <Link
+                key={label}
+                href={href}
+                onClick={() => {
+                  navigatingRef.current = true;
+                  setMenuOpen(false);
+                }}
+                className={rowClass}
+              >
+                {content}
+              </Link>
+            );
+          })}
         </div>
       )}
       {/* Frosted pill with the four section tabs */}
