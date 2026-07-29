@@ -35,7 +35,7 @@ const mockPlayer = {
 // Stats are mock-only and hidden until the backend provides real data.
 // const stats = [
 //   { icon: STAT_ICONS.wins, label: "برد‌ها", value: toPersianDigits("43") },
-//   { icon: STAT_ICONS.matches, label: "مسابقه‌ها", value: toPersianDigits("32") },
+//   { icon: STAT_ICONS.matches, label: "مَچ‌ها", value: toPersianDigits("32") },
 //   { icon: STAT_ICONS.partners, label: "یار بازی", value: toPersianDigits("56") },
 //   { icon: STAT_ICONS.winRate, label: "نرخ برد", value: toPersianDigits("32") + "٪" },
 //   { icon: STAT_ICONS.streak, label: "برد پشت سرهم", value: toPersianDigits("12") },

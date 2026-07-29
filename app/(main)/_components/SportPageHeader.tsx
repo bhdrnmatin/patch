@@ -4,7 +4,7 @@ import DateSelector from "./DateSelector";
 import { FilterSearchIcon, SortIcon } from "./icons";
 
 interface Props {
-  /** Hero heading, e.g. "مسابقه" or "تورنمنت". */
+  /** Hero heading, e.g. "مَچ" or "تورنمنت". */
   title: string;
   /** Date strip days. Omit to render the hero without a date strip (e.g. Activity). */
   days?: DayOption[];

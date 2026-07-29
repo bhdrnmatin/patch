@@ -69,7 +69,7 @@ function OtpContent() {
   return (
     <AuthSlide backgroundImage={BG}>
       <AuthCard
-        title="ارسال کد"
+        title="تایید شماره"
         subtitle={`لطفا کد ارسال شده به شماره ${toPersianDigits(phone)} را وارد کنید`}
       >
         <div className="flex flex-col gap-4">
@@ -87,7 +87,7 @@ function OtpContent() {
             </p>
           )}
           <AuthActions
-            nextLabel={isPending ? "در حال بررسی..." : "ورود"}
+            nextLabel={isPending ? "در حال بررسی..." : "تایید"}
             onNext={() => mutate()}
             disabled={!isComplete || isPending}
           />

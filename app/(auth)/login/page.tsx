@@ -64,7 +64,7 @@ export default function LoginPage() {
                 </p>
               )}
               <AuthActions
-                nextLabel={isPending ? "در حال ارسال..." : "ارسال کد"}
+                nextLabel={isPending ? "در حال ارسال..." : "ادامه"}
                 onNext={handleNext}
                 disabled={!isValidPhone || isPending}
               />

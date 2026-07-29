@@ -123,8 +123,8 @@ export default function ProfileSetupPage() {
       <div className="relative w-full max-w-[430px] h-full">
         <AuthSlide backgroundImage={BG} objectPosition="35% 50%">
           <AuthCard
-            title="خوش اومدی!"
-            subtitle="بهترین سرمایه‌گذاری روی خودت رو شروع کردی ..."
+            title="به جمع پَچ خوش اومدی!"
+            subtitle="چند اطلاعات کوتاه کافیه تا پَچ تجربه مناسب‌تری برات بسازه."
           >
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">

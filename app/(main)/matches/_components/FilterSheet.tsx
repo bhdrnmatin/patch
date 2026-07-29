@@ -87,7 +87,7 @@ export default function FilterSheet({ open, onClose, value, onChange }: Props) {
       <FilterSection label="رده‌بندی" options={LEVELS} value={value.levels} onChange={toggle("levels")} />
       <FilterSection label="مسافت" options={DISTANCE} value={value.distance} onChange={toggle("distance")} />
       <FilterSection label="تاریخ" options={DATE} value={value.date} onChange={toggle("date")} />
-      <FilterSection label="نوع مسابقه" options={TYPE} value={value.type} onChange={toggle("type")} />
+      <FilterSection label="نوع مَچ" options={TYPE} value={value.type} onChange={toggle("type")} />
     </BottomSheet>
   );
 }

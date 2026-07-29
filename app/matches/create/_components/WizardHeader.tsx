@@ -18,7 +18,7 @@ export default function WizardHeader({ subtitle, step, total, onClose }: Props) 
       <button
         type="button"
         onClick={onClose}
-        aria-label="بستن ساخت مسابقه"
+        aria-label="بستن ساخت مَچ"
         className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white border border-edge text-ink-soft active:opacity-80"
       >
         <CloseIcon className="size-4" />
@@ -26,7 +26,7 @@ export default function WizardHeader({ subtitle, step, total, onClose }: Props) 
       <div className="flex items-center gap-3 min-w-0">
         <div className="flex flex-col items-end gap-1 min-w-0">
           <h1 className="text-lg font-bold leading-6 text-ink" dir="rtl">
-            ساخت مسابقه
+            ساخت مَچ
           </h1>
           <span className="text-xs text-muted truncate" dir="rtl">
             {subtitle}

@@ -23,9 +23,9 @@ const DAYPART_RANGE: Record<Daypart, string> = {
 };
 
 const INVITE_NOTE: Record<NonNullable<CreateMatchDraft["invite"]>, string> = {
-  public: "این مسابقه به صورت عمومی برگزار می‌شود و همه می‌توانند درخواست ورود بدهند.",
-  private: "این مسابقه خصوصی است و بازیکنان فقط با تایید شما اضافه می‌شوند.",
-  "invite-only": "ورود به این مسابقه فقط با دعوت‌نامه ممکن است.",
+  public: "این مَچ به صورت عمومی برگزار می‌شود و همه می‌توانند درخواست ورود بدهند.",
+  private: "این مَچ خصوصی است و بازیکنان فقط با تایید شما اضافه می‌شوند.",
+  "invite-only": "ورود به این مَچ فقط با دعوت‌نامه ممکن است.",
 };
 
 interface Props {
@@ -64,7 +64,7 @@ export default function StepReview({ draft, courts, months, days, players }: Pro
         note={
           draft.customCourt
             ? `آدرس: ${draft.address}`
-            : `${court?.name ?? ""} — پس از ثبت مسابقه رزرو می‌شود.`
+            : `${court?.name ?? ""} — پس از ثبت مَچ رزرو می‌شود.`
         }
       />
     </>
