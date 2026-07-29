@@ -7,12 +7,13 @@ import MatchesHeader from "./_components/MatchesHeader";
 import MatchCard from "./_components/MatchCard";
 import SortSheet, { DEFAULT_MATCH_SORT, type MatchSort } from "./_components/SortSheet";
 import FilterSheet, { DEFAULT_MATCH_FILTER, type MatchFilter } from "./_components/FilterSheet";
+import EmptyMatches from "./_components/EmptyMatches";
 
 type Sheet = "sort" | "filter" | null;
 
 export default function MatchesPage() {
   const { data: days = [] } = useQuery({ queryKey: ["matchDays"], queryFn: getMatchDays });
-  const { data: matchList = [] } = useQuery({ queryKey: ["matches"], queryFn: getMatchList });
+  const { data: matchList = [], isLoading } = useQuery({ queryKey: ["matches"], queryFn: getMatchList });
   const [selectedDay, setSelectedDay] = useState("d17");
   const [sheet, setSheet] = useState<Sheet>(null);
   const [filter, setFilter] = useState<MatchFilter>(DEFAULT_MATCH_FILTER);
@@ -41,13 +42,19 @@ export default function MatchesPage() {
       />
 
       <div className="px-6 py-6 flex flex-col gap-6">
-        {visibleMatches.map((m) => (
-          <MatchCard key={m.id} match={m} />
-        ))}
-        {visibleMatches.length === 0 && matchList.length > 0 && (
-          <p className="text-sm text-muted text-center py-10" dir="rtl">
-            مسابقه‌ای با این فیلترها پیدا نشد.
-          </p>
+        {matchList.length === 0 && !isLoading ? (
+          <EmptyMatches />
+        ) : (
+          <>
+            {visibleMatches.map((m) => (
+              <MatchCard key={m.id} match={m} />
+            ))}
+            {visibleMatches.length === 0 && matchList.length > 0 && (
+              <p className="text-sm text-muted text-center py-10" dir="rtl">
+                مسابقه‌ای با این فیلترها پیدا نشد.
+              </p>
+            )}
+          </>
         )}
       </div>
 
