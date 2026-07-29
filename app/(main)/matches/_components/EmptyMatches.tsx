@@ -8,13 +8,13 @@ export default function EmptyMatches() {
       <div className="size-16 rounded-full bg-surface flex items-center justify-center text-muted">
         <MatchesIcon />
       </div>
-      <p className="text-base font-bold text-ink">هنوز مسابقه‌ای نیست</p>
-      <p className="text-sm text-muted">در حال حاضر مسابقه‌ای برای نمایش وجود ندارد.</p>
+      <p className="text-base font-bold text-ink">هنوز مَچی نیست</p>
+      <p className="text-sm text-muted">در حال حاضر مَچی برای نمایش وجود ندارد.</p>
       <Link
         href="/matches/create"
         className="mt-2 h-12 px-8 flex items-center justify-center rounded-pill bg-primary text-white text-sm font-bold"
       >
-        ساخت مسابقه
+        ساخت مَچ
       </Link>
     </div>
   );

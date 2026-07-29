@@ -105,13 +105,13 @@ type AddAction = {
 };
 
 const addActions: AddAction[] = [
-  { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مسابقه" },
+  { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مَچ" },
   { href: "/courts", Icon: CourtIcon, label: "رزرو زمین", comingSoon: true },
   { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت", comingSoon: true },
 ];
 
 const tabs: Tab[] = [
-  { href: "/matches", Icon: MatchesIcon, label: "مسابقات" },
+  { href: "/matches", Icon: MatchesIcon, label: "مَچ‌ها" },
   { href: "/clubs", Icon: ClubsIcon, label: "باشگاه‌ها", comingSoon: true },
   { href: "/activity", Icon: DiscoverIcon, label: "کاوش" },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },

@@ -3,7 +3,7 @@ import NavRow from "../_components/NavRow";
 
 const items = [
   { label: "دستاورد‌ها", href: "/profile/statistics/achievements" },
-  { label: "سابقه مسابقات", href: "/profile/statistics/matches" },
+  { label: "سابقه مَچ‌ها", href: "/profile/statistics/matches" },
   { label: "سابقه رزرو‌ها", href: "/profile/statistics/reservations" },
   { label: "دوستان بازیکن", href: "/profile/statistics/friends" },
 ];

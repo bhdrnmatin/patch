@@ -13,7 +13,7 @@ export default function OnboardingActions({
 }: OnboardingActionsProps) {
   if (isLast) {
     return (
-      <Button label="شروع کنیم پس!" variant="primary" onClick={onNext} fullWidth />
+      <Button label="بزن بریم" variant="primary" onClick={onNext} fullWidth />
     );
   }
 

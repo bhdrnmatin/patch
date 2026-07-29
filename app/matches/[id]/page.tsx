@@ -27,13 +27,13 @@ const STAGE = {
 
 const CTA: Record<ViewerRole, Record<MatchDetailsStatus, { label: string; caption?: string }>> = {
   creator: {
-    upcoming: { label: "لغو مسابقه" },
+    upcoming: { label: "لغو مَچ" },
     live: { label: "وارد کردن نتیجه" },
     finished: { label: "نهایی کردن نتیجه" },
   },
   player: {
     upcoming: { label: "لغو ارسال درخواست ورود", caption: "در انتظار تایید درخواست سازنده بازی" },
-    live: { label: "ترک مسابقه", caption: "شما عضوی از بازی هستید" },
+    live: { label: "ترک مَچ", caption: "شما عضوی از بازی هستید" },
     finished: { label: "مشاهده نتیجه", caption: "شما می‌توانید به نتیجه اعتراض کنید" },
   },
 };

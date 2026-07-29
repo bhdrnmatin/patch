@@ -51,7 +51,7 @@ export default function MatchesPage() {
             ))}
             {visibleMatches.length === 0 && matchList.length > 0 && (
               <p className="text-sm text-muted text-center py-10" dir="rtl">
-                مسابقه‌ای با این فیلترها پیدا نشد.
+                مَچی با این فیلترها پیدا نشد.
               </p>
             )}
           </>

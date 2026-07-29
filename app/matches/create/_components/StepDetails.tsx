@@ -30,7 +30,7 @@ export default function StepDetails({ draft, patch }: Props) {
         onClick={() => setFormatOpen(true)}
       />
       <TextField
-        label="عنوان مسابقه"
+        label="عنوان مَچ"
         value={draft.title}
         onChange={(title) => patch({ title })}
         placeholder="مثلا راکت طلایی"
