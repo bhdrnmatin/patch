@@ -8,7 +8,7 @@ import { getUnreadCounts } from "@/lib/data";
 
 type IconProps = { className?: string };
 
-function DiscoverIcon({ className }: IconProps) {
+export function DiscoverIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path
