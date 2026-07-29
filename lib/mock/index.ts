@@ -15,7 +15,6 @@ import type {
   MatchPlayer,
 } from "@/lib/types";
 
-const AVATAR = "/images/avatar-placeholder.svg";
 const COURT_THUMB = "/images/activity-court.webp";
 
 /** Horizontal date strip in the Matches header (۱۵–۲۱ بهمن). */
@@ -29,47 +28,10 @@ export const matchDays: DayOption[] = [
   { id: "d21", day: 21, weekday: "جمعه" },
 ];
 
-function squad(count: number): MatchListItem["players"] {
-  return Array.from({ length: count }, () => ({
-    name: "سینا عضافی",
-    level: 3,
-    avatar: AVATAR,
-  }));
-}
-
 /** Cards shown on the Matches list page. */
-export const matchList: MatchListItem[] = [
-  {
-    id: "ml1",
-    title: "راکت طلایی",
-    status: "active",
-    players: squad(6),
-    avgLevel: 3,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 5_250_000_000,
-  },
-  {
-    id: "ml2",
-    title: "پدل شبانه",
-    status: "held",
-    players: squad(6),
-    avgLevel: 4,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 7_500_000_000,
-  },
-  {
-    id: "ml3",
-    title: "جام دوستانه",
-    status: "not-held",
-    players: squad(6),
-    avgLevel: 2,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 3_800_000_000,
-  },
-];
+// Empty on a fresh start so /matches shows the empty state (see EmptyMatches).
+// Sample entries live in git history; createMatch() unshifts new matches here.
+export const matchList: MatchListItem[] = [];
 
 export const players: Player[] = [
   { id: "p1", name: "Sara Ahmadi", avatar: "", sport: ["padel"], skillLevel: "intermediate", location: "Tehran" },
