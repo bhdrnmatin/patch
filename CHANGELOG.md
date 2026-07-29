@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-07-29 — empty states, nav polish, copy pass
+
+- [Copy] App-wide copy update. New onboarding slide texts (+ بزن بریم CTA), login button → ادامه, OTP title تایید شماره / button تایید, profile-setup welcome copy, assessment Q1/Q2 wording. Global term change **مسابقه → مَچ** (مسابقات/مسابقه‌ها → مَچ‌ها, مسابقه‌ای → مَچی) across ~15 files — nav, matches, create wizard, profile, and mock text (`chore/copy-update-mach`).
+- [Matches] Empty state when no matches exist: `EmptyMatches` (icon + message + a ساخت مَچ CTA to `/matches/create`), distinct from the filtered-out message and guarded on `!isLoading`. Emptied the mock `matchList` so a fresh start shows it; removed the orphaned `squad`/`AVATAR` mock helpers (`feat/matches-empty-state`).
+- [Activity] Empty state when there are no activity sections: `EmptyActivity` (Discover icon + message, no CTA). Emptied mock `activitySections`; removed the orphaned `COURT_THUMB` (`feat/activity-empty-state`).
+- [Nav] Red notification dots are now data-driven — a new `getUnreadCounts()` accessor (`lib/data` seam, `{}` until a notifications backend exists) replaces the hardcoded `badge:true` flags. A tab shows its dot only when its route has unread items — none today (`feat/nav-notification-dots`).
+- [Nav] Tapping the disabled clubs tab flashes a transient به زودی bubble above it (auto-hides after 1.8s, keyed by href); dropped the pill's `overflow-hidden` so the bubble can sit above the bar (`feat/clubs-tab-hint`).
+- [Auth] Post-auth landing moved to the create-match wizard — `POST_AUTH_ROUTE` = `/matches/create` (`chore/post-auth-to-create`).
+- [Cleanup] Removed the unused `ProfilePhotoVisibilityRequest` type (flagged by ponytail-audit of the logic layer, which otherwise came back lean) (`chore/rm-dead-type`).
+
 ### 2026-07-28 — auth routing, OTP countdown, bottom-nav
 
 - [Auth] Protected routes now require a **complete profile**. `useRequireAuth` (in `AuthGuard`) fetches `/players/me` and redirects to `/profile-setup` when `profileStatus !== "complete"`; a complete profile passes through, and an errored/unreachable `/me` lets the user through rather than trapping them on a spinner. OTP-verify routes by the same field, and profile-setup seeds the `["me"]` cache with the returned player on success so the guard doesn't bounce the user straight back. Shared `/me` query options and the completeness check are centralized as `meQuery` / `isProfileComplete` in `lib/api/useAuth.ts` (`feat/profile-status-guard`).

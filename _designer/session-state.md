@@ -1,5 +1,34 @@
 # Session State
 
+## Session — 2026-07-29: empty states, nav polish, copy pass
+Seven branches merged → `main`, **pushed to origin** (`9ffa6f2`). All branches deleted.
+
+- **Copy pass** (`chore/copy-update-mach`): rewrote onboarding slides (+ بزن بریم CTA), login button →
+  ادامه, OTP title تایید شماره / button تایید, profile-setup welcome copy, assessment Q1/Q2 wording.
+  Global term change **مسابقه → مَچ** (مسابقات/مسابقه‌ها → مَچ‌ها, مسابقه‌ای → مَچی) across ~15 files via
+  ordered `perl -CSD -Mutf8` passes (needed `-Mutf8` or the Persian literals matched as bytes, not chars).
+  Used مَچ everywhere, not the offered پَچ‌میک/پَچ‌میکینگ — noted user can swap specific brand spots.
+  Onboarding slide 4 split into title/description to fit the card. تورنومنت left untouched.
+- **Empty states** — mock-data lists now render an empty state instead of nothing on a fresh start.
+  `EmptyMatches` (icon + message + ساخت مَچ CTA → /matches/create) and `EmptyActivity` (icon + message,
+  no CTA), both guarded on `!isLoading`. **Emptied the mock** `matchList` and `activitySections` (samples in
+  git history) so the states show now; removed orphaned mock helpers `squad`/`AVATAR` (matches) and
+  `COURT_THUMB` (activity). Reused exported `MatchesIcon`/`DiscoverIcon` from BottomNav
+  (`feat/matches-empty-state`, `feat/activity-empty-state`).
+- **Nav dots data-driven** (`feat/nav-notification-dots`): new `getUnreadCounts()` accessor (`lib/data`
+  seam, `{}` today) drives the red dot per route; removed the hardcoded `badge:true` flags. No dots until a
+  notifications backend exists; swap the accessor body + invalidate `["unread-counts"]` when it does.
+- **Clubs tab hint** (`feat/clubs-tab-hint`): tapping the disabled clubs tab flashes a به زودی bubble
+  (auto-hide 1.8s, keyed by href). Dropped the pill's `overflow-hidden` so it can sit above the bar.
+- **Post-auth → create wizard** (`chore/post-auth-to-create`): `POST_AUTH_ROUTE` = `/matches/create`.
+  NOTE: this fires for returning already-authed users too, not just new signups — flagged to user.
+- **ponytail-audit** of the logic layer (`lib/api`, `lib/data`, hooks): came back lean — one cut,
+  the dead `ProfilePhotoVisibilityRequest` type, removed (`chore/rm-dead-type`).
+
+### Next
+- Wire real APIs into the `lib/data` accessors (matches/activity/notifications) — each swaps its mock body
+  for a `fetch` + a `to<ViewModel>` mapper; UI, query keys, and empty states don't change.
+
 ## Session — 2026-07-28: auth routing, OTP countdown, dev-disk fix
 Four small branches merged → `main` and **pushed to origin** (`fcf1327`): `chore/skip-assessment-redirect`
 (`9516603`), `feat/otp-countdown` (`0d551aa`), `feat/profile-status-guard` (`cd7f895`),
