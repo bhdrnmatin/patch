@@ -127,6 +127,16 @@ export default function BottomNav() {
   // navigation supersedes the history entry we pushed, so skip the rollback.
   const navigatingRef = useRef(false);
 
+  // Tapping a coming-soon tab flashes a "به زودی" bubble above it, keyed by href.
+  const [hintHref, setHintHref] = useState<string | null>(null);
+  const hintTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const flashHint = (href: string) => {
+    setHintHref(href);
+    clearTimeout(hintTimer.current);
+    hintTimer.current = setTimeout(() => setHintHref(null), 1800);
+  };
+  useEffect(() => () => clearTimeout(hintTimer.current), []);
+
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -207,21 +217,32 @@ export default function BottomNav() {
         </div>
       )}
       {/* Frosted pill with the four section tabs */}
-      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px] overflow-hidden">
+      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px]">
         {tabs.map(({ href, Icon, label, badge, comingSoon }) => {
           const active = isActive(pathname, href);
           const cellClass = "relative flex-1 h-[52px] flex items-center justify-center";
 
           if (comingSoon) {
             return (
-              <span
+              <button
                 key={href}
+                type="button"
                 aria-label={`${label} (به زودی)`}
                 aria-disabled="true"
+                onClick={() => flashHint(href)}
                 className={`${cellClass} cursor-default`}
               >
+                {hintHref === href && (
+                  <span
+                    className="animate-fade-in absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1 text-tiny font-bold text-white shadow-pop"
+                    dir="rtl"
+                    role="status"
+                  >
+                    به زودی
+                  </span>
+                )}
                 <Icon className="text-ink-soft opacity-40" />
-              </span>
+              </button>
             );
           }
 
