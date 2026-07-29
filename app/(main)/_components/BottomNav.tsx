@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUnreadCounts } from "@/lib/data";
 
 type IconProps = { className?: string };
 
@@ -90,7 +92,6 @@ type Tab = {
   href: string;
   Icon: (p: IconProps) => React.ReactElement;
   label: string;
-  badge?: boolean;
   /** Render inactive and non-navigating — a not-yet-shipped section. */
   comingSoon?: boolean;
 };
@@ -110,9 +111,9 @@ const addActions: AddAction[] = [
 ];
 
 const tabs: Tab[] = [
-  { href: "/matches", Icon: MatchesIcon, label: "مسابقات", badge: true },
+  { href: "/matches", Icon: MatchesIcon, label: "مسابقات" },
   { href: "/clubs", Icon: ClubsIcon, label: "باشگاه‌ها", comingSoon: true },
-  { href: "/activity", Icon: DiscoverIcon, label: "کاوش", badge: true },
+  { href: "/activity", Icon: DiscoverIcon, label: "کاوش" },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },
 ];
 
@@ -123,6 +124,9 @@ function isActive(pathname: string, href: string) {
 export default function BottomNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Per-route unread counts drive the red dot; empty until a notifications
+  // backend exists, so no dots show today.
+  const { data: unreadCounts } = useQuery({ queryKey: ["unread-counts"], queryFn: getUnreadCounts });
   // Set when the menu closes because the user tapped one of its links — that
   // navigation supersedes the history entry we pushed, so skip the rollback.
   const navigatingRef = useRef(false);
@@ -218,8 +222,9 @@ export default function BottomNav() {
       )}
       {/* Frosted pill with the four section tabs */}
       <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px]">
-        {tabs.map(({ href, Icon, label, badge, comingSoon }) => {
+        {tabs.map(({ href, Icon, label, comingSoon }) => {
           const active = isActive(pathname, href);
+          const hasBadge = (unreadCounts?.[href] ?? 0) > 0;
           const cellClass = "relative flex-1 h-[52px] flex items-center justify-center";
 
           if (comingSoon) {
@@ -261,7 +266,7 @@ export default function BottomNav() {
               ) : (
                 <span className="relative">
                   <Icon className="text-ink-soft" />
-                  {badge && (
+                  {hasBadge && (
                     <span className="absolute -top-0.5 -right-1 size-2 rounded-full bg-danger border border-white" />
                   )}
                 </span>
