@@ -50,7 +50,3 @@ export interface UpdateDisplayInfoRequest {
 }
 
 export type PhotoVisibility = "PUBLIC" | "PRIVATE";
-
-export interface ProfilePhotoVisibilityRequest {
-  visibility: PhotoVisibility;
-}

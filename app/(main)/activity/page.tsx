@@ -11,11 +11,12 @@ import FilterSheet, {
 import SortSheet, { DEFAULT_MATCH_SORT, type MatchSort } from "../matches/_components/SortSheet";
 import ActivityCard from "./_components/ActivityCard";
 import SectionDivider from "./_components/SectionDivider";
+import EmptyActivity from "./_components/EmptyActivity";
 
 type Sheet = "sort" | "filter" | null;
 
 export default function ActivityPage() {
-  const { data: activitySections = [] } = useQuery({
+  const { data: activitySections = [], isLoading } = useQuery({
     queryKey: ["activitySections"],
     queryFn: getActivitySections,
   });
@@ -35,14 +36,18 @@ export default function ActivityPage() {
       />
 
       <div className="flex flex-col gap-6 px-4 py-6">
-        {activitySections.map((section, i) => (
-          <section key={i} className="flex flex-col gap-3">
-            {section.heading && <SectionDivider {...section.heading} />}
-            {section.items.map((item) => (
-              <ActivityCard key={item.id} item={item} />
-            ))}
-          </section>
-        ))}
+        {activitySections.length === 0 && !isLoading ? (
+          <EmptyActivity />
+        ) : (
+          activitySections.map((section, i) => (
+            <section key={i} className="flex flex-col gap-3">
+              {section.heading && <SectionDivider {...section.heading} />}
+              {section.items.map((item) => (
+                <ActivityCard key={item.id} item={item} />
+              ))}
+            </section>
+          ))
+        )}
       </div>
 
       <SortSheet open={sheet === "sort"} onClose={() => setSheet(null)} value={sort} onChange={setSort} />

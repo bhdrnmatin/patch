@@ -6,21 +6,22 @@ import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import RadioGroup from "../_components/RadioGroup";
 import AuthActions from "../_components/AuthActions";
+import { POST_AUTH_ROUTE } from "@/lib/routes";
 
 const steps = [
   {
     bg: "/images/assessment-1.webp",
     pos: "72% 50%",
-    title: "سنجش سطح",
-    subtitle: "در مقیاس زیر، خودتان را کجا قرار می‌دهید؟",
+    title: "سطح بازی",
+    subtitle: "در مقیاس زیر سطح بازیت رو چطور ارزیابی می‌کنی؟",
     options: ["مبتدی", "متوسط", "پیشرفته", "حرفه‌ای"],
     nextLabel: "بریم بعدی",
   },
   {
     bg: "/images/assessment-2.webp",
     pos: "70% 50%",
-    title: "سابقه‌ی پدل",
-    subtitle: "چند سال است پدل یا هر ورزشِ راکتی انجام می‌دهید؟",
+    title: "سابقه پدل",
+    subtitle: "چند وقته پدل بازی می‌کنی؟",
     options: [
       "تا حالا بازی نکرده‌ام",
       "کمتر از ۱ سال",
@@ -76,7 +77,7 @@ export default function AssessmentPage() {
 
   const handleNext = () => {
     if (step === steps.length - 1) {
-      router.push("/");
+      router.push(POST_AUTH_ROUTE);
     } else {
       setStep((s) => s + 1);
     }

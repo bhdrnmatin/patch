@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
 import AuthInput from "../_components/AuthInput";
@@ -13,6 +13,7 @@ import { updateProfile } from "@/lib/api/players";
 import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
 import { toPersianOnly } from "@/lib/persian";
+import { POST_AUTH_ROUTE } from "@/lib/routes";
 
 const BG = "/images/auth-profile-setup.webp";
 
@@ -27,6 +28,7 @@ const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9_]/g, "").toLowerC
 
 export default function ProfileSetupPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -100,7 +102,12 @@ export default function ProfileSetupPage() {
         username: form.username,
         residenceCityId: form.cityId,
       }),
-    onSuccess: () => router.push("/assessment"),
+    onSuccess: (updated) => {
+      // Seed the /me cache with the now-complete profile so AuthGuard doesn't
+      // read a stale "incomplete" and bounce us straight back here.
+      queryClient.setQueryData(["me"], updated);
+      router.push(POST_AUTH_ROUTE); // TODO: restore "/assessment" when assessment is enabled
+    },
   });
 
   const errorMessage =
@@ -116,8 +123,8 @@ export default function ProfileSetupPage() {
       <div className="relative w-full max-w-[430px] h-full">
         <AuthSlide backgroundImage={BG} objectPosition="35% 50%">
           <AuthCard
-            title="خوش اومدی!"
-            subtitle="بهترین سرمایه‌گذاری روی خودت رو شروع کردی ..."
+            title="به جمع پَچ خوش اومدی!"
+            subtitle="چند اطلاعات کوتاه کافیه تا پَچ تجربه مناسب‌تری برات بسازه."
           >
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">

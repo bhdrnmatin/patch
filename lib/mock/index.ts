@@ -15,8 +15,6 @@ import type {
   MatchPlayer,
 } from "@/lib/types";
 
-const AVATAR = "/images/avatar-placeholder.svg";
-const COURT_THUMB = "/images/activity-court.webp";
 
 /** Horizontal date strip in the Matches header (۱۵–۲۱ بهمن). */
 export const matchDays: DayOption[] = [
@@ -29,47 +27,10 @@ export const matchDays: DayOption[] = [
   { id: "d21", day: 21, weekday: "جمعه" },
 ];
 
-function squad(count: number): MatchListItem["players"] {
-  return Array.from({ length: count }, () => ({
-    name: "سینا عضافی",
-    level: 3,
-    avatar: AVATAR,
-  }));
-}
-
 /** Cards shown on the Matches list page. */
-export const matchList: MatchListItem[] = [
-  {
-    id: "ml1",
-    title: "راکت طلایی",
-    status: "active",
-    players: squad(6),
-    avgLevel: 3,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 5_250_000_000,
-  },
-  {
-    id: "ml2",
-    title: "پدل شبانه",
-    status: "held",
-    players: squad(6),
-    avgLevel: 4,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 7_500_000_000,
-  },
-  {
-    id: "ml3",
-    title: "جام دوستانه",
-    status: "not-held",
-    players: squad(6),
-    avgLevel: 2,
-    capacity: 20,
-    date: "بهمن ۱۴۰۴",
-    price: 3_800_000_000,
-  },
-];
+// Empty on a fresh start so /matches shows the empty state (see EmptyMatches).
+// Sample entries live in git history; createMatch() unshifts new matches here.
+export const matchList: MatchListItem[] = [];
 
 export const players: Player[] = [
   { id: "p1", name: "Sara Ahmadi", avatar: "", sport: ["padel"], skillLevel: "intermediate", location: "Tehran" },
@@ -194,139 +155,9 @@ export const tournamentList: TournamentListItem[] = Array.from(
 );
 
 /** Sections shown on the Activity list page. */
-export const activitySections: ActivitySection[] = [
-  {
-    items: [
-      {
-        id: "a1",
-        image: COURT_THUMB,
-        status: "در انتظار واریز",
-        title: ["باشگاه انقلاب", "زمین شماره ۲"],
-        meta: [
-          { text: "زمین رزرو شده", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "بدون مسابقه", tone: "faint" },
-        ],
-        actions: [
-          { label: "کنسل کردن", variant: "outline" },
-          { label: "واریز پیش‌پرداخت", variant: "filled" },
-        ],
-      },
-      {
-        id: "a2",
-        image: COURT_THUMB,
-        status: "در انتظار تایید",
-        title: ["درخواست ورود", "سینا عشاقی"],
-        meta: [
-          { text: "زمین رزرو شده", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "مسابقه دوستانه {عنوان مسابقه}", tone: "faint" },
-        ],
-        actions: [
-          { label: "رد کردن بازیکن", variant: "outline" },
-          { label: "تایید بازیکن", variant: "filled" },
-        ],
-      },
-    ],
-  },
-  {
-    heading: { right: "زمین‌ها" },
-    items: [
-      {
-        id: "a3",
-        image: COURT_THUMB,
-        status: "در انتظار تایید",
-        title: ["زمین ۳", "باشگاه انقلاب"],
-        meta: [
-          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "بدون مسابقه", tone: "faint" },
-        ],
-        actions: [
-          { label: "لغو درخواست", variant: "outline" },
-          { label: "مشاهده جزئیات", variant: "filled" },
-        ],
-      },
-      {
-        id: "a4",
-        image: COURT_THUMB,
-        status: "در انتظار پرداخت",
-        title: ["زمین ۳", "باشگاه انقلاب"],
-        meta: [
-          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "بدون مسابقه", tone: "faint" },
-        ],
-        actions: [
-          { label: "لغو رزرو", variant: "outline" },
-          { label: "پرداخت", variant: "filled" },
-        ],
-      },
-      {
-        id: "a5",
-        image: COURT_THUMB,
-        status: "پرداخت شده",
-        title: ["زمین ۳", "باشگاه انقلاب"],
-        meta: [
-          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "بدون مسابقه", tone: "faint" },
-        ],
-        actions: [
-          { label: "لغو رزرو", variant: "outline" },
-          { label: "مشاهده جزئیات", variant: "filled" },
-        ],
-      },
-      {
-        id: "a6",
-        image: COURT_THUMB,
-        status: "لغو شده",
-        title: ["زمین ۳", "باشگاه انقلاب"],
-        meta: [
-          { text: "ساعت ۱۳ الی ۱۴", tone: "strong" },
-          { text: "۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "هزینه رزرو به کیف پول شما عودت داده شد", tone: "faint" },
-        ],
-        actions: [{ label: "مشاهده جزئیات لغو", variant: "filled" }],
-      },
-    ],
-  },
-  {
-    heading: { left: "سازنده بازی", right: "مسابقه" },
-    items: [
-      {
-        id: "a7",
-        image: COURT_THUMB,
-        status: "شروع نشده",
-        title: ["عنوان مسابقه"],
-        meta: [
-          { text: "در حال یارگیری: ۲ از ۳", tone: "strong" },
-          { text: "تاریخ شروع: ۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "مسابقه رقابتی {عنوان مسابقه}", tone: "faint" },
-        ],
-        actions: [
-          { label: "مشاهده جزئیات", variant: "outline" },
-          { label: "لغو", variant: "filled" },
-        ],
-      },
-      {
-        id: "a8",
-        image: COURT_THUMB,
-        status: "شروع نشده",
-        title: ["عنوان مسابقه"],
-        meta: [
-          { text: "در حال یارگیری: ۲ از ۳", tone: "strong" },
-          { text: "تاریخ شروع: ۱۴۰۴/۸/۱۶", tone: "muted" },
-          { text: "مسابقه رقابتی {عنوان مسابقه}", tone: "faint" },
-        ],
-        actions: [
-          { label: "مشاهده جزئیات", variant: "outline" },
-          { label: "لغو", variant: "filled" },
-        ],
-      },
-    ],
-  },
-];
+// Empty on a fresh start so /activity shows the empty state (see EmptyActivity).
+// Sample entries live in git history.
+export const activitySections: ActivitySection[] = [];
 
 export const courts: Court[] = [
   {
@@ -395,15 +226,15 @@ export const matchDetails: MatchDetails = {
     detailPlayer("کیان مرادی", 3),
   ],
   restriction: "بالای لول ۳",
-  courtNote: "این مسابقه به صورت آزاد برگذار می‌شود و جایزه‌ای ندارد.",
-  teamNote: "تیم کشی در این مسابقه مشخص نشده است.",
+  courtNote: "این مَچ به صورت آزاد برگذار می‌شود و جایزه‌ای ندارد.",
+  teamNote: "تیم کشی در این مَچ مشخص نشده است.",
   faq: [
     {
-      question: "چطور به مسابقه ملحق شوم؟",
-      answer: "درخواست ورود بفرستید؛ بعد از تایید سازنده بازی و پرداخت ورودی، عضو مسابقه می‌شوید.",
+      question: "چطور به مَچ ملحق شوم؟",
+      answer: "درخواست ورود بفرستید؛ بعد از تایید سازنده بازی و پرداخت ورودی، عضو مَچ می‌شوید.",
     },
     {
-      question: "اگر سطح پروفیلم با قوانین مسابقه نخورد چه؟",
+      question: "اگر سطح پروفیلم با قوانین مَچ نخورد چه؟",
       answer: "سازنده بازی می‌تواند درخواست شما را با توجه به سطح اعلام‌شده رد یا قبول کند.",
     },
     {

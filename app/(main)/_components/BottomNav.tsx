@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUnreadCounts } from "@/lib/data";
 
 type IconProps = { className?: string };
 
-function DiscoverIcon({ className }: IconProps) {
+export function DiscoverIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path
@@ -19,15 +21,13 @@ function DiscoverIcon({ className }: IconProps) {
   );
 }
 
-function CupIcon({ className }: IconProps) {
+function ClubsIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
-      <path d="M12.1499 16.5V18.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M7.1499 22H17.1499V21C17.1499 19.9 16.2499 19 15.1499 19H9.1499C8.0499 19 7.1499 19.9 7.1499 21V22V22Z" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" />
-      <path d="M6.1499 22H18.1499" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M12 16C8.13 16 5 12.87 5 9V6C5 3.79 6.79 2 9 2H15C17.21 2 19 3.79 19 6V9C19 12.87 15.87 16 12 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5.47004 11.6496C4.72004 11.4096 4.06004 10.9696 3.54004 10.4496C2.64004 9.44961 2.04004 8.24961 2.04004 6.84961C2.04004 5.44961 3.14004 4.34961 4.54004 4.34961H5.19004C4.99004 4.80961 4.89004 5.31961 4.89004 5.84961V8.84961C4.89004 9.84961 5.10004 10.7896 5.47004 11.6496Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M18.5298 11.6496C19.2798 11.4096 19.9398 10.9696 20.4598 10.4496C21.3598 9.44961 21.9598 8.24961 21.9598 6.84961C21.9598 5.44961 20.8598 4.34961 19.4598 4.34961H18.8098C19.0098 4.80961 19.1098 5.31961 19.1098 5.84961V8.84961C19.1098 9.84961 18.8998 10.7896 18.5298 11.6496Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 21H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 21V8.5L12 4L19 8.5V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.5 21V17C9.5 15.6193 10.6193 14.5 12 14.5C13.3807 14.5 14.5 15.6193 14.5 17V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 10.5H8.01M16 10.5H16.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -92,25 +92,28 @@ type Tab = {
   href: string;
   Icon: (p: IconProps) => React.ReactElement;
   label: string;
-  badge?: boolean;
+  /** Render inactive and non-navigating — a not-yet-shipped section. */
+  comingSoon?: boolean;
 };
 
 type AddAction = {
   href: string;
   Icon: (p: IconProps) => React.ReactElement;
   label: string;
+  /** Render inactive with a "به زودی" label instead of navigating. */
+  comingSoon?: boolean;
 };
 
 const addActions: AddAction[] = [
-  { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت" },
-  { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مسابقه" },
-  { href: "/courts", Icon: CourtIcon, label: "رزرو زمین" },
+  { href: "/matches/create", Icon: MatchesIcon, label: "ساخت مَچ" },
+  { href: "/courts", Icon: CourtIcon, label: "رزرو زمین", comingSoon: true },
+  { href: "/tournaments", Icon: WhistleIcon, label: "ساخت تورنومنت", comingSoon: true },
 ];
 
 const tabs: Tab[] = [
-  { href: "/matches", Icon: MatchesIcon, label: "مسابقات", badge: true },
-  { href: "/tournaments", Icon: CupIcon, label: "تورنومنت" },
-  { href: "/activity", Icon: DiscoverIcon, label: "کاوش", badge: true },
+  { href: "/matches", Icon: MatchesIcon, label: "مَچ‌ها" },
+  { href: "/clubs", Icon: ClubsIcon, label: "باشگاه‌ها", comingSoon: true },
+  { href: "/activity", Icon: DiscoverIcon, label: "کاوش" },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },
 ];
 
@@ -121,9 +124,22 @@ function isActive(pathname: string, href: string) {
 export default function BottomNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Per-route unread counts drive the red dot; empty until a notifications
+  // backend exists, so no dots show today.
+  const { data: unreadCounts } = useQuery({ queryKey: ["unread-counts"], queryFn: getUnreadCounts });
   // Set when the menu closes because the user tapped one of its links — that
   // navigation supersedes the history entry we pushed, so skip the rollback.
   const navigatingRef = useRef(false);
+
+  // Tapping a coming-soon tab flashes a "به زودی" bubble above it, keyed by href.
+  const [hintHref, setHintHref] = useState<string | null>(null);
+  const hintTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const flashHint = (href: string) => {
+    setHintHref(href);
+    clearTimeout(hintTimer.current);
+    hintTimer.current = setTimeout(() => setHintHref(null), 1800);
+  };
+  useEffect(() => () => clearTimeout(hintTimer.current), []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -166,37 +182,82 @@ export default function BottomNav() {
       {/* Add menu anchored above the nav */}
       {menuOpen && (
         <div className="animate-sheet-in absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">
-          {addActions.map(({ href, Icon, label }) => (
-            <Link
-              key={label}
-              href={href}
-              onClick={() => {
-                navigatingRef.current = true;
-                setMenuOpen(false);
-              }}
-              className="flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20"
-            >
-              <span className="text-sm font-bold leading-4 text-white" dir="rtl">
-                {label}
-              </span>
-              <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
-                <Icon />
-              </span>
-            </Link>
-          ))}
+          {addActions.map(({ href, Icon, label, comingSoon }) => {
+            const rowClass =
+              "flex items-center justify-end gap-3 w-full p-1 rounded-full bg-white/10 border border-white/20";
+            const content = (
+              <>
+                {comingSoon && (
+                  <span className="mr-auto pl-3 text-xs text-white/70" dir="rtl">
+                    به زودی
+                  </span>
+                )}
+                <span className="text-sm font-bold leading-4 text-white" dir="rtl">
+                  {label}
+                </span>
+                <span className="size-10 shrink-0 flex items-center justify-center rounded-full bg-white/30 text-white">
+                  <Icon />
+                </span>
+              </>
+            );
+            return comingSoon ? (
+              <div key={label} className={`${rowClass} cursor-default opacity-60`} aria-disabled="true">
+                {content}
+              </div>
+            ) : (
+              <Link
+                key={label}
+                href={href}
+                onClick={() => {
+                  navigatingRef.current = true;
+                  setMenuOpen(false);
+                }}
+                className={rowClass}
+              >
+                {content}
+              </Link>
+            );
+          })}
         </div>
       )}
       {/* Frosted pill with the four section tabs */}
-      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px] overflow-hidden">
-        {tabs.map(({ href, Icon, label, badge }) => {
+      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px]">
+        {tabs.map(({ href, Icon, label, comingSoon }) => {
           const active = isActive(pathname, href);
+          const hasBadge = (unreadCounts?.[href] ?? 0) > 0;
+          const cellClass = "relative flex-1 h-[52px] flex items-center justify-center";
+
+          if (comingSoon) {
+            return (
+              <button
+                key={href}
+                type="button"
+                aria-label={`${label} (به زودی)`}
+                aria-disabled="true"
+                onClick={() => flashHint(href)}
+                className={`${cellClass} cursor-default`}
+              >
+                {hintHref === href && (
+                  <span
+                    className="animate-fade-in absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1 text-tiny font-bold text-white shadow-pop"
+                    dir="rtl"
+                    role="status"
+                  >
+                    به زودی
+                  </span>
+                )}
+                <Icon className="text-ink-soft opacity-40" />
+              </button>
+            );
+          }
+
           return (
             <Link
               key={href}
               href={href}
               aria-label={label}
               aria-current={active ? "page" : undefined}
-              className="relative flex-1 h-[52px] flex items-center justify-center"
+              className={cellClass}
             >
               {active ? (
                 <span className="absolute inset-1 rounded-full bg-primary flex items-center justify-center">
@@ -205,7 +266,7 @@ export default function BottomNav() {
               ) : (
                 <span className="relative">
                   <Icon className="text-ink-soft" />
-                  {badge && (
+                  {hasBadge && (
                     <span className="absolute -top-0.5 -right-1 size-2 rounded-full bg-danger border border-white" />
                   )}
                 </span>

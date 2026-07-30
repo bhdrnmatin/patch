@@ -57,7 +57,7 @@ export default function RulesPage() {
         </section>
 
         <section>
-          <p className="font-bold mb-2">۶) مسابقه‌ها و تورنومنت‌ها</p>
+          <p className="font-bold mb-2">۶) مَچ‌ها و تورنومنت‌ها</p>
           <ul className="list-disc list-inside flex flex-col gap-1 text-ink-soft">
             <li>ساخت مَچ عمومی/خصوصی با تعیین سطح و ظرفیت امکان‌پذیر است.</li>
             <li>کاپیتان تیم نتیجه را ثبت و تیم مقابل تأیید می‌کند.</li>
