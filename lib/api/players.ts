@@ -1,6 +1,5 @@
 import { apiFetch } from "./client";
 import type {
-  PhotoVisibility,
   PlayerResponse,
   UpdateDisplayInfoRequest,
   UpdateProfileRequest,
@@ -19,13 +18,6 @@ export function updateProfile(body: UpdateProfileRequest): Promise<PlayerRespons
 /** Set the bio / display info. */
 export function updateDisplayInfo(body: UpdateDisplayInfoRequest): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me/display-info", { method: "PUT", body });
-}
-
-export function updatePhotoVisibility(visibility: PhotoVisibility): Promise<PlayerResponse> {
-  return apiFetch<PlayerResponse>("/players/me/profile-photo/visibility", {
-    method: "PUT",
-    body: { visibility },
-  });
 }
 
 export function uploadProfilePhoto(file: File): Promise<PlayerResponse> {
