@@ -45,7 +45,7 @@ const mockPlayer = {
 // ];
 
 const navItems = [
-  { label: "ویرایش حساب کاربری", href: "/profile/edit", icon: NAV_ICONS.edit },
+  { label: "ویرایش حساب کاربری", href: "/profile/edit/personal", icon: NAV_ICONS.edit },
   { label: "مشاهده آمار", href: "/profile/statistics", icon: NAV_ICONS.chart, comingSoon: true },
   { label: "تنظیمات", href: "/profile/settings", icon: NAV_ICONS.settings },
   // Hidden for now:
