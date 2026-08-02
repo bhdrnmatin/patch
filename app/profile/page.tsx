@@ -3,6 +3,7 @@ import ProfileHero from "./_components/ProfileHero";
 import ProfileIdentity from "./_components/ProfileIdentity";
 // import StatsGrid from "./_components/StatsGrid"; // hidden until real stats exist
 import NavRow from "./_components/NavRow";
+import LogoutRow from "./settings/_components/LogoutRow";
 import { toPersianDigits } from "../../lib/persian";
 
 // Stat-card icons — unused while the stats grid is hidden (mock-only for launch).
@@ -45,9 +46,10 @@ const mockPlayer = {
 // ];
 
 const navItems = [
-  { label: "ویرایش حساب کاربری", href: "/profile/edit", icon: NAV_ICONS.edit },
+  { label: "ویرایش حساب کاربری", href: "/profile/edit/personal", icon: NAV_ICONS.edit },
   { label: "مشاهده آمار", href: "/profile/statistics", icon: NAV_ICONS.chart, comingSoon: true },
-  { label: "تنظیمات", href: "/profile/settings", icon: NAV_ICONS.settings },
+  // Hidden for now — no settings flows yet:
+  // { label: "تنظیمات", href: "/profile/settings", icon: NAV_ICONS.settings },
   // Hidden for now:
   // { label: "پشتیبانی", href: "/profile/support", icon: NAV_ICONS.support },
   { label: "قوانین و مقررات", href: "/profile/rules", icon: NAV_ICONS.rules },
@@ -76,6 +78,7 @@ export default function ProfilePage() {
           {navItems.map((item) => (
             <NavRow key={item.href} {...item} />
           ))}
+          <LogoutRow />
         </div>
       </div>
 

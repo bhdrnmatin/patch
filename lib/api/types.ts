@@ -48,5 +48,3 @@ export interface CityResponse {
 export interface UpdateDisplayInfoRequest {
   bio: string;
 }
-
-export type PhotoVisibility = "PUBLIC" | "PRIVATE";
