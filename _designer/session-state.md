@@ -1,5 +1,24 @@
 # Session State
 
+## Session — 2026-08-03: profile/OTP polish + a11y regression check
+- **Profile edit** — hero top-left edit button removed; both edit entry points (nav row) go straight to
+  `/profile/edit/personal`; deleted the intermediate `/profile/edit` list page. Removed the public/private
+  photo-visibility toggle + orphaned `updatePhotoVisibility` fn / `PhotoVisibility` type.
+- **Profile menu** — logout moved to the profile page as the last row (icon-pill matching the nav rows,
+  red glyph + chevron); تنظیمات nav row commented out (no settings flows yet).
+- **Nav** — second tab icon reverted to the trophy `CupIcon` (label باشگاه‌ها + coming-soon unchanged).
+- **OTP** — countdown relabeled from code-validity to resend cooldown; added a resend button at zero that
+  re-requests the OTP and restarts the countdown from the new `nextResendAllowedAt`. `OtpInput` now accepts
+  SMS autofill (`autocomplete="one-time-code"` + multi-digit spread; dropped `maxLength=1`).
+  Backend TODO for programmatic Web OTP autofill: SMS last line `@<web-origin> #<code>` (Latin digits).
+- **a11y audit (ds-qa-tw)** — AuthSearchSelect/AuthSelect were **already fully fixed in the 2026-07-22 v2
+  refactor**; the TODO items were stale (now checked off). Regression clean. Added one new fix:
+  AuthSearchSelect returns focus to its trigger on close (v3).
+
+### Next
+- Push today's commits to patchapp (via `sync/from-github` branch + MR — main is protected) and origin.
+- Still stale/older: wire real APIs into `lib/data` accessors (matches/activity/notifications).
+
 ## Session — 2026-07-29: empty states, nav polish, copy pass
 Seven branches merged → `main`, **pushed to origin** (`9ffa6f2`). All branches deleted.
 

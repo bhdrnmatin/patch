@@ -19,3 +19,13 @@ Fixed all: #1 dialog semantics (`role="dialog"` + `aria-modal` + `aria-label`) +
 
 ### Status
 Open: 0 | Fixed: 4 | Accepted: 1
+
+## v3 — 2026-08-03 | fix
+Regression check against v2: findings #1–#4 still clean (dialog semantics, Tab focus
+trap, Arrow/Home/End nav, aria-controls all present).
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 6 | Suggestion | Modal closed without returning focus to the trigger — the portal unmounts, so keyboard focus fell to `<body>`. | Fixed v3 — capture the trigger in the open-effect and `trigger?.focus()` in cleanup (runs on every close path: Escape / ✕ / pick). |
+
+### Status
+Open: 0 | Fixed: 5 | Accepted: 1
