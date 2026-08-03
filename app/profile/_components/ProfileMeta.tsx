@@ -1,6 +1,7 @@
 interface Props {
   city: string;
   gender: string;
+  side: string;
 }
 
 function PinIcon() {
@@ -29,6 +30,16 @@ function PersonIcon() {
   );
 }
 
+function CourtSideIcon() {
+  // Court split by the center net — reads as "side of the court", not handedness.
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden className="text-muted shrink-0">
+      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M12 5v14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function Chip({ icon, value }: { icon: React.ReactNode; value: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 bg-white border border-edge rounded-full px-3 py-1.5 text-xs text-ink-soft shadow-card">
@@ -38,10 +49,11 @@ function Chip({ icon, value }: { icon: React.ReactNode; value: string }) {
   );
 }
 
-/** City + gender as attribute chips (LTR wrapper so justify-end pins them right). */
-export default function ProfileMeta({ city, gender }: Props) {
+/** City + gender + side as attribute chips (LTR wrapper so justify-end pins them right). */
+export default function ProfileMeta({ city, gender, side }: Props) {
   return (
     <div className="flex justify-end gap-2 w-full">
+      <Chip icon={<CourtSideIcon />} value={side} />
       <Chip icon={<PersonIcon />} value={gender} />
       <Chip icon={<PinIcon />} value={city} />
     </div>

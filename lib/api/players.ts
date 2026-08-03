@@ -10,7 +10,7 @@ export function getMe(): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me");
 }
 
-/** Update the profile — all of firstName/lastName/gender/residenceCityId/username are required. */
+/** Update the profile — all of firstName/lastName/gender/residenceCityId are required. */
 export function updateProfile(body: UpdateProfileRequest): Promise<PlayerResponse> {
   return apiFetch<PlayerResponse>("/players/me/profile", { method: "PUT", body });
 }
