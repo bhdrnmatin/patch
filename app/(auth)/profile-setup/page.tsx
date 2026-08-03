@@ -9,9 +9,10 @@ import AuthInput from "../_components/AuthInput";
 import AuthSelect, { type SelectOption } from "../_components/AuthSelect";
 import AuthSearchSelect from "../_components/AuthSearchSelect";
 import AuthActions from "../_components/AuthActions";
-import { updateProfile } from "@/lib/api/players";
+import { updateDisplayInfo, updateProfile } from "@/lib/api/players";
 import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
+import type { PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
 import { POST_AUTH_ROUTE } from "@/lib/routes";
 
@@ -23,8 +24,10 @@ const GENDER_OPTIONS: SelectOption[] = [
   { value: "FEMALE", label: "خانم" },
 ];
 
-// API pattern: ^[a-zA-Z0-9_]{3,20}$ — strip everything but letters/digits/_
-const sanitizeUsername = (v: string) => v.replace(/[^a-zA-Z0-9_]/g, "").toLowerCase();
+const SIDE_OPTIONS: SelectOption[] = [
+  { value: "RIGHT", label: "راست" },
+  { value: "LEFT", label: "چپ" },
+];
 
 export default function ProfileSetupPage() {
   const router = useRouter();
@@ -33,7 +36,7 @@ export default function ProfileSetupPage() {
     firstName: "",
     lastName: "",
     gender: "",
-    username: "",
+    side: "",
     provinceId: "",
     cityId: "",
   });
@@ -77,7 +80,7 @@ export default function ProfileSetupPage() {
     form.firstName.trim() !== "" &&
     form.lastName.trim() !== "" &&
     form.gender !== "" &&
-    form.username.trim() !== "" &&
+    form.side !== "" &&
     form.cityId !== "";
 
   // Submit-time guard: the live filter can slip on some mobile keyboards, so
@@ -87,21 +90,17 @@ export default function ProfileSetupPage() {
       ? "نام و نام خانوادگی باید فارسی باشند."
       : null;
 
-  // API requires the username to be 3–20 chars.
-  const usernameError =
-    form.username.trim() !== "" && form.username.length < 3
-      ? "نام کاربری باید حداقل ۳ کاراکتر باشد."
-      : null;
-
   const { mutate, isPending, error } = useMutation({
-    mutationFn: () =>
-      updateProfile({
+    mutationFn: async () => {
+      await updateProfile({
         firstName: toPersianOnly(form.firstName),
         lastName: toPersianOnly(form.lastName),
         gender: form.gender,
-        username: form.username,
         residenceCityId: form.cityId,
-      }),
+      });
+      // Preferred side lives on display-info (bio stays empty at signup).
+      return updateDisplayInfo({ preferredSide: form.side as PreferredSide });
+    },
     onSuccess: (updated) => {
       // Seed the /me cache with the now-complete profile so AuthGuard doesn't
       // read a stale "incomplete" and bounce us straight back here.
@@ -133,13 +132,13 @@ export default function ProfileSetupPage() {
                   <AuthInput placeholder="سینا" label="نام" value={form.firstName} onChange={set("firstName")} showLabel persianOnly maxLength={20} />
                 </div>
                 <div className="flex gap-4">
-                  <AuthInput
-                    placeholder="sina_padel"
-                    label="نام کاربری"
-                    value={form.username}
-                    onChange={(v) => set("username")(sanitizeUsername(v))}
+                  <AuthSelect
+                    label="ساید ترجیحی"
+                    placeholder="انتخاب"
+                    value={form.side}
+                    onChange={set("side")}
+                    options={SIDE_OPTIONS}
                     showLabel
-                    maxLength={20}
                   />
                   <AuthSelect
                     label="جنسیت"
@@ -173,15 +172,15 @@ export default function ProfileSetupPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-4">
-                {(nameError || usernameError || geoError || errorMessage) && (
+                {(nameError || geoError || errorMessage) && (
                   <p className="text-xs text-danger text-center" dir="rtl">
-                    {nameError ?? usernameError ?? geoError ?? errorMessage}
+                    {nameError ?? geoError ?? errorMessage}
                   </p>
                 )}
                 <AuthActions
                   nextLabel={isPending ? "در حال ثبت..." : "شروع کنیم!"}
                   onNext={() => mutate()}
-                  disabled={!isComplete || isPending || !!nameError || !!usernameError}
+                  disabled={!isComplete || isPending || !!nameError}
                 />
               </div>
             </div>

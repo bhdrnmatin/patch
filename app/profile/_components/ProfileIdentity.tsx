@@ -7,7 +7,8 @@ import ProfileMeta from "./ProfileMeta";
 interface Props {
   fallbackName: string;
   city: string;
-  // side/level kept on the page for a later restore; not shown for now.
+  // level kept on the page for a later restore; not shown for now. (Preferred
+  // side is now shown, sourced live from /players/me — not this prop.)
   side: string;
   level: string;
 }
@@ -25,6 +26,9 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
   // Live gender (MALE/FEMALE → آقا/خانم, matching profile-setup labels).
   const gender =
     player?.gender === "MALE" ? "آقا" : player?.gender === "FEMALE" ? "خانم" : "—";
+  // Live preferred side (RIGHT/LEFT → راست/چپ, matching profile-setup labels).
+  const side =
+    player?.preferredSide === "RIGHT" ? "راست" : player?.preferredSide === "LEFT" ? "چپ" : "—";
 
   return (
     <div className="relative z-10 w-full flex flex-col items-end">
@@ -45,16 +49,11 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
             {name}
           </span>
         )}
-        {player?.username && (
-          <span className="text-sm text-muted mt-0.5" dir="ltr">
-            @{player.username}
-          </span>
-        )}
       </div>
 
-      {/* City + gender chips */}
+      {/* City + gender + preferred-side chips */}
       <div className="mt-3.5">
-        <ProfileMeta city={city} gender={gender} />
+        <ProfileMeta city={city} gender={gender} side={side} />
       </div>
 
       {player?.bio && (

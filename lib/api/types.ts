@@ -12,13 +12,16 @@ export interface VerifyOtpResponse {
 
 // profileStatus distinguishes a freshly-verified user (needs profile-setup)
 // from a complete one; exact string values are confirmed against a live /me.
+export type PreferredSide = "RIGHT" | "LEFT";
+
 export interface PlayerResponse {
   id: string;
   firstName: string;
   lastName: string;
   gender: string;
   residenceCityId: string;
-  username: string;
+  username: string; // backend still returns it; no longer shown/sent — removal pending
+  preferredSide?: PreferredSide;
   avatarUrl: string;
   bio: string;
   status: string;
@@ -31,7 +34,6 @@ export interface UpdateProfileRequest {
   lastName: string;
   gender: string;
   residenceCityId: string;
-  username: string;
 }
 
 export interface ProvinceResponse {
@@ -46,5 +48,6 @@ export interface CityResponse {
 }
 
 export interface UpdateDisplayInfoRequest {
-  bio: string;
+  bio?: string;
+  preferredSide?: PreferredSide;
 }
