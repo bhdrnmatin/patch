@@ -34,6 +34,7 @@ export default function AuthSearchSelect({
   const dialogId = `${id}-dialog`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -42,20 +43,6 @@ export default function AuthSearchSelect({
     const q = query.trim();
     return q ? options.filter((o) => o.label.includes(q)) : options;
   }, [options, query]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden"; // lock scroll behind the dialog
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [open]);
 
   const openSheet = () => {
     if (disabled) return;
@@ -66,6 +53,24 @@ export default function AuthSearchSelect({
     onChange(v);
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden"; // lock scroll behind the dialog
+    const trigger = triggerRef.current; // stable across the dialog's lifetime
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      // Restore focus to the trigger on close (WAI-ARIA dialog practice) — the
+      // portal unmounts, so focus would otherwise fall to <body>.
+      trigger?.focus();
+    };
+  }, [open]);
 
   const optionButtons = () =>
     Array.from(listRef.current?.querySelectorAll<HTMLElement>('[role="option"] > button') ?? []);
@@ -123,6 +128,7 @@ export default function AuthSearchSelect({
       )}
       <div className="relative h-12 w-full">
         <button
+          ref={triggerRef}
           id={id}
           type="button"
           dir="rtl"

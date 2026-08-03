@@ -142,9 +142,11 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## Component QA — ds-qa-tw audit (2026-07-22)
 Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. Actionable:
-- [ ] AuthSearchSelect: give the full-screen picker dialog semantics (`role="dialog"` + `aria-modal` +
-      accessible name) and a focus trap so keyboard focus can't leave into the page behind it.
-- [ ] AuthSelect + AuthSearchSelect: option lists are `role="listbox"` but not keyboard-navigable
-      (no Arrow/Home/End, no `aria-activedescendant`) — usable via Tab+Enter; make conformant or accept.
+- [x] AuthSearchSelect: dialog semantics + focus trap — **done in the 2026-07-22 v2 refactor**
+      (`role="dialog"` + `aria-modal` + `aria-label` + Tab trap). Verified 2026-08-03; also added
+      focus-return to the trigger on close (v3). See _designer/audits/AuthSearchSelect.audit.md.
+- [x] AuthSelect + AuthSearchSelect: option-list keyboard nav — **done in the 2026-07-22 v2 refactor**
+      (Arrow/Home/End roving focus over the option buttons; ArrowDown from the trigger/search enters the
+      list). Roving focus used instead of `aria-activedescendant`. Verified 2026-08-03.
 - [ ] Minor (suggestions): AuthGuard blank-flash loader; LogoutRow `aria-busy`; `aria-controls` on the
       dropdown triggers. Details in _designer/audits/.
