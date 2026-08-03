@@ -11,6 +11,12 @@ interface Props {
   onClose: () => void;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  /**
+   * Fixed full height (vs. shrink-to-content). Use for sheets with a search
+   * field so content stays top-anchored and the mobile keyboard just overlays
+   * the bottom of a scrollable list instead of hiding it.
+   */
+  fill?: boolean;
 }
 
 /**
@@ -18,7 +24,7 @@ interface Props {
  * Header: close button (left) · title + badge glyph (right).
  * Locks body scroll and closes on Escape while open.
  */
-export default function BottomSheet({ open, title, icon, onClose, children, footer }: Props) {
+export default function BottomSheet({ open, title, icon, onClose, children, footer, fill }: Props) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +69,9 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 max-h-[calc(100dvh-32px)] rounded-sheet bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-sheet outline-none"
+        className={`animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 rounded-sheet bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-sheet outline-none ${
+          fill ? "h-[calc(100dvh-32px)]" : "max-h-[calc(100dvh-32px)]"
+        }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between w-full shrink-0">
