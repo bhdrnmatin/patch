@@ -27,9 +27,17 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
   };
 
   const handleChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = toPersianDigits(e.target.value.replace(/[^0-9۰-۹]/g, "")).slice(-1);
-    if (!raw) return;
-    const next = value.slice(0, index) + raw + value.slice(index + 1);
+    const cleaned = toPersianDigits(e.target.value.replace(/[^0-9۰-۹]/g, ""));
+    if (!cleaned) return;
+    // SMS autofill (autocomplete="one-time-code") delivers the whole code to a
+    // single field in one event — spread it across the boxes like a paste.
+    if (cleaned.length > 1) {
+      const filled = cleaned.slice(0, OTP_LENGTH);
+      onChange(filled);
+      inputs.current[Math.min(filled.length, OTP_LENGTH - 1)]?.focus();
+      return;
+    }
+    const next = value.slice(0, index) + cleaned + value.slice(index + 1);
     onChange(next.slice(0, OTP_LENGTH));
     if (index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
   };
@@ -56,7 +64,7 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
               ref={(el) => { inputs.current[i] = el; }}
               type="text"
               inputMode="numeric"
-              maxLength={1}
+              autoComplete="one-time-code"
               value={digit}
               onChange={(e) => handleChange(i, e)}
               onKeyDown={(e) => handleKeyDown(i, e)}
