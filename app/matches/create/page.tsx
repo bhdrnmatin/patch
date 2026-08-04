@@ -84,11 +84,14 @@ function CreateMatchContent() {
   const { data: days } = useSuspenseQuery({ queryKey: ["matchDays"], queryFn: getMatchDays });
 
   const [step, setStep] = useState(0);
+  // Furthest step reached — every step up to it stays tappable (jump back AND forward).
+  const [maxStep, setMaxStep] = useState(0);
   const [draft, setDraft] = useState<CreateMatchDraft>(emptyDraft);
   const patch = (p: Partial<CreateMatchDraft>) => setDraft((d) => ({ ...d, ...p }));
 
   const goTo = (target: number) => {
     setStep(target);
+    setMaxStep((m) => Math.max(m, target));
     window.scrollTo({ top: 0 });
   };
 
@@ -112,7 +115,7 @@ function CreateMatchContent() {
         onClose={() => router.push("/matches")}
       />
       <div className="mt-4">
-        <StepChips labels={STEP_LABELS} current={step} onJump={goTo} />
+        <StepChips labels={STEP_LABELS} current={step} maxStep={maxStep} onJump={goTo} />
       </div>
 
       <div className="px-6 pt-4 flex flex-col gap-4">
