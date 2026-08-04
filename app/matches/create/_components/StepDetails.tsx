@@ -36,7 +36,7 @@ export default function StepDetails({ draft, patch }: Props) {
         placeholder="مثلا راکت طلایی"
       />
       <TextArea
-        label="توضیحات"
+        label="توضیحات (اختیاری)"
         value={draft.description}
         onChange={(description) => patch({ description })}
         placeholder="توضیحاتی برای بازیکنان بنویسید..."
