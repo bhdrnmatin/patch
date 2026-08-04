@@ -73,10 +73,20 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## Create match — audit (2026-07-12)
 ### Behavior wiring (post-mock)
-- [ ] "انتخاب روی نقشه" (StepLocation) is a dead button — wire to a real map picker when a maps SDK exists.
 - [ ] createMatch stores only a MatchListItem; the details page still renders the shared mock for any id —
       per-id match storage when the API lands.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
+
+### مکان rework (2026-08-04)
+- [ ] مسیریابی button (StepLocation selected-court card) is cosmetic — wire a maps deep link when available.
+      (The old "انتخاب روی نقشه" custom-court button was removed in this rework.)
+- [ ] Court picker is mock (5 hardcoded Karaj courts in `courtOptions`); `reserved` + `courtId` aren't sent
+      anywhere — wire to a real courts/reservation API when it ships.
+- [ ] استان/شهر are locked to البرز/کرج (disabled `SelectField`) for single-city launch — swap for the live
+      province→city searchable cascade (same pattern as profile-edit) when multi-city.
+- [ ] The court map is a static SF placeholder (`court-map.webp`) — replace with a real per-court map/tiles.
+- [ ] Possible dedup: the map + مسیریابی button in StepLocation duplicates match-details `CourtCard`;
+      extract a shared leaf if the Figma redesign keeps this shape.
 ### Refactor candidates
 - [x] StepChips 44px chips + keyboard-reachable current chip — **fixed 2026-07-12**.
 - [x] AvailabilityHeatmap `role="grid"` removed + `SWATCH_TONE` legend map — **fixed 2026-07-12**.

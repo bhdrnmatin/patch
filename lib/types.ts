@@ -164,8 +164,6 @@ export interface FaqEntry {
 /** Create-match wizard (/matches/create) */
 export interface CourtOption {
   id: string;
-  /** Pre-formatted Persian, e.g. "زمین ۳". */
-  name: string;
   club: string;
   /** Human-readable address, e.g. "کرج، عظیمیه، میدان استاندارد". */
   location: string;
