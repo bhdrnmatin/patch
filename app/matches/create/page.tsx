@@ -59,12 +59,11 @@ const answered = (t: ToggleSetting<unknown>) =>
   t.enabled !== null && (!t.enabled || t.value !== null);
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
-  (d) => d.format !== null, // title (عنوان مَچ) is optional
+  (d) => d.format !== null && d.invite !== null, // title (عنوان مَچ) is optional
   (d) => d.customCourt !== null && (d.customCourt ? d.address.trim() !== "" : d.courtId !== null),
   (d) => d.dayId !== null && d.daypart !== null,
   (d) => d.myRole !== null,
   (d) =>
-    d.invite !== null &&
     d.autoApprove !== null &&
     [d.minLevel, d.maxLevel, d.gender, d.entryFee].every(answered),
   () => true,

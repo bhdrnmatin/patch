@@ -207,7 +207,7 @@ export interface CreateMatchDraft {
   /** Indexes into the pickable-players list; null = empty slot. */
   teammates: [number | null, number | null, number | null];
   // ۵ تنظیمات
-  invite: "public" | "private" | "invite-only" | null;
+  invite: "public" | "private" | null;
   minLevel: ToggleSetting<number>;
   maxLevel: ToggleSetting<number>;
   gender: ToggleSetting<"male" | "female" | "mixed">;

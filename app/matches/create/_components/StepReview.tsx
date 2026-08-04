@@ -25,7 +25,6 @@ const DAYPART_RANGE: Record<Daypart, string> = {
 const INVITE_NOTE: Record<NonNullable<CreateMatchDraft["invite"]>, string> = {
   public: "این مَچ به صورت عمومی برگزار می‌شود و همه می‌توانند درخواست ورود بدهند.",
   private: "این مَچ خصوصی است و بازیکنان فقط با تایید شما اضافه می‌شوند.",
-  "invite-only": "ورود به این مَچ فقط با دعوت‌نامه ممکن است.",
 };
 
 interface Props {

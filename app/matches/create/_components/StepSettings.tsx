@@ -4,17 +4,8 @@ import { useState } from "react";
 import SelectField from "./SelectField";
 import OptionSheet, { type SheetOption } from "./OptionSheet";
 import ToggleSetting from "./ToggleSetting";
-import FilterSection, {
-  type ChipOption,
-} from "../../../(main)/matches/_components/FilterSection";
 import { toPersianDigits } from "../../../../lib/persian";
 import type { CreateMatchDraft } from "../../../../lib/types";
-
-export const INVITE_OPTIONS: ChipOption[] = [
-  { id: "public", label: "عمومی" },
-  { id: "private", label: "خصوصی" },
-  { id: "invite-only", label: "دعوت‌نامه" },
-];
 
 export const LEVEL_OPTIONS: SheetOption[] = [1, 2, 3, 4, 5, 6].map((n) => ({
   id: String(n),
@@ -39,22 +30,13 @@ interface Props {
   patch: (p: Partial<CreateMatchDraft>) => void;
 }
 
-/** Step ۵ تنظیمات: invite mode + five toggle settings with dependent selects. */
+/** Step ۵ تنظیمات: five toggle settings with dependent selects. */
 export default function StepSettings({ draft, patch }: Props) {
   const [openSheet, setOpenSheet] = useState<SheetId | null>(null);
   const close = () => setOpenSheet(null);
 
   return (
     <>
-      <div className="w-full bg-white rounded-group p-3 shadow-card">
-        <FilterSection
-          label="نحوه دعوت"
-          options={INVITE_OPTIONS}
-          value={draft.invite ?? ""}
-          onChange={(id) => patch({ invite: id as CreateMatchDraft["invite"] })}
-        />
-      </div>
-
       <ToggleSetting
         label="حداقل سطح برای ورود"
         enabled={draft.minLevel.enabled}

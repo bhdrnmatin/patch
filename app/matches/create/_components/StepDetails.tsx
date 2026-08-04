@@ -13,21 +13,33 @@ export const FORMAT_OPTIONS: SheetOption[] = [
   { id: "competitive", label: "رقابتی" },
 ];
 
+export const INVITE_OPTIONS: SheetOption[] = [
+  { id: "public", label: "عمومی" },
+  { id: "private", label: "خصوصی" },
+];
+
 interface Props {
   draft: CreateMatchDraft;
   patch: (p: Partial<CreateMatchDraft>) => void;
 }
 
-/** Step ۱ مشخصات: format select + title + description. */
+type SheetId = "format" | "invite" | null;
+
+/** Step ۱ مشخصات: format + invite selects, title + description. */
 export default function StepDetails({ draft, patch }: Props) {
-  const [formatOpen, setFormatOpen] = useState(false);
+  const [sheet, setSheet] = useState<SheetId>(null);
 
   return (
     <>
       <SelectField
         label="حالت بازی"
         value={FORMAT_OPTIONS.find((o) => o.id === draft.format)?.label}
-        onClick={() => setFormatOpen(true)}
+        onClick={() => setSheet("format")}
+      />
+      <SelectField
+        label="نحوه دعوت"
+        value={INVITE_OPTIONS.find((o) => o.id === draft.invite)?.label}
+        onClick={() => setSheet("invite")}
       />
       <TextField
         label="عنوان مَچ (اختیاری)"
@@ -42,15 +54,26 @@ export default function StepDetails({ draft, patch }: Props) {
         placeholder="توضیحاتی برای بازیکنان بنویسید..."
       />
       <OptionSheet
-        open={formatOpen}
+        open={sheet === "format"}
         title="حالت بازی"
         options={FORMAT_OPTIONS}
         value={draft.format}
         onSelect={(id) => {
           patch({ format: id as CreateMatchDraft["format"] });
-          setFormatOpen(false);
+          setSheet(null);
         }}
-        onClose={() => setFormatOpen(false)}
+        onClose={() => setSheet(null)}
+      />
+      <OptionSheet
+        open={sheet === "invite"}
+        title="نحوه دعوت"
+        options={INVITE_OPTIONS}
+        value={draft.invite}
+        onSelect={(id) => {
+          patch({ invite: id as CreateMatchDraft["invite"] });
+          setSheet(null);
+        }}
+        onClose={() => setSheet(null)}
       />
     </>
   );
