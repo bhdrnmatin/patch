@@ -167,6 +167,8 @@ export interface CourtOption {
   /** Pre-formatted Persian, e.g. "زمین ۳". */
   name: string;
   club: string;
+  /** Human-readable address, e.g. "کرج، عظیمیه، میدان استاندارد". */
+  location: string;
 }
 
 export type SlotAvailability = "free" | "half" | "blocked";
@@ -192,12 +194,10 @@ export interface CreateMatchDraft {
   title: string;
   description: string;
   // ۲ مکان
-  customCourt: boolean | null;
-  /** Set when customCourt === false. */
+  /** Whether the user has already reserved a court (required to proceed). */
+  reserved: boolean | null;
+  /** The reserved court; set when reserved === true. */
   courtId: string | null;
-  courtSearch: string;
-  /** Set when customCourt === true. */
-  address: string;
   // ۳ زمان‌بندی
   monthId: string;
   dayId: string | null;
@@ -207,7 +207,7 @@ export interface CreateMatchDraft {
   /** Indexes into the pickable-players list; null = empty slot. */
   teammates: [number | null, number | null, number | null];
   // ۵ تنظیمات
-  invite: "public" | "private" | "invite-only" | null;
+  invite: "public" | "private" | null;
   minLevel: ToggleSetting<number>;
   maxLevel: ToggleSetting<number>;
   gender: ToggleSetting<"male" | "female" | "mixed">;
