@@ -29,7 +29,7 @@ export default function StepChips({ labels, current, maxStep, onJump }: Props) {
             type="button"
             disabled={i > maxStep}
             aria-current={i === current ? "step" : undefined}
-            onClick={() => i !== current && i <= maxStep && onJump(i)}
+            onClick={() => i !== current && onJump(i)}
             className={`h-11 px-4 shrink-0 rounded-full border text-xs font-bold whitespace-nowrap ${tone}`}
           >
             {label}
