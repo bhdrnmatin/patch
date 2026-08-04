@@ -35,14 +35,33 @@ function OtpContent() {
   useEffect(() => {
     if (!expiresAt) return;
     const target = new Date(expiresAt).getTime();
-    setSecondsLeft(Math.max(0, Math.ceil((target - Date.now()) / 1000)));
-    const id = setInterval(() => {
+    const tick = () => {
       const left = Math.max(0, Math.ceil((target - Date.now()) / 1000));
       setSecondsLeft(left);
       if (left === 0) clearInterval(id);
-    }, 1000);
+    };
+    const id = setInterval(tick, 1000);
+    tick(); // reset immediately when expiresAt changes (e.g. after a resend)
     return () => clearInterval(id);
   }, [expiresAt]);
+
+  // Web OTP API (Android Chrome): read the code straight from the SMS and fill
+  // the boxes. Requires the SMS to END with a line `@<web-origin> #<code>`
+  // (e.g. `@patchapp.ir #50386`) — otherwise the browser never surfaces it.
+  useEffect(() => {
+    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
+    const ac = new AbortController();
+    navigator.credentials
+      .get({ otp: { transport: ["sms"] }, signal: ac.signal } as CredentialRequestOptions)
+      .then((cred) => {
+        const code = (cred as { code?: string } | null)?.code;
+        if (code) setOtp(toPersianDigits(code.replace(/\D/g, "").slice(0, OTP_LENGTH)));
+      })
+      .catch(() => {
+        /* aborted (navigation / manual submit) or no OTP delivered — ignore */
+      });
+    return () => ac.abort();
+  }, []);
 
   const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:${String(
     secondsLeft % 60,
