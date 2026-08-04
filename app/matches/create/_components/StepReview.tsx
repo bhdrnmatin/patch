@@ -58,14 +58,7 @@ export default function StepReview({ draft, courts, months, days, players }: Pro
         date={day ? `${toPersianDigits(String(day.day))} ${monthLabel}` : monthLabel}
         timeRange={draft.daypart ? DAYPART_RANGE[draft.daypart] : ""}
       />
-      <CourtCard
-        club={draft.customCourt ? "زمین شخصی" : (court?.club ?? "")}
-        note={
-          draft.customCourt
-            ? `آدرس: ${draft.address}`
-            : `${court?.name ?? ""} — پس از ثبت مَچ رزرو می‌شود.`
-        }
-      />
+      <CourtCard club={court?.club ?? ""} note={court?.location ?? ""} />
     </>
   );
 }

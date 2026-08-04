@@ -255,9 +255,13 @@ export const matchDetails: MatchDetails = {
 
 /** Create-match wizard (/matches/create) */
 
-export const courtOptions: CourtOption[] = ["۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸"].map(
-  (n, i) => ({ id: `c${i + 1}`, name: `زمین ${n}`, club: "باشگاه انقلاب" }),
-);
+export const courtOptions: CourtOption[] = [
+  { id: "c1", name: "زمین ۱", club: "باشگاه پدل انقلاب", location: "کرج، گوهردشت، بلوار انقلاب" },
+  { id: "c2", name: "زمین ۲", club: "مجموعه ورزشی البرز", location: "کرج، عظیمیه، میدان استاندارد" },
+  { id: "c3", name: "زمین ۳", club: "آکادمی پدل مهرشهر", location: "کرج، مهرشهر، بلوار ارم" },
+  { id: "c4", name: "زمین ۴", club: "کلوپ پدل جهان‌نما", location: "کرج، جهانشهر، خیابان امام" },
+  { id: "c5", name: "زمین ۵", club: "پدل سنتر فردیس", location: "کرج، فردیس، بلوار طالقانی" },
+];
 
 /** Availability per matchDays id — [morning, noon, evening, night]; past days fully blocked. */
 export const courtAvailability: Record<string, SlotAvailability[]> = {

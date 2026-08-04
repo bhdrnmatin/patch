@@ -38,10 +38,8 @@ const emptyDraft: CreateMatchDraft = {
   format: null,
   title: "",
   description: "",
-  customCourt: null,
+  reserved: null,
   courtId: null,
-  courtSearch: "",
-  address: "",
   monthId: "bahman",
   dayId: null,
   daypart: null,
@@ -60,7 +58,7 @@ const answered = (t: ToggleSetting<unknown>) =>
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   (d) => d.format !== null && d.invite !== null, // title (عنوان مَچ) is optional
-  (d) => d.customCourt !== null && (d.customCourt ? d.address.trim() !== "" : d.courtId !== null),
+  (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
   (d) => d.dayId !== null && d.daypart !== null,
   (d) => d.myRole !== null,
   (d) =>
