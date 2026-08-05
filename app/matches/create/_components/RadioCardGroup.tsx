@@ -29,15 +29,14 @@ export default function RadioCardGroup({ label, subtitle, options, value, onChan
         </span>
       </div>
 
-      <div role="radiogroup" aria-label={label} className="flex flex-col gap-2">
+      <div role="group" aria-label={label} className="flex flex-col gap-2">
         {options.map((o) => {
           const selected = value === o.id;
           return (
             <button
               key={o.id}
               type="button"
-              role="radio"
-              aria-checked={selected}
+              aria-pressed={selected}
               onClick={() => onChange(o.id)}
               className={`w-full flex items-center gap-3 rounded-group p-4 bg-white border shadow-card active:opacity-90 ${
                 selected ? "border-primary" : "border-edge"
