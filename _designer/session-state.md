@@ -1,5 +1,27 @@
 # Session State
 
+## Session — 2026-08-05: create-wizard rework + jalali timing step
+Work on `main` (create-wizard commits) + branch `feat/jalali-timing-step` (not merged).
+- **Step 1 مشخصات**: match title optional (label اختیاری), description اختیاری; invite mode
+  moved here from step 5 as a SelectField, public/private only.
+- **Step 2 مکان**: locked استان/شهر → البرز/کرج (disabled SelectField); replaced with a
+  reserved-court gate (no → InfoBanner + block; yes → searchable court picker + location +
+  static map + مسیریابی); segmented بله/خیر toggle.
+- **Step 3 زمان‌بندی (branch)**: full rewrite → quick chips + **jalali calendar** + time slots +
+  duration. New `lib/jalali.ts` (inline conversion, no dep) + `lib/jalali.test.ts`. Draft model
+  `monthId/dayId/daypart → date/time/duration`; removed AvailabilityHeatmap + wizardMonths +
+  courtAvailability. All 3 fields required to advance.
+- **Fixes**: wizard step-nav (jump back AND forward to any reached step); `/simplify` pass
+  (dropped dead CourtOption.name + a StepChips guard).
+- **ds-qa-tw on StepSchedule**: 0 Critical, 0 Warning, 4 Suggestions (arrow-key calendar nav,
+  day aria-labels, disabled-modifier, memo). The initial "missing focus-visible rings" Warning
+  was **withdrawn** — `globals.css:75` already applies a global `:focus-visible` brand outline
+  app-wide. Audit-only, nothing changed.
+
+### Next
+- Merge `feat/jalali-timing-step`; push origin (patchapp still protected — access pending).
+- Verify on device: calendar arrow direction, time range (06:00–23:30), duration set.
+
 ## Session — 2026-08-03: profile/OTP polish + a11y regression check
 - **Profile edit** — hero top-left edit button removed; both edit entry points (nav row) go straight to
   `/profile/edit/personal`; deleted the intermediate `/profile/edit` list page. Removed the public/private
