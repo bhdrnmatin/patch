@@ -70,3 +70,4 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-07-22 | **AuthSelect + AuthSearchSelect (a11y)** | refactor | fixed 3 Warning + 4 Suggestion (dialog semantics, focus trap, arrow-nav, aria-controls, aria-busy, guard loader) | 0 open | [details](audits/AuthSearchSelect.audit.md)
 - 2026-08-03 | **AuthSearchSelect** | fix (v3) | regression clean (v2 findings hold); +1 Suggestion fixed (focus return to trigger on close) | 0 open | [details](audits/AuthSearchSelect.audit.md)
 - 2026-08-05 | **StepSchedule** | audit | 0 Critical, 0 Warning, 4 Suggestion | focus-ring finding withdrawn (handled globally); 4 open | [details](audits/StepSchedule.audit.md)
+- 2026-08-05 | **RadioCardGroup** | audit+fix | 0 Critical, 1 Warning, 2 Suggestion | 1 fixed (aria-pressed), 2 open | [details](audits/RadioCardGroup.audit.md)
