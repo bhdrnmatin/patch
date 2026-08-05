@@ -1,5 +1,13 @@
-import { matchDetails, matchList, pickablePlayers, wizardMonths } from "@/lib/mock";
+import { matchDetails, matchList, pickablePlayers } from "@/lib/mock";
+import { JALALI_MONTHS, isoToJalali } from "@/lib/jalali";
+import { toPersianDigits } from "@/lib/persian";
 import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
+
+/** "۱۴ مرداد" from an ISO gregorian date, for the match-list card. */
+function dayMonthLabel(iso: string): string {
+  const { jm, jd } = isoToJalali(iso);
+  return `${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`;
+}
 
 // Write-side seam — the twin of the read accessors in this folder. Today each
 // mutates the in-memory mock so an invalidated query refetches changed data;
@@ -51,7 +59,7 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
     players,
     avgLevel: Math.round(players.reduce((sum, p) => sum + p.level, 0) / players.length),
     capacity: 4,
-    date: wizardMonths.find((m) => m.id === draft.monthId)?.label ?? "",
+    date: draft.date ? dayMonthLabel(draft.date) : "",
     price: (draft.entryFee.enabled && draft.entryFee.value) || 0,
   });
   return id;

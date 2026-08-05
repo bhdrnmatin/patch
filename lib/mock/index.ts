@@ -10,8 +10,6 @@ import type {
   MatchDetails,
   ActivitySection,
   CourtOption,
-  SlotAvailability,
-  MonthOption,
   MatchPlayer,
 } from "@/lib/types";
 
@@ -261,22 +259,6 @@ export const courtOptions: CourtOption[] = [
   { id: "c3", club: "آکادمی پدل مهرشهر", location: "کرج، مهرشهر، بلوار ارم" },
   { id: "c4", club: "کلوپ پدل جهان‌نما", location: "کرج، جهانشهر، خیابان امام" },
   { id: "c5", club: "پدل سنتر فردیس", location: "کرج، فردیس، بلوار طالقانی" },
-];
-
-/** Availability per matchDays id — [morning, noon, evening, night]; past days fully blocked. */
-export const courtAvailability: Record<string, SlotAvailability[]> = {
-  d15: ["blocked", "blocked", "blocked", "blocked"],
-  d16: ["blocked", "blocked", "blocked", "blocked"],
-  d17: ["free", "half", "blocked", "free"],
-  d18: ["free", "free", "half", "blocked"],
-  d19: ["half", "blocked", "free", "free"],
-  d20: ["blocked", "half", "half", "free"],
-  d21: ["free", "free", "free", "half"],
-};
-
-export const wizardMonths: MonthOption[] = [
-  { id: "bahman", label: "بهمن ۱۴۰۴" },
-  { id: "esfand", label: "اسفند ۱۴۰۴" },
 ];
 
 /** Players the creator can pre-fill into teams — excludes the current user. */

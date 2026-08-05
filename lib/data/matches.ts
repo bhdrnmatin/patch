@@ -3,8 +3,6 @@ import {
   matchList,
   matchDetails,
   courtOptions,
-  courtAvailability,
-  wizardMonths,
   pickablePlayers,
 } from "@/lib/mock";
 import type {
@@ -12,8 +10,6 @@ import type {
   MatchListItem,
   MatchDetails,
   CourtOption,
-  SlotAvailability,
-  MonthOption,
   MatchPlayer,
 } from "@/lib/types";
 
@@ -42,14 +38,6 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
 
 export async function getCourtOptions(): Promise<CourtOption[]> {
   return courtOptions;
-}
-
-export async function getCourtAvailability(): Promise<Record<string, SlotAvailability[]>> {
-  return courtAvailability;
-}
-
-export async function getWizardMonths(): Promise<MonthOption[]> {
-  return wizardMonths;
 }
 
 export async function getPickablePlayers(): Promise<MatchPlayer[]> {
