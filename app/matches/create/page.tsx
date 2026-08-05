@@ -12,14 +12,7 @@ import StepSchedule from "./_components/StepSchedule";
 import StepPlayers from "./_components/StepPlayers";
 import StepSettings from "./_components/StepSettings";
 import StepReview from "./_components/StepReview";
-import {
-  getCourtOptions,
-  getCourtAvailability,
-  getWizardMonths,
-  getPickablePlayers,
-  getMatchDays,
-  createMatch,
-} from "@/lib/data";
+import { getCourtOptions, getPickablePlayers, createMatch } from "@/lib/data";
 import type { CreateMatchDraft, ToggleSetting } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "تنظیمات", "اتمام"];
@@ -40,9 +33,9 @@ const emptyDraft: CreateMatchDraft = {
   description: "",
   reserved: null,
   courtId: null,
-  monthId: "bahman",
-  dayId: null,
-  daypart: null,
+  date: null,
+  time: null,
+  duration: null,
   myRole: null,
   teammates: [null, null, null],
   invite: null,
@@ -59,7 +52,7 @@ const answered = (t: ToggleSetting<unknown>) =>
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   (d) => d.format !== null && d.invite !== null, // title (عنوان مَچ) is optional
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
-  (d) => d.dayId !== null && d.daypart !== null,
+  (d) => d.date !== null && d.time !== null && d.duration !== null,
   (d) => d.myRole !== null,
   (d) =>
     d.autoApprove !== null &&
@@ -72,16 +65,10 @@ function CreateMatchContent() {
   const queryClient = useQueryClient();
 
   const { data: courts } = useSuspenseQuery({ queryKey: ["courtOptions"], queryFn: getCourtOptions });
-  const { data: availability } = useSuspenseQuery({
-    queryKey: ["courtAvailability"],
-    queryFn: getCourtAvailability,
-  });
-  const { data: months } = useSuspenseQuery({ queryKey: ["wizardMonths"], queryFn: getWizardMonths });
   const { data: players } = useSuspenseQuery({
     queryKey: ["pickablePlayers"],
     queryFn: getPickablePlayers,
   });
-  const { data: days } = useSuspenseQuery({ queryKey: ["matchDays"], queryFn: getMatchDays });
 
   const [step, setStep] = useState(0);
   // Furthest step reached — every step up to it stays tappable (jump back AND forward).
@@ -121,20 +108,10 @@ function CreateMatchContent() {
       <div className="px-6 pt-4 flex flex-col gap-4">
         {step === 0 && <StepDetails draft={draft} patch={patch} />}
         {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
-        {step === 2 && (
-          <StepSchedule
-            draft={draft}
-            patch={patch}
-            months={months}
-            days={days}
-            availability={availability}
-          />
-        )}
+        {step === 2 && <StepSchedule draft={draft} patch={patch} />}
         {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
         {step === 4 && <StepSettings draft={draft} patch={patch} />}
-        {step === 5 && (
-          <StepReview draft={draft} courts={courts} months={months} days={days} players={players} />
-        )}
+        {step === 5 && <StepReview draft={draft} courts={courts} players={players} />}
         {/* clearance for the fixed footer */}
         <div className="h-24" aria-hidden />
       </div>

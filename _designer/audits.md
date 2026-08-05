@@ -69,3 +69,4 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-07-22 | **AuthGuard/ProfileAvatar/ProfileIdentity** | audit | 0 Critical, 0 Warning, 1 Suggestion | mostly clean | [details](audits/auth-profile-misc.audit.md)
 - 2026-07-22 | **AuthSelect + AuthSearchSelect (a11y)** | refactor | fixed 3 Warning + 4 Suggestion (dialog semantics, focus trap, arrow-nav, aria-controls, aria-busy, guard loader) | 0 open | [details](audits/AuthSearchSelect.audit.md)
 - 2026-08-03 | **AuthSearchSelect** | fix (v3) | regression clean (v2 findings hold); +1 Suggestion fixed (focus return to trigger on close) | 0 open | [details](audits/AuthSearchSelect.audit.md)
+- 2026-08-05 | **StepSchedule** | audit | 0 Critical, 0 Warning, 4 Suggestion | focus-ring finding withdrawn (handled globally); 4 open | [details](audits/StepSchedule.audit.md)

@@ -169,16 +169,6 @@ export interface CourtOption {
   location: string;
 }
 
-export type SlotAvailability = "free" | "half" | "blocked";
-
-export interface MonthOption {
-  id: string;
-  /** e.g. "بهمن ۱۴۰۴". */
-  label: string;
-}
-
-export type Daypart = "morning" | "noon" | "evening" | "night";
-
 /** A بله/خیر setting with a dependent value; null = unanswered. */
 export interface ToggleSetting<T> {
   enabled: boolean | null;
@@ -197,9 +187,12 @@ export interface CreateMatchDraft {
   /** The reserved court; set when reserved === true. */
   courtId: string | null;
   // ۳ زمان‌بندی
-  monthId: string;
-  dayId: string | null;
-  daypart: Daypart | null;
+  /** Picked day as ISO gregorian "YYYY-MM-DD" (displayed in jalali). */
+  date: string | null;
+  /** Start time "HH:MM" (24h, Latin). */
+  time: string | null;
+  /** Duration in minutes. */
+  duration: number | null;
   // ۴ بازیکنان
   myRole: "captain" | "player" | null;
   /** Indexes into the pickable-players list; null = empty slot. */
