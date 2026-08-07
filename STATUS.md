@@ -209,24 +209,31 @@ Components live in `app/matches/create/_components/`.
 - [x] `TextField` — light single-line input, `numeric?` → Persian digits
 - [x] `TextArea` — light multiline input
 - [x] `SelectField` — select trigger (chevron + value), `aria-haspopup="dialog"`, opens a sheet
-- [x] `OptionSheet` — generic pick-one list in `BottomSheet`
+- [x] `OptionSheet` — generic pick-one list in `BottomSheet`; opt-in `searchable`
+- [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — step ۱
 - [x] `ToggleSetting` — white card: بله/خیر chips + conditional dependent control
 
 ### Compound Components
 - [x] `WizardHeader` — × close + title/step subtitle + `StageDial` ring
-- [x] `StepChips` — RTL step strip; past steps jump back, current keyboard-reachable
+- [x] `StepChips` — RTL step strip; jumps back and forward to any reached step
 - [x] `WizardFooter` — fixed قبلی/بعدی bar, gated advance, `aria-busy` submit
-- [x] `AvailabilityHeatmap` — 7 days × 4 dayparts, free/half/blocked states + legend, tap-to-pick
 - [x] `TeamPreview` — 2×2 team grid with "تور" divider
-- [x] `ReviewPlayers` — اعضا list with کاپیتان/یار role tags
+- [x] `ReviewPlayers` — اعضا list with برگزار کننده/بازیکن role tags
 - [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepSettings` / `StepReview`
+
+### Removed
+- `AvailabilityHeatmap` (+ `wizardMonths` / `courtAvailability` mocks) — replaced by the jalali
+  calendar in the 2026-08-05 timing rework.
 
 ### Pages
 - [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator)
 
 ### Data
-- [x] `CreateMatchDraft` / `CourtOption` / `SlotAvailability` / `MonthOption` / `Daypart` / `ToggleSetting<T>` — `lib/types.ts`
-- [x] `courtOptions` / `courtAvailability` / `wizardMonths` / `pickablePlayers` mocks + accessors
+- [x] `CreateMatchDraft` / `CourtOption` / `ToggleSetting<T>` — `lib/types.ts`
+      (schedule fields are `date` ISO / `time` HH:MM / `duration` minutes)
+- [x] `courtOptions` / `pickablePlayers` mocks + accessors
+- [x] `lib/jalali.ts` — dependency-free jalali↔gregorian conversion + month/weekday names,
+      self-checked by `lib/jalali.test.ts`
 - [x] `createMatch` mutation — `lib/data/mutations.ts` (unshifts into `matchList`, returns id)
 
 ### Reused (not rebuilt)
@@ -253,10 +260,10 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 
 ### Wired flows
 - [x] Login (request OTP), OTP (verify → tokens → route by profile completeness)
-- [x] Profile-setup (`PUT` name+gender via `AuthSelect` MALE/FEMALE dropdown; Persian-only inputs; city/assessment deferred)
-- [x] Edit profile → `/profile/edit/personal`: photo upload (`uploadProfilePhoto`) + bio (`updateDisplayInfo`); email/password rows hidden
-- [x] `/profile`: live avatar (`ProfileAvatarLive`, silhouette fallback) + bio (`ProfileIdentity`); `@username` hidden
-- [x] Settings: `LogoutRow` → `POST /auth/logout`; language/privacy hidden. Statistics row "به زودی"
+- [x] Profile-setup (`PUT` name+gender+city, then `preferredSide` to `/players/me/display-info`; Persian-only inputs; assessment deferred)
+- [x] Edit profile → `/profile/edit/personal`: name, preferred side, residence cascade, bio + photo upload (`uploadProfilePhoto`); sticky save bar; email/password rows hidden
+- [x] `/profile`: live avatar (`ProfileAvatarLive`, silhouette fallback), bio (`ProfileIdentity`), preferred-side chip (`ProfileMeta`)
+- [x] Logout row on `/profile` → `POST /auth/logout`; settings row hidden until settings flows exist
 - [x] Route guards: `(main)`, `/profile`, `/matches/*` layouts; login/otp redirect when authed
 
 ### Status
@@ -265,10 +272,14 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 - [x] **Token refresh (2026-07-21):** `POST /auth/refresh` is wired in `lib/api/client.ts` — proactive
   refresh of an expired token + reactive refresh-and-replay on 401, single-flight, rotating. Sessions
   now survive the 15-min access-token TTL; only a dead refresh token logs the user out.
-- [x] **Profile-setup complete (2026-07-22):** sends all required fields incl. `username` + `residenceCityId`
-  (searchable province→city picker `AuthSearchSelect`; gender inline `AuthSelect`); constraints
-  (username `[a-zA-Z0-9_]{3,20}`, names ≤20 Persian-only); live `@username` on `/profile`; photo
-  public/private toggle. Mobile: Persian-input hardened (compositionend), `allowedDevOrigins` + phone IP.
+- [x] **Profile-setup complete (2026-07-22):** sends all required fields incl. `residenceCityId`
+  (searchable province→city picker `AuthSearchSelect`; gender inline `AuthSelect`); names ≤20
+  Persian-only. Mobile: Persian-input hardened (compositionend), `allowedDevOrigins` + phone IP.
+- [x] **Preferred side replaced username (2026-08-03):** the backend is dropping `username`, so
+  profile-setup and `/profile` carry `preferredSide` (`RIGHT`/`LEFT`) via `/players/me/display-info`
+  instead. The photo public/private toggle was removed (write-only, no read side on `/players/me`).
+- [x] **OTP resend + SMS autofill (2026-08-03/04):** resend button at cooldown zero; `autocomplete="one-time-code"`
+  + multi-digit paste; Web OTP API wired for Android. Backend still owes the SMS `@<origin> #<code>` last line.
 - (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 
 ---

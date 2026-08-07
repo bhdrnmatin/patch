@@ -8,6 +8,43 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-07 — role toggle + audit cleanup
+
+- [Create] Step ۴ بازیکنان: نقش شما moved from a `SelectField` + `OptionSheet` to an inline two-button toggle pair (`aria-pressed`, same chip idiom as the schedule step's quick-day/duration rows) — one tap instead of three. Role copy changed کاپیتان/یار → **برگزار کننده (مربی)** / **بازیکن** across the step, the team preview, and the review list (`feat/role-toggle-copy`).
+- [a11y] StepSchedule calendar: each day button now announces its full date (`aria-label="۱۴ مرداد ۱۴۰۵"`) and today carries `aria-current="date"`; past days style through the `disabled:` modifier instead of a JS ternary (`fix/stepschedule-a11y`).
+- [a11y] `RadioCardGroup` labels its group with `aria-labelledby`/`aria-describedby` pointing at the visible header and subtitle, instead of duplicating the header text in an `aria-label` (`fix/radiocardgroup-labelling`).
+- [Docs] Both audits closed to **0 open** — arrow-key calendar nav accepted (project precedent: `role="grid"` was deliberately removed from AvailabilityHeatmap), render-cost memo accepted (31 items; the finding's SSR-mismatch rationale doesn't hold — a `useState` seed evaluates separately on server and client), `className` passthrough accepted (feature composite, not a shared primitive). CHANGELOG/STATUS caught up on the 08-02 → 08-05 sessions.
+
+### 2026-08-05 — jalali timing step, step-1 radio cards
+
+- [Create] Step ۳ زمان‌بندی fully reworked: quick-day chips (امروز/فردا/پس‌فردا) + a **jalali month calendar** + a 30-min start-time strip (۰۶:۰۰–۲۳:۳۰) + duration chips (۶۰/۹۰/۱۲۰ دقیقه). All three fields are required to advance. New dependency-free `lib/jalali.ts` (inline jalali↔gregorian conversion) with a self-check `lib/jalali.test.ts`. The draft model moved from `monthId`/`dayId`/`daypart` to `date`/`time`/`duration`; `AvailabilityHeatmap`, `wizardMonths`, and `courtAvailability` were removed (`feat/jalali-timing-step`).
+- [Create] Step ۱ مشخصات: حالت بازی and نمایش مسابقه render as **radio cards** (icon + title + description + indicator) via the new `RadioCardGroup`, replacing the plain selects (`feat/step1-radio-cards`).
+- [a11y] `RadioCardGroup` uses `aria-pressed` toggle buttons + a generic `role="group"` rather than `role="radiogroup"`/`role="radio"` — the radio roles promised arrow-key roving focus that wasn't implemented; the toggle form matches the app's chip precedent.
+
+### 2026-08-04 — مکان rework, optional fields, Web OTP
+
+- [Create] Step ۲ مکان reworked for the single-city launch: استان/شهر are locked to البرز/کرج (disabled `SelectField`s), and the step now gates on **رزرو زمین** — بله opens a searchable court picker with the court's location, a static map, and a مسیریابی button; خیر shows an `InfoBanner` and blocks advancing. The old "انتخاب روی نقشه" custom-court button was removed (`feat/invite-to-step1`).
+- [Create] Invite mode (public/private) moved from step ۵ to step ۱ as a `SelectField`; the match title is now optional (labeled اختیاری) and the description field is labeled توضیحات (اختیاری) (`feat/optional-match-title`, `feat/optional-description-label`).
+- [Create] Wizard step nav fixed — the step chips now jump both back to any completed step and forward to any step already reached (`feat/invite-to-step1`).
+- [Cleanup] `/simplify` pass over the wizard: dropped the dead `CourtOption.name` field and tidied a redundant `StepChips` guard (`chore/wizard-simplify`).
+- [Auth] OTP wires the **Web OTP API** for Android SMS autofill (`navigator.credentials.get({ otp })`, aborted on unmount) on top of the `autocomplete="one-time-code"` fallback. Backend still needs the SMS last line `@<web-origin> #<code>` with Latin digits (`chore/otp-weboptp-and-devorigin`).
+- [Dev] Added LAN origins `10.59.1.155` / `172.20.10.2` to `allowedDevOrigins` for on-device testing.
+
+### 2026-08-03 — profile edit, preferred side, OTP resend
+
+- [Profile] `username` is out, **ساید ترجیحی** (`preferredSide: RIGHT | LEFT`) is in — the backend is dropping username. Profile-setup submits the profile then posts `preferredSide` to `/players/me/display-info`; `/profile` shows a live راست/چپ chip (court icon) next to gender and city instead of the `@username` line. Types updated: `username` off `UpdateProfileRequest`, `preferredSide` onto `UpdateDisplayInfoRequest` + `PlayerResponse`, `bio` now optional (`feat/profile-preferred-side`).
+- [Profile] `/profile/edit/personal` now edits first/last name (Persian-only), preferred side, residence (province→city cascade) and bio; save PUTs the profile then posts display-info and invalidates `["me"]`. Design pass on top: the avatar itself is the tap target with a camera badge, fields are grouped under labeled section headers (مشخصات / محل سکونت / بیوگرافی) in the app's icon-circle idiom, and the primary action is a sticky bottom save bar with the status caption (`feat/edit-personal-info`, `design/profile-edit-polish`).
+- [Sheets] `OptionSheet` gained an opt-in `searchable` prop (top search filtering by label + empty state); `BottomSheet` gained `fill` (fixed full height) so searchable sheets stay top-anchored and the mobile keyboard overlays the bottom of a scrollable list instead of hiding a short one. Existing create-wizard usages unchanged.
+- [Auth] OTP: the countdown is relabeled as a **resend cooldown** (it always was one), with a resend button at zero that re-requests the code and restarts from the new `nextResendAllowedAt`. `OtpInput` accepts SMS autofill (`autocomplete="one-time-code"` + multi-digit paste spread; dropped `maxLength=1`) (`feat/otp-resend-autofill`).
+- [a11y] `AuthSearchSelect` returns focus to its trigger on close (`fix/searchselect-focus-return`). The 2026-07-22 audit's two open Warnings were re-verified as already fixed in that session's v2 refactor.
+
+### 2026-08-02 — profile menu, nav icon
+
+- [Profile] Both edit entry points go straight to `/profile/edit/personal`; the intermediate `/profile/edit` list page is deleted. Removed the public/private photo-visibility toggle along with the orphaned `updatePhotoVisibility` fn and `PhotoVisibility` type (`chore/profile-edit-cleanup`).
+- [Profile] Logout moved out of settings onto the profile page as the last row (icon-pill matching the nav rows, red glyph + chevron); the تنظیمات nav row is commented out until settings flows exist (`feat/profile-logout-row`).
+- [Nav] Second tab icon reverted to the trophy `CupIcon` (label باشگاه‌ها + coming-soon behavior unchanged) (`feat/clubs-tab-cup-icon`).
+- [Auth] Default post-auth route points at the matches list.
+
 ### 2026-07-29 — empty states, nav polish, copy pass
 
 - [Copy] App-wide copy update. New onboarding slide texts (+ بزن بریم CTA), login button → ادامه, OTP title تایید شماره / button تایید, profile-setup welcome copy, assessment Q1/Q2 wording. Global term change **مسابقه → مَچ** (مسابقات/مسابقه‌ها → مَچ‌ها, مسابقه‌ای → مَچی) across ~15 files — nav, matches, create wizard, profile, and mock text (`chore/copy-update-mach`).

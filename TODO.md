@@ -130,7 +130,13 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       `/profile/edit/personal` uploads via `uploadProfilePhoto`.
 - [x] City — **done 2026-07-22**: profile-setup sends `residenceCityId` via a searchable province→city picker (`/provinces`, `/provinces/{id}/cities`).
 - [ ] The 5-step assessment is still collected but not persisted (no API field) — send when added.
-- [ ] Photo visibility toggle is write-only — `/players/me` has no visibility field, so it can't reflect the saved state; wire the read side when the backend adds it.
+- [x] Photo visibility toggle — **removed 2026-08-02**: it was write-only (`/players/me` has no
+      visibility field). The toggle, `updatePhotoVisibility`, and the `PhotoVisibility` type are gone;
+      re-add the whole thing if the backend ever exposes the read side.
+- [ ] Web OTP autofill needs the backend to end the SMS with `@<web-origin> #<code>` (Latin digits) —
+      the client side (`navigator.credentials.get({ otp })` + `autocomplete="one-time-code"`) is wired.
+- [ ] `username` was dropped from profile-setup on 2026-08-03 on the promise the backend is removing it —
+      confirm it's actually gone from the API contract (and that `preferredSide` on display-info is final).
 - [ ] Swap the mock `lib/data/*` accessor bodies to `fetch` as matches/tournaments/courts/activity
       endpoints ship (the seam is already in place).
 

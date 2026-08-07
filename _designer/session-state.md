@@ -1,7 +1,28 @@
 # Session State
 
+## Session — 2026-08-07: role toggle, audit cleanup, doc catch-up
+All merged to `main` and pushed to both remotes.
+- **Step ۴ role toggle** (`feat/role-toggle-copy`): نقش شما went from `SelectField` + `OptionSheet`
+  to an inline two-button `aria-pressed` pair (same chip idiom as the schedule step). Copy
+  کاپیتان/یار → **برگزار کننده (مربی)** / **بازیکن** in the step, `TeamPreview`, and `StepReview`.
+  This was the uncommitted work sitting in the tree at session start.
+- **Audits closed to 0 open**: StepSchedule v2 — day `aria-label` (full jalali date) +
+  `aria-current="date"`, past days via the `disabled:` modifier; arrow-key nav **accepted**
+  (AvailabilityHeatmap precedent) and the memo suggestion **accepted** (31 items; its SSR-mismatch
+  rationale is wrong — a `useState` seed still evaluates separately server/client).
+  RadioCardGroup v3 — `aria-labelledby`/`aria-describedby` on the group; `className` passthrough
+  accepted (feature composite, not a shared primitive).
+- **Docs caught up**: CHANGELOG had nothing after 2026-07-29 — added 08-02, 08-03, 08-04, 08-05, 08-07.
+  STATUS.md: wizard section still listed `AvailabilityHeatmap` + the old `monthId/dayId/daypart` data,
+  and the API section still claimed a live `@username`; both corrected. TODO: photo-visibility item
+  closed (feature removed), added the Web-OTP SMS-format and username-contract confirmations.
+
+### Next
+- Verify on device: calendar arrow direction, time range (۰۶:۰۰–۲۳:۳۰), duration set (deferred from 08-05).
+- Still open: wire real APIs into `lib/data` accessors (matches/activity/notifications).
+
 ## Session — 2026-08-05: create-wizard rework + jalali timing step
-Work on `main` (create-wizard commits) + branch `feat/jalali-timing-step` (not merged).
+Work on `main` (create-wizard commits) + branch `feat/jalali-timing-step` (merged `76427bf`).
 - **Step 1 مشخصات**: match title optional (label اختیاری), description اختیاری; invite mode
   moved here from step 5 as a SelectField, public/private only.
 - **Step 2 مکان**: locked استان/شهر → البرز/کرج (disabled SelectField); replaced with a
@@ -18,9 +39,9 @@ Work on `main` (create-wizard commits) + branch `feat/jalali-timing-step` (not m
   was **withdrawn** — `globals.css:75` already applies a global `:focus-visible` brand outline
   app-wide. Audit-only, nothing changed.
 
-### Next
-- Merge `feat/jalali-timing-step`; push origin (patchapp still protected — access pending).
-- Verify on device: calendar arrow direction, time range (06:00–23:30), duration set.
+### Next (resolved 2026-08-07 unless noted)
+- ~~Merge `feat/jalali-timing-step`~~ — merged same day (`76427bf`); pushed 08-07.
+- Verify on device: calendar arrow direction, time range (06:00–23:30), duration set. **Still open.**
 
 ## Session — 2026-08-03: profile/OTP polish + a11y regression check
 - **Profile edit** — hero top-left edit button removed; both edit entry points (nav row) go straight to
