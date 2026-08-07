@@ -1,5 +1,7 @@
 "use client";
 
+import { useId } from "react";
+
 export interface RadioCardOption {
   id: string;
   title: string;
@@ -18,18 +20,24 @@ interface Props {
 /** Light radio-card list: section header + subtitle, then icon/title/description
  *  cards with a radio indicator (selected = blue border + filled check). */
 export default function RadioCardGroup({ label, subtitle, options, value, onChange }: Props) {
+  const id = useId();
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <span className="text-base font-bold text-ink text-right" dir="rtl">
+        <span id={`${id}-label`} className="text-base font-bold text-ink text-right" dir="rtl">
           {label}
         </span>
-        <span className="text-xs text-muted text-right" dir="rtl">
+        <span id={`${id}-desc`} className="text-xs text-muted text-right" dir="rtl">
           {subtitle}
         </span>
       </div>
 
-      <div role="group" aria-label={label} className="flex flex-col gap-2">
+      <div
+        role="group"
+        aria-labelledby={`${id}-label`}
+        aria-describedby={`${id}-desc`}
+        className="flex flex-col gap-2"
+      >
         {options.map((o) => {
           const selected = value === o.id;
           return (
