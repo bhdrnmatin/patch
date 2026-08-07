@@ -8,9 +8,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
-### 2026-08-07 — compact header on scroll
+### 2026-08-07 — collapsing header on scroll
 
-- [Nav] `/matches`, `/activity`, `/tournaments` and `/profile` keep their title (and filter/sort on the list pages) reachable while scrolling: the 276px hero scrolls away as before, and a slim 100px blue bar slides down and pins to the top past 176px of scroll. New `CompactHeaderBar` + `useScrolledPast` (`lib/`), wired inside `SportPageHeader` and `ProfileHero` — no page-level changes. The hero stays in normal flow and nothing resizes, so the document never reflows and the scroll position can't jump. The hero's filter/sort go `inert` while the pinned copies are live (and vice versa), so only one set is ever in the tab order (`feat/compact-header-on-scroll`).
+- [Nav] The `/matches`, `/activity` and `/tournaments` hero now **collapses as you scroll** — the title, filter/sort buttons, date strip and athlete photo all shrink together, 276px → 164px (112px where there's no date strip). One `--collapse` value (0 → 1) written onto the header by `useCollapseHeader` (`lib/`) drives every part through `calc()` in `app/globals.css`; the hook writes straight to the DOM on a rAF, so scrolling doesn't re-render React. The header is `fixed` with a same-height spacer in flow, and the collapse range equals the height delta — so the page never reflows, the scroll position can't jump, and the content below meets the header's bottom edge exactly instead of sliding under it (`feat/collapsing-header`).
+- [Nav] `/profile` keeps the simpler pinned-bar behavior from earlier the same day (`CompactHeaderBar` + `useScrolledPast`): its avatar overlaps the hero by 48px, which a fixed header would cover at rest. Converting it means moving the avatar into the header so it collapses too — pending a design call.
 
 ### 2026-08-07 — role toggle + audit cleanup
 

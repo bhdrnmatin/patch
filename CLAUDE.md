@@ -33,8 +33,8 @@ Check these before writing new UI — reuse first.
 
 **Main app (shared across features)** — `app/(main)/_components/`
 - `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
-- `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and /tournaments
-- `CompactHeaderBar` — slim blue bar that pins to the top once a 276px hero scrolls away (`title`, `visible`, optional action `children`); driven by `useScrolledPast` (`lib/`). Used by `SportPageHeader` and `ProfileHero`
+- `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and /tournaments. **Collapses on scroll**: `useCollapseHeader` (`lib/`) writes `--collapse` 0→1 onto it and the `.hero-collapse-*` rules in `globals.css` shrink every part. Fixed + a same-height spacer, so the page never reflows
+- `CompactHeaderBar` — slim blue bar that pins to the top once a hero scrolls away (`title`, `visible`, optional action `children`); driven by `useScrolledPast` (`lib/`). Used by `ProfileHero` only (its avatar overlaps the hero, so it can't take a fixed collapsing header as-is)
 - `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
 - `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
