@@ -5,8 +5,9 @@ import ProfileAvatarLive from "./ProfileAvatarLive";
 
 /** Open height; the athlete photo is drawn at this size and scales down from it. */
 const HERO_MAX = 276;
-/** Collapsed height — status bar + the title/avatar row. */
-const HERO_MIN = 112;
+/** Collapsed height — the title/avatar row, which rides up with the header
+ *  (collapsed the title sits 20–52px, the avatar 20–60px). */
+const HERO_MIN = 72;
 
 interface Props {
   bgSrc?: string;
@@ -66,7 +67,7 @@ export default function ProfileHero({
         </div>
 
         <h1
-          className="hero-collapse-title absolute right-6 top-20 -translate-y-1/2 text-white font-bold leading-8 drop-shadow-hero"
+          className="hero-collapse-title absolute right-6 -translate-y-1/2 text-white font-bold leading-8 drop-shadow-hero"
           dir="rtl"
         >
           پروفایل
