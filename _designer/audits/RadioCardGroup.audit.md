@@ -17,12 +17,19 @@ nothing selected (safe).
 | # | Severity | Finding | Status |
 |---|----------|---------|--------|
 | 1 | Warning | `role="radiogroup"` + `role="radio"` promised WAI-ARIA radio semantics (arrow-key nav + roving tabindex) that weren't implemented. | Fixed v2 — applied option (b): dropped the radio roles for `aria-pressed` toggle buttons + generic `role="group"` label. Matches app chip precedent; no unfulfilled ARIA contract. |
-| 2 | Suggestion | Group is labeled with `aria-label={label}` while the same text is also a visible `<span>`; could `aria-labelledby` the visible header instead, and link the subtitle via `aria-describedby`. Minor. | Open |
-| 3 | Suggestion | No `className` passthrough / header comment — consistent with sibling step composites, so low priority. | Open |
+| 2 | Suggestion | Group is labeled with `aria-label={label}` while the same text is also a visible `<span>`; could `aria-labelledby` the visible header instead, and link the subtitle via `aria-describedby`. Minor. | Fixed v3 |
+| 3 | Suggestion | No `className` passthrough / header comment — consistent with sibling step composites, so low priority. | Accepted |
 | 4 | Accepted | `onChange: (id: string) => void` custom callback (not native `ChangeEventHandler`) | Accepted — matches project convention (RadioGroup / AuthSelect / all wizard steps) |
 
 ## v2 — 2026-08-05 | fix
 Applied option (b) for finding #1: radio roles → `aria-pressed` toggle buttons.
 
+## v3 — 2026-08-07 | fix
+- **#2 Fixed** — `useId`-derived ids on the visible header/subtitle; the group now uses
+  `aria-labelledby` + `aria-describedby` instead of a duplicated `aria-label`.
+- **#3 Accepted** — no `className` passthrough. It's a feature composite used twice in one step,
+  not a shared primitive; sibling step composites don't take one either. Add if it's ever reused
+  outside the wizard.
+
 ### Status
-Open: 0 Critical, 0 Warning, 2 Suggestion | Fixed: 1 | Accepted: 1
+Open: 0 | Fixed: 2 | Accepted: 2
