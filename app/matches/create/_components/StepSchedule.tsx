@@ -133,13 +133,11 @@ export default function StepSchedule({ draft, patch }: Props) {
                   type="button"
                   disabled={d.past}
                   aria-pressed={selected}
+                  aria-current={d.iso === today ? "date" : undefined}
+                  aria-label={`${toPersianDigits(String(d.jd))} ${JALALI_MONTHS[view.jm - 1]} ${toPersianDigits(String(view.jy))}`}
                   onClick={() => pickDay(d.iso)}
-                  className={`size-9 rounded-full text-sm flex items-center justify-center ${
-                    selected
-                      ? "bg-primary text-white font-bold"
-                      : d.past
-                        ? "text-edge cursor-default"
-                        : "text-ink-soft active:bg-surface"
+                  className={`size-9 rounded-full text-sm flex items-center justify-center disabled:text-edge disabled:cursor-default ${
+                    selected ? "bg-primary text-white font-bold" : "text-ink-soft active:bg-surface"
                   }`}
                 >
                   {toPersianDigits(String(d.jd))}
