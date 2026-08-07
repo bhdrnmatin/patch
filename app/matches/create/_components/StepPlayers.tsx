@@ -2,13 +2,24 @@
 
 import { useState } from "react";
 import SelectField from "./SelectField";
+import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
 import type { CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
-const ROLE_OPTIONS: { id: "player" | "captain"; label: string }[] = [
-  { id: "captain", label: "برگزار کننده (مربی)" },
-  { id: "player", label: "بازیکن" },
+const ROLE_OPTIONS: RadioCardOption[] = [
+  {
+    id: "captain",
+    title: "برگزار کننده (مربی)",
+    description: "مسئول برگزاری و مدیریت مسابقه",
+    icon: <WhistleIcon />,
+  },
+  {
+    id: "player",
+    title: "بازیکن",
+    description: "یکی از بازیکنان حاضر در زمین",
+    icon: <PlayerIcon />,
+  },
 ];
 /** Short form for the team preview / review tag. */
 const roleShort = (r: CreateMatchDraft["myRole"]) =>
@@ -42,29 +53,13 @@ export default function StepPlayers({ draft, patch, players }: Props) {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
-          نقش شما
-        </span>
-        <div className="flex gap-3" dir="rtl">
-          {ROLE_OPTIONS.map((o) => {
-            const selected = draft.myRole === o.id;
-            return (
-              <button
-                key={o.id}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => patch({ myRole: o.id })}
-                className={`flex-1 min-h-12 px-2 py-2 rounded-card text-sm font-bold leading-tight border shadow-card active:opacity-80 ${
-                  selected ? "bg-primary border-primary text-white" : "bg-white border-edge text-ink-soft"
-                }`}
-              >
-                {o.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <RadioCardGroup
+        label="نقش شما"
+        subtitle="نقش شما در این مسابقه چیست؟"
+        options={ROLE_OPTIONS}
+        value={draft.myRole}
+        onChange={(id) => patch({ myRole: id as CreateMatchDraft["myRole"] })}
+      />
       {SLOT_LABELS.map((label, i) => {
         const slot = i as 0 | 1 | 2;
         const index = draft.teammates[slot];
@@ -106,5 +101,27 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         onClose={() => setActiveSlot(null)}
       />
     </>
+  );
+}
+
+// Stroked 26px icons matching the step ۱ radio cards (StepDetails defines its
+// own the same way) rather than the filled BottomNav set.
+function WhistleIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="9" cy="14" r="5.5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="9" cy="14" r="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M14 11.6h6.4a1.6 1.6 0 0 0 0-3.2h-8.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12.2 8.4 10.6 5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PlayerIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
   );
 }
