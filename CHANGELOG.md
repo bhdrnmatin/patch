@@ -8,6 +8,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-07 — compact header on scroll
+
+- [Nav] `/matches`, `/activity`, `/tournaments` and `/profile` keep their title (and filter/sort on the list pages) reachable while scrolling: the 276px hero scrolls away as before, and a slim 100px blue bar slides down and pins to the top past 176px of scroll. New `CompactHeaderBar` + `useScrolledPast` (`lib/`), wired inside `SportPageHeader` and `ProfileHero` — no page-level changes. The hero stays in normal flow and nothing resizes, so the document never reflows and the scroll position can't jump. The hero's filter/sort go `inert` while the pinned copies are live (and vice versa), so only one set is ever in the tab order (`feat/compact-header-on-scroll`).
+
 ### 2026-08-07 — role toggle + audit cleanup
 
 - [Create] Step ۴ بازیکنان: نقش شما moved from a `SelectField` + `OptionSheet` to an inline two-button toggle pair (`aria-pressed`, same chip idiom as the schedule step's quick-day/duration rows) — one tap instead of three. Role copy changed کاپیتان/یار → **برگزار کننده (مربی)** / **بازیکن** across the step, the team preview, and the review list (`feat/role-toggle-copy`).
