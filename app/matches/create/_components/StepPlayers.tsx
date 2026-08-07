@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import SelectField from "./SelectField";
-import OptionSheet, { type SheetOption } from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
 import type { CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
-export const ROLE_OPTIONS: SheetOption[] = [
-  { id: "captain", label: "کاپیتان" },
+const ROLE_OPTIONS: { id: "player" | "captain"; label: string }[] = [
+  { id: "captain", label: "برگزار کننده (مربی)" },
   { id: "player", label: "بازیکن" },
 ];
+/** Short form for the team preview / review tag. */
+const roleShort = (r: CreateMatchDraft["myRole"]) =>
+  r === "captain" ? "برگزار کننده" : r === "player" ? "بازیکن" : undefined;
 
 const SLOT_LABELS = ["بازیکن ۲", "بازیکن ۳", "بازیکن ۴"] as const;
 
@@ -22,7 +24,6 @@ interface Props {
 
 /** Step ۴ بازیکنان: own role + three teammate slots (shared picker) + team preview. */
 export default function StepPlayers({ draft, patch, players }: Props) {
-  const [roleOpen, setRoleOpen] = useState(false);
   const [activeSlot, setActiveSlot] = useState<0 | 1 | 2 | null>(null);
 
   const setSlot = (slot: 0 | 1 | 2, playerIndex: number) => {
@@ -41,11 +42,29 @@ export default function StepPlayers({ draft, patch, players }: Props) {
 
   return (
     <>
-      <SelectField
-        label="نقش شما"
-        value={ROLE_OPTIONS.find((o) => o.id === draft.myRole)?.label}
-        onClick={() => setRoleOpen(true)}
-      />
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
+          نقش شما
+        </span>
+        <div className="flex gap-3" dir="rtl">
+          {ROLE_OPTIONS.map((o) => {
+            const selected = draft.myRole === o.id;
+            return (
+              <button
+                key={o.id}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => patch({ myRole: o.id })}
+                className={`flex-1 min-h-12 px-2 py-2 rounded-card text-sm font-bold leading-tight border shadow-card active:opacity-80 ${
+                  selected ? "bg-primary border-primary text-white" : "bg-white border-edge text-ink-soft"
+                }`}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       {SLOT_LABELS.map((label, i) => {
         const slot = i as 0 | 1 | 2;
         const index = draft.teammates[slot];
@@ -70,22 +89,11 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         </button>
       )}
       <TeamPreview
-        myRoleLabel={ROLE_OPTIONS.find((o) => o.id === draft.myRole)?.label}
+        myRoleLabel={roleShort(draft.myRole)}
         teammates={draft.teammates}
         players={players}
       />
 
-      <OptionSheet
-        open={roleOpen}
-        title="نقش شما"
-        options={ROLE_OPTIONS}
-        value={draft.myRole}
-        onSelect={(id) => {
-          patch({ myRole: id as CreateMatchDraft["myRole"] });
-          setRoleOpen(false);
-        }}
-        onClose={() => setRoleOpen(false)}
-      />
       <PlayerPickerSheet
         open={activeSlot !== null}
         players={players}
