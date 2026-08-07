@@ -1,3 +1,4 @@
+import { toPersianDigits } from "../persian";
 import { API_PREFIX } from "./config";
 import {
   clearSession,
@@ -47,7 +48,14 @@ function errorMessageOf(data: unknown, status: number): string {
     if (typeof d.errorMessage === "string" && d.errorMessage) return d.errorMessage;
     if (typeof d.message === "string" && d.message) return d.message;
   }
-  return `خطای سرور (${status})`;
+  // Gateway statuses mean the API is down, not that the request was wrong — the
+  // body is the proxy's HTML error page, so there's no real message to show.
+  // (Checked after the payload fields: if the API ever sends a real message
+  // with one of these, that wins.)
+  if (status === 502 || status === 503 || status === 504) {
+    return "سرور در دسترس نیست، لطفاً کمی بعد دوباره تلاش کنید.";
+  }
+  return `خطای سرور (${toPersianDigits(String(status))})`;
 }
 
 // --- Token refresh (rotating) -------------------------------------------------
