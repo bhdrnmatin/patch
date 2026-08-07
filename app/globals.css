@@ -129,11 +129,14 @@ body {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
 }
 .hero-collapse-title {
-  /* 24px → 17px */
+  /* 24px → 17px, riding up with the header so the collapsed bar doesn't keep
+     the open layout's status-bar gap as dead space. */
   font-size: calc(1.5rem - 0.4375rem * var(--collapse, 0));
+  top: calc(80px - 44px * var(--collapse, 0));
 }
 .hero-collapse-actions {
   /* 48px → ~37px buttons, pinned to the visual-left edge */
+  top: calc(56px - 40px * var(--collapse, 0));
   transform: scale(calc(1 - 0.22 * var(--collapse, 0)));
   transform-origin: left center;
 }
@@ -145,7 +148,14 @@ body {
   opacity: calc(1 - 0.3 * var(--collapse, 0));
 }
 .hero-collapse-dates {
-  transform: scale(calc(1 - 0.2 * var(--collapse, 0)));
+  /* Scaling a full-width scroll container about its centre would pull both
+     ends inward (at 0.8 that's ~39px of the strip clipped off each edge, which
+     reads as broken cells). Widen by the inverse of the scale and re-centre, so
+     the cells shrink while the strip still spans the header edge to edge. */
+  --strip-scale: calc(1 - 0.2 * var(--collapse, 0));
+  left: calc((100% - 100% / var(--strip-scale)) / 2);
+  width: calc(100% / var(--strip-scale));
+  transform: scale(var(--strip-scale));
   transform-origin: bottom center;
 }
 .hero-collapse-avatar {

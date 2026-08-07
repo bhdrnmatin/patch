@@ -8,13 +8,13 @@ import { FilterSearchIcon, SortIcon } from "./icons";
 
 /** Open height; the images are drawn at this size and scale down from it. */
 const HERO_MAX = 276;
-/** Collapsed height — enough for the status bar + the action/title row, plus
- *  the shrunken date strip on pages that have one. With dates: the buttons
- *  bottom out at ~99px (48px at top-14, scaled 0.78) and the strip is ~45px
- *  tall (56 × 0.8) sitting 12px off the bottom, so 164 keeps a gap between
- *  them; anything under ~156 makes them touch. */
-const HERO_MIN_WITH_DATES = 164;
-const HERO_MIN_BARE = 112;
+/** Collapsed height. The title/actions rise with the header (see
+ *  .hero-collapse-* in globals.css), so the open layout's 56px status-bar gap
+ *  doesn't survive as dead space: collapsed, the buttons sit 16–53px and the
+ *  title 20–52px. With dates, the ~45px strip (56 × 0.8) sits 12px off the
+ *  bottom, so 120 keeps them clear of each other. */
+const HERO_MIN_WITH_DATES = 120;
+const HERO_MIN_BARE = 72;
 
 interface Props {
   /** Hero heading, e.g. "مَچ" or "تورنمنت". */
@@ -80,22 +80,24 @@ export default function SportPageHeader({
         {/* Top darkening gradient for contrast */}
         <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
 
-        {/* Filter + sort buttons (visual left) */}
-        <div className="hero-collapse-actions absolute left-6 top-14 flex items-center gap-2">
+        {/* Filter + sort buttons (visual left). `top` comes from the collapse
+            rules, not a utility, so it can ride up as the header shrinks. */}
+        <div className="hero-collapse-actions absolute left-6 flex items-center gap-2">
           <IconButton label="فیلتر" icon={<FilterSearchIcon />} onClick={onFilter} />
           <IconButton label="مرتب‌سازی" icon={<SortIcon />} onClick={onSort} />
         </div>
 
         <h1
           dir="rtl"
-          className="hero-collapse-title absolute right-6 top-20 -translate-y-1/2 text-white font-bold leading-8 drop-shadow-hero"
+          className="hero-collapse-title absolute right-6 -translate-y-1/2 text-white font-bold leading-8 drop-shadow-hero"
         >
           {title}
         </h1>
 
-        {/* Date strip riding the bottom of the hero (omitted when no days) */}
+        {/* Date strip riding the bottom of the hero (omitted when no days).
+            Width/left come from the collapse rules — see the note there. */}
         {days && (
-          <div className="hero-collapse-dates absolute inset-x-0 bottom-3">
+          <div className="hero-collapse-dates absolute bottom-3">
             <DateSelector days={days} selectedId={selectedId ?? ""} onSelect={onSelect ?? (() => {})} />
           </div>
         )}
