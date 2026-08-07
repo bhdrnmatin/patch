@@ -37,7 +37,7 @@ export default function StepReview({ draft, courts, players }: Props) {
   const court = courts.find((c) => c.id === draft.courtId);
 
   const rows: ReviewRow[] = [
-    { name: "شما", role: draft.myRole === "captain" ? "کاپیتان" : "یار" },
+    { name: "شما", role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن" },
     ...draft.teammates
       .filter((t): t is number => t !== null)
       .map((i) => players[i])
