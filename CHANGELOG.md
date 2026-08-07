@@ -8,6 +8,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-07 — gateway errors read as downtime
+
+- [API] A 502/503/504 now surfaces as «سرور در دسترس نیست، لطفاً کمی بعد دوباره تلاش کنید.» instead of «خطای سرور (۵۰۲)». Those statuses come from the proxy, not the API, so the body is an nginx HTML page with no `errorMessage` to show — the old generic fallback made downtime look like a bug in the app. A real API message still wins when one is present (the check sits after the payload fields). The remaining generic fallback now renders its status in Persian digits (`fix/gateway-error-message`).
+
 ### 2026-08-07 — collapsing header on scroll
 
 - [Nav] The `/matches`, `/activity` and `/tournaments` hero now **collapses as you scroll** — the title, filter/sort buttons, date strip and athlete photo all shrink together, 276px → 120px (72px where there's no date strip) — the title and buttons ride up with the header, so the open layout's 56px status-bar gap doesn't survive the collapse as dead space. One `--collapse` value (0 → 1) written onto the header by `useCollapseHeader` (`lib/`) drives every part through `calc()` in `app/globals.css`; the hook writes straight to the DOM on a rAF, so scrolling doesn't re-render React. The header is `fixed` with a same-height spacer in flow, and the collapse range equals the height delta — so the page never reflows, the scroll position can't jump, and the content below meets the header's bottom edge exactly instead of sliding under it (`feat/collapsing-header`).
