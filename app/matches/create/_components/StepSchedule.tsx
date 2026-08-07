@@ -19,18 +19,9 @@ interface Props {
   patch: (p: Partial<CreateMatchDraft>) => void;
 }
 
-// 30-min slots across the playing day (06:00 … 23:30).
-const TIME_SLOTS = buildTimeSlots(6, 23);
-const DURATIONS = [60, 90, 120];
-
-function buildTimeSlots(startHour: number, endHour: number): string[] {
-  const out: string[] = [];
-  for (let h = startHour; h <= endHour; h += 1) {
-    out.push(`${String(h).padStart(2, "0")}:00`);
-    out.push(`${String(h).padStart(2, "0")}:30`);
-  }
-  return out;
-}
+// Hourly starts across the playing day (08:00 … 24:00).
+const TIME_SLOTS = Array.from({ length: 17 }, (_, i) => `${String(i + 8).padStart(2, "0")}:00`);
+const DURATIONS = [60, 120];
 
 /** Step ۳ زمان‌بندی: quick-day chips + jalali calendar + time slots + duration. */
 export default function StepSchedule({ draft, patch }: Props) {
