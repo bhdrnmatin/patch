@@ -148,3 +148,11 @@ body {
   transform: scale(calc(1 - 0.2 * var(--collapse, 0)));
   transform-origin: bottom center;
 }
+.hero-collapse-avatar {
+  /* Profile only: 96px straddling the open header's bottom edge (48px over the
+     content, matching the old -mt-12 overlap) → ~40px tucked beside the title
+     once collapsed. Origin bottom-right so the scale pivots on its anchor. */
+  transform: translate(calc(-72px * var(--collapse, 0)), calc(48px - 60px * var(--collapse, 0)))
+    scale(calc(1 - 0.58 * var(--collapse, 0)));
+  transform-origin: bottom right;
+}
