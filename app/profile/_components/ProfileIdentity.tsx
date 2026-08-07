@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/lib/api/useAuth";
-import ProfileAvatarLive from "./ProfileAvatarLive";
 import ProfileMeta from "./ProfileMeta";
 
 interface Props {
@@ -14,10 +13,11 @@ interface Props {
 }
 
 /**
- * Profile identity unit: avatar + name + @handle on one row (the avatar
- * overlaps the hero above via -mt-12), with city/gender as attribute chips
- * below. Name and gender come live from /players/me; a skeleton bar stands in
- * for the name while it loads so the mock fallback never flashes.
+ * Profile identity unit: name + city/gender/side chips + bio. The avatar sits
+ * in ProfileHero (it straddles the header's bottom edge and collapses with it),
+ * so the top padding here is what clears the part that hangs over. Name, gender
+ * and side come live from /players/me; a skeleton bar stands in for the name
+ * while it loads so the mock fallback never flashes.
  */
 export default function ProfileIdentity({ fallbackName, city }: Props) {
   const { player, isLoading } = useAuth();
@@ -31,14 +31,10 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
     player?.preferredSide === "RIGHT" ? "راست" : player?.preferredSide === "LEFT" ? "چپ" : "—";
 
   return (
-    <div className="relative z-10 w-full flex flex-col items-end">
-      {/* Avatar (right) overlaps the hero above */}
-      <div className="-mt-12">
-        <ProfileAvatarLive />
-      </div>
-
-      {/* Name + handle, stacked under the avatar, right-aligned */}
-      <div className="mt-3 flex flex-col items-end">
+    // pt clears the 48px of avatar hanging out of the hero above
+    <div className="relative z-10 w-full flex flex-col items-end pt-[60px]">
+      {/* Name, right-aligned under the avatar */}
+      <div className="flex flex-col items-end">
         {isLoading && !apiName ? (
           <span
             className="h-8 w-36 rounded bg-edge/70 animate-pulse"
