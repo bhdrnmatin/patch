@@ -115,3 +115,36 @@ body {
     animation: none;
   }
 }
+
+/* Collapsing hero header.
+   useCollapseHeader writes --collapse (0 open → 1 collapsed) on .hero-collapse
+   as the page scrolls; every part below sizes itself off that one number, so
+   the whole header shrinks together instead of swapping for a second bar.
+   The header is fixed with a same-height spacer in flow — nothing reflows, so
+   the scroll position can never jump. --hero-max/--hero-min are set per page
+   (the date strip needs more collapsed room than a bare title).
+   Scroll-linked, not animated: no reduced-motion override (freezing it would
+   just leave the header at the wrong size). */
+.hero-collapse {
+  height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
+}
+.hero-collapse-title {
+  /* 24px → 17px */
+  font-size: calc(1.5rem - 0.4375rem * var(--collapse, 0));
+}
+.hero-collapse-actions {
+  /* 48px → ~37px buttons, pinned to the visual-left edge */
+  transform: scale(calc(1 - 0.22 * var(--collapse, 0)));
+  transform-origin: left center;
+}
+.hero-collapse-photo {
+  /* Fixed at the open height and anchored to the bottom, so it scales down
+     with the header instead of object-cover re-cropping into a face. */
+  transform: scale(calc(1 - 0.3 * var(--collapse, 0)));
+  transform-origin: bottom center;
+  opacity: calc(1 - 0.3 * var(--collapse, 0));
+}
+.hero-collapse-dates {
+  transform: scale(calc(1 - 0.2 * var(--collapse, 0)));
+  transform-origin: bottom center;
+}
