@@ -210,6 +210,13 @@ export interface CreateMatchDraft {
   myRole: "captain" | "player" | null;
   /** Added teammates, in the order they were added. */
   teammates: Teammate[];
+  /**
+   * Which teammate is the برگزار کننده (مربی), as an index into `teammates`.
+   * Only meaningful when `myRole === "player"` — a captain creator is the coach
+   * themselves, so it's forced back to null then. Optional: a match can have no
+   * coach at all.
+   */
+  coach: number | null;
   // ۵ تنظیمات
   invite: "public" | "private" | null;
   minLevel: ToggleSetting<number>;
