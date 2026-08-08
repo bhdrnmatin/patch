@@ -6,8 +6,7 @@ import TextField from "./TextField";
 import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
 
 interface Props {
-  /** Mount only while open — the parent does that, which is what keeps the
-   *  view/phone state fresh on every open without a reset effect. */
+  open: boolean;
   slotLabel: string;
   /** Shown only when the slot already holds someone, so it can be emptied. */
   onClear?: () => void;
@@ -24,6 +23,7 @@ const PHONE_RE = /^09\d{9}$/;
  * the phone step is three lines and a second sheet would just be ceremony.
  */
 export default function AddPlayerSheet({
+  open,
   slotLabel,
   onClear,
   onPickFromPlayers,
@@ -33,11 +33,24 @@ export default function AddPlayerSheet({
   const [view, setView] = useState<"menu" | "phone">("menu");
   const [phone, setPhone] = useState("");
 
+  // Reset on each open, adjusting state during render rather than in an effect:
+  // this component stays mounted (like every other sheet here) so that its
+  // BottomSheet effect never runs at mount time, which is what made the sheet
+  // flash open and shut.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) {
+      setView("menu");
+      setPhone("");
+    }
+  }
+
   const latin = toLatinDigits(phone);
   const valid = PHONE_RE.test(latin);
 
   return (
-    <BottomSheet open title={`افزودن ${slotLabel}`} onClose={onClose}>
+    <BottomSheet open={open} title={`افزودن ${slotLabel}`} onClose={onClose}>
       {view === "menu" ? (
         <div className="flex flex-col gap-2">
           <MenuRow
