@@ -103,6 +103,10 @@ All components live in `app/(main)/matches/_components/` unless noted.
 - [x] `DateSelector` — horizontal scroll row of `DateCell`
 - [x] `MatchCard` — full match card (badge + title + player grid + meta + price)
 - [x] `MatchesHeader` — hero header (bg + title + 2 `IconButton` + `DateSelector`)
+- [x] Collapsing hero — `lib/useCollapseHeader.ts` writes `--collapse` (0→1) onto the header on scroll
+      and the `.hero-collapse*` rules in `globals.css` shrink every part (title, buttons, date strip,
+      photo, profile avatar). Used by `SportPageHeader` and `ProfileHero`; both are `fixed` with a
+      same-height spacer so the page never reflows
 - [x] `FilterSection` — labeled group of `SelectChip`
 - [x] `BottomSheet` — modal shell (overlay + sheet + header + footer)
 
@@ -210,15 +214,18 @@ Components live in `app/matches/create/_components/`.
 - [x] `TextArea` — light multiline input
 - [x] `SelectField` — select trigger (chevron + value), `aria-haspopup="dialog"`, opens a sheet
 - [x] `OptionSheet` — generic pick-one list in `BottomSheet`; opt-in `searchable`
-- [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — step ۱
+- [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — steps ۱ + ۴
+- [x] `AddPlayerSheet` — how a teammate row gets filled: pick from Patch players, or invite a phone
+      number (۱۱ digits, `09…`). Menu + phone field in one sheet; also removes a filled row
 - [x] `ToggleSetting` — white card: بله/خیر chips + conditional dependent control
 
 ### Compound Components
 - [x] `WizardHeader` — × close + title/step subtitle + `StageDial` ring
 - [x] `StepChips` — RTL step strip; jumps back and forward to any reached step
 - [x] `WizardFooter` — fixed قبلی/بعدی bar, gated advance, `aria-busy` submit
-- [x] `TeamPreview` — 2×2 team grid with "تور" divider
-- [x] `ReviewPlayers` — اعضا list with برگزار کننده/بازیکن role tags
+- [x] `TeamPreview` — 2×2 team grid with "تور" divider; رقابتی only (the other formats have no
+      fixed team shape)
+- [x] `ReviewPlayers` — اعضا list with برگزار کننده/یار/دعوت‌شده role tags
 - [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepSettings` / `StepReview`
 
 ### Removed
@@ -229,8 +236,11 @@ Components live in `app/matches/create/_components/`.
 - [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator)
 
 ### Data
-- [x] `CreateMatchDraft` / `CourtOption` / `ToggleSetting<T>` — `lib/types.ts`
+- [x] `CreateMatchDraft` / `CourtOption` / `ToggleSetting<T>` / `Teammate` / `MAX_TEAMMATES` — `lib/types.ts`
       (schedule fields are `date` ISO / `time` HH:MM / `duration` minutes)
+- [x] Roster model: `teammates: Teammate[]` — each is `{kind:"player", index}` (into `pickablePlayers`)
+      or `{kind:"invite", phone}`. رقابتی caps it at `MAX_TEAMMATES` (۳ + the creator); دوستانه and
+      آمریکانو are uncapped. `coach` is an index into that list, only set when `myRole === "player"`
 - [x] `courtOptions` / `pickablePlayers` mocks + accessors
 - [x] `lib/jalali.ts` — dependency-free jalali↔gregorian conversion + month/weekday names,
       self-checked by `lib/jalali.test.ts`

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import SelectField from "./SelectField";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
-import AddPlayerSheet, { formatPhone } from "./AddPlayerSheet";
+import AddPlayerSheet from "./AddPlayerSheet";
 import OptionSheet from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
@@ -84,7 +84,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
 
   const rowLabel = (row: number) => `بازیکن ${toPersianDigits(String(row + 2))}`;
   const rowValue = (t: Teammate) =>
-    t.kind === "player" ? players[t.index]?.name : `دعوت ${formatPhone(t.phone)}`;
+    t.kind === "player" ? players[t.index]?.name : `دعوت ${toPersianDigits(t.phone)}`;
 
   return (
     <>

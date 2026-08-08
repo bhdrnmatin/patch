@@ -77,6 +77,25 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       per-id match storage when the API lands.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
 
+## Component QA — ds-qa-tw audit (2026-08-08)
+`AddPlayerSheet` (0 Critical, 2 Warning, 5 Suggestion) and the collapsing hero header
+(0 Critical, 3 Warning, 2 Suggestion). Actionable:
+- [ ] **Duplicated mobile-number rule**: `/login` tests Persian digits (`/^۰۹[۰-۹]{9}$/`,
+      `app/(auth)/login/page.tsx:23`), `AddPlayerSheet` converts to Latin then tests `/^09\d{9}$/`.
+      One `isValidMobile()` in `lib/persian.ts` (or `lib/phone.ts`), both call it.
+- [ ] **Invite validation is silent to screen readers** — needs `aria-invalid` + `aria-describedby`
+      on the phone field, which means adding those props to `TextField`.
+- [ ] **Collapsed touch targets under 44px** (CLAUDE.md minimum): filter/sort `IconButton` 48 × 0.78 =
+      37.4px, `DateCell` 52 × 0.8 = 41.6px. Cap the scale or restore hit area with padding.
+- [ ] **Collapse geometry is split across two files** — `HERO_MIN_WITH_DATES` is hand-derived from
+      `top`/scale values in `globals.css` with nothing linking them; both shipped bugs came from that.
+- [ ] **`useCollapseHeader(range)` contract is comment-only** — take `{max, min}` and derive the range,
+      the custom properties and the spacer height so the caller can't break the invariant.
+- [ ] Smaller: sheet actions into `BottomSheet`'s `footer` (SortSheet/FilterSheet convention), focus the
+      phone field on view switch, rename the stale `slotLabel` prop, hook assumes `window` is the scroller.
+- [ ] **Device check** — nothing in the collapsing header has been seen in a browser; all geometry is
+      hand-computed. Details in `_designer/audits/`.
+
 ### Add-player rework (2026-08-08)
 - [ ] Phone invites are collected into the draft (`TeammateSlot = {kind:"invite", phone}`) but never
       sent — there's no invite endpoint. `createMatch` deliberately leaves invited numbers out of the
