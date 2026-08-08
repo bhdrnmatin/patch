@@ -28,12 +28,20 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Callers pass an inline onClose, so its identity changes every render. Kept
+  // in a ref so the effect below depends on `open` alone — otherwise every
+  // parent render tore down the history entry and re-pushed it.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     };
     document.addEventListener("keydown", onKey);
 
@@ -41,7 +49,13 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
     // navigating to the previous URL: push a throwaway history entry and
     // close when it's popped.
     window.history.pushState({ sheet: true }, "");
-    const onPop = () => onClose();
+    // Only a pop that leaves our marker behind is a real back press. A cleanup
+    // below calls history.back() itself, and history.back() is async — under
+    // StrictMode's mount/cleanup/mount that pop lands after the second effect
+    // re-pushed the marker, and closing on it made the sheet flash open/shut.
+    const onPop = () => {
+      if (!window.history.state?.sheet) onCloseRef.current();
+    };
     window.addEventListener("popstate", onPop);
 
     panelRef.current?.focus();
@@ -53,7 +67,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
       // history stack stays balanced.
       if (window.history.state?.sheet) window.history.back();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
