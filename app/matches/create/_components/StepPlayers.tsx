@@ -83,9 +83,8 @@ export default function StepPlayers({ draft, patch, players }: Props) {
     .filter((i) => i !== pickerSelected);
 
   const rowLabel = (row: number) => `بازیکن ${toPersianDigits(String(row + 2))}`;
-  // "دعوت" keeps invited people distinguishable from Patch players at a glance.
   const rowValue = (t: Teammate) =>
-    t.kind === "player" ? players[t.index]?.name : `${t.name} (دعوت)`;
+    t.kind === "player" ? players[t.index]?.name : `${t.name} (${toPersianDigits(t.phone)})`;
 
   return (
     <>
