@@ -43,7 +43,7 @@ export default function TeamPreview({ myRoleLabel, teammates, players }: Props) 
     if (t === undefined) return <EmptyCell label={label} />;
 
     if (t.kind === "invite") {
-      return <Cell title={toPersianDigits(t.phone)} subtitle="دعوت‌شده" />;
+      return <Cell title={t.name} subtitle="دعوت‌شده" />;
     }
 
     const player = players[t.index];

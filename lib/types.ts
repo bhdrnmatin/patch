@@ -183,7 +183,7 @@ export interface ToggleSetting<T> {
  */
 export type Teammate =
   | { kind: "player"; index: number }
-  | { kind: "invite"; phone: string };
+  | { kind: "invite"; name: string; phone: string };
 
 /** Teammates allowed besides the creator in a رقابتی match (2v2 padel). */
 export const MAX_TEAMMATES = 3;
