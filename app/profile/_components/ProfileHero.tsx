@@ -53,12 +53,15 @@ export default function ProfileHero({
             </>
           )}
 
-          {/* Sharp athlete foreground */}
+          {/* Sharp athlete foreground. Its height is the header's OPEN height,
+              not 100% — it scales down from there rather than letting
+              object-cover re-crop as the header shrinks. */}
           {athleteSrc && (
             <img
               src={athleteSrc}
               alt=""
-              className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full h-[276px] object-cover"
+              style={{ height: HERO_MAX }}
+              className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full object-cover"
             />
           )}
 

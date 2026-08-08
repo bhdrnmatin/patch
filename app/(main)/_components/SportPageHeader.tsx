@@ -71,10 +71,13 @@ export default function SportPageHeader({
         </div>
 
         {/* Sharp athlete foreground */}
+        {/* Height is the open height, not 100% — it scales down from there
+            rather than letting object-cover re-crop as the header shrinks. */}
         <img
           src={athleteImage}
           alt=""
-          className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full h-[276px] object-cover"
+          style={{ height: HERO_MAX }}
+          className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full object-cover"
         />
 
         {/* Top darkening gradient for contrast */}

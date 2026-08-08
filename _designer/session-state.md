@@ -1,5 +1,33 @@
 # Session State
 
+## Session — 2026-08-08: create-wizard players rework, dead-backend hardening, QA
+Work on `main`, **not yet pushed** (origin/patchapp are ~20 commits behind).
+- **Headers**: the compact-bar attempt was replaced by a real **collapsing hero** — one `--collapse`
+  var (`lib/useCollapseHeader.ts`) drives `.hero-collapse*` in globals.css; title, buttons, date strip,
+  photo and the profile avatar all shrink. Fixed + same-height spacer so the page never reflows. Two
+  device-reported bugs fixed: dead space above (title/actions now ride up) and the date strip clipping
+  at both edges (scaling a full-width scroller about its centre — now inverse-width compensated).
+  The profile avatar moved **into** the hero so it collapses with it.
+- **Step ۴ بازیکنان rework**: نقش شما is a `RadioCardGroup` like step ۱; teammates are added only via
+  the dashed button (the three standing fields were redundant); `AddPlayerSheet` adds by Patch player
+  **or phone invite**; رقابتی caps the roster at ۴, دوستانه/آمریکانو are uncapped; a player-creator can
+  hand the برگزار کننده role to a teammate. `teammates` is now `Teammate[]`, not a 3-slot tuple.
+- **Step ۳**: hourly starts ۰۸:۰۰–۲۴:۰۰, durations ۶۰/۱۲۰ only.
+- **Backend down all day** — it went from fast 502s to **not answering at all**. Fixed three ways the app
+  waited forever: 10s `AbortSignal.timeout` in `apiFetch`, `retry: false` on `["me"]`, and
+  `useRequireAuth` no longer blocks rendering on `/players/me`. Added `/dev-login` (404s in production,
+  verified against a real prod build) to work on guarded pages meanwhile.
+- **`BottomSheet`**: `onClose` into a ref (deps `[open]`) + a popstate guard, after a mount-time sheet
+  flashed open/shut. The cure was making `AddPlayerSheet` stay mounted like every other sheet.
+- **ds-qa-tw**: `AddPlayerSheet` (2 Warning, 5 Suggestion) + collapsing header (3 Warning, 2 Suggestion),
+  audit-only. Top items: one duplicated mobile-number rule across /login and the invite sheet, invite
+  validation silent to screen readers, collapsed touch targets under the 44px project minimum.
+
+### Next
+- **Device check the collapsing header** — none of it has been seen in a browser (no Chrome here).
+- Push to origin + patchapp; delete `app/dev-login/` once the API is back.
+- Backend: nginx up, app process dead — every endpoint hangs.
+
 ## Session — 2026-08-07: role toggle, audit cleanup, doc catch-up
 All merged to `main` and pushed to both remotes.
 - **Step ۴ role toggle** (`feat/role-toggle-copy`): نقش شما went from `SelectField` + `OptionSheet`

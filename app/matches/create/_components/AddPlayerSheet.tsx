@@ -3,7 +3,7 @@
 import { useState } from "react";
 import BottomSheet from "../../../(main)/matches/_components/BottomSheet";
 import TextField from "./TextField";
-import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
+import { toLatinDigits } from "../../../../lib/persian";
 
 interface Props {
   open: boolean;
@@ -144,9 +144,6 @@ function MenuRow({
     </button>
   );
 }
-
-/** Persian-digit display for an invited number, e.g. ۰۹۱۲۳۴۵۶۷۸۹. */
-export const formatPhone = (phone: string) => toPersianDigits(phone);
 
 function PeopleIcon() {
   return (
