@@ -83,8 +83,9 @@ export default function StepPlayers({ draft, patch, players }: Props) {
     .filter((i) => i !== pickerSelected);
 
   const rowLabel = (row: number) => `بازیکن ${toPersianDigits(String(row + 2))}`;
+  // "دعوت" keeps invited people distinguishable from Patch players at a glance.
   const rowValue = (t: Teammate) =>
-    t.kind === "player" ? players[t.index]?.name : `دعوت ${toPersianDigits(t.phone)}`;
+    t.kind === "player" ? players[t.index]?.name : `${t.name} (دعوت)`;
 
   return (
     <>
@@ -144,6 +145,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
       <AddPlayerSheet
         open={sheet === "add"}
         slotLabel={activeRow === null ? "بازیکن" : rowLabel(activeRow)}
+        invite={current?.kind === "invite" ? current : undefined}
         onClear={
           current
             ? () => {
@@ -153,8 +155,8 @@ export default function StepPlayers({ draft, patch, players }: Props) {
             : undefined
         }
         onPickFromPlayers={() => setSheet("players")}
-        onInvite={(phone) => {
-          if (activeRow !== null) setRow(activeRow, { kind: "invite", phone });
+        onInvite={(name, phone) => {
+          if (activeRow !== null) setRow(activeRow, { kind: "invite", name, phone });
           closeSheets();
         }}
         onClose={closeSheets}

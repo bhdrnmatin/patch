@@ -42,7 +42,7 @@ export default function StepReview({ draft, courts, players }: Props) {
       const isCoach = draft.coach === i;
       // Invited numbers haven't accepted yet, so they carry no level or avatar.
       if (t.kind === "invite") {
-        return [{ name: toPersianDigits(t.phone), role: isCoach ? "برگزار کننده" : "دعوت‌شده" }];
+        return [{ name: t.name, role: isCoach ? "برگزار کننده" : "دعوت‌شده" }];
       }
       const p = players[t.index];
       return p

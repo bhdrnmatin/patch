@@ -3,15 +3,18 @@
 import { useState } from "react";
 import BottomSheet from "../../../(main)/matches/_components/BottomSheet";
 import TextField from "./TextField";
-import { toLatinDigits } from "../../../../lib/persian";
+import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
 
 interface Props {
   open: boolean;
   slotLabel: string;
+  /** The row's existing invite, if any — opens straight into the prefilled form
+   *  so a mistyped name or number can be corrected instead of re-added. */
+  invite?: { name: string; phone: string };
   /** Shown only when the row already holds someone, so it can be removed. */
   onClear?: () => void;
   onPickFromPlayers: () => void;
-  onInvite: (phone: string) => void;
+  onInvite: (name: string, phone: string) => void;
   onClose: () => void;
 }
 
@@ -25,12 +28,14 @@ const PHONE_RE = /^09\d{9}$/;
 export default function AddPlayerSheet({
   open,
   slotLabel,
+  invite,
   onClear,
   onPickFromPlayers,
   onInvite,
   onClose,
 }: Props) {
   const [view, setView] = useState<"menu" | "phone">("menu");
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
   // Reset on each open, adjusting state during render rather than in an effect:
@@ -41,13 +46,18 @@ export default function AddPlayerSheet({
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
-      setView("menu");
-      setPhone("");
+      // TextField(numeric) displays Persian digits, so seed the stored Latin
+      // number back into that notation.
+      setView(invite ? "phone" : "menu");
+      setName(invite?.name ?? "");
+      setPhone(invite ? toPersianDigits(invite.phone) : "");
     }
   }
 
   const latin = toLatinDigits(phone);
-  const valid = PHONE_RE.test(latin);
+  const phoneOk = PHONE_RE.test(latin);
+  const trimmedName = name.trim();
+  const valid = phoneOk && trimmedName.length > 0;
 
   return (
     <BottomSheet open={open} title={`افزودن ${slotLabel}`} onClose={onClose}>
@@ -78,6 +88,7 @@ export default function AddPlayerSheet({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
+          <TextField label="نام" value={name} onChange={setName} placeholder="مثلا رضا محمدی" />
           <TextField
             label="شماره موبایل"
             value={phone}
@@ -86,9 +97,9 @@ export default function AddPlayerSheet({
             numeric
           />
           <p className="text-xs text-muted text-right leading-5" dir="rtl">
-            {phone && !valid
+            {phone && !phoneOk
               ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود."
-              : "دعوت پس از ثبت مچ برایش پیامک می‌شود."}
+              : "نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود."}
           </p>
           <div className="flex gap-3">
             <button
@@ -102,11 +113,11 @@ export default function AddPlayerSheet({
             <button
               type="button"
               disabled={!valid}
-              onClick={() => onInvite(latin)}
+              onClick={() => onInvite(trimmedName, latin)}
               className="flex-1 h-12 rounded-pill bg-primary text-sm font-bold text-white active:opacity-80 disabled:opacity-40"
               dir="rtl"
             >
-              افزودن
+              {invite ? "ذخیره" : "افزودن"}
             </button>
           </div>
         </div>
