@@ -8,6 +8,14 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-08 — guarded pages no longer wait on a dead backend
+
+The API stopped answering entirely (it had been returning a fast 502; now every endpoint hangs), which exposed three separate ways the app waits forever on it.
+
+- [API] `apiFetch` requests time out after 10s (`AbortSignal.timeout`) instead of never settling. A hung fetch left the `["me"]` query permanently `isLoading`, so `AuthGuard` held every guarded page on its spinner — most visibly `/matches/create`. Timeouts and network failures surface as «ارتباط با سرور برقرار نشد، اتصال خود را بررسی کنید.» The token-refresh call got the same timeout.
+- [Auth] `useRequireAuth` no longer blocks rendering on `/players/me`. Holding a token is enough; the query only decides whether to bounce an incomplete profile to `/profile-setup`. Waiting for it cost a full request timeout **on every mount** while the backend is down, since a failed query refetches. The trade: a genuinely incomplete profile sees the app briefly before the redirect, which only happens right after signup.
+- [Auth] The `["me"]` query is `retry: false` (was `retry: 1`) — every guarded route blocks on it, so a retry doubled the stall for no new information. This was already logged in TODO.md as a tidy-up; the hang promoted it.
+
 ### 2026-08-08 — invite teammates by phone or link
 
 - [Create] Step ۴ بازیکنان: tapping a teammate slot now opens **افزودن بازیکن** — pick someone already on Patch, or **invite a phone number** (۱۱ digits, `09…`, entered in Persian digits and stored as Latin). A filled slot can also be emptied from the same sheet. New `AddPlayerSheet` (menu + phone field in one sheet, mounted only while open so it always opens on the menu).
