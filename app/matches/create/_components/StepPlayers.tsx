@@ -6,7 +6,8 @@ import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
 import AddPlayerSheet, { formatPhone } from "./AddPlayerSheet";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
-import type { CreateMatchDraft, MatchPlayer, TeammateSlot } from "../../../../lib/types";
+import { toPersianDigits } from "../../../../lib/persian";
+import { MAX_TEAMMATES, type CreateMatchDraft, type MatchPlayer, type Teammate } from "../../../../lib/types";
 
 const ROLE_OPTIONS: RadioCardOption[] = [
   {
@@ -26,7 +27,6 @@ const ROLE_OPTIONS: RadioCardOption[] = [
 const roleShort = (r: CreateMatchDraft["myRole"]) =>
   r === "captain" ? "برگزار کننده" : r === "player" ? "بازیکن" : undefined;
 
-const SLOT_LABELS = ["بازیکن ۲", "بازیکن ۳", "بازیکن ۴"] as const;
 
 interface Props {
   draft: CreateMatchDraft;
@@ -36,45 +36,46 @@ interface Props {
 
 /** Step ۴ بازیکنان: own role + three teammate slots (shared picker) + team preview. */
 export default function StepPlayers({ draft, patch, players }: Props) {
-  // Which slot is being edited, and which sheet is on top of it.
-  const [activeSlot, setActiveSlot] = useState<0 | 1 | 2 | null>(null);
+  // Which row is being edited (=== teammates.length means "adding a new one"),
+  // and which sheet is on top of it.
+  const [activeRow, setActiveRow] = useState<number | null>(null);
   const [sheet, setSheet] = useState<"add" | "players" | null>(null);
 
-  const setSlot = (slot: 0 | 1 | 2, value: TeammateSlot) => {
-    const teammates = [...draft.teammates] as CreateMatchDraft["teammates"];
-    teammates[slot] = value;
+  // رقابتی is 2v2 padel — the creator plus three. دوستانه and آمریکانو (rotating
+  // partners) have no fixed team shape, so they're uncapped.
+  const capped = draft.format === "competitive";
+  const canAdd = !capped || draft.teammates.length < MAX_TEAMMATES;
+
+  const setRow = (row: number, value: Teammate) => {
+    const teammates = [...draft.teammates];
+    teammates[row] = value; // row === length appends
     patch({ teammates });
   };
 
-  /** Drop a slot and close the gap, so the added rows stay a contiguous list. */
-  const removeSlot = (slot: 0 | 1 | 2) => {
-    const rest = draft.teammates.filter((_, i) => i !== slot);
-    patch({ teammates: [...rest, null] as CreateMatchDraft["teammates"] });
-  };
+  const removeRow = (row: number) =>
+    patch({ teammates: draft.teammates.filter((_, i) => i !== row) });
 
-  const openSlot = (slot: 0 | 1 | 2) => {
-    setActiveSlot(slot);
+  const openRow = (row: number) => {
+    setActiveRow(row);
     setSheet("add");
   };
   const closeSheets = () => {
-    setActiveSlot(null);
+    setActiveRow(null);
     setSheet(null);
   };
 
-  const current = activeSlot === null ? null : draft.teammates[activeSlot];
-  const firstEmpty = draft.teammates.findIndex((t) => t === null) as -1 | 0 | 1 | 2;
+  const current = activeRow === null ? undefined : draft.teammates[activeRow];
 
-  // The picker works in player indexes, so only player-kind slots map onto it.
+  // The picker works in player indexes, so only player-kind rows map onto it.
   const pickerSelected = current?.kind === "player" ? current.index : null;
   const pickerDisabled = draft.teammates
-    .filter((t) => t?.kind === "player")
+    .filter((t) => t.kind === "player")
     .map((t) => (t as { kind: "player"; index: number }).index)
     .filter((i) => i !== pickerSelected);
 
-  const slotValue = (t: TeammateSlot) => {
-    if (t === null) return undefined;
-    return t.kind === "player" ? players[t.index]?.name : `دعوت ${formatPhone(t.phone)}`;
-  };
+  const rowLabel = (row: number) => `بازیکن ${toPersianDigits(String(row + 2))}`;
+  const rowValue = (t: Teammate) =>
+    t.kind === "player" ? players[t.index]?.name : `دعوت ${formatPhone(t.phone)}`;
 
   return (
     <>
@@ -85,22 +86,14 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         value={draft.myRole}
         onChange={(id) => patch({ myRole: id as CreateMatchDraft["myRole"] })}
       />
-      {/* One row per added teammate — they're kept contiguous, so an empty slot
-          only ever means "not added yet" and shows nothing. */}
-      {draft.teammates.map((t, i) =>
-        t === null ? null : (
-          <SelectField
-            key={i}
-            label={SLOT_LABELS[i]}
-            value={slotValue(t)}
-            onClick={() => openSlot(i as 0 | 1 | 2)}
-          />
-        )
-      )}
-      {firstEmpty !== -1 && (
+      {/* One row per added teammate; the dashed button below is the only way in. */}
+      {draft.teammates.map((t, i) => (
+        <SelectField key={i} label={rowLabel(i)} value={rowValue(t)} onClick={() => openRow(i)} />
+      ))}
+      {canAdd && (
         <button
           type="button"
-          onClick={() => openSlot(firstEmpty)}
+          onClick={() => openRow(draft.teammates.length)}
           className="w-full h-12 rounded-pill border-2 border-dashed border-primary/40 text-primary text-sm font-bold active:opacity-80"
           dir="rtl"
         >
@@ -108,28 +101,34 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         </button>
       )}
       <p className="text-xs text-muted text-right leading-5" dir="rtl">
-        جایگاه‌های خالی را می‌توانید بعد از ثبت مچ با لینک دعوت پر کنید — لینک در صفحه‌ی مچ است.
+        {capped
+          ? "مچ رقابتی ۲ به ۲ است — با خودتان ۴ بازیکن. جای خالی را بعد از ثبت مچ با لینک دعوت پر کنید."
+          : "برای این نوع مچ محدودیتی در تعداد بازیکنان نیست. بقیه را بعد از ثبت مچ با لینک دعوت اضافه کنید."}
       </p>
-      <TeamPreview
-        myRoleLabel={roleShort(draft.myRole)}
-        teammates={draft.teammates}
-        players={players}
-      />
+      {/* The 2×2 court only describes a رقابتی match; آمریکانو rotates partners
+          and دوستانه has no fixed shape, so the row list above stands alone. */}
+      {capped && (
+        <TeamPreview
+          myRoleLabel={roleShort(draft.myRole)}
+          teammates={draft.teammates}
+          players={players}
+        />
+      )}
 
       <AddPlayerSheet
         open={sheet === "add"}
-        slotLabel={activeSlot === null ? "بازیکن" : SLOT_LABELS[activeSlot]}
+        slotLabel={activeRow === null ? "بازیکن" : rowLabel(activeRow)}
         onClear={
           current
             ? () => {
-                if (activeSlot !== null) removeSlot(activeSlot);
+                if (activeRow !== null) removeRow(activeRow);
                 closeSheets();
               }
             : undefined
         }
         onPickFromPlayers={() => setSheet("players")}
         onInvite={(phone) => {
-          if (activeSlot !== null) setSlot(activeSlot, { kind: "invite", phone });
+          if (activeRow !== null) setRow(activeRow, { kind: "invite", phone });
           closeSheets();
         }}
         onClose={closeSheets}
@@ -141,10 +140,10 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         disabled={pickerDisabled}
         selected={pickerSelected}
         onSelect={(playerIndex) => {
-          if (activeSlot !== null) {
+          if (activeRow !== null) {
             // Tapping the row's current player removes it (PlayerPickerSheet contract).
-            if (pickerSelected === playerIndex) removeSlot(activeSlot);
-            else setSlot(activeSlot, { kind: "player", index: playerIndex });
+            if (pickerSelected === playerIndex) removeRow(activeRow);
+            else setRow(activeRow, { kind: "player", index: playerIndex });
           }
           closeSheets();
         }}

@@ -176,15 +176,17 @@ export interface ToggleSetting<T> {
 }
 
 /**
- * A teammate slot in the create-match wizard: either someone already on Patch
+ * A teammate added in the create-match wizard: either someone already on Patch
  * (an index into the pickable-players list) or a phone number we'll invite by
- * SMS. `null` is an empty slot — those can still fill up later from the match's
- * invite link.
+ * SMS. Held as a plain list — رقابتی caps it at MAX_TEAMMATES, the other
+ * formats don't cap it at all.
  */
-export type TeammateSlot =
+export type Teammate =
   | { kind: "player"; index: number }
-  | { kind: "invite"; phone: string }
-  | null;
+  | { kind: "invite"; phone: string };
+
+/** Teammates allowed besides the creator in a رقابتی match (2v2 padel). */
+export const MAX_TEAMMATES = 3;
 
 /** Draft state collected across the 6 wizard steps. */
 export interface CreateMatchDraft {
@@ -206,8 +208,8 @@ export interface CreateMatchDraft {
   duration: number | null;
   // ۴ بازیکنان
   myRole: "captain" | "player" | null;
-  /** Three teammate slots; null = empty. */
-  teammates: [TeammateSlot, TeammateSlot, TeammateSlot];
+  /** Added teammates, in the order they were added. */
+  teammates: Teammate[];
   // ۵ تنظیمات
   invite: "public" | "private" | null;
   minLevel: ToggleSetting<number>;

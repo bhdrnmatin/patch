@@ -39,7 +39,6 @@ export default function StepReview({ draft, courts, players }: Props) {
   const rows: ReviewRow[] = [
     { name: "شما", role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن" },
     ...draft.teammates.flatMap((t): ReviewRow[] => {
-      if (t === null) return [];
       // Invited numbers haven't accepted yet, so they carry no level or avatar.
       if (t.kind === "invite") {
         return [{ name: toPersianDigits(t.phone), role: "دعوت‌شده" }];

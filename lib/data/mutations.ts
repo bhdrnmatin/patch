@@ -50,7 +50,7 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
   // in the draft but can't be sent yet — no endpoint (see TODO.md) — so an
   // invited number stays out of the player list until it accepts.
   const teammates = draft.teammates.flatMap((t) =>
-    t?.kind === "player" ? [pickablePlayers[t.index]] : []
+    t.kind === "player" ? [pickablePlayers[t.index]] : []
   );
   const players = [self, ...teammates];
 
@@ -61,7 +61,9 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
     status: "active",
     players,
     avgLevel: Math.round(players.reduce((sum, p) => sum + p.level, 0) / players.length),
-    capacity: 4,
+    // رقابتی is always 2v2; the other formats have no fixed size, so the roster
+    // it was created with is the only capacity we can claim.
+    capacity: draft.format === "competitive" ? 4 : players.length,
     date: draft.date ? dayMonthLabel(draft.date) : "",
     price: (draft.entryFee.enabled && draft.entryFee.value) || 0,
   });
