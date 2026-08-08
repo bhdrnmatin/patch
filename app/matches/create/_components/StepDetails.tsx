@@ -3,7 +3,7 @@
 import TextField from "./TextField";
 import TextArea from "./TextArea";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
-import type { CreateMatchDraft } from "../../../../lib/types";
+import { MAX_TEAMMATES, type CreateMatchDraft } from "../../../../lib/types";
 
 const FORMAT_OPTIONS: RadioCardOption[] = [
   {
@@ -55,7 +55,16 @@ export default function StepDetails({ draft, patch }: Props) {
         subtitle="نتیجه مسابقه روی رنکینگ اثر داشته باشد؟"
         options={FORMAT_OPTIONS}
         value={draft.format}
-        onChange={(id) => patch({ format: id as CreateMatchDraft["format"] })}
+        onChange={(id) => {
+          const format = id as CreateMatchDraft["format"];
+          // رقابتی caps the roster, so switching to it from an uncapped format
+          // has to drop anyone past the limit — step ۴ can't show them.
+          patch(
+            format === "competitive"
+              ? { format, teammates: draft.teammates.slice(0, MAX_TEAMMATES) }
+              : { format }
+          );
+        }}
       />
       <RadioCardGroup
         label="نمایش مسابقه"
