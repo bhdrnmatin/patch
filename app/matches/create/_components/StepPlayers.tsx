@@ -6,7 +6,6 @@ import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
 import AddPlayerSheet from "./AddPlayerSheet";
 import OptionSheet from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
-import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
 import { toPersianDigits } from "../../../../lib/persian";
 import { MAX_TEAMMATES, type CreateMatchDraft, type MatchPlayer, type Teammate } from "../../../../lib/types";
 
@@ -40,7 +39,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
   // Which row is being edited (=== teammates.length means "adding a new one"),
   // and which sheet is on top of it.
   const [activeRow, setActiveRow] = useState<number | null>(null);
-  const [sheet, setSheet] = useState<"add" | "players" | "coach" | null>(null);
+  const [sheet, setSheet] = useState<"add" | "coach" | null>(null);
 
   // رقابتی is 2v2 padel — the creator plus three. دوستانه and آمریکانو (rotating
   // partners) have no fixed team shape, so they're uncapped.
@@ -145,6 +144,21 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         open={sheet === "add"}
         slotLabel={activeRow === null ? "بازیکن" : rowLabel(activeRow)}
         invite={current?.kind === "invite" ? current : undefined}
+        players={players}
+        disabledPlayers={pickerDisabled}
+        selectedPlayer={pickerSelected}
+        onPickPlayer={(playerIndex) => {
+          if (activeRow !== null) {
+            // Tapping the row's current player removes it (PlayerPickList contract).
+            if (pickerSelected === playerIndex) removeRow(activeRow);
+            else setRow(activeRow, { kind: "player", index: playerIndex });
+          }
+          closeSheets();
+        }}
+        onInvite={(name, phone) => {
+          if (activeRow !== null) setRow(activeRow, { kind: "invite", name, phone });
+          closeSheets();
+        }}
         onClear={
           current
             ? () => {
@@ -153,27 +167,6 @@ export default function StepPlayers({ draft, patch, players }: Props) {
               }
             : undefined
         }
-        onPickFromPlayers={() => setSheet("players")}
-        onInvite={(name, phone) => {
-          if (activeRow !== null) setRow(activeRow, { kind: "invite", name, phone });
-          closeSheets();
-        }}
-        onClose={closeSheets}
-      />
-
-      <PlayerPickerSheet
-        open={sheet === "players"}
-        players={players}
-        disabled={pickerDisabled}
-        selected={pickerSelected}
-        onSelect={(playerIndex) => {
-          if (activeRow !== null) {
-            // Tapping the row's current player removes it (PlayerPickerSheet contract).
-            if (pickerSelected === playerIndex) removeRow(activeRow);
-            else setRow(activeRow, { kind: "player", index: playerIndex });
-          }
-          closeSheets();
-        }}
         onClose={closeSheets}
       />
 

@@ -30,5 +30,26 @@ sanctioned React pattern, and what stopped the sheet flashing open/shut.
 | 9 | Accepted | Custom `onInvite(phone)` / `onClear()` callbacks rather than native event handlers | Accepted — matches every other wizard component (RadioGroup, AuthSelect, all step composites). |
 | 10 | Note | Phone conversion verified against Persian input: `۰۹۱۲۳۴۵۶۷۸۹` → valid; too short, wrong prefix and too long all rejected. | Clean |
 
+## v2 — 2026-08-08 | fix
+
+The Patch-player picker wouldn't open on device. Cause: it was a *second* `BottomSheet`,
+so switching to it ran one sheet's cleanup (`history.back()`, async) and the other's setup
+(`pushState`) in the same commit — the same history churn that produced the earlier
+open/shut flash. The player list is now a third **view inside this sheet**: exactly one
+sheet is ever open and no history entry is torn down mid-interaction.
+
+- `PlayerPickList` extracted from `PlayerPickerSheet` (`app/matches/[id]/results/_components/`)
+  and used by both, so the rows aren't duplicated. `PlayerPickerSheet` keeps its API — the
+  results page is untouched.
+- Editing an existing row now opens on the view it came from: the prefilled phone form for
+  an invite, the player list for a Patch player, the menu for an empty row.
+- Finding #3 (actions in body vs `BottomSheet` footer) now also covers the players view's
+  بازگشت button; #6 (MenuRow ≈ RadioCardGroup card) unchanged.
+
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 11 | Warning | Chaining two BottomSheets breaks on device — one sheet's history cleanup races the other's push | Fixed v2 — single sheet, three views |
+| 12 | Suggestion | Props are up to 10 (`players`/`disabledPlayers`/`selectedPlayer`/`onPickPlayer` added). Rule 5.3 suggests compound composition at 10+; acceptable for a feature composite driven by one parent, but it's the ceiling. | Open |
+
 ### Status
-Open: 0 Critical, 2 Warning, 5 Suggestion | Fixed: 0 | Accepted: 2
+Open: 0 Critical, 2 Warning, 6 Suggestion | Fixed: 1 | Accepted: 2
