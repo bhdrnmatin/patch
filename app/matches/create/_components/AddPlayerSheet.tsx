@@ -8,7 +8,7 @@ import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
 interface Props {
   open: boolean;
   slotLabel: string;
-  /** Shown only when the slot already holds someone, so it can be emptied. */
+  /** Shown only when the row already holds someone, so it can be removed. */
   onClear?: () => void;
   onPickFromPlayers: () => void;
   onInvite: (phone: string) => void;
@@ -72,7 +72,7 @@ export default function AddPlayerSheet({
               className="w-full h-12 rounded-card text-sm font-bold text-danger active:opacity-80"
               dir="rtl"
             >
-              خالی کردن این جایگاه
+              حذف این بازیکن
             </button>
           )}
         </div>

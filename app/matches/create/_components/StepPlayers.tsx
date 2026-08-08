@@ -46,6 +46,12 @@ export default function StepPlayers({ draft, patch, players }: Props) {
     patch({ teammates });
   };
 
+  /** Drop a slot and close the gap, so the added rows stay a contiguous list. */
+  const removeSlot = (slot: 0 | 1 | 2) => {
+    const rest = draft.teammates.filter((_, i) => i !== slot);
+    patch({ teammates: [...rest, null] as CreateMatchDraft["teammates"] });
+  };
+
   const openSlot = (slot: 0 | 1 | 2) => {
     setActiveSlot(slot);
     setSheet("add");
@@ -79,18 +85,18 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         value={draft.myRole}
         onChange={(id) => patch({ myRole: id as CreateMatchDraft["myRole"] })}
       />
-      {SLOT_LABELS.map((label, i) => {
-        const slot = i as 0 | 1 | 2;
-        return (
+      {/* One row per added teammate — they're kept contiguous, so an empty slot
+          only ever means "not added yet" and shows nothing. */}
+      {draft.teammates.map((t, i) =>
+        t === null ? null : (
           <SelectField
-            key={label}
-            label={label}
-            value={slotValue(draft.teammates[slot])}
-            placeholder="افزودن بازیکن"
-            onClick={() => openSlot(slot)}
+            key={i}
+            label={SLOT_LABELS[i]}
+            value={slotValue(t)}
+            onClick={() => openSlot(i as 0 | 1 | 2)}
           />
-        );
-      })}
+        )
+      )}
       {firstEmpty !== -1 && (
         <button
           type="button"
@@ -116,7 +122,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         onClear={
           current
             ? () => {
-                if (activeSlot !== null) setSlot(activeSlot, null);
+                if (activeSlot !== null) removeSlot(activeSlot);
                 closeSheets();
               }
             : undefined
@@ -136,8 +142,9 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         selected={pickerSelected}
         onSelect={(playerIndex) => {
           if (activeSlot !== null) {
-            // Tapping the slot's current player clears it (PlayerPickerSheet contract).
-            setSlot(activeSlot, pickerSelected === playerIndex ? null : { kind: "player", index: playerIndex });
+            // Tapping the row's current player removes it (PlayerPickerSheet contract).
+            if (pickerSelected === playerIndex) removeSlot(activeSlot);
+            else setSlot(activeSlot, { kind: "player", index: playerIndex });
           }
           closeSheets();
         }}
