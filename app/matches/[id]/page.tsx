@@ -82,7 +82,7 @@ function MatchDetailsContent() {
 
         <PromoCard />
         <CourtCard club={m.club} note={m.courtNote} />
-        <ShareCard restriction={m.restriction} />
+        <ShareCard restriction={m.restriction} matchId={id} />
         <FaqSection faq={m.faq} />
 
         {role === "creator" && <JoinRequestsSection requests={m.requests} matchId={id} />}

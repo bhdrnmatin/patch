@@ -46,9 +46,12 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
   await delay();
 
   const self: MatchPlayer = { name: "سینا عشاقی", level: 3, avatar: "/images/avatar-placeholder.svg" };
-  const teammates = draft.teammates
-    .filter((t): t is number => t !== null)
-    .map((i) => pickablePlayers[i]);
+  // Only teammates already on Patch join the roster. Phone invites are collected
+  // in the draft but can't be sent yet — no endpoint (see TODO.md) — so an
+  // invited number stays out of the player list until it accepts.
+  const teammates = draft.teammates.flatMap((t) =>
+    t?.kind === "player" ? [pickablePlayers[t.index]] : []
+  );
   const players = [self, ...teammates];
 
   const id = `ml-${Date.now()}`;
