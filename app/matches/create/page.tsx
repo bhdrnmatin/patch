@@ -38,6 +38,7 @@ const emptyDraft: CreateMatchDraft = {
   duration: null,
   myRole: null,
   teammates: [],
+  coach: null,
   invite: null,
   minLevel: emptyToggle(),
   maxLevel: emptyToggle(),

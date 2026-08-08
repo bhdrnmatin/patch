@@ -38,13 +38,16 @@ export default function StepReview({ draft, courts, players }: Props) {
 
   const rows: ReviewRow[] = [
     { name: "شما", role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن" },
-    ...draft.teammates.flatMap((t): ReviewRow[] => {
+    ...draft.teammates.flatMap((t, i): ReviewRow[] => {
+      const isCoach = draft.coach === i;
       // Invited numbers haven't accepted yet, so they carry no level or avatar.
       if (t.kind === "invite") {
-        return [{ name: toPersianDigits(t.phone), role: "دعوت‌شده" }];
+        return [{ name: toPersianDigits(t.phone), role: isCoach ? "برگزار کننده" : "دعوت‌شده" }];
       }
       const p = players[t.index];
-      return p ? [{ name: p.name, role: "یار", level: p.level, avatar: p.avatar }] : [];
+      return p
+        ? [{ name: p.name, role: isCoach ? "برگزار کننده" : "یار", level: p.level, avatar: p.avatar }]
+        : [];
     }),
   ];
 

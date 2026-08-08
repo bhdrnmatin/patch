@@ -4,6 +4,7 @@ import { useState } from "react";
 import SelectField from "./SelectField";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
 import AddPlayerSheet, { formatPhone } from "./AddPlayerSheet";
+import OptionSheet from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
 import { toPersianDigits } from "../../../../lib/persian";
@@ -39,7 +40,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
   // Which row is being edited (=== teammates.length means "adding a new one"),
   // and which sheet is on top of it.
   const [activeRow, setActiveRow] = useState<number | null>(null);
-  const [sheet, setSheet] = useState<"add" | "players" | null>(null);
+  const [sheet, setSheet] = useState<"add" | "players" | "coach" | null>(null);
 
   // رقابتی is 2v2 padel — the creator plus three. دوستانه and آمریکانو (rotating
   // partners) have no fixed team shape, so they're uncapped.
@@ -52,8 +53,16 @@ export default function StepPlayers({ draft, patch, players }: Props) {
     patch({ teammates });
   };
 
-  const removeRow = (row: number) =>
-    patch({ teammates: draft.teammates.filter((_, i) => i !== row) });
+  const removeRow = (row: number) => {
+    // The coach is stored as a row index, so it has to follow the shift.
+    const coach =
+      draft.coach === null || draft.coach === row
+        ? null
+        : draft.coach > row
+          ? draft.coach - 1
+          : draft.coach;
+    patch({ teammates: draft.teammates.filter((_, i) => i !== row), coach });
+  };
 
   const openRow = (row: number) => {
     setActiveRow(row);
@@ -84,7 +93,11 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         subtitle="نقش شما در این مسابقه چیست؟"
         options={ROLE_OPTIONS}
         value={draft.myRole}
-        onChange={(id) => patch({ myRole: id as CreateMatchDraft["myRole"] })}
+        onChange={(id) => {
+          const myRole = id as CreateMatchDraft["myRole"];
+          // A برگزار کننده creator is the coach, so no teammate can hold it.
+          patch(myRole === "captain" ? { myRole, coach: null } : { myRole });
+        }}
       />
       {/* One row per added teammate; the dashed button below is the only way in. */}
       {draft.teammates.map((t, i) => (
@@ -99,6 +112,19 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         >
           + اضافه کردن بازیکن
         </button>
+      )}
+      {/* The creator plays, so the برگزار کننده role is open — let them hand it
+          to one of the people they added. Optional: a match can have no coach. */}
+      {draft.myRole === "player" && (
+        <SelectField
+          label="مربی (اختیاری)"
+          value={draft.coach === null ? undefined : rowValue(draft.teammates[draft.coach])}
+          placeholder={
+            draft.teammates.length === 0 ? "اول بازیکن اضافه کنید" : "یکی از بازیکنان را انتخاب کنید"
+          }
+          disabled={draft.teammates.length === 0}
+          onClick={() => setSheet("coach")}
+        />
       )}
       <p className="text-xs text-muted text-right leading-5" dir="rtl">
         {capped
@@ -148,6 +174,20 @@ export default function StepPlayers({ draft, patch, players }: Props) {
           closeSheets();
         }}
         onClose={closeSheets}
+      />
+
+      <OptionSheet
+        open={sheet === "coach"}
+        title="انتخاب مربی"
+        options={draft.teammates.map((t, i) => ({ id: String(i), label: rowValue(t) ?? rowLabel(i) }))}
+        value={draft.coach === null ? null : String(draft.coach)}
+        onSelect={(id) => {
+          // Re-picking the current coach clears it — the only way back to "no coach".
+          const picked = Number(id);
+          patch({ coach: draft.coach === picked ? null : picked });
+          setSheet(null);
+        }}
+        onClose={() => setSheet(null)}
       />
     </>
   );
