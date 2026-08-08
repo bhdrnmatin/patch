@@ -110,25 +110,24 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         players={players}
       />
 
-      {sheet === "add" && activeSlot !== null && (
-        <AddPlayerSheet
-          slotLabel={SLOT_LABELS[activeSlot]}
-          onClear={
-            current
-              ? () => {
-                  setSlot(activeSlot, null);
-                  closeSheets();
-                }
-              : undefined
-          }
-          onPickFromPlayers={() => setSheet("players")}
-          onInvite={(phone) => {
-            setSlot(activeSlot, { kind: "invite", phone });
-            closeSheets();
-          }}
-          onClose={closeSheets}
-        />
-      )}
+      <AddPlayerSheet
+        open={sheet === "add"}
+        slotLabel={activeSlot === null ? "بازیکن" : SLOT_LABELS[activeSlot]}
+        onClear={
+          current
+            ? () => {
+                if (activeSlot !== null) setSlot(activeSlot, null);
+                closeSheets();
+              }
+            : undefined
+        }
+        onPickFromPlayers={() => setSheet("players")}
+        onInvite={(phone) => {
+          if (activeSlot !== null) setSlot(activeSlot, { kind: "invite", phone });
+          closeSheets();
+        }}
+        onClose={closeSheets}
+      />
 
       <PlayerPickerSheet
         open={sheet === "players"}
