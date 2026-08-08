@@ -77,6 +77,17 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       per-id match storage when the API lands.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
 
+### Add-player rework (2026-08-08)
+- [ ] Phone invites are collected into the draft (`TeammateSlot = {kind:"invite", phone}`) but never
+      sent — there's no invite endpoint. `createMatch` deliberately leaves invited numbers out of the
+      roster until they accept. Wire the SMS invite when the API ships.
+- [ ] The invite link is just the match URL, so it only exists **after** creation (`ShareCard` on
+      `/matches/[id]`). If invites need to go out from inside the wizard, the backend has to mint a
+      draft/pending-match token first.
+- [ ] `navigator.share` + `navigator.clipboard` need a **secure context** — they're unavailable over
+      plain `http://<lan-ip>:3000`, so the share card silently no-ops in LAN dev testing. Fine in
+      production (https); add a legacy `execCommand("copy")` fallback only if dev testing needs it.
+
 ### مکان rework (2026-08-04)
 - [ ] مسیریابی button (StepLocation selected-court card) is cosmetic — wire a maps deep link when available.
       (The old "انتخاب روی نقشه" custom-court button was removed in this rework.)

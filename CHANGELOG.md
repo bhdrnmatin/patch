@@ -8,6 +8,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-08 — invite teammates by phone or link
+
+- [Create] Step ۴ بازیکنان: tapping a teammate slot now opens **افزودن بازیکن** — pick someone already on Patch, or **invite a phone number** (۱۱ digits, `09…`, entered in Persian digits and stored as Latin). A filled slot can also be emptied from the same sheet. New `AddPlayerSheet` (menu + phone field in one sheet, mounted only while open so it always opens on the menu).
+- [Create] A teammate slot is now a union rather than a bare index — `TeammateSlot = {kind:"player", index} | {kind:"invite", phone} | null` (`lib/types.ts`). `TeamPreview` shows an invited number with a دعوت‌شده caption, and the review list gives it a دعوت‌شده role tag with no level/avatar (they haven't accepted yet). `createMatch` keeps invited numbers out of the roster for the same reason.
+- [Match] The share card on `/matches/[id]` works now — it was a dead `<button>`. It opens the **native share sheet** (`navigator.share`) with the match URL, covering Telegram, WhatsApp, Instagram and SMS in one tap, and falls back to copying the link (with a لینک کپی شد state) where the Web Share API isn't available. Per-app buttons were rejected deliberately: Instagram has no public URL scheme for sending a link to a DM, so the OS sheet is the only route to it.
+- [Create] Step ۴ notes that empty slots can be filled later from the match's invite link — the link is the match URL, so it can't exist before the match does. See TODO.md.
+
 ### 2026-08-07 — gateway errors read as downtime
 
 - [API] A 502/503/504 now surfaces as «سرور در دسترس نیست، لطفاً کمی بعد دوباره تلاش کنید.» instead of «خطای سرور (۵۰۲)». Those statuses come from the proxy, not the API, so the body is an nginx HTML page with no `errorMessage` to show — the old generic fallback made downtime look like a bug in the app. A real API message still wins when one is present (the check sits after the payload fields). The remaining generic fallback now renders its status in Persian digits (`fix/gateway-error-message`).

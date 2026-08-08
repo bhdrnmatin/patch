@@ -1,13 +1,12 @@
 "use client";
 
 import { toPersianDigits } from "../../../../lib/persian";
-import type { MatchPlayer } from "../../../../lib/types";
+import type { MatchPlayer, TeammateSlot } from "../../../../lib/types";
 
 interface Props {
-  /** Label under "شما", e.g. کاپیتان / یار. */
+  /** Label under "شما", e.g. برگزار کننده / بازیکن. */
   myRoleLabel?: string;
-  /** Slot indexes into `players`; null = empty. */
-  teammates: [number | null, number | null, number | null];
+  teammates: [TeammateSlot, TeammateSlot, TeammateSlot];
   players: MatchPlayer[];
 }
 
@@ -39,8 +38,14 @@ function EmptyCell({ label }: { label: string }) {
 /** 2×2 team layout preview: شما + بازیکن ۲ vs بازیکن ۳ + ۴, split by the "تور" (net) divider. */
 export default function TeamPreview({ myRoleLabel, teammates, players }: Props) {
   const teammate = (slot: 0 | 1 | 2, label: string) => {
-    const index = teammates[slot];
-    const player = index === null ? undefined : players[index];
+    const t = teammates[slot];
+    if (t === null) return <EmptyCell label={label} />;
+
+    if (t.kind === "invite") {
+      return <Cell title={toPersianDigits(t.phone)} subtitle="دعوت‌شده" />;
+    }
+
+    const player = players[t.index];
     return player ? (
       <Cell title={player.name} subtitle={`لول ${toPersianDigits(String(player.level))}`} />
     ) : (

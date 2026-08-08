@@ -175,6 +175,17 @@ export interface ToggleSetting<T> {
   value: T | null;
 }
 
+/**
+ * A teammate slot in the create-match wizard: either someone already on Patch
+ * (an index into the pickable-players list) or a phone number we'll invite by
+ * SMS. `null` is an empty slot — those can still fill up later from the match's
+ * invite link.
+ */
+export type TeammateSlot =
+  | { kind: "player"; index: number }
+  | { kind: "invite"; phone: string }
+  | null;
+
 /** Draft state collected across the 6 wizard steps. */
 export interface CreateMatchDraft {
   // ۱ مشخصات
@@ -195,8 +206,8 @@ export interface CreateMatchDraft {
   duration: number | null;
   // ۴ بازیکنان
   myRole: "captain" | "player" | null;
-  /** Indexes into the pickable-players list; null = empty slot. */
-  teammates: [number | null, number | null, number | null];
+  /** Three teammate slots; null = empty. */
+  teammates: [TeammateSlot, TeammateSlot, TeammateSlot];
   // ۵ تنظیمات
   invite: "public" | "private" | null;
   minLevel: ToggleSetting<number>;

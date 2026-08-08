@@ -3,9 +3,10 @@
 import { useState } from "react";
 import SelectField from "./SelectField";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
+import AddPlayerSheet, { formatPhone } from "./AddPlayerSheet";
 import TeamPreview from "./TeamPreview";
 import PlayerPickerSheet from "../../[id]/results/_components/PlayerPickerSheet";
-import type { CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
+import type { CreateMatchDraft, MatchPlayer, TeammateSlot } from "../../../../lib/types";
 
 const ROLE_OPTIONS: RadioCardOption[] = [
   {
@@ -35,21 +36,39 @@ interface Props {
 
 /** Step ۴ بازیکنان: own role + three teammate slots (shared picker) + team preview. */
 export default function StepPlayers({ draft, patch, players }: Props) {
+  // Which slot is being edited, and which sheet is on top of it.
   const [activeSlot, setActiveSlot] = useState<0 | 1 | 2 | null>(null);
+  const [sheet, setSheet] = useState<"add" | "players" | null>(null);
 
-  const setSlot = (slot: 0 | 1 | 2, playerIndex: number) => {
+  const setSlot = (slot: 0 | 1 | 2, value: TeammateSlot) => {
     const teammates = [...draft.teammates] as CreateMatchDraft["teammates"];
-    // Tapping the slot's current player clears it (PlayerPickerSheet contract).
-    teammates[slot] = teammates[slot] === playerIndex ? null : playerIndex;
+    teammates[slot] = value;
     patch({ teammates });
   };
 
+  const openSlot = (slot: 0 | 1 | 2) => {
+    setActiveSlot(slot);
+    setSheet("add");
+  };
+  const closeSheets = () => {
+    setActiveSlot(null);
+    setSheet(null);
+  };
+
+  const current = activeSlot === null ? null : draft.teammates[activeSlot];
   const firstEmpty = draft.teammates.findIndex((t) => t === null) as -1 | 0 | 1 | 2;
-  const pickerSelected = activeSlot === null ? null : draft.teammates[activeSlot];
-  const pickerDisabled =
-    activeSlot === null
-      ? []
-      : draft.teammates.filter((t): t is number => t !== null && t !== pickerSelected);
+
+  // The picker works in player indexes, so only player-kind slots map onto it.
+  const pickerSelected = current?.kind === "player" ? current.index : null;
+  const pickerDisabled = draft.teammates
+    .filter((t) => t?.kind === "player")
+    .map((t) => (t as { kind: "player"; index: number }).index)
+    .filter((i) => i !== pickerSelected);
+
+  const slotValue = (t: TeammateSlot) => {
+    if (t === null) return undefined;
+    return t.kind === "player" ? players[t.index]?.name : `دعوت ${formatPhone(t.phone)}`;
+  };
 
   return (
     <>
@@ -62,43 +81,68 @@ export default function StepPlayers({ draft, patch, players }: Props) {
       />
       {SLOT_LABELS.map((label, i) => {
         const slot = i as 0 | 1 | 2;
-        const index = draft.teammates[slot];
         return (
           <SelectField
             key={label}
             label={label}
-            value={index === null ? undefined : players[index]?.name}
-            placeholder="انتخاب بازیکن"
-            onClick={() => setActiveSlot(slot)}
+            value={slotValue(draft.teammates[slot])}
+            placeholder="افزودن بازیکن"
+            onClick={() => openSlot(slot)}
           />
         );
       })}
       {firstEmpty !== -1 && (
         <button
           type="button"
-          onClick={() => setActiveSlot(firstEmpty)}
+          onClick={() => openSlot(firstEmpty)}
           className="w-full h-12 rounded-pill border-2 border-dashed border-primary/40 text-primary text-sm font-bold active:opacity-80"
           dir="rtl"
         >
           + اضافه کردن بازیکن
         </button>
       )}
+      <p className="text-xs text-muted text-right leading-5" dir="rtl">
+        جایگاه‌های خالی را می‌توانید بعد از ثبت مچ با لینک دعوت پر کنید — لینک در صفحه‌ی مچ است.
+      </p>
       <TeamPreview
         myRoleLabel={roleShort(draft.myRole)}
         teammates={draft.teammates}
         players={players}
       />
 
+      {sheet === "add" && activeSlot !== null && (
+        <AddPlayerSheet
+          slotLabel={SLOT_LABELS[activeSlot]}
+          onClear={
+            current
+              ? () => {
+                  setSlot(activeSlot, null);
+                  closeSheets();
+                }
+              : undefined
+          }
+          onPickFromPlayers={() => setSheet("players")}
+          onInvite={(phone) => {
+            setSlot(activeSlot, { kind: "invite", phone });
+            closeSheets();
+          }}
+          onClose={closeSheets}
+        />
+      )}
+
       <PlayerPickerSheet
-        open={activeSlot !== null}
+        open={sheet === "players"}
         players={players}
         disabled={pickerDisabled}
         selected={pickerSelected}
         onSelect={(playerIndex) => {
-          if (activeSlot !== null) setSlot(activeSlot, playerIndex);
-          setActiveSlot(null);
+          if (activeSlot !== null) {
+            // Tapping the slot's current player clears it (PlayerPickerSheet contract).
+            setSlot(activeSlot, pickerSelected === playerIndex ? null : { kind: "player", index: playerIndex });
+          }
+          closeSheets();
         }}
-        onClose={() => setActiveSlot(null)}
+        onClose={closeSheets}
       />
     </>
   );
