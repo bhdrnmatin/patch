@@ -74,4 +74,5 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-08-07 | **StepSchedule** | fix (v2) | 2 Suggestions fixed (day aria-labels + aria-current, `disabled:` modifier); 2 accepted (arrow-key nav per AvailabilityHeatmap precedent, render-cost memo) | 0 open | [details](audits/StepSchedule.audit.md)
 - 2026-08-07 | **RadioCardGroup** | fix (v3) | 1 Suggestion fixed (aria-labelledby/describedby); 1 accepted (no className passthrough) | 0 open | [details](audits/RadioCardGroup.audit.md)
 - 2026-08-08 | **AddPlayerSheet** | audit | 0 Critical, 2 Warning, 5 Suggestion | 0 fixed, 7 open | [details](audits/AddPlayerSheet.audit.md)
+- 2026-08-08 | **AddPlayerSheet** | fix (v2) | player picker folded in as a third view (chained BottomSheets wouldn't open on device); `PlayerPickList` extracted | 1 fixed, 8 open | [details](audits/AddPlayerSheet.audit.md)
 - 2026-08-08 | **Collapsing hero header** (`useCollapseHeader` + `.hero-collapse*` + SportPageHeader/ProfileHero) | audit | 0 Critical, 3 Warning, 2 Suggestion | 0 fixed, 5 open + device check | [details](audits/collapsing-header.audit.md)

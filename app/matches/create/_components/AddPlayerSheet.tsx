@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import BottomSheet from "../../../(main)/matches/_components/BottomSheet";
+import PlayerPickList from "../../[id]/results/_components/PlayerPickList";
 import TextField from "./TextField";
 import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
+import type { MatchPlayer } from "../../../../lib/types";
 
 interface Props {
   open: boolean;
@@ -11,30 +13,42 @@ interface Props {
   /** The row's existing invite, if any — opens straight into the prefilled form
    *  so a mistyped name or number can be corrected instead of re-added. */
   invite?: { name: string; phone: string };
+  players: MatchPlayer[];
+  /** Player indexes already used by other rows — not selectable. */
+  disabledPlayers: number[];
+  /** Player index this row currently holds; tapping it clears the row. */
+  selectedPlayer: number | null;
+  onPickPlayer: (index: number) => void;
+  onInvite: (name: string, phone: string) => void;
   /** Shown only when the row already holds someone, so it can be removed. */
   onClear?: () => void;
-  onPickFromPlayers: () => void;
-  onInvite: (name: string, phone: string) => void;
   onClose: () => void;
 }
 
 const PHONE_RE = /^09\d{9}$/;
 
 /**
- * How a teammate slot gets filled: pick someone already on Patch, or invite a
- * phone number. Two views in one sheet — the menu, and the phone field — since
- * the phone step is three lines and a second sheet would just be ceremony.
+ * How a teammate row gets filled: pick someone already on Patch, or invite a
+ * phone number.
+ *
+ * All three views live in this one sheet on purpose. Handing off to a second
+ * BottomSheet meant one sheet's cleanup ran `history.back()` while the other's
+ * setup pushed a new entry, in the same commit — the picker wouldn't open on
+ * the phone. One sheet, one history entry, no handoff.
  */
 export default function AddPlayerSheet({
   open,
   slotLabel,
   invite,
-  onClear,
-  onPickFromPlayers,
+  players,
+  disabledPlayers,
+  selectedPlayer,
+  onPickPlayer,
   onInvite,
+  onClear,
   onClose,
 }: Props) {
-  const [view, setView] = useState<"menu" | "phone">("menu");
+  const [view, setView] = useState<"menu" | "phone" | "players">("menu");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -46,9 +60,10 @@ export default function AddPlayerSheet({
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
-      // TextField(numeric) displays Persian digits, so seed the stored Latin
-      // number back into that notation.
-      setView(invite ? "phone" : "menu");
+      // Editing an existing row opens on the view that row came from; a new row
+      // starts at the menu. TextField(numeric) displays Persian digits, so seed
+      // the stored Latin number back into that notation.
+      setView(invite ? "phone" : selectedPlayer !== null ? "players" : "menu");
       setName(invite?.name ?? "");
       setPhone(invite ? toPersianDigits(invite.phone) : "");
     }
@@ -67,7 +82,7 @@ export default function AddPlayerSheet({
             title="از بین بازیکنان پچ"
             description="بازیکنانی که در پچ حساب دارند"
             icon={<PeopleIcon />}
-            onClick={onPickFromPlayers}
+            onClick={() => setView("players")}
           />
           <MenuRow
             title="دعوت با شماره موبایل"
@@ -86,6 +101,16 @@ export default function AddPlayerSheet({
             </button>
           )}
         </div>
+      ) : view === "players" ? (
+        <div className="flex flex-col gap-3">
+          <PlayerPickList
+            players={players}
+            disabled={disabledPlayers}
+            selected={selectedPlayer}
+            onSelect={onPickPlayer}
+          />
+          <BackButton onClick={() => setView("menu")} />
+        </div>
       ) : (
         <div className="flex flex-col gap-3">
           <TextField label="نام" value={name} onChange={setName} placeholder="مثلا رضا محمدی" />
@@ -102,14 +127,7 @@ export default function AddPlayerSheet({
               : "نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود."}
           </p>
           <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => setView("menu")}
-              className="flex-1 h-12 rounded-pill border border-edge bg-white text-sm font-bold text-ink-soft active:opacity-80"
-              dir="rtl"
-            >
-              بازگشت
-            </button>
+            <BackButton onClick={() => setView("menu")} />
             <button
               type="button"
               disabled={!valid}
@@ -123,6 +141,19 @@ export default function AddPlayerSheet({
         </div>
       )}
     </BottomSheet>
+  );
+}
+
+function BackButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex-1 h-12 rounded-pill border border-edge bg-white text-sm font-bold text-ink-soft active:opacity-80"
+      dir="rtl"
+    >
+      بازگشت
+    </button>
   );
 }
 
