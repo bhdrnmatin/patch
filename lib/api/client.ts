@@ -20,6 +20,13 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Give up on a request after this long. Generous enough for a slow mobile
+ * connection, short enough that a dead backend doesn't strand the UI — the
+ * route guards block on /players/me, so an un-settled request means no page.
+ */
+const REQUEST_TIMEOUT_MS = 10_000;
+
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   /** JSON body — serialized automatically. Ignored when `form` is set. */
@@ -81,6 +88,7 @@ async function doRefresh(): Promise<boolean> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     if (!res.ok) return false;
     const data = await res.json().catch(() => null);
@@ -132,7 +140,21 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
     payload = JSON.stringify(body);
   }
 
-  const res = await fetch(`${API_PREFIX}${path}`, { method, headers, body: payload });
+  let res: Response;
+  try {
+    res = await fetch(`${API_PREFIX}${path}`, {
+      method,
+      headers,
+      body: payload,
+      // Without this a hung backend never settles the promise: the query stays
+      // "loading" forever and AuthGuard keeps every guarded page on its spinner.
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+  } catch {
+    // Timed out, offline, or DNS/TLS failure — indistinguishable here, and the
+    // user's next step is the same for all of them.
+    throw new ApiError(0, "ارتباط با سرور برقرار نشد، اتصال خود را بررسی کنید.", null);
+  }
 
   if (res.status === 401 && auth && !_retry) {
     // Reactive: refresh once and replay the original request.

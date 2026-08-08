@@ -115,8 +115,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] OTP-verify routing uses `queryClient.fetchQuery(["me"])`, which honors staleTime — an account
       switch within the stale window could route off the previous user's profile. Pass
       `staleTime: 0` (or `refetchQuery`) if account-switching without a full reload becomes a case.
-- [ ] `useAuth` `["me"]` query `retry: 1` fires a second `getMe` after a hard-401 already ran
-      `endSession()`/redirect — harmless (already navigating); set `retry: false` to tidy.
+- [x] `useAuth` `["me"]` query `retry: 1` — **done 2026-08-08**: now `retry: false`. It stopped being
+      cosmetic when the backend started hanging: every guarded route waited on this query, so a retry
+      doubled the stall. `apiFetch` also got a 10s `AbortSignal.timeout` (a hung fetch never settles,
+      so the guard's error path never ran), and `useRequireAuth` no longer blocks rendering on `/me`.
 
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
