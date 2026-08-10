@@ -147,17 +147,6 @@ body {
   transform-origin: bottom center;
   opacity: calc(1 - 0.3 * var(--collapse, 0));
 }
-.hero-collapse-dates {
-  /* Scaling a full-width scroll container about its centre would pull both
-     ends inward (at 0.8 that's ~39px of the strip clipped off each edge, which
-     reads as broken cells). Widen by the inverse of the scale and re-centre, so
-     the cells shrink while the strip still spans the header edge to edge. */
-  --strip-scale: calc(1 - 0.2 * var(--collapse, 0));
-  left: calc((100% - 100% / var(--strip-scale)) / 2);
-  width: calc(100% / var(--strip-scale));
-  transform: scale(var(--strip-scale));
-  transform-origin: bottom center;
-}
 .hero-collapse-avatar {
   /* Profile only: 96px straddling the open header's bottom edge (48px over the
      content, matching the old -mt-12 overlap) → ~40px tucked beside the title
