@@ -6,16 +6,6 @@ import IconButton from "./IconButton";
 import DateSelector from "./DateSelector";
 import { FilterSearchIcon, SortIcon } from "./icons";
 
-/** Open height; the images are drawn at this size and scale down from it. */
-const HERO_MAX = 276;
-/** Collapsed height. The title/actions rise with the header (see
- *  .hero-collapse-* in globals.css), so the open layout's 56px status-bar gap
- *  doesn't survive as dead space: collapsed, the buttons sit 16–53px and the
- *  title 20–52px. The 56px date strip stays full size 12px off the bottom, so
- *  130 keeps it clear of the buttons. */
-const HERO_MIN_WITH_DATES = 130;
-const HERO_MIN_BARE = 72;
-
 interface Props {
   /** Hero heading, e.g. "مَچ" or "تورنمنت". */
   title: string;
@@ -48,15 +38,13 @@ export default function SportPageHeader({
   bgImage = "/images/matches-header-bg.webp",
   athleteImage = "/images/matches-header-athlete.webp",
 }: Props) {
-  const heroMin = days ? HERO_MIN_WITH_DATES : HERO_MIN_BARE;
-  const ref = useCollapseHeader<HTMLElement>(HERO_MAX - heroMin);
+  const ref = useCollapseHeader<HTMLElement>();
 
   return (
     <>
       <header
         ref={ref}
-        style={{ "--hero-max": `${HERO_MAX}px`, "--hero-min": `${heroMin}px` } as React.CSSProperties}
-        className="hero-collapse fixed top-0 left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group overflow-hidden"
+        className={`hero-collapse ${days ? "hero-collapse-dates" : ""} fixed top-0 left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group overflow-hidden`}
       >
         {/* Blurred court backdrop with blue tint — the surface, so it fills the
             header at every size rather than scaling with the athlete.
@@ -82,8 +70,7 @@ export default function SportPageHeader({
           <img
             src={athleteImage}
             alt=""
-            style={{ height: HERO_MAX }}
-            className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full object-cover"
+            className="hero-collapse-photo absolute inset-x-0 bottom-0 h-[var(--hero-max)] w-full object-cover"
           />
         ) : (
           <img src={athleteImage} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
@@ -118,7 +105,7 @@ export default function SportPageHeader({
 
       {/* Holds the open height in flow so the collapsing fixed header above
           never reflows the page. */}
-      <div aria-hidden style={{ height: HERO_MAX }} />
+      <div aria-hidden className="h-[var(--hero-max)]" />
     </>
   );
 }

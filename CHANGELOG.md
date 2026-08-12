@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-12 — QA audit fixes: one mobile rule, announced errors, CSS-owned collapse geometry
+
+The four actionable items from the 2026-08-08 `ds-qa-tw` audit.
+
+- [Lib] One mobile-number rule: `isValidMobile()` in `lib/persian.ts` normalizes to Latin digits and tests `/^09\d{9}$/`. `/login` (which stores Persian digits) and `AddPlayerSheet` (which stores Latin) had drifted into two regexes for the same rule; both call the shared one now. `lib/persian.test.ts` is the runnable check (`npx tsx lib/persian.test.ts`), covering both notations and the near-misses (10/12 digits, not-09, `+98` form).
+- [a11y] `TextField` takes an `error` prop and owns the ARIA: `aria-invalid`, `aria-describedby` pointing at a `role="alert"` message, and a danger border. The invite sheet's phone error used to be a muted `<p>` the field wasn't wired to — visible, but invisible to a screen reader, and indistinguishable from the general hint it replaced. Both now show at once, the hint staying put.
+- [Nav] Collapsed filter/sort buttons floor at **44px** — the project's touch minimum. `.hero-collapse-actions` scaled to 0.78 (37.4px); it now scales to 44/48. The audit's companion `DateCell` finding was stale: the date strip stopped being scaled when the RTL-scroller clipping was fixed, so it's 52px at every step.
+- [Nav] **All collapse geometry moved into `globals.css`**, next to the rules it's derived from: `--hero-max`/`--hero-min` on `:root`, plus a `.hero-collapse-dates` modifier for the taller collapsed bar the date strip needs. `useCollapseHeader()` now takes no argument — it reads those two properties off the element and derives the scroll range itself, so a caller can no longer state a range that disagrees with the CSS (the failure mode behind both header bugs shipped on 08-07). `SportPageHeader` and `ProfileHero` lost their `HERO_MAX`/`HERO_MIN` constants and their inline style objects; the spacer and the athlete photo read `h-[var(--hero-max)]`.
+- [Verified] First browser check of the collapsing header (headless Chrome from the puppeteer cache, 390×845 — `/usr/bin/chromium-browser` is an uninstalled snap stub, which is why this had never run). At `--collapse: 0` and `1`: header 276 → 130px with dates, 276 → 72px bare; the in-flow spacer's bottom edge equals the header's height at both ends, so the content below meets it exactly; collapsed buttons measure 44×44 at x 24 and 75.3, ending exactly where the 56px date strip begins; the profile title sits 20–52px with the 40px avatar beside it. Not yet a phone: momentum scrolling and the iOS URL-bar resize still need a device.
+
 ### 2026-08-08 — guarded pages no longer wait on a dead backend
 
 The API stopped answering entirely (it had been returning a fast 502; now every endpoint hangs), which exposed three separate ways the app waits forever on it.

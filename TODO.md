@@ -80,21 +80,31 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 ## Component QA — ds-qa-tw audit (2026-08-08)
 `AddPlayerSheet` (0 Critical, 2 Warning, 5 Suggestion) and the collapsing hero header
 (0 Critical, 3 Warning, 2 Suggestion). Actionable:
-- [ ] **Duplicated mobile-number rule**: `/login` tests Persian digits (`/^۰۹[۰-۹]{9}$/`,
-      `app/(auth)/login/page.tsx:23`), `AddPlayerSheet` converts to Latin then tests `/^09\d{9}$/`.
-      One `isValidMobile()` in `lib/persian.ts` (or `lib/phone.ts`), both call it.
-- [ ] **Invite validation is silent to screen readers** — needs `aria-invalid` + `aria-describedby`
-      on the phone field, which means adding those props to `TextField`.
-- [ ] **Collapsed touch targets under 44px** (CLAUDE.md minimum): filter/sort `IconButton` 48 × 0.78 =
-      37.4px, `DateCell` 52 × 0.8 = 41.6px. Cap the scale or restore hit area with padding.
-- [ ] **Collapse geometry is split across two files** — `HERO_MIN_WITH_DATES` is hand-derived from
-      `top`/scale values in `globals.css` with nothing linking them; both shipped bugs came from that.
-- [ ] **`useCollapseHeader(range)` contract is comment-only** — take `{max, min}` and derive the range,
-      the custom properties and the spacer height so the caller can't break the invariant.
+- [x] **Duplicated mobile-number rule** — **done 2026-08-12**: `isValidMobile()` in `lib/persian.ts`
+      normalizes to Latin then tests `/^09\d{9}$/`; `/login` and `AddPlayerSheet` both call it.
+      Self-checked by `lib/persian.test.ts` (`npx tsx lib/persian.test.ts`).
+- [x] **Invite validation is silent to screen readers** — **done 2026-08-12**: `TextField` takes an
+      `error` prop and owns the wiring (`aria-invalid`, `aria-describedby` → a `role="alert"` message,
+      danger border). The sheet's hint `<p>` no longer doubles as the error.
+- [x] **Collapsed touch targets under 44px** — **done 2026-08-12**: `.hero-collapse-actions` scales
+      0.22 → 0.0834, so the filter/sort buttons floor at exactly 44px (verified in Chrome at
+      `--collapse: 1`: 44×44). The `DateCell` half of the finding was **stale** — the date strip
+      hasn't been scaled since the RTL-scroller fix, it stays 52px at every step.
+- [x] **Collapse geometry is split across two files** — **done 2026-08-12**: `--hero-max`/`--hero-min`
+      are now declared in `globals.css` next to the rules they size (`:root` + a `.hero-collapse-dates`
+      modifier for the taller collapsed bar). No hero constants remain in TSX.
+- [x] **`useCollapseHeader(range)` contract is comment-only** — **done 2026-08-12**: the hook takes no
+      argument and reads `--hero-max`/`--hero-min` off the element, so the caller can't state a range
+      that disagrees with the CSS. Callers just add `.hero-collapse` and a `h-[var(--hero-max)]` spacer.
 - [ ] Smaller: sheet actions into `BottomSheet`'s `footer` (SortSheet/FilterSheet convention), focus the
       phone field on view switch, rename the stale `slotLabel` prop, hook assumes `window` is the scroller.
-- [ ] **Device check** — nothing in the collapsing header has been seen in a browser; all geometry is
-      hand-computed. Details in `_designer/audits/`.
+- [~] **Device check** — the collapsing header has now been seen in a **desktop headless Chrome** at
+      390×845 (the puppeteer cache has a real Chrome; `/usr/bin/chromium-browser` is a snap stub that
+      won't launch). Open and collapsed geometry both check out: header 276 → 130px with dates / 72px
+      bare, the spacer's bottom edge tracks the header's height exactly at every step (no reflow, no
+      slide-under), collapsed buttons 44×44 clear of the date strip, profile title 20–52px with the
+      avatar tucked beside it. **Still unverified on a real phone**: momentum/rubber-band scrolling and
+      the iOS URL-bar resize, neither of which headless reproduces.
 
 ### Add-player rework (2026-08-08)
 - [ ] Phone invites are collected into the draft (`TeammateSlot = {kind:"invite", phone}`) but never

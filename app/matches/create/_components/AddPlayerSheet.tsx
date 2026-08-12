@@ -4,7 +4,7 @@ import { useState } from "react";
 import BottomSheet from "../../../(main)/matches/_components/BottomSheet";
 import PlayerPickList from "../../[id]/results/_components/PlayerPickList";
 import TextField from "./TextField";
-import { toLatinDigits, toPersianDigits } from "../../../../lib/persian";
+import { isValidMobile, toLatinDigits, toPersianDigits } from "../../../../lib/persian";
 import type { MatchPlayer } from "../../../../lib/types";
 
 interface Props {
@@ -24,8 +24,6 @@ interface Props {
   onClear?: () => void;
   onClose: () => void;
 }
-
-const PHONE_RE = /^09\d{9}$/;
 
 /**
  * How a teammate row gets filled: pick someone already on Patch, or invite a
@@ -70,7 +68,7 @@ export default function AddPlayerSheet({
   }
 
   const latin = toLatinDigits(phone);
-  const phoneOk = PHONE_RE.test(latin);
+  const phoneOk = isValidMobile(phone);
   const trimmedName = name.trim();
   const valid = phoneOk && trimmedName.length > 0;
 
@@ -120,11 +118,10 @@ export default function AddPlayerSheet({
             onChange={setPhone}
             placeholder="۰۹۱۲۳۴۵۶۷۸۹"
             numeric
+            error={phone && !phoneOk ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود." : undefined}
           />
           <p className="text-xs text-muted text-right leading-5" dir="rtl">
-            {phone && !phoneOk
-              ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود."
-              : "نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود."}
+            نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود.
           </p>
           <div className="flex gap-3">
             <BackButton onClick={() => setView("menu")} />
