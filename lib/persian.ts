@@ -10,6 +10,12 @@ export function toLatinDigits(value: string): string {
   return value.replace(/[۰-۹]/g, (d) => String(FA.indexOf(d)));
 }
 
+// Iranian mobile: 11 digits starting 09. Accepts either notation — inputs store
+// Persian digits, the API stores Latin.
+export function isValidMobile(value: string): boolean {
+  return /^09\d{9}$/.test(toLatinDigits(value));
+}
+
 // Keep only Persian/Arabic letters (U+0600–U+06FF), ZWNJ (نیم‌فاصله), and
 // whitespace — drops Latin letters/digits and symbols as they're typed.
 export function toPersianOnly(value: string): string {

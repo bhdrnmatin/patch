@@ -3,12 +3,6 @@
 import { useCollapseHeader } from "@/lib/useCollapseHeader";
 import ProfileAvatarLive from "./ProfileAvatarLive";
 
-/** Open height; the athlete photo is drawn at this size and scales down from it. */
-const HERO_MAX = 276;
-/** Collapsed height — the title/avatar row, which rides up with the header
- *  (collapsed the title sits 20–52px, the avatar 20–60px). */
-const HERO_MIN = 72;
-
 interface Props {
   bgSrc?: string;
   athleteSrc?: string;
@@ -27,13 +21,12 @@ export default function ProfileHero({
   bgSrc = "/images/profile-hero-bg.webp",
   athleteSrc = "/images/profile-athlete.webp",
 }: Props) {
-  const ref = useCollapseHeader<HTMLElement>(HERO_MAX - HERO_MIN);
+  const ref = useCollapseHeader<HTMLElement>();
 
   return (
     <>
       <header
         ref={ref}
-        style={{ "--hero-max": `${HERO_MAX}px`, "--hero-min": `${HERO_MIN}px` } as React.CSSProperties}
         className="hero-collapse fixed top-0 left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group"
       >
         {/* Art layer — clipped so the images stay inside the rounded header
@@ -60,8 +53,7 @@ export default function ProfileHero({
             <img
               src={athleteSrc}
               alt=""
-              style={{ height: HERO_MAX }}
-              className="hero-collapse-photo absolute inset-x-0 bottom-0 w-full object-cover"
+              className="hero-collapse-photo absolute inset-x-0 bottom-0 h-[var(--hero-max)] w-full object-cover"
             />
           )}
 
@@ -83,7 +75,7 @@ export default function ProfileHero({
 
       {/* Holds the open height in flow so the collapsing fixed header above
           never reflows the page. */}
-      <div aria-hidden style={{ height: HERO_MAX }} />
+      <div aria-hidden className="h-[var(--hero-max)]" />
     </>
   );
 }

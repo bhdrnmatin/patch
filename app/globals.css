@@ -121,12 +121,27 @@ body {
    as the page scrolls; every part below sizes itself off that one number, so
    the whole header shrinks together instead of swapping for a second bar.
    The header is fixed with a same-height spacer in flow — nothing reflows, so
-   the scroll position can never jump. --hero-max/--hero-min are set per page
-   (the date strip needs more collapsed room than a bare title).
+   the scroll position can never jump.
    Scroll-linked, not animated: no reduced-motion override (freezing it would
-   just leave the header at the wrong size). */
+   just leave the header at the wrong size).
+
+   All the geometry lives here, next to the rules it's derived from: the hook
+   reads --hero-max/--hero-min off the element and scrolls the collapse over
+   exactly that delta. Both shipped bugs came from those numbers living in TSX
+   while the layout they describe lived in this file. The spacer and the athlete
+   photo read --hero-max the same way (h-[var(--hero-max)]). */
+:root {
+  --hero-max: 276px;
+  /* Bare title/avatar row: collapsed the title sits 20–52px, the avatar 20–60px. */
+  --hero-min: 72px;
+}
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
+}
+.hero-collapse-dates {
+  /* The date strip stays full size 12px off the bottom, so 130 keeps its 56px
+     clear of the collapsed filter/sort buttons above it. */
+  --hero-min: 130px;
 }
 .hero-collapse-title {
   /* 24px → 17px, riding up with the header so the collapsed bar doesn't keep
@@ -135,9 +150,10 @@ body {
   top: calc(80px - 44px * var(--collapse, 0));
 }
 .hero-collapse-actions {
-  /* 48px → ~37px buttons, pinned to the visual-left edge */
+  /* 48px → 44px buttons, pinned to the visual-left edge. The scale floors at
+     44/48: it used to reach 0.78 (37.4px), under the 44px touch minimum. */
   top: calc(56px - 40px * var(--collapse, 0));
-  transform: scale(calc(1 - 0.22 * var(--collapse, 0)));
+  transform: scale(calc(1 - 0.0834 * var(--collapse, 0)));
   transform-origin: left center;
 }
 .hero-collapse-photo {

@@ -10,7 +10,7 @@ import AuthActions from "../_components/AuthActions";
 import { requestOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useRedirectIfAuthed } from "@/lib/api/useAuth";
-import { toLatinDigits } from "@/lib/persian";
+import { isValidMobile, toLatinDigits } from "@/lib/persian";
 
 const BG = "/images/auth-login.webp";
 
@@ -19,8 +19,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [phone, setPhone] = useState("");
 
-  // Iranian mobile: 11 Persian digits starting with ۰۹ (AuthInput stores Persian digits).
-  const isValidPhone = /^۰۹[۰-۹]{9}$/.test(phone);
+  const isValidPhone = isValidMobile(phone);
 
   const { mutate, isPending, error } = useMutation({
     // The API needs Latin digits; pass the same normalized number to /otp so the
