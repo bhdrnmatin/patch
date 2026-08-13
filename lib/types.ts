@@ -169,12 +169,6 @@ export interface CourtOption {
   location: string;
 }
 
-/** A بله/خیر setting with a dependent value; null = unanswered. */
-export interface ToggleSetting<T> {
-  enabled: boolean | null;
-  value: T | null;
-}
-
 /**
  * A teammate added in the create-match wizard: either someone already on Patch
  * (an index into the pickable-players list) or a phone number we'll invite by
@@ -219,12 +213,11 @@ export interface CreateMatchDraft {
   coach: number | null;
   // ۵ تنظیمات
   invite: "public" | "private" | null;
-  minLevel: ToggleSetting<number>;
-  maxLevel: ToggleSetting<number>;
-  gender: ToggleSetting<"male" | "female" | "mixed">;
-  /** Toman. */
-  entryFee: ToggleSetting<number>;
-  autoApprove: boolean | null;
+  /**
+   * How a player gets in. Only asked when `invite === "public"` — a private
+   * match is link-only by definition, so step ۱ forces it to "invite" there.
+   */
+  joinMethod: "open" | "invite" | "approval" | null;
 }
 
 /** View-model for the Match Details page. */

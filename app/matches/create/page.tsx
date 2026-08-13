@@ -13,7 +13,7 @@ import StepPlayers from "./_components/StepPlayers";
 import StepSettings from "./_components/StepSettings";
 import StepReview from "./_components/StepReview";
 import { getCourtOptions, getPickablePlayers, createMatch } from "@/lib/data";
-import type { CreateMatchDraft, ToggleSetting } from "../../../lib/types";
+import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "تنظیمات", "اتمام"];
 const STEP_SUBTITLES = [
@@ -24,8 +24,6 @@ const STEP_SUBTITLES = [
   "تنظیمات مَچ",
   "بازبینی و ثبت",
 ];
-
-const emptyToggle = <T,>(): ToggleSetting<T> => ({ enabled: null, value: null });
 
 const emptyDraft: CreateMatchDraft = {
   format: null,
@@ -40,24 +38,15 @@ const emptyDraft: CreateMatchDraft = {
   teammates: [],
   coach: null,
   invite: null,
-  minLevel: emptyToggle(),
-  maxLevel: emptyToggle(),
-  gender: emptyToggle(),
-  entryFee: emptyToggle(),
-  autoApprove: null,
+  joinMethod: null,
 };
-
-const answered = (t: ToggleSetting<unknown>) =>
-  t.enabled !== null && (!t.enabled || t.value !== null);
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   (d) => d.format !== null && d.invite !== null, // title (عنوان مَچ) is optional
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
   (d) => d.date !== null && d.time !== null && d.duration !== null,
   (d) => d.myRole !== null,
-  (d) =>
-    d.autoApprove !== null &&
-    [d.minLevel, d.maxLevel, d.gender, d.entryFee].every(answered),
+  (d) => d.joinMethod !== null, // private answered it in step ۱; public picks here
   () => true,
 ];
 

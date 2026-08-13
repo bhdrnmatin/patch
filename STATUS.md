@@ -214,10 +214,11 @@ Components live in `app/matches/create/_components/`.
 - [x] `TextArea` — light multiline input
 - [x] `SelectField` — select trigger (chevron + value), `aria-haspopup="dialog"`, opens a sheet
 - [x] `OptionSheet` — generic pick-one list in `BottomSheet`; opt-in `searchable`
-- [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — steps ۱ + ۴
+- [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — steps ۱، ۴ و ۵
+      (step ۵ = نحوه ورود بازیکنان, shown only when the match is عمومی)
 - [x] `AddPlayerSheet` — how a teammate row gets filled: pick from Patch players, or invite a phone
       number (۱۱ digits, `09…`). Menu + phone field in one sheet; also removes a filled row
-- [x] `ToggleSetting` — white card: بله/خیر chips + conditional dependent control
+- [x] `RadioCardGroup` also carries step ۵ (نحوه ورود بازیکنان) — see the Removed section
 
 ### Compound Components
 - [x] `WizardHeader` — × close + title/step subtitle + `StageDial` ring
@@ -229,6 +230,10 @@ Components live in `app/matches/create/_components/`.
 - [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepSettings` / `StepReview`
 
 ### Removed
+- `ToggleSetting` (component + the `ToggleSetting<T>` type) and the four step-۵ settings it rendered —
+  حداقل/حداکثر سطح, ترجیح جنسیتی, هزینه ورودی — **removed 2026-08-12** (user decision). Step ۵ is the
+  join method alone. `createMatch` therefore writes `price: 0` for every match. In git history if the
+  fields come back.
 - `AvailabilityHeatmap` (+ `wizardMonths` / `courtAvailability` mocks) — replaced by the jalali
   calendar in the 2026-08-05 timing rework.
 
@@ -236,7 +241,7 @@ Components live in `app/matches/create/_components/`.
 - [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator)
 
 ### Data
-- [x] `CreateMatchDraft` / `CourtOption` / `ToggleSetting<T>` / `Teammate` / `MAX_TEAMMATES` — `lib/types.ts`
+- [x] `CreateMatchDraft` / `CourtOption` / `Teammate` / `MAX_TEAMMATES` — `lib/types.ts`
       (schedule fields are `date` ISO / `time` HH:MM / `duration` minutes)
 - [x] Roster model: `teammates: Teammate[]` — each is `{kind:"player", index}` (into `pickablePlayers`)
       or `{kind:"invite", phone}`. رقابتی caps it at `MAX_TEAMMATES` (۳ + the creator); دوستانه and

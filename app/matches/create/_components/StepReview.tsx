@@ -9,10 +9,20 @@ import { toPersianDigits } from "../../../../lib/persian";
 import { JALALI_MONTHS, isoToJalali } from "../../../../lib/jalali";
 import type { CourtOption, CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
-const INVITE_NOTE: Record<NonNullable<CreateMatchDraft["invite"]>, string> = {
-  public: "این مَچ به صورت عمومی برگزار می‌شود و همه می‌توانند درخواست ورود بدهند.",
-  private: "این مَچ خصوصی است و بازیکنان فقط با تایید شما اضافه می‌شوند.",
+const JOIN_NOTE: Record<NonNullable<CreateMatchDraft["joinMethod"]>, string> = {
+  open: "هر بازیکنی بدون تایید شما وارد می‌شود.",
+  invite: "ورود فقط با لینک دعوت امکان‌پذیر است.",
+  approval: "درخواست‌های ورود را شما قبول یا رد می‌کنید.",
 };
+
+/** Visibility + how players get in. A private match is link-only, so its join
+ *  method is already implied by the visibility sentence — no second one. */
+function inviteNote(draft: CreateMatchDraft): string | null {
+  if (draft.invite === "private") return "این مَچ خصوصی است و فقط با لینک دعوت دیده می‌شود.";
+  if (draft.invite !== "public") return null;
+  const join = draft.joinMethod ? ` ${JOIN_NOTE[draft.joinMethod]}` : "";
+  return `این مَچ در فهرست مَچ‌ها دیده می‌شود.${join}`;
+}
 
 /** "۱۴ مرداد ۱۴۰۵" from an ISO gregorian date. */
 function jalaliLabel(iso: string): string {
@@ -35,6 +45,7 @@ interface Props {
 /** Step ۶ اتمام: read-only summary composed from existing match-details cards. */
 export default function StepReview({ draft, courts, players }: Props) {
   const court = courts.find((c) => c.id === draft.courtId);
+  const note = inviteNote(draft);
 
   const rows: ReviewRow[] = [
     { name: "شما", role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن" },
@@ -55,7 +66,7 @@ export default function StepReview({ draft, courts, players }: Props) {
     <>
       <DescriptionCard text={draft.description.trim() || "توضیحاتی ثبت نشده است."} />
       <ReviewPlayers rows={rows} />
-      {draft.invite && <InfoBanner text={INVITE_NOTE[draft.invite]} />}
+      {note && <InfoBanner text={note} />}
       <ScheduleCard
         date={draft.date ? jalaliLabel(draft.date) : ""}
         timeRange={

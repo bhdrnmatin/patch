@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-12 — how players get into a public match
+
+- [Create] Step ۵ تنظیمات asks **نحوه ورود بازیکنان** when step ۱ set the match to **عمومی**: ورود آزاد (anyone joins, no confirmation), فقط با دعوت (only holders of the invite link — the one sent by SMS or shared from the match page), or با تایید شما (a join request the creator accepts or rejects). A `RadioCardGroup`, same idiom as steps ۱ and ۴.
+- [Create] This **replaces the تایید خودکار ورود بازیکن toggle**, which was the same question with two of the three answers — `draft.autoApprove: boolean` is now `draft.joinMethod: "open" | "invite" | "approval"`. Step ۵ can't advance until it's answered, as before.
+- [Create] **خصوصی doesn't ask.** A private match is only reachable through its link, so joining it is invite-only by definition — step ۱ sets `joinMethod: "invite"` when you pick خصوصی, and step ۵ shows nothing. Switching back to عمومی leaves that as the pre-selected answer, which the creator can change.
+- [Create] The review banner now states visibility **and** the join rule («این مَچ در فهرست مَچ‌ها دیده می‌شود. درخواست‌های ورود را شما قبول یا رد می‌کنید.»). Private keeps one sentence — a second saying "link-only" would just repeat it.
+- [Create] **Step ۵ is now that field alone.** حداقل سطح, حداکثر سطح, ترجیح جنسیتی and هزینه ورودی were removed (user decision), along with the `ToggleSetting` component and type they were the only users of, and the `minLevel`/`maxLevel`/`gender`/`entryFee` draft fields. Consequence to know about: `createMatch` set the match price from the entry fee, so **every match created in the wizard is now free** (`price: 0`) until a pricing field comes back — the /matches cards and the fee sort still read that field.
+- [Create] A **private** match sees a one-line banner instead of an empty step, since its join method was settled in step ۱ and nothing else remains to ask.
+- Nothing consumes `joinMethod` yet: `createMatch` stores a `MatchListItem`, which has no such field, and there's no join/approval endpoint. Logged in TODO.md.
+
 ### 2026-08-12 — QA audit fixes: one mobile rule, announced errors, CSS-owned collapse geometry
 
 The four actionable items from the 2026-08-08 `ds-qa-tw` audit.
