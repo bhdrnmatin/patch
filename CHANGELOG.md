@@ -8,6 +8,12 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-20 — a scroll cue on the create wizard
+
+- [Create] The fixed `WizardFooter` is a white bar flush to the bottom edge, so it reads as the end of the page and silently hides whatever scrolls under it — pick حالت بازی in step ۱ and nothing moves, with نمایش مسابقه and the optional title/description off-screen below. A fading chevron now sits just above the bar whenever the page can still scroll down, and disappears at the bottom.
+- [Create] It lives in the footer because that's the one element all six steps share, so the cue is control-agnostic — it covers the radio cards, the بله/خیر court gate, the calendar and the review list alike. Step heights change without a scroll or resize event (choosing بله reveals the court picker), so a `ResizeObserver` on `document.body` re-checks alongside the scroll listener.
+- [Verified] Headless Chrome at 390×845: step ۱ is 1085px tall, cue opacity 1 at the top and 0 once scrolled to the bottom; `pointer-events-none` throughout, `motion-reduce:animate-none` on the bounce.
+
 ### 2026-08-12 — how players get into a public match
 
 - [Create] Step ۵ تنظیمات asks **نحوه ورود بازیکنان** when step ۱ set the match to **عمومی**: ورود آزاد (anyone joins, no confirmation), فقط با دعوت (only holders of the invite link — the one sent by SMS or shared from the match page), or با تایید شما (a join request the creator accepts or rejects). A `RadioCardGroup`, same idiom as steps ۱ and ۴.
