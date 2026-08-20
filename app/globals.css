@@ -129,10 +129,15 @@ body {
    reads --hero-max/--hero-min off the element and scrolls the collapse over
    exactly that delta. Both shipped bugs came from those numbers living in TSX
    while the layout they describe lived in this file. The spacer and the athlete
-   photo read --hero-max the same way (h-[var(--hero-max)]). */
+   photo read --hero-max the same way (h-[var(--hero-max)]).
+
+   Only put this on a page whose content can scroll at least that delta
+   (276-72 = 204px) past the viewport. A shorter page strands --collapse
+   part-way and every part parks mid-transition — which is what took the
+   collapse off the profile hero, a ~780px page with 60px of scroll. */
 :root {
   --hero-max: 276px;
-  /* Bare title/avatar row: collapsed the title sits 20–52px, the avatar 20–60px. */
+  /* Bare title row: collapsed the title sits 20–52px. */
   --hero-min: 72px;
 }
 .hero-collapse {
@@ -162,14 +167,6 @@ body {
   transform: scale(calc(1 - 0.3 * var(--collapse, 0)));
   transform-origin: bottom center;
   opacity: calc(1 - 0.3 * var(--collapse, 0));
-}
-.hero-collapse-avatar {
-  /* Profile only: 96px straddling the open header's bottom edge (48px over the
-     content, matching the old -mt-12 overlap) → ~40px tucked beside the title
-     once collapsed. Origin bottom-right so the scale pivots on its anchor. */
-  transform: translate(calc(-72px * var(--collapse, 0)), calc(48px - 60px * var(--collapse, 0)))
-    scale(calc(1 - 0.58 * var(--collapse, 0)));
-  transform-origin: bottom right;
 }
 
 /* Portrait only. Every frame here is built for a ~390px portrait phone —

@@ -8,6 +8,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-20 — the profile hero stops collapsing
+
+- [Profile] Reported as the avatar sitting wrong once you scroll, but the avatar was only the visible end of it: **`--collapse` never reaches 1 on `/profile`**. The hook scrolls the collapse over the header's own height delta (`--hero-max` 276 − `--hero-min` 72 = 204px), and this page is ~780px tall, so all it can offer is `780 − viewport` — 60px on a 718px phone, 118px on a 660px one. The value topped out around 0.29–0.58 and parked there, leaving every part of the header frozen in a state only meant to be passed through: the avatar 64px instead of 96, hanging 13px past the header's edge and drifted 66px in from the right, floating over the athlete art and aligned to nothing.
+- [Profile] `ProfileHero` is now a plain static 276px header, in flow rather than fixed-plus-spacer, with the avatar always at its open position — 96px at `right-6`, half of it hanging over the bottom edge. A collapsing hero exists to reclaim space for a long list; this page has four rows and nothing to reclaim for. `/matches` and `/tournaments` keep `useCollapseHeader` — their lists finish the travel.
+- [Nav] `.hero-collapse-avatar` was profile-only, so it left `globals.css` with it. The remaining `.hero-collapse*` rules belong to `SportPageHeader` and are untouched. The collapse comment and CLAUDE.md now state the precondition that was implicit before: only put a collapsing header on a page that can scroll 204px past the viewport.
+- [Verified] Headless Chrome at 393px across four heights (845/718/660/600), scrolled to top and to the bottom of each: avatar 96px, 24px from the right, 48px of overhang — identical in all eight states. The open hero is pixel-unchanged from before.
+
 ### 2026-08-20 — portrait only
 
 - [PWA] Added `app/manifest.json` — the app never had one, despite being a PWA. `"orientation": "portrait"` is the real lock: an installed app simply doesn't turn. Also carries name, description, `start_url`, `display: standalone`, the brand `theme_color` `#33A3FF`, and `dir: rtl` / `lang: fa`. No `icons` yet — there's no app icon in `public/`, only nav and stat glyphs, so installability still needs one made.
