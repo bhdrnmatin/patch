@@ -34,6 +34,21 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
       <body className="min-h-full bg-black">
         <Providers>{children}</Providers>
+        {/* Covers every route when a phone turns sideways — see .portrait-only
+            in globals.css for why this exists on top of the manifest lock. */}
+        <div
+          className="portrait-only fixed inset-0 z-[999] flex-col items-center justify-center gap-3 bg-surface px-8 text-center"
+          dir="rtl"
+        >
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden className="text-primary">
+            {/* A phone drawn portrait — the shape is the instruction. */}
+            <rect x="7" y="2" width="10" height="20" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M10.5 5h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            <path d="M12 19h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <p className="text-base font-bold text-ink">گوشی را عمودی بگیرید</p>
+          <p className="text-sm text-muted">پچ فقط در حالت عمودی نمایش داده می‌شود.</p>
+        </div>
       </body>
     </html>
   );

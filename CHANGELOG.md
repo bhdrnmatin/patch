@@ -8,6 +8,12 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-20 — portrait only
+
+- [PWA] Added `app/manifest.json` — the app never had one, despite being a PWA. `"orientation": "portrait"` is the real lock: an installed app simply doesn't turn. Also carries name, description, `start_url`, `display: standalone`, the brand `theme_color` `#33A3FF`, and `dir: rtl` / `lang: fa`. No `icons` yet — there's no app icon in `public/`, only nav and stat glyphs, so installability still needs one made.
+- [Nav] A manifest binds nothing in a browser tab, where no API can refuse a rotation, so a sideways phone gets a «گوشی را عمودی بگیرید» screen instead of a broken layout: one `.portrait-only` overlay in `layout.tsx` (so it covers every route) shown by `@media (orientation: landscape) and (max-height: 500px)`, with `overflow: hidden` on the body behind it. The `max-height` is what keeps desktop windows — landscape too, but tall — out of it.
+- [Verified] Headless Chrome, `/onboarding`: hidden at 390×845, `display: flex` + body `overflow: hidden` at 845×390, hidden again at 1440×900 and back at 390×845. `/manifest.json` serves 200 with `orientation: portrait` and Next injects the `<link rel="manifest">`.
+
 ### 2026-08-20 — the wizard drops step ۵, back to five steps
 
 - [Create] **Step ۵ تنظیمات is gone** (user decision: unused for now). It asked نحوه ورود بازیکنان and nothing consumed the answer — `createMatch` writes a `MatchListItem`, which has no such field, and there is no join/approval endpoint — so `StepSettings.tsx`, `JOIN_METHOD_OPTIONS` and `CreateMatchDraft.joinMethod` were removed with it rather than left as a question the app throws away. The wizard is مشخصات · مکان · زمان‌بندی · بازیکنان · اتمام.

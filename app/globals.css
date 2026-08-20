@@ -171,3 +171,21 @@ body {
     scale(calc(1 - 0.58 * var(--collapse, 0)));
   transform-origin: bottom right;
 }
+
+/* Portrait only. Every frame here is built for a ~390px portrait phone —
+   fixed bars, min-h-dvh pages — and has nowhere to go when the phone turns.
+   Installed, the manifest's "orientation": "portrait" is the real lock; in a
+   browser tab nothing can refuse the rotation, so a landscape phone gets asked
+   to turn back instead of a broken layout. The max-height keeps desktop
+   windows — landscape too, but tall — out of it. */
+.portrait-only {
+  display: none;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .portrait-only {
+    display: flex;
+  }
+  body {
+    overflow: hidden;
+  }
+}

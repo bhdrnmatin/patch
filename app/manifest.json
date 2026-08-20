@@ -1,0 +1,12 @@
+{
+  "name": "Patch",
+  "short_name": "Patch",
+  "description": "Find padel and tennis matches, leagues, and courts near you",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F7FA",
+  "theme_color": "#33A3FF",
+  "dir": "rtl",
+  "lang": "fa"
+}
