@@ -227,13 +227,15 @@ Components live in `app/matches/create/_components/`.
 - [x] `TeamPreview` — 2×2 team grid with "تور" divider; رقابتی only (the other formats have no
       fixed team shape)
 - [x] `ReviewPlayers` — اعضا list with برگزار کننده/یار/دعوت‌شده role tags
-- [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepSettings` / `StepReview`
+- [x] `StepDetails` / `StepLocation` / `StepSchedule` / `StepPlayers` / `StepReview`
 
 ### Removed
 - `ToggleSetting` (component + the `ToggleSetting<T>` type) and the four step-۵ settings it rendered —
-  حداقل/حداکثر سطح, ترجیح جنسیتی, هزینه ورودی — **removed 2026-08-12** (user decision). Step ۵ is the
-  join method alone. `createMatch` therefore writes `price: 0` for every match. In git history if the
-  fields come back.
+  حداقل/حداکثر سطح, ترجیح جنسیتی, هزینه ورودی — **removed 2026-08-12** (user decision). `createMatch`
+  therefore writes `price: 0` for every match. In git history if the fields come back.
+- `StepSettings` and the whole **step ۵ تنظیمات** — **removed 2026-08-20** (user decision: unused).
+  The join method it asked (`draft.joinMethod`) had no consumer, so the field went with it and the
+  wizard is 5 steps. `invite` (نمایش مسابقه) is unaffected — it's asked in step ۱.
 - `AvailabilityHeatmap` (+ `wizardMonths` / `courtAvailability` mocks) — replaced by the jalali
   calendar in the 2026-08-05 timing rework.
 

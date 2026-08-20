@@ -10,18 +10,16 @@ import StepDetails from "./_components/StepDetails";
 import StepLocation from "./_components/StepLocation";
 import StepSchedule from "./_components/StepSchedule";
 import StepPlayers from "./_components/StepPlayers";
-import StepSettings from "./_components/StepSettings";
 import StepReview from "./_components/StepReview";
 import { getCourtOptions, getPickablePlayers, createMatch } from "@/lib/data";
 import type { CreateMatchDraft } from "../../../lib/types";
 
-const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "تنظیمات", "اتمام"];
+const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
 const STEP_SUBTITLES = [
   "مشخصات مَچ",
   "انتخاب مکان",
   "زمان‌بندی مَچ",
   "انتخاب بازیکنان",
-  "تنظیمات مَچ",
   "بازبینی و ثبت",
 ];
 
@@ -38,7 +36,6 @@ const emptyDraft: CreateMatchDraft = {
   teammates: [],
   coach: null,
   invite: null,
-  joinMethod: null,
 };
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
@@ -46,7 +43,6 @@ const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
   (d) => d.date !== null && d.time !== null && d.duration !== null,
   (d) => d.myRole !== null,
-  (d) => d.joinMethod !== null, // private answered it in step ۱; public picks here
   () => true,
 ];
 
@@ -100,8 +96,7 @@ function CreateMatchContent() {
         {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
         {step === 2 && <StepSchedule draft={draft} patch={patch} />}
         {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
-        {step === 4 && <StepSettings draft={draft} patch={patch} />}
-        {step === 5 && <StepReview draft={draft} courts={courts} players={players} />}
+        {step === 4 && <StepReview draft={draft} courts={courts} players={players} />}
         {/* clearance for the fixed footer */}
         <div className="h-24" aria-hidden />
       </div>

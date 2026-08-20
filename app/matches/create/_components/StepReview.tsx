@@ -9,19 +9,11 @@ import { toPersianDigits } from "../../../../lib/persian";
 import { JALALI_MONTHS, isoToJalali } from "../../../../lib/jalali";
 import type { CourtOption, CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
-const JOIN_NOTE: Record<NonNullable<CreateMatchDraft["joinMethod"]>, string> = {
-  open: "هر بازیکنی بدون تایید شما وارد می‌شود.",
-  invite: "ورود فقط با لینک دعوت امکان‌پذیر است.",
-  approval: "درخواست‌های ورود را شما قبول یا رد می‌کنید.",
-};
-
-/** Visibility + how players get in. A private match is link-only, so its join
- *  method is already implied by the visibility sentence — no second one. */
+/** Who can see the match, from step ۱. */
 function inviteNote(draft: CreateMatchDraft): string | null {
   if (draft.invite === "private") return "این مَچ خصوصی است و فقط با لینک دعوت دیده می‌شود.";
   if (draft.invite !== "public") return null;
-  const join = draft.joinMethod ? ` ${JOIN_NOTE[draft.joinMethod]}` : "";
-  return `این مَچ در فهرست مَچ‌ها دیده می‌شود.${join}`;
+  return "این مَچ در فهرست مَچ‌ها دیده می‌شود.";
 }
 
 /** "۱۴ مرداد ۱۴۰۵" from an ISO gregorian date. */
@@ -42,7 +34,7 @@ interface Props {
   players: MatchPlayer[];
 }
 
-/** Step ۶ اتمام: read-only summary composed from existing match-details cards. */
+/** Step ۵ اتمام: read-only summary composed from existing match-details cards. */
 export default function StepReview({ draft, courts, players }: Props) {
   const court = courts.find((c) => c.id === draft.courtId);
   const note = inviteNote(draft);

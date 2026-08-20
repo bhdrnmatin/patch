@@ -8,6 +8,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-20 — the wizard drops step ۵, back to five steps
+
+- [Create] **Step ۵ تنظیمات is gone** (user decision: unused for now). It asked نحوه ورود بازیکنان and nothing consumed the answer — `createMatch` writes a `MatchListItem`, which has no such field, and there is no join/approval endpoint — so `StepSettings.tsx`, `JOIN_METHOD_OPTIONS` and `CreateMatchDraft.joinMethod` were removed with it rather than left as a question the app throws away. The wizard is مشخصات · مکان · زمان‌بندی · بازیکنان · اتمام.
+- [Create] Two things the removal touched: step ۱ no longer sets `joinMethod: "invite"` when you pick خصوصی (there is nothing to set), and the review banner drops its join sentence — it states visibility alone again, which is the only part still collected. `invite` itself is untouched; it has been asked in step ۱ since 2026-08-12, so `CreateMatchDraft` now files it there instead of under a step ۵ that no longer exists.
+- [Verified] Headless Chrome at 390×845: the header counts «مرحله ۱ از ۵», the chip strip is the five remaining labels with تنظیمات gone, and بعدی advances to «مرحله ۲ از ۵». `tsc --noEmit` and `eslint` clean (two pre-existing `<img>` warnings in StepLocation).
+- Bringing it back is a git-history job, logged in TODO.md against the join flow that would give the answer a consumer.
+
 ### 2026-08-20 — a scroll cue on the create wizard
 
 - [Create] The fixed `WizardFooter` is a white bar flush to the bottom edge, so it reads as the end of the page and silently hides whatever scrolls under it — pick حالت بازی in step ۱ and nothing moves, with نمایش مسابقه and the optional title/description off-screen below. A fading chevron now sits just above the bar whenever the page can still scroll down, and disappears at the bottom.

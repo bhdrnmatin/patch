@@ -73,14 +73,16 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## Create match — audit (2026-07-12)
 ### Behavior wiring (post-mock)
-- [ ] Every wizard-created match is **free** — the entry-fee field was removed from step ۵ on
+- [ ] Every wizard-created match is **free** — the entry-fee field was removed from the (since
+      deleted) step ۵ on
       2026-08-12, so `createMatch` writes `price: 0`. `MatchListItem.price`, the /matches price tag and
       the fee sort all still exist; restore a fee input (or take it from the court reservation) when
       pricing is decided.
-- [ ] `draft.joinMethod` (ورود آزاد / فقط با دعوت / با تایید شما, added 2026-08-12) is collected but goes
-      nowhere — `MatchListItem` has no field for it and there's no join/approval endpoint. Wire it with
-      the join flow: "approval" is what should produce the `JoinRequest` rows the details page already
-      renders, and "invite" is what should reject a join that doesn't come through the invite link.
+- [ ] The wizard no longer asks **how players get in** — step ۵ تنظیمات and `draft.joinMethod` were
+      removed 2026-08-20 (unused; nothing consumed them). Bring the step back with the join flow:
+      "approval" is what should produce the `JoinRequest` rows the details page already renders, and
+      "invite" is what should reject a join that doesn't come through the invite link. In git history
+      (`StepSettings.tsx`, `JOIN_METHOD_OPTIONS`).
 - [ ] createMatch stores only a MatchListItem; the details page still renders the shared mock for any id —
       per-id match storage when the API lands.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.

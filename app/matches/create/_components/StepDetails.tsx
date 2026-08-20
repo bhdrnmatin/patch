@@ -71,12 +71,7 @@ export default function StepDetails({ draft, patch }: Props) {
         subtitle="چه کسانی بتوانند مسابقه را ببینند؟"
         options={INVITE_OPTIONS}
         value={draft.invite}
-        onChange={(id) => {
-          const invite = id as CreateMatchDraft["invite"];
-          // A private match is only reachable through its link, so the join
-          // method isn't a choice there — step ۵ only asks when it's public.
-          patch(invite === "private" ? { invite, joinMethod: "invite" } : { invite });
-        }}
+        onChange={(id) => patch({ invite: id as CreateMatchDraft["invite"] })}
       />
       <TextField
         label="عنوان مَچ (اختیاری)"

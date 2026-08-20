@@ -182,12 +182,13 @@ export type Teammate =
 /** Teammates allowed besides the creator in a رقابتی match (2v2 padel). */
 export const MAX_TEAMMATES = 3;
 
-/** Draft state collected across the 6 wizard steps. */
+/** Draft state collected across the 5 wizard steps. */
 export interface CreateMatchDraft {
   // ۱ مشخصات
   format: "americano" | "friendly" | "competitive" | null;
   title: string;
   description: string;
+  invite: "public" | "private" | null;
   // ۲ مکان
   /** Whether the user has already reserved a court (required to proceed). */
   reserved: boolean | null;
@@ -211,13 +212,6 @@ export interface CreateMatchDraft {
    * coach at all.
    */
   coach: number | null;
-  // ۵ تنظیمات
-  invite: "public" | "private" | null;
-  /**
-   * How a player gets in. Only asked when `invite === "public"` — a private
-   * match is link-only by definition, so step ۱ forces it to "invite" there.
-   */
-  joinMethod: "open" | "invite" | "approval" | null;
 }
 
 /** View-model for the Match Details page. */
