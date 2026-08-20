@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 interface Props {
   nextLabel: string;
   onNext: () => void;
@@ -11,7 +13,28 @@ interface Props {
   onBack?: () => void;
 }
 
-/** Fixed bottom action bar: primary next/submit (left) + optional back (right, RTL). */
+/** True while the page can still scroll down. The step's fields change height
+ *  without a scroll or resize event, so body size is observed too. */
+function useHasMoreBelow() {
+  const [more, setMore] = useState(false);
+  useEffect(() => {
+    const check = () =>
+      setMore(window.scrollY + window.innerHeight < document.documentElement.scrollHeight - 8);
+    const ro = new ResizeObserver(check); // fires once on observe — covers the initial check
+    ro.observe(document.body);
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, []);
+  return more;
+}
+
+/** Fixed bottom action bar: primary next/submit (left) + optional back (right, RTL).
+ *  The bar hides whatever it covers, so it carries the "there's more below" cue. */
 export default function WizardFooter({
   nextLabel,
   onNext,
@@ -20,8 +43,27 @@ export default function WizardFooter({
   backLabel = "قبلی",
   onBack,
 }: Props) {
+  const more = useHasMoreBelow();
+
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border border-edge rounded-t-group px-6 pt-4 pb-6 flex gap-3">
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 -top-12 h-12 flex items-end justify-center bg-gradient-to-t from-surface to-transparent transition-opacity duration-200 ${
+          more ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          className="mb-1 text-muted animate-bounce motion-reduce:animate-none"
+        >
+          <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+
       <button
         type="button"
         onClick={onNext}
