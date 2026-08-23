@@ -111,13 +111,17 @@ left-aligns content you meant to pin right (bit us on titles + meta rows multipl
 </div>
 ```
 
-**On a grid it's the opposite — `dir="rtl"` is the fix, not the trap.** A plain
-`grid grid-cols-2` fills from the *left*, so the first tile lands in the wrong column,
-pairs read back-to-front, and a lone tile leaves its gap on the right. Put `dir="rtl"`
-on the grid container. The catch is that it then flips `items-end` inside every child,
-so a tile must pin its own `dir="ltr"` — `InfoItem` does this for itself, which is why
-`MatchInfoCard` and the wizard's review step can just set `dir="rtl"` on their grids
-and stop thinking about it. A new tile component for an RTL grid must do the same.
+**On a grid it's the same flip, but here you want it.** `dir="rtl"` reverses the inline
+axis, always — the only question is whether that's what you meant. On flex it repoints
+alignment utilities you wrote assuming LTR (unwanted → trap); on a grid it repoints
+column order, which RTL content needs (wanted → fix). A plain `grid grid-cols-2` fills
+from the *left*, so the first tile lands in the wrong column, pairs read back-to-front,
+and a lone tile leaves its gap on the right — put `dir="rtl"` on the grid container.
+Grid children are **not** exempt from the flex half: the same `dir="rtl"` flips
+`items-end` inside every one of them, so a tile must pin its own `dir="ltr"`.
+`InfoItem` does this for itself, which is why `MatchInfoCard` and the wizard's review
+step can just set `dir="rtl"` on their grids and stop thinking about it. A new tile
+component for an RTL grid must do the same.
 
 ## Hero header art — the court is drawn, not photographed
 
