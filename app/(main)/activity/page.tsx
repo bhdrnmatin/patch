@@ -30,7 +30,6 @@ export default function ActivityPage() {
     <div className="w-full min-h-dvh">
       <SportPageHeader
         title="فعالیت‌ها"
-        athleteImage="/images/activity-header.webp"
         onFilter={() => setSheet("filter")}
         onSort={() => setSheet("sort")}
       />

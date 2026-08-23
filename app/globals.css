@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
+  /* The page canvas. iOS Safari paints its toolbars and the rubber-band
+     overscroll gap with this, so it has to be the app's own background —
+     when it was #000 the bars flipped between black and the hero blue
+     depending on what Safari happened to sample at the scroll edge. */
+  --background: #F5F7FA;
   --foreground: #171717;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -59,6 +64,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  /* No document-level bounce, so the canvas never flashes past a fixed hero. */
+  overscroll-behavior-y: none;
   font-family: var(--font-yekan-bakh), Arial, Helvetica, sans-serif;
 }
 
@@ -139,6 +146,12 @@ body {
   --hero-max: 276px;
   /* Bare title row: collapsed the title sits 20–52px. */
   --hero-min: 72px;
+  /* Surface band above every hero. iOS Safari tints its toolbars from the
+     colour at the top of the page, so whatever touches that edge decides the
+     bar. Leaving the hero flush there gave a blue bar on the fixed heroes and
+     a white one on /profile (whose hero scrolls away) — this band makes the
+     app's own surface the top edge on every page, so the bar never changes. */
+  --hero-gap: 12px;
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
@@ -149,10 +162,13 @@ body {
   --hero-min: 130px;
 }
 .hero-collapse-title {
-  /* 24px → 17px, riding up with the header so the collapsed bar doesn't keep
+  /* The title is the header's subject, not its label: it opens at
+     --title-open (62/54/44px, stepped by title length in heroTitleSize) and
+     lands at 19px collapsed. Centre stays a single track — 119px → 36px — so
+     every title size collapses along the same line, and the bar doesn't keep
      the open layout's status-bar gap as dead space. */
-  font-size: calc(1.5rem - 0.4375rem * var(--collapse, 0));
-  top: calc(80px - 44px * var(--collapse, 0));
+  font-size: calc(var(--title-open, 62px) - (var(--title-open, 62px) - 19px) * var(--collapse, 0));
+  top: calc(119px - 83px * var(--collapse, 0));
 }
 .hero-collapse-actions {
   /* 48px → 44px buttons, pinned to the visual-left edge. The scale floors at

@@ -1,9 +1,12 @@
 "use client";
 
+import CourtBackdrop, { heroTitleSize } from "../../(main)/_components/CourtBackdrop";
 import ProfileAvatarLive from "./ProfileAvatarLive";
 
 interface Props {
+  /** Blurred court backdrop. Omitted by default — the hero draws `CourtBackdrop`. */
   bgSrc?: string;
+  /** Sharp athlete foreground. Omitted by default (the court is drawn, not shot). */
   athleteSrc?: string;
 }
 
@@ -21,19 +24,18 @@ interface Props {
  * the header's bottom edge and hangs 48px below it — the overlap the identity
  * block used to create with -mt-12, and what its pt-[60px] clears.
  */
-export default function ProfileHero({
-  bgSrc = "/images/profile-hero-bg.webp",
-  athleteSrc = "/images/profile-athlete.webp",
-}: Props) {
+export default function ProfileHero({ bgSrc, athleteSrc }: Props) {
   return (
     // z-20 so the overhanging avatar paints over the identity block below it.
-    <header className="relative z-20 w-full h-[276px] bg-primary rounded-b-group">
+    <header className="relative z-20 mt-[var(--hero-gap)] w-full h-[276px] bg-primary rounded-group">
       {/* Art layer — clipped so the images stay inside the rounded header
           while the avatar below is free to hang over its bottom edge. */}
-      <div className="absolute inset-0 overflow-hidden rounded-b-group">
-        {/* Blurred court background + blue tint.
-            Figma: 414px wide anchored left in a 390 frame (left-aligned, right overflow) —
-            proportional width keeps the baked-in athlete aligned with the cutout. */}
+      <div className="absolute inset-0 overflow-hidden rounded-group">
+        {!bgSrc && !athleteSrc && <CourtBackdrop />}
+
+        {/* Photo path, kept for a restored image: Figma's 414px backdrop
+            anchored left in a 390 frame, proportional so the baked-in athlete
+            stays aligned with the cutout. */}
         {bgSrc && (
           <>
             <img
@@ -45,21 +47,18 @@ export default function ProfileHero({
           </>
         )}
 
-        {/* Sharp athlete foreground. */}
         {athleteSrc && (
-          <img
-            src={athleteSrc}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <img src={athleteSrc} alt="" className="absolute inset-0 h-full w-full object-cover" />
         )}
 
-        {/* Top darkening gradient for title contrast */}
-        <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
+        {bgSrc || athleteSrc ? (
+          <div className="absolute inset-x-0 top-0 h-[141px] bg-gradient-to-b from-black/70 to-transparent" />
+        ) : null}
       </div>
 
       <h1
-        className="absolute right-6 top-20 -translate-y-1/2 text-2xl text-white font-bold leading-8 drop-shadow-hero"
+        style={{ fontSize: `${heroTitleSize("پروفایل")}px` }}
+        className="absolute right-6 top-[119px] -translate-y-1/2 whitespace-nowrap text-white font-bold leading-[1.15] [text-shadow:0_4px_26px_rgba(2,26,55,0.45)]"
         dir="rtl"
       >
         پروفایل

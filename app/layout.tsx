@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import localFont from "next/font/local";
 import Providers from "./providers";
@@ -25,6 +25,12 @@ export const metadata: Metadata = {
   description: "Find padel and tennis matches, leagues, and courts near you",
 };
 
+// Pinned so Safari tints its bars with this instead of sampling the page edge
+// (which gave a black bar on one screen and a blue one on the next).
+export const viewport: Viewport = {
+  themeColor: "#F5F7FA",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
-      <body className="min-h-full bg-black">
+      <body className="min-h-full">
         <Providers>{children}</Providers>
         {/* Covers every route when a phone turns sideways — see .portrait-only
             in globals.css for why this exists on top of the manifest lock. */}

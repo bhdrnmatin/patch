@@ -8,6 +8,55 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — the page has a background of its own
+
+- [Safari] Reported as the bars flickering black then blue while scrolling, on a phone. The app had
+  **no canvas colour**: `body` was `bg-black` while every screen paints its own light content on top,
+  so iOS Safari — which tints its toolbars and fills the overscroll gap from the pixels at the scroll
+  edge — grabbed black on one screen and the hero blue on the next. `--background` is now `#F5F7FA`,
+  the surface every page already uses and the same value as `manifest.json`'s `background_color`, so
+  the installed PWA and the Safari tab finally agree. Plus `color-scheme: light` (no dark tinting),
+  `overscroll-behavior-y: none` (no document bounce), and a pinned `themeColor` in the root `viewport`
+  export so Safari has a fixed colour to fall back on instead of sampling.
+- [Headers] That left a second inconsistency, and it was structural rather than a colour: the four
+  `SportPageHeader`/`MatchDetailsHeader` pages kept a blue bar because their hero is `fixed top-0` and
+  never leaves the top edge, while `/profile`'s hero is in-flow by design (it can't collapse — see
+  2026-08-20) and scrolls away to a white one. **`--hero-gap: 12px`** now holds a band of `bg-surface`
+  above every hero, so the app's own surface is what touches the top edge on all five — the bar reads
+  the same colour on every page and never changes as you scroll. The heroes gained `rounded-group`
+  (top corners too, now that they no longer bleed to the edge); the fixed one also gets a fixed
+  surface strip filling the band, so cards scrolling under it don't show through.
+- [Verified] `tsc --noEmit` clean. Served CSS confirmed carrying `--background: #f5f7fa`,
+  `color-scheme: light`, `overscroll-behavior-y: none` and all four `--hero-gap` utilities; served
+  HTML carrying `<meta name="theme-color" content="#F5F7FA">`.
+- [Note] `useCollapseHeader` needed no change — it derives the scroll range from the
+  `--hero-max`/`--hero-min` delta, which a constant offset doesn't touch. The collapse now starts
+  12px of scroll late; not corrected.
+
+### 2026-08-21 — the headers draw their own court
+
+- [Headers] The five art headers were built around athlete photography that was never sourced and
+  couldn't be licensed. Removing the photos first left a flat `bg-primary` slab — correct and dead,
+  a third of the screen carrying a 24px title and nothing else. All five now render **`CourtBackdrop`**:
+  a padel court at night in SVG — floodlight bloom, lit surface receding to a vanishing point, the net
+  as the one strong horizontal. `#33A3FF` was already padel-court blue, so the brand colour isn't
+  decorating the court, it is the court.
+- [Headers] **The title became the subject**, which is what actually fixes the dead space: 62px for
+  مَچ, stepping to 54 and 44 (`heroTitleSize`, by glyph count, ZWNJ excluded) so فعالیت‌ها still clears
+  the left gutter at 360px. `.hero-collapse-title` now interpolates `--title-open` → 19px on a single
+  centre track (119px → 36px), instead of the old fixed 24 → 17px.
+- [Headers] **The `from-black/*` scrim is gone.** It existed to punch a title out of a photo; the sky
+  gradient `#0A4E92 → #3BA9FF` carries white text at ~4.5:1 unaided. (Flat `#33A3FF` did not — 2.68:1,
+  under the 3:1 large-text floor, which is why the photo-free intermediate needed a scrim at all.)
+- [Headers] Vector solves the three things that killed the photo: it compresses with the collapse
+  instead of re-cropping, it has no subject to ghost against a blurred backdrop, and it carries no
+  licence. `/matches/[id]` keeps a fixed 32px title with `truncate` — the match name is user data.
+- [Headers] The image props are untouched and still restore the old layered path, scrim included, so
+  this is reversible per-header by passing a path. The nine files in `public/images` are still there.
+- [Verified] Headless Chrome at 390×845 across all five routes: `--collapse` 0 → 1.0000 on
+  /tournaments, header 276 → 130px, title 54 → 19px, zero `<img>` in the header. `tsc --noEmit` clean;
+  `eslint` 0 errors (23 pre-existing `<img>` warnings, none in the headers any more).
+
 ### 2026-08-20 — the profile hero stops collapsing
 
 - [Profile] Reported as the avatar sitting wrong once you scroll, but the avatar was only the visible end of it: **`--collapse` never reaches 1 on `/profile`**. The hook scrolls the collapse over the header's own height delta (`--hero-max` 276 − `--hero-min` 72 = 204px), and this page is ~780px tall, so all it can offer is `780 − viewport` — 60px on a 718px phone, 118px on a 660px one. The value topped out around 0.29–0.58 and parked there, leaving every part of the header frozen in a state only meant to be passed through: the avatar 64px instead of 96, hanging 13px past the header's edge and drifted 66px in from the right, floating over the athlete art and aligned to nothing.

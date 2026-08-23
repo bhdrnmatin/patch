@@ -38,6 +38,13 @@ Check these before writing new UI — reuse first.
 - `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
 - `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and /tournaments. **Collapses on scroll**: `useCollapseHeader` (`lib/`) writes `--collapse` 0→1 onto it and the `.hero-collapse-*` rules in `globals.css` shrink every part. Fixed + a same-height spacer, so the page never reflows
 - Collapsing headers: `SportPageHeader` uses `useCollapseHeader()` (`lib/`) — it writes `--collapse` (0 open → 1 collapsed) onto the header element on a rAF, never through React state. **All the geometry lives in `globals.css`**: `--hero-max`/`--hero-min` on `:root` (+ the `.hero-collapse-dates` modifier for a date strip), and the `.hero-collapse*` rules size the title, buttons and photo off `--collapse`. The hook reads those two properties and derives the scroll range, so a caller can't disagree with the CSS. To add one: `fixed` header with `.hero-collapse`, plus an in-flow `h-[var(--hero-max)]` spacer. **Only on a page that scrolls ≥204px past the viewport** — a shorter one strands `--collapse` part-way and parks every part mid-transition (this is why `profile/_components/ProfileHero` is a plain static 276px header, not a collapsing one)
+- `CourtBackdrop` — SVG padel court at night, fills its parent; the default art for every hero.
+  Also exports `heroTitleSize(title)` — the open title size, stepped by length
+- **`--hero-gap` (globals.css):** every hero sits this far below the top edge, so `bg-surface` is what
+  touches it. iOS Safari tints its toolbars from the colour at the top of the page — flush heroes gave
+  a blue bar on the fixed ones and a white one on `/profile` (whose hero scrolls away). Keep the band:
+  a new hero needs `mt-[var(--hero-gap)]` in flow, or `top-[var(--hero-gap)]` plus a fixed `bg-surface`
+  strip and a `calc(var(--hero-max)+var(--hero-gap))` spacer if it's fixed
 - `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
 - `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
@@ -69,14 +76,27 @@ left-aligns content you meant to pin right (bit us on titles + meta rows multipl
 </div>
 ```
 
-## Hero header art (matches / tournaments / activity)
+## Hero header art — the court is drawn, not photographed
 
-`SportPageHeader` layers a blurred backdrop + a sharp foreground. The no-ghost rule: the **backdrop
-must be subject-free**, or the sharp subject must sit exactly over its blurred self. When the Figma
-backdrop bakes the subject in (tournaments podium, activity player), **pre-bake one opaque image** at
-Figma's exact layer geometry — scene blurred + tinted with the sharp cutout composited on top,
-aligned — and pass it as `athleteImage`. Don't pass a transparent cutout over a backdrop that already
-contains the subject (→ offset ghost).
+All five art headers (`/matches`, `/tournaments`, `/activity`, `/matches/[id]`, `/profile`) render
+`CourtBackdrop` — an SVG padel court at night, plus an oversized title. **There is no header
+photography and no scrim.** The sky gradient (`#0A4E92 → #3BA9FF`) carries white title text on its
+own at ~4.5:1; don't add a `from-black/*` overlay back.
+
+Two rules this replaced a photo pipeline to satisfy:
+- **It scales, it doesn't crop.** `preserveAspectRatio="none"` is deliberate — the court squashes
+  with a collapsing header. The old photo re-cropped into a sliver of an athlete's legs past
+  `--collapse` ~0.5.
+- **The title is the subject.** `heroTitleSize()` steps the open size 62 / 54 / 44px by glyph count
+  (ZWNJ doesn't count) so the longest title clears the left gutter; `.hero-collapse-title` reads it
+  as `--title-open` and lands at 19px. `/matches/[id]` is the exception — the match name is user data,
+  so it truncates at a fixed 32px instead of stepping.
+
+The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still work and restore the old
+layered path, scrim included. If you use them, the no-ghost rule applies: the **backdrop must be
+subject-free**, or the sharp subject must sit exactly over its blurred self — when a Figma backdrop
+bakes the subject in, pre-bake one opaque image at Figma's layer geometry rather than passing a
+transparent cutout over it (→ offset ghost).
 
 ## Design Tokens
 
