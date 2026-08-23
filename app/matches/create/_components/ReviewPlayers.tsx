@@ -1,5 +1,6 @@
 "use client";
 
+import { EditIcon } from "../../[id]/_components/icons";
 import { toPersianDigits } from "../../../../lib/persian";
 
 export interface ReviewRow {
@@ -12,15 +13,34 @@ export interface ReviewRow {
 
 interface Props {
   rows: ReviewRow[];
+  /** Jump back to the players step. Omit to render the list read-only. */
+  onEdit?: () => void;
 }
 
 /** اعضا card for the review step: player pills with a role tag on the left. */
-export default function ReviewPlayers({ rows }: Props) {
+export default function ReviewPlayers({ rows, onEdit }: Props) {
   return (
     <section className="w-full bg-white rounded-group p-3 flex flex-col gap-3 shadow-card">
-      <h2 className="text-lg font-bold text-ink text-right" dir="rtl">
-        اعضا
-      </h2>
+      {onEdit ? (
+        // LTR wrapper: justify-between puts the pencil left, the heading right.
+        <button
+          type="button"
+          onClick={onEdit}
+          aria-label="ویرایش بازیکنان"
+          className="w-full h-11 flex items-center justify-between active:opacity-70"
+        >
+          <span className="size-8 flex items-center justify-center rounded-group bg-surface text-ink-soft">
+            <EditIcon className="size-4" />
+          </span>
+          <h2 className="text-base font-bold text-ink" dir="rtl">
+            اعضا
+          </h2>
+        </button>
+      ) : (
+        <h2 className="text-lg font-bold text-ink text-right" dir="rtl">
+          اعضا
+        </h2>
+      )}
       <ul className="flex flex-col gap-2">
         {rows.map((row, i) => (
           <li

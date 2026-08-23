@@ -97,7 +97,7 @@ function CreateMatchContent() {
         {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
         {step === 2 && <StepSchedule draft={draft} patch={patch} />}
         {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
-        {step === 4 && <StepReview draft={draft} courts={courts} players={players} />}
+        {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
         {/* clearance for the fixed footer */}
         <div className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
       </div>

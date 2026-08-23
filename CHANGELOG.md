@@ -8,6 +8,38 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — step ۵ becomes a confirmation
+
+- [Create] Step ۵ اتمام was composing the match-details cards (`ScheduleCard`, `CourtCard`,
+  `DescriptionCard`), which is why it read as a record of a match that already exists: a 72px date
+  banner, a club name at `text-display`, five full-bleed cards to scroll past before تایید و ثبت —
+  and two controls that cannot work before creation, a مسیریابی button and an اضافه به تقویم button
+  for a match with no id. Plus a map of **San Francisco** under a Karaj club.
+- [Create] It's now a confirmation: the visibility banner (kept loud — the one answer that's costly
+  to get wrong), one card of `InfoItem` tiles grouped مشخصات / زمان‌بندی / مکان, and the players list.
+  **Each group header is a 44px button that calls `goTo(step)`**, so any answer is one tap from the
+  step that set it; that's what makes it a confirmation rather than a preview. Five cards to two.
+- [Create] Getting there took four layouts. Three invented label/value rows were all rejected on
+  device — split with `justify-between` the eye jumped the full width for the answer, packed with
+  `justify-end` the pair blurred into one phrase, stacked it turned into a form. What worked was
+  already in the app: **`InfoItem`**, the surface tile `/matches/[id]` uses for اطلاعات. At half
+  width there is no gap to jump. Lesson recorded: reuse an idiom from the pages that already look
+  right before inventing one.
+- [RTL] **`dir="rtl"` on a grid is the fix, not the trap** — the mirror of the flex rule in CLAUDE.md.
+  A plain `grid grid-cols-2` fills from the left, so تاریخ landed left of ساعت (reversed reading
+  order) and a lone زمین tile left its gap on the right. Both grids are `dir="rtl"` now. The catch:
+  that flips `items-end` inside each child, so **`InfoItem` pins its own `dir="ltr"`** rather than
+  making every caller remember — which also fixes `/matches/[id]`, whose six اطلاعات tiles had been
+  reading in swapped pairs all along.
+- [Calendar] The اضافه به تقویم button is gone from step ۵ rather than wired: there is no id, no URL
+  and no event yet, and a failed creation would leave a phantom. It belongs on match details after
+  creation — via an `.ics` (RFC 5545) file served from a route handler with `Content-Type:
+  text/calendar`, which is the only way a web app reaches a device calendar (there is no API; iOS
+  opens Calendar's add-event sheet from such a link). Blob/`data:` URLs are unreliable on iOS Safari,
+  and `.ics` is Gregorian/UTC only — `Asia/Tehran` is a fixed +03:30, no DST since 2022. Not built.
+- [Verified] `tsc --noEmit` clean, `eslint` 0 errors (23 pre-existing `<img>` warnings, unchanged);
+  /matches/create and /matches/[id] 200.
+
 ### 2026-08-23 — one frame for the bottom bars
 
 - [Refactor] `BottomBar` (`app/_components/`) now carries the frame the wizard footer, the match CTA

@@ -10,13 +10,13 @@ interface Props {
   match: MatchDetails;
 }
 
-/** اطلاعات card: 2-column grid of labeled values. */
+/** اطلاعات card: 2-column grid of labeled values, filling from the right. */
 export default function MatchInfoCard({ match }: Props) {
   const participants = `${toPersianDigits(String(match.filled))}/${toPersianDigits(String(match.capacity))} نفر`;
 
   return (
     <SectionCard title="اطلاعات">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3" dir="rtl">
         <InfoItem icon={<MoneyIcon />} label="هزینه ورودی">
           <span className="flex items-center gap-1">
             {toPersianDigits(match.fee.toLocaleString("en-US"))}
