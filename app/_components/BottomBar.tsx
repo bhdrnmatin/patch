@@ -16,12 +16,16 @@
 export default function BottomBar({
   className = "",
   children,
+  ref,
 }: {
   className?: string;
   children: React.ReactNode;
+  /** For callers that need the bar's measured height/position. */
+  ref?: React.Ref<HTMLDivElement>;
 }) {
   return (
     <div
+      ref={ref}
       className={`fixed-bar fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white rounded-t-group px-6 pb-[calc(1.5rem+var(--safe-b))] ${className}`}
     >
       {children}

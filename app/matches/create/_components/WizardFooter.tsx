@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { appScrollEl } from "@/app/_components/AppScroll";
 import BottomBar from "@/app/_components/BottomBar";
 
@@ -15,14 +15,34 @@ interface Props {
   onBack?: () => void;
 }
 
-/** True while the page can still scroll down. The step's fields change height
- *  without a scroll or resize event, so body size is observed too. */
-function useHasMoreBelow() {
+/** Marks the end of the wizard's real content — the page's footer clearance. */
+export const WIZARD_END_ID = "wizard-end";
+
+/**
+ * True while the footer is still covering something worth seeing.
+ *
+ * It used to ask "can the scroller still scroll", which is a different question
+ * and answered yes at the visual bottom: the page ends with a clearance spacer
+ * taller than the bar plus a `gap-4` above it, so ~24px of pure dead space
+ * remains scrollable after the last field is fully visible. The 8px tolerance
+ * couldn't cover that, and the arrow sat there pointing at nothing.
+ *
+ * So compare the two rects that actually matter — no tolerance, no magic
+ * number, and it can't drift if the bar's padding or the spacer changes: the
+ * cue shows only while the end-of-content marker is still below the bar's top
+ * edge, i.e. while real content is genuinely hidden behind it.
+ */
+function useHasMoreBelow(barRef: React.RefObject<HTMLDivElement | null>) {
   const [more, setMore] = useState(false);
   useEffect(() => {
     const sc = appScrollEl();
-    if (!sc) return;
-    const check = () => setMore(sc.scrollTop + sc.clientHeight < sc.scrollHeight - 8);
+    const end = document.getElementById(WIZARD_END_ID);
+    if (!sc || !end) return;
+    const check = () => {
+      const bar = barRef.current;
+      if (!bar) return;
+      setMore(end.getBoundingClientRect().top > bar.getBoundingClientRect().top);
+    };
     // Observe the content, not the scroller: the scroller's own box is a fixed
     // 100% and never resizes, but a step's fields change height without firing
     // a scroll or resize event.
@@ -35,7 +55,7 @@ function useHasMoreBelow() {
       sc.removeEventListener("scroll", check);
       window.removeEventListener("resize", check);
     };
-  }, []);
+  }, [barRef]);
   return more;
 }
 
@@ -49,10 +69,11 @@ export default function WizardFooter({
   backLabel = "قبلی",
   onBack,
 }: Props) {
-  const more = useHasMoreBelow();
+  const barRef = useRef<HTMLDivElement>(null);
+  const more = useHasMoreBelow(barRef);
 
   return (
-    <BottomBar className="border border-edge pt-4 flex gap-3">
+    <BottomBar ref={barRef} className="border border-edge pt-4 flex gap-3">
       <div
         aria-hidden
         className={`pointer-events-none absolute inset-x-0 -top-12 h-12 flex items-end justify-center bg-gradient-to-t from-surface to-transparent transition-opacity duration-200 ${

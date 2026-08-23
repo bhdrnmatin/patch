@@ -6,7 +6,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { appScrollEl } from "@/app/_components/AppScroll";
 import WizardHeader from "./_components/WizardHeader";
 import StepChips from "./_components/StepChips";
-import WizardFooter from "./_components/WizardFooter";
+import WizardFooter, { WIZARD_END_ID } from "./_components/WizardFooter";
 import StepDetails from "./_components/StepDetails";
 import StepLocation from "./_components/StepLocation";
 import StepSchedule from "./_components/StepSchedule";
@@ -98,8 +98,9 @@ function CreateMatchContent() {
         {step === 2 && <StepSchedule draft={draft} patch={patch} />}
         {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
         {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
-        {/* clearance for the fixed footer */}
-        <div className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
+        {/* Clearance for the fixed footer, and the marker WizardFooter's scroll
+            cue measures against — its top edge is where real content ends. */}
+        <div id={WIZARD_END_ID} className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
       </div>
 
       {/* Remounted when the back button appears or goes, so the bar is a new

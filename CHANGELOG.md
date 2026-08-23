@@ -8,6 +8,25 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — the scroll cue measures the right thing
+
+- [Create] The wizard's ⌄ cue never went away at the bottom of a step. It was asking *"can the
+  scroller still scroll"*, which isn't the question it answers on screen. The page ends with a
+  clearance spacer **taller than the bar** (`6rem + var(--safe-b)` vs the bar's `88px + var(--safe-b)`)
+  plus a `gap-4` above it, so ~24px of pure dead space stays scrollable after the last field is
+  already fully visible. The `- 8` tolerance was smaller than that, so `more` never went false and
+  the arrow pointed at nothing.
+- [Create] Tuning the tolerance would only move the guess — the tolerance and the spacer/bar delta
+  had no reason to stay in step, and both changed twice in one day (safe-area padding, then
+  `BottomBar`). It compares the two rects that matter instead: the cue shows only while the
+  end-of-content marker (`WIZARD_END_ID`, the clearance spacer) is still below the bar's own top
+  edge. No tolerance, no magic number, and it can't drift when the bar's padding or the spacer height
+  changes.
+- [Refactor] `BottomBar` takes an optional `ref` so a caller can measure it — React 19 passes `ref`
+  as a normal prop, so no `forwardRef`. Optional, so the match CTA and profile save bar are untouched.
+- [Verified] `tsc --noEmit` clean, `eslint` 0 errors (23 pre-existing `<img>` warnings, unchanged);
+  /matches/create 200.
+
 ### 2026-08-23 — step ۵ becomes a confirmation
 
 - [Create] Step ۵ اتمام was composing the match-details cards (`ScheduleCard`, `CourtCard`,
