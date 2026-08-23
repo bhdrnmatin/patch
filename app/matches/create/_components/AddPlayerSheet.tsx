@@ -107,7 +107,7 @@ export default function AddPlayerSheet({
             selected={selectedPlayer}
             onSelect={onPickPlayer}
           />
-          <BackButton onClick={() => setView("menu")} />
+          <BackButton className="w-full" onClick={() => setView("menu")} />
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -124,7 +124,7 @@ export default function AddPlayerSheet({
             نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود.
           </p>
           <div className="flex gap-3">
-            <BackButton onClick={() => setView("menu")} />
+            <BackButton className="flex-1" onClick={() => setView("menu")} />
             <button
               type="button"
               disabled={!valid}
@@ -141,12 +141,15 @@ export default function AddPlayerSheet({
   );
 }
 
-function BackButton({ onClick }: { onClick: () => void }) {
+/** Sizing is the caller's: `flex-1` to share a row, `w-full` to own a column.
+ *  `shrink-0` either way — in a column it's the scroller that should give, not
+ *  the button, which otherwise collapses to a sliver under a long list. */
+function BackButton({ onClick, className = "" }: { onClick: () => void; className?: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex-1 h-12 rounded-pill border border-edge bg-white text-sm font-bold text-ink-soft active:opacity-80"
+      className={`h-12 shrink-0 rounded-pill border border-edge bg-white text-sm font-bold text-ink-soft active:opacity-80 ${className}`}
       dir="rtl"
     >
       بازگشت

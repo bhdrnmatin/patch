@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { CloseIcon } from "../../_components/icons";
+import { appScrollEl } from "@/app/_components/AppScroll";
 
 interface Props {
   open: boolean;
@@ -22,7 +23,7 @@ interface Props {
 /**
  * Floating glassmorphic dialog, inset from the screen edges.
  * Header: close button (left) · title + badge glyph (right).
- * Locks body scroll and closes on Escape while open.
+ * Locks the app scroller and closes on Escape while open.
  */
 export default function BottomSheet({ open, title, icon, onClose, children, footer, fill }: Props) {
   const titleId = useId();
@@ -38,8 +39,11 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
 
   useEffect(() => {
     if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // The app scrolls AppScroll, not the document — body is always
+    // overflow:hidden, so locking it here would lock nothing.
+    const sc = appScrollEl();
+    const prevOverflow = sc?.style.overflow ?? "";
+    if (sc) sc.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
     };
@@ -60,7 +64,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
 
     panelRef.current?.focus();
     return () => {
-      document.body.style.overflow = prevOverflow;
+      if (sc) sc.style.overflow = prevOverflow;
       document.removeEventListener("keydown", onKey);
       window.removeEventListener("popstate", onPop);
       // Closed via UI (not the back button) — drop the entry we pushed so the

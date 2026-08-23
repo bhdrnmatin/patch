@@ -8,6 +8,21 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — the back button stops giving way
+
+- [Sheets] `بازگشت` collapsed to a sliver at the bottom edge of the add-player sheet. `BackButton`
+  hard-coded `flex-1`, which is right in the phone-invite view (it shares a `flex gap-3` **row** with
+  the submit button) and wrong in the player picker, whose parent is a **column** — there `flex-1`
+  sets `flex-basis: 0` on the vertical axis, so under a long player list the button was what gave way
+  instead of the list scrolling. Sizing is the caller's now (`w-full` in the column, `flex-1` in the
+  row) and `shrink-0` holds the 48px in both.
+- [Sheets] Found while looking: **`BottomSheet` and `AuthSearchSelect` have locked nothing since
+  `AppScroll` landed.** Both set `document.body.style.overflow = "hidden"`, and body is already
+  `overflow: hidden` — the real scroller is the container, so the page behind every sheet and every
+  search dialog stayed scrollable. Both lock `appScrollEl()` now.
+- [Verified] `tsc --noEmit` clean; /matches/create, /matches/[id]/results, /profile/edit/personal 200,
+  new class strings present in the served chunk.
+
 ### 2026-08-23 — fixed bars repaint whole
 
 - [Safari] A bright blue sliver appeared between بعدی and قبلی on step 2 of the create wizard: a

@@ -3,6 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { SelectOption } from "./AuthSelect";
+import { appScrollEl } from "@/app/_components/AppScroll";
 
 interface Props {
   label: string;
@@ -60,12 +61,15 @@ export default function AuthSearchSelect({
       if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden"; // lock scroll behind the dialog
+    // The app scrolls AppScroll, not the document — body is always
+    // overflow:hidden, so locking it here would lock nothing.
+    const sc = appScrollEl();
+    const prevOverflow = sc?.style.overflow ?? "";
+    if (sc) sc.style.overflow = "hidden"; // lock scroll behind the dialog
     const trigger = triggerRef.current; // stable across the dialog's lifetime
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      if (sc) sc.style.overflow = prevOverflow;
       // Restore focus to the trigger on close (WAI-ARIA dialog practice) — the
       // portal unmounts, so focus would otherwise fall to <body>.
       trigger?.focus();
