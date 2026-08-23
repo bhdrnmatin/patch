@@ -8,6 +8,26 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — one frame for the bottom bars
+
+- [Refactor] `BottomBar` (`app/_components/`) now carries the frame the wizard footer, the match CTA
+  and the profile save bar were each copy-pasting: position, width, `z-50`, and the two Safari fixes
+  — `pb-[calc(1.5rem+var(--safe-b))]` and `.fixed-bar`. Three copies normally isn't worth a component;
+  the argument here is that **that exact string changed twice in one day** and both times all three
+  sites had to be found by hand. Border, top padding, inner layout and shadow stay with the caller —
+  the three bars genuinely differ there and flattening them would be a redesign, not a refactor.
+  `BottomNav` is deliberately not one of these: it floats, with no background or top corners.
+- [Cleanup] `.portrait-only`'s media query still froze `body`, which has been `overflow: hidden`
+  outright since `AppScroll` — so the landscape overlay had stopped freezing the page behind it.
+  Points at `#app-scroll` now.
+- [Audit] Checked while here: no `window.scrollY` / `innerHeight` / `scrollIntoView` /
+  `body.style.overflow` survivors anywhere, so the AppScroll invariant is fully applied; the one
+  `sticky` (OptionSheet's search field) is inside a sheet's own overflow container and unaffected.
+  The nine header images orphaned by the court rewrite stay — the image props are the documented
+  rollback path.
+- [Verified] `tsc --noEmit` clean, `eslint` 0 errors (23 pre-existing `<img>` warnings, unchanged
+  count); /matches/create, /matches/[id], /profile/edit/personal all 200.
+
 ### 2026-08-23 — the wizard footer remounts instead of relaying out
 
 - [Safari] The blue sliver between بعدی and قبلی on step 2 survived `.fixed-bar`. That rule promotes

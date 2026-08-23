@@ -217,7 +217,9 @@ body {
   .portrait-only {
     display: flex;
   }
-  body {
+  /* body is always overflow:hidden now — it's the scroller that has to stop,
+     or rotating back lands you at a different offset. */
+  #app-scroll {
     overflow: hidden;
   }
 }

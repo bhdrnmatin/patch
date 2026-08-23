@@ -1,3 +1,5 @@
+import BottomBar from "@/app/_components/BottomBar";
+
 interface Props {
   label: string;
   caption?: string;
@@ -7,7 +9,7 @@ interface Props {
 /** Sticky bottom action bar: primary CTA + optional status caption. */
 export default function MatchCtaBar({ label, caption, onClick }: Props) {
   return (
-    <div className="fixed-bar fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border border-edge rounded-t-group px-6 pt-4 pb-[calc(1.5rem+var(--safe-b))] flex flex-col items-center gap-3">
+    <BottomBar className="border border-edge pt-4 flex flex-col items-center gap-3">
       <button
         type="button"
         onClick={onClick}
@@ -21,6 +23,6 @@ export default function MatchCtaBar({ label, caption, onClick }: Props) {
           {caption}
         </p>
       )}
-    </div>
+    </BottomBar>
   );
 }

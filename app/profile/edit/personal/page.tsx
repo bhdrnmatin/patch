@@ -17,6 +17,7 @@ import {
 import { getCities, getProvinces } from "@/lib/api/geo";
 import type { PlayerResponse, PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
+import BottomBar from "@/app/_components/BottomBar";
 
 const SIDE_OPTIONS = [
   { id: "RIGHT", label: "راست" },
@@ -197,7 +198,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
       </section>
 
       {/* Sticky save bar — primary action always reachable */}
-      <div className="fixed-bar fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-edge rounded-t-group px-6 pt-3 pb-[calc(1.5rem+var(--safe-b))] flex flex-col items-center gap-2 shadow-sheet">
+      <BottomBar className="border-t border-edge pt-3 flex flex-col items-center gap-2 shadow-sheet">
         {saveError && (
           <p className="text-xs text-danger" dir="rtl">
             {saveError}
@@ -217,7 +218,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
         >
           {save.isPending ? "در حال ذخیره..." : "ذخیره تغییرات"}
         </button>
-      </div>
+      </BottomBar>
 
       <OptionSheet
         open={sheet === "side"}

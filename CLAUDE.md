@@ -67,6 +67,16 @@ fixed element inside a scroller when its own children reflow, leaving strips of 
 fixed bar whose contents change (a button appearing, a label swapping) needs the **`.fixed-bar`** class
 — `transform: translateZ(0)`, its own layer, whole-layer repaint.
 
+## Fixed bottom bars
+
+`app/_components/BottomBar.tsx` is the frame for all three — the wizard footer, the match CTA, the
+profile save bar. It owns only what has to stay in sync: position, width, `z-50`, and the two Safari
+fixes (`pb-[calc(1.5rem+var(--safe-b))]` and `.fixed-bar`). Those are the classes that keep changing,
+and they used to be copy-pasted into three files. Border, top padding, inner layout and shadow stay
+with the caller via `className` — the three bars genuinely differ there. **A new bottom bar composes
+this, it doesn't re-copy the string.** (`BottomNav` is not one of these: it floats, with no background
+or top corners.)
+
 ## Safe areas
 
 `viewport-fit=cover` is set in the root `viewport` export, so `env(safe-area-inset-*)` reports real
