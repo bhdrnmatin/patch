@@ -8,6 +8,23 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — the wizard footer remounts instead of relaying out
+
+- [Safari] The blue sliver between بعدی and قبلی on step 2 survived `.fixed-bar`. That rule promotes
+  the bar to its own layer, which is a *hint* — it never forces the layer's contents to repaint, so a
+  stale one survives. The geometry says that's what this is: the sliver sits in the 12px `gap-3`, and
+  a full-width بعدی's centred text lands at x≈295, inside that gap. Safari was still painting the
+  step-0 full-width button underneath the halved row, visible only where neither current button
+  covers it.
+- [Safari] `WizardFooter` now carries `key={step > 0 ? "with-back" : "no-back"}`, so React unmounts and
+  remounts the bar when the back button appears or goes. A new DOM node gets a new layer; there is no
+  old paint to leave behind.
+- [Unverified] Committed on request before an on-device check — reasoned from the screenshot geometry,
+  not reproduced locally (no browser on this machine). If it recurs, the guaranteed fix is to stop the
+  footer changing shape: always render قبلی and disable it on step 0 rather than omitting it. That's a
+  visible design change to step 0, so it needs a decision first.
+- [Verified] `tsc --noEmit` clean, /matches/create 200.
+
 ### 2026-08-23 — the back button stops giving way
 
 - [Sheets] `بازگشت` collapsed to a sliver at the bottom edge of the add-player sheet. `BackButton`

@@ -102,7 +102,14 @@ function CreateMatchContent() {
         <div className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
       </div>
 
+      {/* Remounted when the back button appears or goes, so the bar is a new
+          DOM node rather than a relaid-out one. Safari kept the step-0
+          full-width بعدی painted underneath the halved row otherwise — visible
+          as a blue sliver in the 12px gap, old centred glyph and all.
+          `.fixed-bar`'s translateZ only promotes the layer; it doesn't force
+          its contents to repaint. */}
       <WizardFooter
+        key={step > 0 ? "with-back" : "no-back"}
         nextLabel={isLast ? "تایید و ثبت" : "بعدی"}
         backLabel={isLast ? "بازگشت" : "قبلی"}
         onNext={() => (isLast ? mutate(draft) : goTo(step + 1))}
