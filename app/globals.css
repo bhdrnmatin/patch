@@ -192,6 +192,18 @@ body {
   opacity: calc(1 - 0.3 * var(--collapse, 0));
 }
 
+/* Fixed bars — the wizard footer, the match CTA, the profile save bar, the nav.
+   They sit outside the scroller's flow (see AppScroll), and iOS Safari doesn't
+   reliably invalidate them when their own children reflow: the wizard footer
+   kept a bright strip of the full-width بعدی, glyph and all, after the back
+   button appeared on step 2 and halved it. Own compositing layer, so a reflow
+   repaints the whole thing. Safe on the bar itself — an element's transform
+   only becomes a containing block for its *descendants'* fixed positioning,
+   and none of these have any. */
+.fixed-bar {
+  transform: translateZ(0);
+}
+
 /* Portrait only. Every frame here is built for a ~390px portrait phone —
    fixed bars, min-h-dvh pages — and has nowhere to go when the phone turns.
    Installed, the manifest's "orientation": "portrait" is the real lock; in a

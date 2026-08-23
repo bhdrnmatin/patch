@@ -197,7 +197,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
       </section>
 
       {/* Sticky save bar — primary action always reachable */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-edge rounded-t-group px-6 pt-3 pb-[calc(1.5rem+var(--safe-b))] flex flex-col items-center gap-2 shadow-sheet">
+      <div className="fixed-bar fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-edge rounded-t-group px-6 pt-3 pb-[calc(1.5rem+var(--safe-b))] flex flex-col items-center gap-2 shadow-sheet">
         {saveError && (
           <p className="text-xs text-danger" dir="rtl">
             {saveError}

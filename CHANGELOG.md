@@ -8,6 +8,22 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — fixed bars repaint whole
+
+- [Safari] A bright blue sliver appeared between بعدی and قبلی on step 2 of the create wizard: a
+  leftover strip of the *previous* paint. Step 1 has no back button (`onBack` is undefined on step 0),
+  so بعدی is full-width with its text centred around x≈295; on step 2 قبلی appears and بعدی halves.
+  Safari repainted the button but never invalidated the region the old wide one occupied — which is
+  why the stray glyph sat at x≈292 rather than near the faded button's centre at x≈163.
+- [Safari] A regression from the scroll-container change: `position: fixed` inside an `overflow`
+  scroller is where Safari starts missing these invalidations. **`.fixed-bar { transform: translateZ(0) }`**
+  puts the four bars that reflow their own children — `WizardFooter`, `MatchCtaBar`, the profile save
+  bar, `BottomNav` — on their own compositing layer, so a reflow repaints the whole thing. Safe on the
+  bar itself: a transform only becomes a containing block for its *descendants'* fixed positioning, and
+  none of these have any.
+- [Verified] On device: the sliver is gone across the step 1 → 2 transition. `tsc --noEmit` clean,
+  all seven routes 200.
+
 ### 2026-08-23 — the document stops scrolling
 
 - [Safari] Reported as the create wizard's بعدی doing nothing on step 3 — the bottom menu opened

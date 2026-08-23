@@ -180,7 +180,7 @@ export default function BottomNav() {
         />
       )}
 
-      <nav className="fixed bottom-[calc(1.5rem+var(--safe-b))] left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
+      <nav className="fixed-bar fixed bottom-[calc(1.5rem+var(--safe-b))] left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex items-center justify-between gap-3 px-6">
       {/* Add menu anchored above the nav */}
       {menuOpen && (
         <div className="animate-sheet-in absolute bottom-full mb-4 left-6 right-6 flex flex-col gap-2">

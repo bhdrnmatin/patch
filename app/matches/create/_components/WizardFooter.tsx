@@ -51,7 +51,7 @@ export default function WizardFooter({
   const more = useHasMoreBelow();
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border border-edge rounded-t-group px-6 pt-4 pb-[calc(1.5rem+var(--safe-b))] flex gap-3">
+    <div className="fixed-bar fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border border-edge rounded-t-group px-6 pt-4 pb-[calc(1.5rem+var(--safe-b))] flex gap-3">
       <div
         aria-hidden
         className={`pointer-events-none absolute inset-x-0 -top-12 h-12 flex items-end justify-center bg-gradient-to-t from-surface to-transparent transition-opacity duration-200 ${

@@ -62,7 +62,10 @@ are all frozen. Use `appScrollEl()` from that file. Same for `ResizeObserver`: t
 is a fixed 100% and never resizes, so observe its content (`sc.firstElementChild`), not the scroller.
 
 `position: fixed` is unaffected — `overflow` alone doesn't create a containing block for it, so fixed
-headers and bars still resolve against the viewport.
+headers and bars still resolve against the viewport. But Safari does stop reliably *invalidating* a
+fixed element inside a scroller when its own children reflow, leaving strips of the old paint. Any
+fixed bar whose contents change (a button appearing, a label swapping) needs the **`.fixed-bar`** class
+— `transform: translateZ(0)`, its own layer, whole-layer repaint.
 
 ## Safe areas
 
