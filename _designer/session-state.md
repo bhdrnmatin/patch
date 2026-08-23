@@ -1,5 +1,49 @@
 # Session State
 
+## Session — 2026-08-23: the Safari device pass
+All committed to `main` (6 commits) and pushed to both remotes. Everything here came from
+screenshots on a real iPhone against `10.49.218.155:3000` — this is the device check the
+2026-08-08 "Next" list asked for, and it found five bugs that no amount of desk review would have.
+
+- **The app had no background of its own.** `body` was `bg-black` while every screen paints light
+  content on top; iOS Safari tints its toolbars from the pixels at the scroll edge, so the bars
+  flipped black/blue per screen. `--background` is `#F5F7FA` now (matching `manifest.json`'s
+  `background_color`), plus `color-scheme: light` and a pinned `themeColor`.
+- **`--hero-gap`**: a 12px band of `bg-surface` above every hero. The four `SportPageHeader` /
+  `MatchDetailsHeader` pages held a blue bar because their hero is `fixed top-0`; `/profile`'s is
+  in-flow by design and scrolled away to white. Now the surface is the top edge on all five.
+- **The document no longer scrolls** — `AppScroll` (`app/_components/`) is an inner container and
+  `body` is `overflow-hidden`. Safari minimises its toolbar on *document* scroll and keeps the
+  vacated strip as a tap target, which was eating the first tap on the create wizard's بعدی every
+  time. Padding the bars up was tried first and can't win: the strip is as deep as the toolbar.
+  **This is now a project invariant — nothing may read `window.scrollY`; use `appScrollEl()`.**
+- **Safe areas**: `viewport-fit=cover` + `--safe-b`, since nothing in the app read
+  `env(safe-area-inset-*)` and they were all reporting 0.
+- **Two follow-on regressions from AppScroll, both caught and fixed**: `BottomSheet` and
+  `AuthSearchSelect` were locking `document.body`, which is *already* hidden — so nothing was
+  locked and pages scrolled behind every sheet. And `.portrait-only`'s media query froze `body`
+  for the same dead reason.
+- **`.fixed-bar` + a footer `key`**: Safari left a strip of the step-0 full-width بعدی painted under
+  the halved row (a blue sliver in the `gap-3`). `translateZ(0)` alone didn't take — it promotes the
+  layer without forcing its contents to repaint — so `WizardFooter` is now remounted via `key` when
+  the back button appears. **Committed before an on-device check.**
+- **`BackButton` in `AddPlayerSheet`** hard-coded `flex-1`, right in the phone-invite row and wrong
+  in the picker's column, where it set flex-basis 0 on the vertical axis and collapsed under a long
+  list instead of letting the list scroll.
+- **`BottomBar`** (`app/_components/`) extracted: the three fixed bottom bars were copy-pasting the
+  same frame, and that string changed twice in one day.
+
+### Next
+- **Verify the wizard-footer sliver on device** (step 1 → 2). If it recurs, the guaranteed fix is to
+  stop the footer changing shape — always render قبلی, disabled on step 0 — but that changes how
+  step 0 looks, so it needs a decision.
+- Two audit items are actionable without the API: `/activity` isn't wired into `BottomNav` (no active
+  tab), and `TournamentCard`'s جزئیات تورنومنت CTA is still a dead `<button>`.
+- 30 open TODO items and ~37 open audit findings remain, nearly all blocked on the backend.
+- **Turbopack silently serves stale CSS** here — a `touch` doesn't wake it, and `.next` is an ext4
+  mount so `rm -rf .next` fails busy. Two "nothing changed" reports this session were that, not the
+  code. Verify the served chunk before re-diagnosing.
+
 ## Session — 2026-08-08: create-wizard players rework, dead-backend hardening, QA
 Work on `main`, **not yet pushed** (origin/patchapp are ~20 commits behind).
 - **Headers**: the compact-bar attempt was replaced by a real **collapsing hero** — one `--collapse`
