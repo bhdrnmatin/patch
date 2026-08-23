@@ -8,6 +8,36 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-23 — the document stops scrolling
+
+- [Safari] Reported as the create wizard's بعدی doing nothing on step 3 — the bottom menu opened
+  instead. **iOS Safari minimises its toolbar as soon as the document scrolls, and keeps the strip it
+  vacated as a live tap target**: the first tap there restores the toolbar rather than pressing what's
+  under it. Confirmed by the second tap working every time. It was never wizard logic — every
+  `fixed bottom-0` bar we have was losing its first tap the same way, and `BottomNav` sits in the same
+  band.
+- [Safari] Padding the bars up out of the strip was tried first and didn't clear it: the strip is as
+  deep as the toolbar it replaced (~80px), so buying safety that way costs that much screen on every
+  device. **The app now scrolls an inner container (`AppScroll`) instead of the document** — a document
+  that never scrolls never triggers the minimise, so the toolbar stays put and every tap lands. Free
+  side effect: the viewport height stops changing mid-scroll, which is what `dvh` was working around.
+- [Safari] `position: fixed` still resolves against the viewport inside it (`overflow` alone doesn't
+  create a containing block), so the fixed heroes and bars needed no change. The three places that read
+  window scroll now read the container: `useCollapseHeader`, the wizard footer's "more below" cue, and
+  the wizard's scroll-to-top on step change.
+- [Safe areas] `viewport-fit=cover` on the root `viewport` export, so `env(safe-area-inset-*)` reports
+  real numbers instead of 0 — nothing in the app read them before. `--safe-b` lifts every fixed bottom
+  bar and `BottomNav` clear of the home indicator, the five bottom clearances grew to match, and
+  `--hero-gap` picked up `env(safe-area-inset-top)` so `cover` doesn't slide the heroes under the
+  status bar in the installed PWA. In Safari both insets are 0 and nothing moves; this is for standalone.
+- [Verified] On device: بعدی takes the first tap on step 3. `tsc --noEmit` clean; /, /matches,
+  /tournaments, /activity, /profile, /matches/create, /profile/edit/personal all 200 with no runtime
+  errors.
+- [Watch] Two things this pattern makes newly breakable: Next's scroll restoration targets the document
+  and no longer fires, so `AppScroll` resets the container on `usePathname()` change; and a
+  `ResizeObserver` on the scroller is useless (its box is a fixed 100%) — observe the content instead,
+  which is what the wizard's cue does now.
+
 ### 2026-08-23 — the page has a background of its own
 
 - [Safari] Reported as the bars flickering black then blue while scrolling, on a phone. The app had

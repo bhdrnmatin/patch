@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import localFont from "next/font/local";
 import Providers from "./providers";
+import AppScroll from "./_components/AppScroll";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
 // (which gave a black bar on one screen and a blue one on the next).
 export const viewport: Viewport = {
   themeColor: "#F5F7FA",
+  // Lets env(safe-area-inset-*) report real numbers — without it they're all 0
+  // and the fixed bottom bars sit inside Safari's toolbar tap strip.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -38,8 +42,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
-      <body className="min-h-full">
-        <Providers>{children}</Providers>
+      <body className="h-full overflow-hidden">
+        <Providers>
+          <AppScroll>{children}</AppScroll>
+        </Providers>
         {/* Covers every route when a phone turns sideways — see .portrait-only
             in globals.css for why this exists on top of the manifest lock. */}
         <div

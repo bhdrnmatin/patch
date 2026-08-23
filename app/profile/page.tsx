@@ -57,7 +57,7 @@ const navItems = [
 
 export default function ProfilePage() {
   return (
-    <main className="mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-24">
+    <main className="mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-[calc(6rem+var(--safe-b))]">
       <ProfileHero />
 
       {/* Main content — identity overlaps the hero via its own -mt-12 */}

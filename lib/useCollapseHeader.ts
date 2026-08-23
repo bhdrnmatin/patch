@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { appScrollEl } from "@/app/_components/AppScroll";
 
 /**
  * Drives a collapsing hero header. Writes a `--collapse` custom property
- * (0 = fully open, 1 = fully collapsed) onto the returned element as the window
- * scrolls; the header's CSS interpolates every part off it.
+ * (0 = fully open, 1 = fully collapsed) onto the returned element as the app
+ * scrolls; the header's CSS interpolates every part off it. The scroll comes
+ * from `AppScroll`, not the window — see that file for why the document
+ * doesn't scroll.
  *
  * Deliberately not React state — this changes on every scroll frame, so it goes
  * straight to the DOM (rAF-coalesced) instead of re-rendering the page.
@@ -23,7 +26,8 @@ export function useCollapseHeader<T extends HTMLElement>() {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    const sc = appScrollEl();
+    if (!el || !sc) return;
 
     const css = getComputedStyle(el);
     const range =
@@ -33,7 +37,7 @@ export function useCollapseHeader<T extends HTMLElement>() {
     let raf = 0;
     const update = () => {
       raf = 0;
-      const p = Math.min(1, Math.max(0, window.scrollY / range));
+      const p = Math.min(1, Math.max(0, sc.scrollTop / range));
       el.style.setProperty("--collapse", p.toFixed(4));
     };
     const onScroll = () => {
@@ -41,9 +45,9 @@ export function useCollapseHeader<T extends HTMLElement>() {
     };
 
     update(); // restored scroll position on mount / back-navigation
-    window.addEventListener("scroll", onScroll, { passive: true });
+    sc.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      sc.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);

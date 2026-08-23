@@ -104,7 +104,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
   const canSave = firstName.trim() !== "" && lastName.trim() !== "" && !save.isPending;
 
   return (
-    <div className="flex flex-col gap-8 w-full pb-24">
+    <div className="flex flex-col gap-8 w-full pb-[calc(6rem+var(--safe-b))]">
       {/* Profile photo — avatar is the tap target, camera badge signals it's editable */}
       <div className="flex flex-col items-center gap-2">
         <input
@@ -197,7 +197,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
       </section>
 
       {/* Sticky save bar — primary action always reachable */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-edge rounded-t-group px-6 pt-3 pb-6 flex flex-col items-center gap-2 shadow-sheet">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-edge rounded-t-group px-6 pt-3 pb-[calc(1.5rem+var(--safe-b))] flex flex-col items-center gap-2 shadow-sheet">
         {saveError && (
           <p className="text-xs text-danger" dir="rtl">
             {saveError}

@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { appScrollEl } from "@/app/_components/AppScroll";
 import WizardHeader from "./_components/WizardHeader";
 import StepChips from "./_components/StepChips";
 import WizardFooter from "./_components/WizardFooter";
@@ -65,7 +66,7 @@ function CreateMatchContent() {
   const goTo = (target: number) => {
     setStep(target);
     setMaxStep((m) => Math.max(m, target));
-    window.scrollTo({ top: 0 });
+    appScrollEl()?.scrollTo({ top: 0 });
   };
 
   const { mutate, isPending } = useMutation({
@@ -98,7 +99,7 @@ function CreateMatchContent() {
         {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
         {step === 4 && <StepReview draft={draft} courts={courts} players={players} />}
         {/* clearance for the fixed footer */}
-        <div className="h-24" aria-hidden />
+        <div className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
       </div>
 
       <WizardFooter

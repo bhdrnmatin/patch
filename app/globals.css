@@ -64,8 +64,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* No document-level bounce, so the canvas never flashes past a fixed hero. */
-  overscroll-behavior-y: none;
   font-family: var(--font-yekan-bakh), Arial, Helvetica, sans-serif;
 }
 
@@ -151,7 +149,16 @@ body {
      bar. Leaving the hero flush there gave a blue bar on the fixed heroes and
      a white one on /profile (whose hero scrolls away) — this band makes the
      app's own surface the top edge on every page, so the bar never changes. */
-  --hero-gap: 12px;
+  --hero-gap: calc(env(safe-area-inset-top, 0px) + 12px);
+
+  /* Bottom safe zone. Two things live down there: the home indicator, and the
+     strip iOS Safari vacates when it minimises its toolbar on scroll — which
+     stays a live tap target, so the first tap there restores the toolbar
+     instead of pressing the button under it. That's why the create wizard's
+     بعدی did nothing until you tapped twice. Every fixed bottom bar sits above
+     this, and every page's bottom clearance adds it. env() only reports
+     anything with viewport-fit=cover (set in the root `viewport` export). */
+  --safe-b: env(safe-area-inset-bottom, 0px);
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));

@@ -50,6 +50,28 @@ Check these before writing new UI — reuse first.
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
 - Consumed by /matches, /tournaments, and /matches/[id]. Feature-local leaves still live in each feature's `_components/`.
 
+## Scrolling — the document does not scroll
+
+`app/_components/AppScroll.tsx` wraps the whole app in a `h-full overflow-y-auto` container and
+`body` is `overflow-hidden`. iOS Safari minimises its toolbar the moment the *document* scrolls and
+keeps the vacated strip as a tap target, so the first tap on any `fixed bottom-0` bar was swallowed
+(the create wizard's بعدی). A document that never scrolls never triggers it.
+
+**Never read `window.scrollY` / `window.scrollTo` / `document.documentElement.scrollHeight`** — they
+are all frozen. Use `appScrollEl()` from that file. Same for `ResizeObserver`: the scroller's own box
+is a fixed 100% and never resizes, so observe its content (`sc.firstElementChild`), not the scroller.
+
+`position: fixed` is unaffected — `overflow` alone doesn't create a containing block for it, so fixed
+headers and bars still resolve against the viewport.
+
+## Safe areas
+
+`viewport-fit=cover` is set in the root `viewport` export, so `env(safe-area-inset-*)` reports real
+numbers. Two tokens in `globals.css` carry it: `--safe-b` (bottom inset) — every fixed bottom bar adds
+`calc(1.5rem + var(--safe-b))` and every bottom clearance adds `var(--safe-b)` — and `--hero-gap`,
+which folds in `env(safe-area-inset-top)`. Both are 0 in Safari; they only move things in the
+installed PWA.
+
 ## Localization
 
 This is a **Persian-language app**. All numbers displayed or entered in the UI must use Persian digits (۰–۹), not Latin (0–9).

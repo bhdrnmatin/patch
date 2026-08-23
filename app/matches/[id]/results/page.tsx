@@ -115,7 +115,7 @@ function ResultsContent() {
         </button>
 
         {/* clearance for the fixed CTA bar */}
-        <div className="h-24" aria-hidden />
+        <div className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
       </div>
 
       <MatchCtaBar
