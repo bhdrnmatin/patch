@@ -95,15 +95,24 @@ Other endpoints do this correctly, which makes the gap look like one missing han
 
 ## Bugs
 
-### 500s on ordinary bad input
+### 500s on unparseable ids — one root cause, every controller
+An id that `UUID.fromString` cannot parse throws past the exception handlers and 500s.
+It is not per-endpoint — the same input 500s on every controller, so **one handler for
+`MethodArgumentTypeMismatchException` fixes all of them**:
 ```
-GET /matches/abc           → 500    non-UUID path param
-GET /matches/invite/nope   → 500    invite tokens are user-pasted — a typo crashes
-GET /clubs?cityId=abc      → 500    non-UUID query param
-POST /matches (no title)   → 500    see #2
+GET  /matches/abc              -> 500      GET /clubs/abc            -> 500
+GET  /matches/invite/nope      -> 500      GET /provinces/abc/cities -> 500
+GET  /clubs?cityId=abc         -> 500      POST /matches/abc/join    -> 500
 ```
-All should be 400/404. The invite-token case is user-facing: a mistyped invite link
-crashes instead of showing "link not found."
+The boundary is Java's lenient `UUID.fromString`, which is why the failure looks
+inconsistent from outside:
+```
+6b5234b2-13c2-41ab-9e7b-9bd6053e566   -> 404   short group still parses, to another UUID
+6b5234b2-13c2-41ab-9e7b-9bd6053e566dX -> 500   unparseable
+6B5234B2-...-566D                     -> 200   case-insensitive
+```
+The invite-token case is the user-facing one: invite links are pasted by hand, so a
+truncated or mistyped link crashes instead of showing a "link not found" page.
 
 ### Smaller
 - `firstName` stores as `"متین "` — trailing whitespace is not trimmed.
@@ -128,7 +137,10 @@ crashes instead of showing "link not found."
   list response — sensible, but undocumented.
 - Inviting an unregistered phone number **auto-provisions an account** and returns a
   `PENDING` invitation for it.
-- `DELETE /matches/{id}` works and is how this probe's test data was cleaned up.
+- **`DELETE /matches/{id}` is a soft delete.** It sets `status: CANCELLED`; the match stays
+  readable by id *and by invite token*, disappears from the list, and further `join` or
+  `delete` calls return 409. Sensible, but the app must handle a `CANCELLED` match arriving
+  from a saved link or a stale id — it is not a 404.
 - Location data is real: 31 provinces, 1449 cities. But there is no `GET /cities/{id}`,
   and `/players/me` returns only `residenceCityId`, so resolving one id to a name costs
   up to 31 requests. Tracked as `ponytail:` debt at
