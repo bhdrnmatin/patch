@@ -52,10 +52,20 @@ marked required, but a body with exactly those **400s**. Determined by bisection
 All three `format` values × both `matchType`s × all three `joinPolicy`s work once those
 are supplied.
 
-**These three *should* be required** (decision 2026-08-24) — a match with no duration,
-capacity or title is meaningless. The bug is that they aren't *declared* required, so
-the spec is wrong and enforcement happens deep enough that a missing `title` surfaces
-as a 500. Annotating them fixes the spec and the error shape at once.
+Checked against the wizard (2026-08-24) — only one of the three is genuinely required:
+
+| Field | App | Verdict |
+|---|---|---|
+| `durationHours` | always set (۶۰/۱۲۰ in step ۳) | ✅ correctly required — declare it |
+| `title` | **اختیاری by design** (`StepDetails.tsx:77`; step ۱ gates on format + invite only, `page.tsx:43`) | ❌ **API must accept its absence** — today it 500s |
+| `capacity` | **no such concept** — رقابتی caps the roster at 4 via `MAX_TEAMMATES`, دوستانه/آمریکانو are deliberately uncapped (`StepPlayers.tsx:47`) | ❌ **must be nullable** |
+
+`lib/data/mutations.ts` already fudges capacity as `format === "competitive" ? 4 :
+players.length`, with a comment conceding the roster size is "the only capacity we can
+claim." An uncapped match is a real state the API can't currently express.
+
+So: annotate `durationHours` as required, and make `title` and `capacity` genuinely
+optional — a missing `title` must not 500.
 
 ### 2b. `durationHours` can't express 90 minutes, and truncates silently
 ```
