@@ -74,12 +74,28 @@ Examples:
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run ESLint |
 | `npm run optimize-images` | Optimize images in `public/images` |
+| `scripts/api.sh` | Authenticated curl against the live API, token refresh handled |
+
+`scripts/api.sh` exists because every endpoint but `/v3/api-docs` and `/clubs` needs a
+bearer, and access tokens expire after 15 minutes:
+
+```
+scripts/api.sh login <phone>          # sends an OTP
+scripts/api.sh verify <phone> <code>  # stores access + refresh (consumes the code)
+scripts/api.sh GET  /api/v1/matches
+scripts/api.sh POST /api/v1/matches '{"title":"…"}'
+```
+
+The session is written to `.api-session.json`, which is gitignored — it holds a real
+refresh token, so don't commit or paste it.
 
 ## Tech
 
 Next.js (App Router) · React · Tailwind CSS · TanStack Query (React Query).
-The API is not yet available; pages read mock data through accessors in
-`lib/data/`, which are the swap point for the real endpoints.
+Pages read mock data through accessors in `lib/data/`, which are the swap point for
+the real endpoints. The live API (`api.patchapp.ir`) covers auth, player profile,
+clubs and matches; only auth and profile are wired so far — the clubs and matches
+tables are still empty, so the rest stays on mocks.
 
 ## Architecture & conventions
 
