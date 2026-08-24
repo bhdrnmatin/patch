@@ -38,7 +38,7 @@ endpoint** — only phone invites can work.
 **Ask:** put `firstName`/`lastName` (or a nested player summary) on
 `MatchParticipantResponse`, and add a player lookup/search endpoint.
 
-### 2. `POST /matches` — the spec lies about what's required
+### 2. `POST /matches` — three fields are required but not declared
 Only `format`, `matchType`, `clubId`, `scheduledAt`, `visibility`, `joinPolicy` are
 marked required, but a body with exactly those **400s**. Determined by bisection:
 
@@ -50,8 +50,24 @@ marked required, but a body with exactly those **400s**. Determined by bisection
 | `description`, `courtLabel` | optional | genuinely optional ✓ |
 
 All three `format` values × both `matchType`s × all three `joinPolicy`s work once those
-are supplied. Either fix the spec and return 400 for a missing `title`, or make them
-genuinely optional.
+are supplied.
+
+**These three *should* be required** (decision 2026-08-24) — a match with no duration,
+capacity or title is meaningless. The bug is that they aren't *declared* required, so
+the spec is wrong and enforcement happens deep enough that a missing `title` surfaces
+as a 500. Annotating them fixes the spec and the error shape at once.
+
+### 2b. `durationHours` can't express 90 minutes, and truncates silently
+```
+durationHours: 0     → 400        durationHours: 1.5  → 201, stored as 1
+durationHours: -1    → 400        durationHours: 99   → 201  (no upper bound)
+```
+A 90-minute booking — the standard padel slot — is **inexpressible**, and sending 1.5
+silently records a 60-minute match rather than failing. The wizard currently offers only
+۶۰/۱۲۰ minutes so it maps cleanly today, but any 90-minute option would lose data.
+
+**Ask:** make it `durationMinutes`, or reject non-integers instead of truncating. Also
+add an upper bound — a 99-hour match is accepted.
 
 ### 3. Create-match validation errors are empty
 `{"details":[{"loc":null,"type":null}],"errorCode":null,"errorMessage":null}` — identical
