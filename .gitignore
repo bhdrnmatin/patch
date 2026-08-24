@@ -44,3 +44,6 @@ _preview/
 
 # graphify
 graphify-out/
+
+# local API session tokens
+.api-session.json
