@@ -147,6 +147,14 @@ truncated or mistyped link crashes instead of showing a "link not found" page.
   `app/profile/edit/personal/page.tsx:57` — the city picker starts blank even when set.
 
 ## Model mismatches with the app
+- **برگزار کننده (مربی) cannot be expressed.** The API knows one organizer:
+  `organizerAccountId`, set from the authenticated caller on `POST /matches` and
+  auto-added as a `CONFIRMED` participant. The app separates that from a *role* — step ۴'s
+  نقش شما toggle (`draft.myRole`) lets a player-creator hand برگزار کننده to a teammate
+  (`draft.coach`, `lib/types.ts:205-214`). `CreateMatchRequest` has no field for either, so
+  that choice is silently dropped and the match reads back with the creator as organizer.
+  Note the vocabulary trap when raising this: the API's "organizer" is the app's **creator**
+  (`ViewerRole`, `app/matches/[id]/page.tsx:43`), *not* برگزار کننده.
 - The create wizard has one axis (`americano | friendly | competitive`); the API has two:
   `format` (`OPEN_MATCH|AMERICANO|MEXICANO`) × `matchType` (`FRIENDLY|COMPETITIVE`).
   Mapping undecided.
