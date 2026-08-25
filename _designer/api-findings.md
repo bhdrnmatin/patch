@@ -7,8 +7,9 @@ including a full create → invite → join → delete cycle against real clubs.
 The API was **redeployed three times during the session**, so this is a moving target.
 Findings below are as of the last pass; re-run before trusting any of it.
 
-## Fixed during the session
+## Fixed so far
 
+- **Participants and the organizer are named** (2026-08-25) — see #1.
 - **`username` no longer breaks signup.** It was required on `PUT /players/me/profile`
   while the app had stopped sending it (`lib/api/types.ts:31`), so every profile save
   400'd and no new user could complete onboarding. It is now optional, and omitting it
@@ -21,22 +22,26 @@ Findings below are as of the last pass; re-run before trusting any of it.
 
 ## Blockers
 
-### 1. accountId ≠ playerId, and no player is fetchable but yourself
-```
-JWT sub (accountId)   ec48485c-28ce-4bb8-becc-15ccb83cfb4d
-players/me id         c4498f72-f811-4aab-ae53-532e6c3e39a5
-GET /players/{id}     404    GET /players?query=  404    GET /players  404
-```
-`organizerAccountId` and `MatchParticipantResponse.accountId` are account ids that
-resolve to nothing, and a participant carries no name — only `accountId`, `status`,
-`joinChannel`, `photoUrl`. So the players grid can render avatars and a count but
-**cannot label a single person**, and the organizer can't be named.
+### 1. Identity — mostly fixed, two gaps left
+**Fixed 2026-08-25.** `MatchParticipantResponse` gained `firstName`/`lastName`, and
+`organizerAccountId` was replaced by a nested `organizer` object
+(`MatchOrganizerResponse { accountId, photoUrl, firstName, lastName }`) — a breaking
+change, but nothing of ours was wired to it. Verified live: the roster and the organizer
+both come back named. `MatchDetails.creator`, the players grid, and the approve/reject
+rows can all be filled now.
 
-It also means the create wizard's "add a Patch player" teammate flow has **no backing
-endpoint** — only phone invites can work.
-
-**Ask:** put `firstName`/`lastName` (or a nested player summary) on
-`MatchParticipantResponse`, and add a player lookup/search endpoint.
+Still missing:
+- **No player lookup or search.** `GET /players/{id}` 404s for both the account id and
+  the player id, and there is no list or search endpoint. The two id spaces still differ
+  (JWT `sub` is an account id; `/players/me` returns a different player id). So the create
+  wizard's "add a Patch player" teammate flow has **no backing endpoint** — until one
+  exists, only phone invites can work in step ۴.
+- **No organizer-side invitation list.** `POST /matches/{id}/invitations` creates them and
+  `GET /matches/invitations/me` serves the *invitee*, but `GET /matches/{id}/invitations`
+  is 405. An invited phone does **not** appear in `participants` until it accepts, so a
+  creator cannot see who they have already invited — the roster shows only joined players.
+- `firstName` still carries its untrimmed trailing space (`"متین "`), which now renders
+  wherever the roster does.
 
 ### 2. `POST /matches` — three fields are required but not declared
 Only `format`, `matchType`, `clubId`, `scheduledAt`, `visibility`, `joinPolicy` are

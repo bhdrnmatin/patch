@@ -15,15 +15,25 @@ BASE="${API_BASE_URL:-https://api.patchapp.ir}"
 S=.api-session.json
 
 j() { python3 -c "import json,sys;print(json.load(sys.stdin).get('$1',''))"; }
-save() { python3 -c "import json,sys;json.dump(json.load(sys.stdin),open('$S','w'))"; }
+# Only ever persist a real token pair. The API 500s during deploys, and blindly
+# saving the response wrote an error body over the session — one bad refresh and
+# the login was gone.
+save() { python3 -c "
+import json,sys
+try: d=json.load(sys.stdin)
+except Exception: sys.exit('api: non-JSON response, session left alone')
+if not d.get('accessToken'):
+    sys.exit('api: no accessToken in response, session left alone: '+json.dumps(d,ensure_ascii=False)[:200])
+json.dump(d,open('$S','w'))
+print(json.dumps(d,ensure_ascii=False))"; }
 
 case "${1:-}" in
   login)  curl -sS -X POST "$BASE/api/v1/otp/request" -H 'Content-Type: application/json' \
             -d "{\"phoneNumber\":\"$2\"}"; echo; exit ;;
   verify) curl -sS -X POST "$BASE/api/v1/otp/verify" -H 'Content-Type: application/json' \
-            -d "{\"phoneNumber\":\"$2\",\"code\":\"$3\"}" | tee /dev/stderr | save; exit ;;
+            -d "{\"phoneNumber\":\"$2\",\"code\":\"$3\"}" | save; exit ;;
   admin)  curl -sS -X POST "$BASE/api/v1/auth/admin/login" -H 'Content-Type: application/json' \
-            -d "{\"username\":\"$2\",\"password\":\"$3\"}" | tee /dev/stderr | save; exit ;;
+            -d "{\"username\":\"$2\",\"password\":\"$3\"}" | save; exit ;;
 esac
 
 [ -f "$S" ] || { echo "no session — run: $0 login <phone>" >&2; exit 1; }
@@ -39,7 +49,7 @@ if [ "$exp" -lt "$(date +%s)" ]; then
   rt=$(j refreshToken < "$S")
   [ -n "$rt" ] || { echo "token expired and no refreshToken (admin session?) — re-run admin login" >&2; exit 1; }
   curl -sS -X POST "$BASE/api/v1/auth/refresh" -H 'Content-Type: application/json' \
-    -d "{\"refreshToken\":\"$rt\"}" | save
+    -d "{\"refreshToken\":\"$rt\"}" | save >/dev/null || exit 1
   tok=$(j accessToken < "$S")
 fi
 
