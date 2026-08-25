@@ -38,8 +38,23 @@ Still missing:
   exists, only phone invites can work in step ۴.
 - **No organizer-side invitation list.** `POST /matches/{id}/invitations` creates them and
   `GET /matches/invitations/me` serves the *invitee*, but `GET /matches/{id}/invitations`
-  is 405. An invited phone does **not** appear in `participants` until it accepts, so a
-  creator cannot see who they have already invited — the roster shows only joined players.
+  is 405. An invited phone does **not** appear in `participants` until it accepts, and
+  `MatchResponse` carries no invitation field, so a creator cannot see who they invited.
+  The server clearly holds the state — a repeat invite is refused as `alreadyInvited` — it
+  is simply not exposed. There is also no way to cancel or resend one.
+
+  This is worse than a missing list, because the design has no pending state to fall back
+  on: `PlayerSlotButton` renders either a filled chip or a dashed **+ افزودن بازیکن**, so an
+  invited-but-unaccepted teammate is indistinguishable from an empty slot. The creator taps
+  it, re-invites the same person, and gets `matchmaking.invite.alreadyInvited` with nothing
+  on screen explaining why. Note the wizard *does* model this — `StepReview.tsx:80` gives an
+  invited teammate the role **دعوت‌شده** — but that lives only in the local draft and is lost
+  the moment the match is saved.
+
+- **Some invite failures return raw i18n keys.** `failureMessage` is designed to be shown to
+  the user and is Persian for a bad number (`شماره موبایل «…» معتبر نیست`), but a duplicate
+  or self-invite returns `matchmaking.invite.alreadyInvited` /
+  `matchmaking.invite.alreadyParticipant` untranslated.
 - `firstName` still carries its untrimmed trailing space (`"متین "`), which now renders
   wherever the roster does.
 
