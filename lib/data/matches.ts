@@ -1,8 +1,8 @@
+import { getClubs } from "@/lib/api/clubs";
 import {
   matchDays,
   matchList,
   matchDetails,
-  courtOptions,
   pickablePlayers,
 } from "@/lib/mock";
 import type {
@@ -37,7 +37,14 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
 /** Create-match wizard lookups */
 
 export async function getCourtOptions(): Promise<CourtOption[]> {
-  return courtOptions;
+  // Live: the wizard needs a real club id — POST /matches requires one and
+  // rejects anything it doesn't know, so this is the only source that lets a
+  // created match reach the API. ACTIVE-only, since the picker shouldn't offer
+  // a club that can't take a booking.
+  const { content } = await getClubs();
+  return content
+    .filter((c) => c.status === "ACTIVE")
+    .map((c) => ({ id: c.id, club: c.name, location: c.address }));
 }
 
 export async function getPickablePlayers(): Promise<MatchPlayer[]> {

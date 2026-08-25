@@ -51,3 +51,25 @@ export interface UpdateDisplayInfoRequest {
   bio?: string;
   preferredSide?: PreferredSide;
 }
+
+export interface ClubResponse {
+  id: string;
+  cityId: string;
+  name: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+  contactPhone?: string;
+  description?: string;
+  bannerUrl?: string;
+  logoUrl?: string;
+  status: string;
+}
+
+/** Every list endpoint on this API pages the same way. */
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+}

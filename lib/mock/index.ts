@@ -9,7 +9,6 @@ import type {
   DayOption,
   MatchDetails,
   ActivitySection,
-  CourtOption,
   MatchPlayer,
 } from "@/lib/types";
 
@@ -251,15 +250,6 @@ export const matchDetails: MatchDetails = {
   requests: ["r1", "r2", "r3", "r4"].map(mockJoinRequest),
 };
 
-/** Create-match wizard (/matches/create) */
-
-export const courtOptions: CourtOption[] = [
-  { id: "c1", club: "باشگاه پدل انقلاب", location: "کرج، گوهردشت، بلوار انقلاب" },
-  { id: "c2", club: "مجموعه ورزشی البرز", location: "کرج، عظیمیه، میدان استاندارد" },
-  { id: "c3", club: "آکادمی پدل مهرشهر", location: "کرج، مهرشهر، بلوار ارم" },
-  { id: "c4", club: "کلوپ پدل جهان‌نما", location: "کرج، جهانشهر، خیابان امام" },
-  { id: "c5", club: "پدل سنتر فردیس", location: "کرج، فردیس، بلوار طالقانی" },
-];
 
 /** Players the creator can pre-fill into teams — excludes the current user. */
 export const pickablePlayers: MatchPlayer[] = matchDetails.players.slice(1);
