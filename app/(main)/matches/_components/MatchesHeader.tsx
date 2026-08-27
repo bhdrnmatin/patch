@@ -9,7 +9,7 @@ interface Props {
   onSort: () => void;
 }
 
-/** Matches hero header — the shared SportPageHeader titled "مَچ". */
+/** Matches hero header — the shared SportPageHeader titled "مچ‌های روز". */
 export default function MatchesHeader(props: Props) {
-  return <SportPageHeader title="مَچ" {...props} />;
+  return <SportPageHeader title="مچ‌های روز" {...props} />;
 }

@@ -21,7 +21,7 @@ const FORMAT_OPTIONS: RadioCardOption[] = [
   {
     id: "americano",
     title: "آمریکانو",
-    description: "چرخش یاران و امتیازگیری انفرادی",
+    description: "چرخش بازیکنان و امتیازگیری انفرادی",
     icon: <ShuffleIcon />,
   },
 ];
@@ -36,7 +36,7 @@ const INVITE_OPTIONS: RadioCardOption[] = [
   {
     id: "public",
     title: "عمومی",
-    description: "در فهرست مسابقات دیده می‌شود.",
+    description: "در فهرست مچ‌های روز دیده می‌شود",
     icon: <GlobeIcon />,
   },
 ];
