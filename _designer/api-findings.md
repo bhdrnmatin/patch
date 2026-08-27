@@ -7,8 +7,13 @@ including a full create → invite → join → delete cycle against real clubs.
 The API was **redeployed three times during the session**, so this is a moving target.
 Findings below are as of the last pass; re-run before trusting any of it.
 
+**Re-probed 2026-08-27.** The OpenAPI spec is byte-identical in shape (32 paths, same
+schemas), but the create-match error handler has been rewritten — see #3. Everything else
+below was re-verified unchanged.
+
 ## Fixed so far
 
+- **Create-match errors now name the field** (2026-08-27) — mostly; see #3.
 - **Participants and the organizer are named** (2026-08-25) — see #1.
 - **`username` no longer breaks signup.** It was required on `PUT /players/me/profile`
   while the app had stopped sending it (`lib/api/types.ts:31`), so every profile save
@@ -99,19 +104,34 @@ silently records a 60-minute match rather than failing. The wizard currently off
 **Ask:** make it `durationMinutes`, or reject non-integers instead of truncating. Also
 add an upper bound — a 99-hour match is accepted.
 
-### 3. Create-match validation errors are empty
-`{"details":[{"loc":null,"type":null}],"errorCode":null,"errorMessage":null}` — identical
-for a missing field, a bad enum, and a nonexistent club. **This is what made #2 take a
-bisection to find**, and it means the wizard can never highlight the offending field.
+### 3. Create-match validation errors — fixed except for missing fields
+**Largely fixed 2026-08-27.** `details[]` now carries a `loc` and a message, and the
+envelope gained `parameters`/`extraInfo`:
 
-Other endpoints do this correctly, which makes the gap look like one missing handler:
+| Body | Response |
+|---|---|
+| `format: "NOPE"` | ✅ `loc: "format"`, `فرمت مسابقه «NOPE» معتبر نیست` |
+| unknown `clubId` | ✅ `loc: "clubId"`, `باشگاه انتخاب‌شده یافت نشد` |
+| `scheduledAt` in the past | ⚠️ `loc: "scheduledAt"`, raw English `must be a future date` |
+| `durationHours: 0` | ⚠️ `loc: "durationHours"`, raw English `must be greater than or equal to 1` |
+| **missing `capacity` / `durationHours`** | ❌ still `{"loc":null,"type":null}`, `errorMessage: null` |
+| **missing `title`** | ❌ still `500` |
+
+So the wizard can highlight a bad value but still not a missing one — the `@NotNull` path
+never reaches the new handler. The two rows marked ⚠️ are bean-validation defaults leaking
+through untranslated, the same way `PUT /players/me/profile` does.
+
+Also new (undocumented): **`scheduledAt` must be in the future.** Reasonable, but the
+wizard needs to know — a match scheduled for earlier today is rejected.
+
+Other endpoints for comparison:
 | Endpoint | Behaviour |
 |---|---|
 | `POST /matches/{id}/invitations` | ✅ per-phone `success`/`failureMessage`, Persian |
 | `PUT /players/me/display-info` | ✅ field-level Persian |
 | `POST /matches/{id}/join` | ✅ `409 شما قبلاً در این مچ عضو شده‌اید` |
 | `PUT /players/me/profile` | ⚠️ field-level but **raw English**: `must match "^[a-zA-Z0-9_]{3,20}$"` |
-| `POST /matches` | ❌ entirely null |
+| `POST /matches` | ⚠️ named for bad values, null for missing ones |
 
 ## Bugs
 
