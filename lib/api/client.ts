@@ -156,19 +156,21 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
     throw new ApiError(0, "ارتباط با سرور برقرار نشد، اتصال خود را بررسی کنید.", null);
   }
 
-  if (res.status === 401 && auth && !_retry) {
+  if (res.status === 401 && auth) {
     // Reactive: refresh once and replay the original request.
-    if (await refreshTokens()) {
+    if (!_retry && (await refreshTokens())) {
       return apiFetch<T>(path, { ...opts, _retry: true });
     }
-    // Refresh didn't help. Only end the session when the token is genuinely
-    // gone/expired — a 401 while still holding a valid token is an
-    // authorization/transient error (not session death), so let it surface
-    // through the normal error path instead of logging the user out.
-    if (isAccessTokenExpired()) {
-      endSession();
-      throw new ApiError(401, "نشست شما منقضی شده است.", null);
-    }
+    // Still 401 after that one chance (or there was nothing to refresh with).
+    // The server is the authority on whether a token is good: one it rejects is
+    // a dead session even when `exp` says otherwise. A deploy that rotates the
+    // JWT signing key lands exactly here — every issued token still looks valid
+    // locally — and the previous rule (log out only when locally expired) left
+    // it on an error screen whose only button replayed the same 401, with
+    // nothing routing back to /login. 403 is this API's authorization status,
+    // so nothing legitimate is caught by treating 401 as authentication.
+    endSession();
+    throw new ApiError(401, "نشست شما منقضی شده است.", null);
   }
 
   if (res.status === 204) return undefined as T;
