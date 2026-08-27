@@ -38,6 +38,16 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
     appScrollEl()?.scrollTo({ top: 0 });
   }, [pathname]);
 
+  // The last hole in the zoom lock. `user-scalable=no` (layout.tsx) is honoured
+  // by Android and by the installed PWA, but iOS Safari ignores it in a browser
+  // tab and lets you pinch anyway — leaving the fixed bars off-screen. These
+  // Safari-only gesture events are the only handle on it.
+  useEffect(() => {
+    const stop = (e: Event) => e.preventDefault();
+    document.addEventListener("gesturestart", stop);
+    return () => document.removeEventListener("gesturestart", stop);
+  }, []);
+
   return (
     <div id={APP_SCROLL_ID} className="h-full overflow-y-auto overscroll-y-none">
       {children}

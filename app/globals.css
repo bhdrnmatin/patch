@@ -65,6 +65,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-yekan-bakh), Arial, Helvetica, sans-serif;
+  /* Kills double-tap-to-zoom, and with it the 300ms tap delay it implies. */
+  touch-action: manipulation;
 }
 
 /* Motion: pressed states ease instead of snapping; keyboard focus is visible. */

@@ -33,6 +33,13 @@ export const viewport: Viewport = {
   // Lets env(safe-area-inset-*) report real numbers — without it they're all 0
   // and the fixed bottom bars sit inside Safari's toolbar tap strip.
   viewportFit: "cover",
+  // No zooming: the layout is already sized for the phone, and pinching pushes
+  // the fixed bars off-screen. `maximumScale` also stops iOS Safari
+  // auto-zooming when you focus an input — every field here is 14px, under the
+  // 16px threshold that triggers it. See also `touch-action` in globals.css
+  // (double-tap) and AppScroll's gesture guard (pinch in a Safari tab).
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
