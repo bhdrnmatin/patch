@@ -21,22 +21,24 @@ export default function ResumeDraftBar({ onResume, onDiscard }: ResumeDraftBarPr
           می‌توانید از همان‌جا که رها کردید ادامه دهید.
         </p>
       </div>
-      <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={onResume}
-          className="flex-1 h-12 rounded-pill bg-primary text-sm font-bold text-white active:opacity-80"
-        >
-          ادامه
-        </button>
-        <button
-          type="button"
-          onClick={onDiscard}
-          className="flex-1 h-12 rounded-pill border border-edge bg-white text-sm font-bold text-ink-soft active:opacity-80"
-        >
-          شروع دوباره
-        </button>
-      </div>
+      {/* Discard is deliberately NOT a matching pill. Two equal buttons put a
+          single irreversible tap — five steps of work, no undo — right beside
+          the one people mean to press. Continuing is the offer; starting over
+          is the way out of it. */}
+      <button
+        type="button"
+        onClick={onResume}
+        className="h-12 w-full rounded-pill bg-primary text-sm font-bold text-white active:opacity-80"
+      >
+        ادامه
+      </button>
+      <button
+        type="button"
+        onClick={onDiscard}
+        className="h-11 text-xs text-muted underline underline-offset-4 active:opacity-70"
+      >
+        شروع دوباره
+      </button>
     </section>
   );
 }
