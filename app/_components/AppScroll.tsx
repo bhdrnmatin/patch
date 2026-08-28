@@ -48,8 +48,29 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("gesturestart", stop);
   }, []);
 
+  // Track the *visual* viewport, which is the only thing that knows about the
+  // keyboard. iOS Safari never shrinks the layout viewport for it, so `dvh`
+  // stays full-height and a bottom-pinned card (every AuthCard) sits behind the
+  // keyboard. Safari then wants to scroll the focused input into view — but the
+  // document can't scroll and this scroller's content is exactly its own height,
+  // so with both paths dead it pans the visual viewport instead, dragging the
+  // page around in both axes. Sizing the scroller to the visible area gives it a
+  // real scroll to perform, and the pan stops.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const sync = () =>
+      document.documentElement.style.setProperty("--vvh", `${vv.height}px`);
+    sync();
+    vv.addEventListener("resize", sync);
+    return () => vv.removeEventListener("resize", sync);
+  }, []);
+
   return (
-    <div id={APP_SCROLL_ID} className="h-full overflow-y-auto overscroll-y-none">
+    <div
+      id={APP_SCROLL_ID}
+      className="h-[var(--vvh,100%)] overflow-y-auto overscroll-y-none"
+    >
       {children}
     </div>
   );
