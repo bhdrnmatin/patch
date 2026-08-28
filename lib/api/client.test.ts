@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import assert from "node:assert/strict";
 import { apiFetch, ApiError } from "./client";
+import { DEV_BYPASS_TOKEN } from "./session";
 
 // --- stand-ins ---------------------------------------------------------------
 // session.ts and client.ts touch only localStorage and location, and only from
@@ -98,6 +99,24 @@ async function main() {
   await assert.rejects(() => apiFetch("/clubs", { auth: false }), ApiError);
   assert.equal(assigned, null, "an unauthenticated call must not end the session");
   assert.ok(store.get("patch.accessToken"), "session must survive");
+
+  // 5. The /dev-login bypass survives its own 401. The API rejects that token by
+  //    design, and ending the session on it would bounce you to /login the moment
+  //    any guarded page fetched — which is what the bypass exists to avoid.
+  store.clear();
+  store.set("patch.accessToken", DEV_BYPASS_TOKEN);
+  store.set("patch.refreshToken", "");
+  assigned = null;
+  calls = [];
+  reply = () => ({ status: 401 });
+  await assert.rejects(() => apiFetch("/players/me"), ApiError);
+  assert.equal(assigned, null, "the dev bypass must not be logged out");
+  assert.equal(store.get("patch.accessToken"), DEV_BYPASS_TOKEN, "bypass token survives");
+  assert.equal(
+    calls.filter((c) => c.includes("/auth/refresh")).length,
+    0,
+    "no refresh attempt — there is nothing to refresh with"
+  );
 
   console.log("api client: ok");
 }

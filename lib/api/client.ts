@@ -2,6 +2,7 @@ import { toPersianDigits } from "../persian";
 import { API_PREFIX } from "./config";
 import {
   clearSession,
+  DEV_BYPASS_TOKEN,
   getAccessToken,
   getRefreshToken,
   isAccessTokenExpired,
@@ -169,6 +170,14 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
     // it on an error screen whose only button replayed the same 401, with
     // nothing routing back to /login. 403 is this API's authorization status,
     // so nothing legitimate is caught by treating 401 as authentication.
+    // ...except the /dev-login bypass, whose token the API rejects by design.
+    // Ending that session on a 401 would bounce you to /login the moment any
+    // guarded page fetched, which is the one thing the bypass exists to avoid.
+    // NODE_ENV is inlined at build time, so this is a constant in a production
+    // build — same guard as the page's own notFound().
+    if (process.env.NODE_ENV !== "production" && getAccessToken() === DEV_BYPASS_TOKEN) {
+      throw new ApiError(401, "نشست آزمایشی: سرور این توکن را نمی‌پذیرد.", null);
+    }
     endSession();
     throw new ApiError(401, "نشست شما منقضی شده است.", null);
   }

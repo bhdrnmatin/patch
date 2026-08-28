@@ -3,6 +3,14 @@
 // PWA with no server session. All access is SSR-guarded so importing modules on
 // the server (layouts, RSC) doesn't throw.
 
+/**
+ * The fake access token handed out by /dev-login. The API always rejects it —
+ * the point is to get past the client-side guards onto mock data while the
+ * backend is unreachable. Exported so the 401 handler can tell it apart from a
+ * real token the server has rejected. Delete with app/dev-login/.
+ */
+export const DEV_BYPASS_TOKEN = "dev-bypass";
+
 const ACCESS_KEY = "patch.accessToken";
 const REFRESH_KEY = "patch.refreshToken";
 

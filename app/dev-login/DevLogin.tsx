@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setTokens } from "@/lib/api/session";
+import { setTokens, DEV_BYPASS_TOKEN } from "@/lib/api/session";
 import { POST_AUTH_ROUTE } from "@/lib/routes";
 
 /**
@@ -10,15 +10,16 @@ import { POST_AUTH_ROUTE } from "@/lib/routes";
  * API is unreachable. Nothing is actually bypassed server-side — the API still
  * rejects this token; the guarded pages just render their mock data.
  *
- * Empty refresh token on purpose: apiFetch only attempts a proactive refresh
- * when one exists, and a non-decodable access token counts as not-expired
- * (session.ts), so no auth request is made at all.
+ * Empty refresh token on purpose: apiFetch only refreshes when one exists, so
+ * the bypass never spends a request on /auth/refresh. The 401s the API does
+ * return are exempted from ending the session in client.ts — without that, the
+ * first guarded fetch would clear this token and bounce straight to /login.
  */
 export default function DevLogin() {
   const router = useRouter();
 
   useEffect(() => {
-    setTokens({ accessToken: "dev-bypass", refreshToken: "" });
+    setTokens({ accessToken: DEV_BYPASS_TOKEN, refreshToken: "" });
     router.replace(POST_AUTH_ROUTE);
   }, [router]);
 
