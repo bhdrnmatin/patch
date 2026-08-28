@@ -64,12 +64,20 @@ function MatchDetailsContent() {
         ? "hidden"
         : "middle";
 
+  // Approving people is the most time-sensitive thing a creator does, so the
+  // requests sit in the same top slot the players grid uses — which creator/live
+  // leaves empty. They were last on the page, below the FAQ, which meant
+  // scrolling past everything to answer someone waiting to get in.
+  const joinRequests = role === "creator" && m.requests.length > 0 ? m.requests : null;
+
   return (
     <main className="relative mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-36">
       <MatchDetailsHeader title={m.title} showEdit={role === "creator"} />
 
       <div className="px-6 pt-4 flex flex-col gap-4">
         <MatchStageCard {...stage} totalStages={3} />
+
+        {joinRequests && <JoinRequestsSection requests={joinRequests} matchId={id} />}
 
         {playersPlacement === "top" && <PlayersSection players={m.players} />}
 
@@ -84,8 +92,6 @@ function MatchDetailsContent() {
         <CourtCard club={m.club} note={m.courtNote} />
         <ShareCard restriction={m.restriction} matchId={id} />
         <FaqSection faq={m.faq} />
-
-        {role === "creator" && <JoinRequestsSection requests={m.requests} matchId={id} />}
       </div>
 
       <MatchCtaBar
