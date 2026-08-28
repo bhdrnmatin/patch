@@ -97,12 +97,12 @@ optional — a missing `title` must not 500.
 durationHours: 0     → 400        durationHours: 1.5  → 201, stored as 1
 durationHours: -1    → 400        durationHours: 99   → 201  (no upper bound)
 ```
-A 90-minute booking — the standard padel slot — is **inexpressible**, and sending 1.5
-silently records a 60-minute match rather than failing. The wizard currently offers only
-۶۰/۱۲۰ minutes so it maps cleanly today, but any 90-minute option would lose data.
+Hours are the right unit — a match is booked by the hour, so there is no half-hour
+duration to express (user, 2026-08-28). The wizard's ۶۰/۱۲۰ map onto 1/2 exactly. What
+remains is that 1.5 is *silently truncated* rather than rejected.
 
-**Ask:** make it `durationMinutes`, or reject non-integers instead of truncating. Also
-add an upper bound — a 99-hour match is accepted.
+**Ask:** reject non-integers instead of truncating, and add an upper bound — a 99-hour
+match is accepted.
 
 ### 3. Create-match validation errors — fixed except for missing fields
 **Largely fixed 2026-08-27.** `details[]` now carries a `loc` and a message, and the

@@ -69,8 +69,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Docs] `_designer/api-findings.md` is the record of what the deployed API *does*, as opposed to what
   its spec claims. The backend redeployed repeatedly during the probe, so entries are dated snapshots.
 - [API] What it found, all still open on the backend: `POST /matches` requires `title`, `capacity` and
-  `durationHours` without annotating them (a missing `title` **500s**); `durationHours` is an integer,
-  so the standard **90-minute padel slot has no representation** and `1.5` silently stores `1`; every
+  `durationHours` without annotating them (a missing `title` **500s**); `durationHours` truncates a
+  non-integer instead of rejecting it (`1.5` stores `1`) and has no upper bound; every
   UUID 500 is one missing `MethodArgumentTypeMismatchException` handler; `DELETE` is a **soft delete**,
   so a saved link resolves to a `CANCELLED` match rather than a 404; there is no player lookup and no
   organizer-side invitation list, so an invited teammate is invisible until they accept — and the

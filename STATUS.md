@@ -310,8 +310,8 @@ is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
   the error screen. After the one refresh-and-replay chance, a 401 now clears the session (this API uses
   403 for authorization). Covered by `lib/api/client.test.ts` — `npx tsx lib/api/client.test.ts`.
 - [ ] **`POST /matches` is not wired yet** — step ۲ produces a valid `clubId` and 08-27 brought
-  field-level errors (`loc: "format"`, `loc: "clubId"`), but two backend gaps block submit: a missing
-  `title` 500s, and integer `durationHours` can't express a 90-minute match. See TODO.md.
+  field-level errors (`loc: "format"`, `loc: "clubId"`), so submit is buildable. One backend gap to
+  work around: a missing `title` 500s. See TODO.md.
 - [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
   out of `participants` until accepted; the design has no pending state either. No player lookup
   endpoint, so the wizard's add-a-Patch-player flow has nothing behind it.

@@ -57,9 +57,10 @@ redeployed repeatedly mid-probe, so several findings are dated snapshots.
   are mandatory in practice but unannotated. Only `durationHours` is required on both sides: عنوان مچ
   is labelled اختیاری and step ۱ gates on format and invite alone, and capacity isn't a concept the
   wizard has (رقابتی caps at four, دوستانه/آمریکانو are deliberately uncapped — inexpressible).
-- **`durationHours` is an integer** (`31ffba8`) — the standard **90-minute padel slot has no
-  representation**, and sending `1.5` silently stores `1`. Zero and negatives rejected; no upper bound
-  (99 hours accepted).
+- **`durationHours` is an integer** (`31ffba8`) — **not a gap**: matches are booked by the hour, so
+  there is no half-hour duration to express (user, 2026-08-28), and the wizard's ۶۰/۱۲۰ map onto 1/2.
+  What's left is that `1.5` is silently truncated to `1` rather than rejected, and there's no upper
+  bound (99 hours accepted).
 - **Every UUID 500 is one missing handler** (`e550b59`) — any id `UUID.fromString` can't parse throws
   past the exception handlers on every controller; Java's lenient parser is why it looked
   per-endpoint (a truncated uuid parses and 404s, one trailing character 500s). Also: **DELETE is a
@@ -79,10 +80,11 @@ redeployed repeatedly mid-probe, so several findings are dated snapshots.
 
 ### Next
 - Wizard submit is the next real step: step ۲ produces a valid `clubId`, so wire `POST /matches`
-  against the field-level errors — but decide the `title`-500 and 90-minute-duration gaps first
-  (both need the backend).
+  against the field-level errors, working around the `title`-500 by sending a generated title when
+  عنوان مچ is left empty.
 - Backend asks, in order: annotate the required create fields + stop the missing-`title` 500;
-  `durationHours` → minutes or a decimal; an organizer-side invitation list; a player lookup endpoint.
+  reject a non-integer `durationHours` instead of truncating; an organizer-side invitation list; a
+  player lookup endpoint.
 - The error boundary and the whole zoom lock are **unverified on a device**.
 - Still carried from 08-23: the wizard-footer sliver check (step 1 → 2), `/activity` missing from
   `BottomNav`, `TournamentCard`'s dead جزئیات تورنومنت CTA.
