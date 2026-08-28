@@ -271,6 +271,12 @@ seam. The API sends no CORS headers → `next.config.ts` proxies same-origin `/a
 the upstream. What the deployed API actually does — as opposed to what its spec claims —
 is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
 
+### Create-match drafts
+- [x] `lib/draft.ts` — one half-finished wizard in localStorage (autosaved on every change; a draft
+      whose day has passed is dropped). `ResumeDraftBar` offers ادامه / شروع دوباره on step ۱.
+      No on-exit prompt: the App Router can't intercept the hardware back, a nav tap or the edge
+      swipe, so it would catch one exit in four. Test: `npx tsx lib/draft.test.ts`
+
 ### Infrastructure — `lib/api/`
 - [x] `config` / `session` (localStorage bearer, SSR-guarded, reactive) / `client` (`apiFetch`, `ApiError`, 401 handling)
 - [x] `types` (API DTOs) / `auth` (requestOtp/verifyOtp/logout) / `players` (getMe + profile updates)

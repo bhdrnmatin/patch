@@ -8,6 +8,86 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-28 — the join requests come up to the top
+
+- [Match] درخواست‌های ورود was the last section on the page, below the promo card, the court card,
+  the share card and the whole FAQ. On a live match it's the most time-sensitive thing the creator
+  does — someone is waiting to be let in — and it sat behind the least time-sensitive thing there.
+- [Match] It takes the slot right under `MatchStageCard`. That's already the page's "what matters
+  now" position (`playersPlacement === "top"` puts the players grid there for player/live) and
+  creator/live deliberately leaves it empty, so nothing is displaced.
+- [Match] A button in the header was the alternative and can't work: `MatchDetailsHeader` is in
+  flow, so it scrolls away — it would only be on screen for someone already at the top, saving the
+  single scroll this removes outright.
+- [Match] The section no longer draws a bare heading when there are no requests.
+- [Verified] `/matches/1?role=creator&status=live` 200; confirmed in the browser — requests render
+  above the fold.
+
+### 2026-08-28 — a half-finished match keeps itself
+
+- [Create] Leaving the wizard part-way threw the work away. The obvious fix — "save as draft?" on
+  the way out — is the half that can't be built: the App Router has no navigation-blocking hook, so
+  only the wizard's own ✕ is catchable and the hardware back, a `BottomNav` tap and the edge swipe
+  all slip past. A prompt would catch one exit in four and silently drop the rest, which is worse
+  than not asking because it teaches people the draft is safe.
+- [Create] So the draft saves itself on every change (`lib/draft.ts`, localStorage) and the choice
+  moves to the way back in: tap ساخت مَچ again and step ۱ offers **ادامه** / **شروع دوباره**,
+  restoring the step and the chip strip's `maxStep` exactly as they were. Only a *touched* draft
+  writes, so opening the wizard and closing it can't overwrite a real draft with an empty one, and
+  the bar goes as soon as you start filling this match in.
+- [Create] One draft, not a list — more would need a drafts screen, and the wizard is a flow you're
+  realistically part-way through once. A draft whose day has passed is dropped rather than resumed
+  into a match that can no longer be created.
+- [Create] `ResumeDraftBar` does **not** give شروع دوباره a matching pill. Two equal buttons put a
+  single irreversible tap — five steps of work, no undo — a thumb's width from the one people mean
+  to press. Continuing keeps the full-width primary; starting over is a small underlined label
+  below it, still a 44px target.
+- [Note] The API has no draft concept (`_designer/api-findings.md`), so this is per-device — a draft
+  started on a phone won't follow the user to another one.
+- [Verified] `npx tsx lib/draft.test.ts` — round-trip, today vs yesterday vs tomorrow, malformed
+  JSON, missing key, empty storage, post-clear.
+
+### 2026-08-28 — the dev bypass keeps its rejected token
+
+- [API] The same-day 401 change made the server the authority on whether a session is alive, which
+  is right for real tokens and fatal for the fake one. `/dev-login` exists to get past the guards
+  while the backend is unreachable, so the API rejects its token **by design** — and the first thing
+  a guarded page does is fetch `/players/me`. That 401 cleared the session and bounced to `/login`
+  before anything rendered.
+- [API] The bypass is now exempt, behind the same `NODE_ENV` guard the page uses for its own
+  `notFound()`, so a production build folds the check away and can never honour that token. The
+  string is an exported `DEV_BYPASS_TOKEN` rather than spelled out in two files.
+- [Verified] `npx tsx lib/api/client.test.ts` — a fifth case covers it (401, session survives, no
+  refresh attempted); the four existing cases still pass, so a genuinely rotated key still logs out.
+
+### 2026-08-28 — the keyboard stops dragging the page around
+
+- [Chrome] On iOS Safari, focusing any input dragged the whole page: the auth card slid off the top,
+  off the right, or vanished behind the keyboard, differently each time.
+- [Chrome] Safari never shrinks the *layout* viewport for the keyboard, so `min-h-dvh` stays full
+  height and a bottom-pinned `AuthCard` ends up underneath it. Safari then tries to scroll the
+  focused input into view and finds both paths dead — the document can't scroll, and `AppScroll`'s
+  content is exactly its own height. With nothing to scroll it pans the *visual* viewport instead,
+  which moves the page in both axes and explains the sideways drift.
+- [Chrome] The scroller is sized to `--vvh` (the visual viewport, the only thing that knows the
+  keyboard is there). The content is then genuinely taller than its scroller and Safari performs an
+  ordinary scroll. With no keyboard `--vvh` is the window height, so every other screen is unchanged.
+  It lives in `AppScroll`, so it covers every input in the app.
+- [Unverified] **Still not seen on iOS Safari** — the behaviour it fixes is Safari's, and no iPhone
+  was available. No regression observed elsewhere. `/otp?phone=…&expires=…` reaches the screen with
+  no backend at all, which is how to check it.
+
+### 2026-08-28 — the OTP boxes offer their paste callout
+
+- [Auth] Pasting a hand-copied code already worked — `handlePaste` sits on the row, strips
+  non-digits, converts to Persian and spreads them across the boxes. It never got the chance: the
+  real input was `opacity-0`, and neither iOS nor Android offers the long-press Paste menu on a
+  fully transparent field.
+- [Auth] Visible element, invisible contents instead. The `OtpBox` behind still draws the digit and
+  the caret and selection stay hidden, so nothing about the look changes.
+- [Verified] Long-pressing a circle offers Paste and fills all five boxes. **iOS Safari not checked**
+  — no device available.
+
 ### 2026-08-28 — the list says which day it is
 
 - [Matches] `/matches` is a date-strip page — it always shows one day, never the whole backlog — but

@@ -1,5 +1,43 @@
 # Session State
 
+## Session — 2026-08-28 (pm): drafts, the iOS keyboard, and the doc catch-up
+Six commits on `main`, **not pushed** (both remotes are at `4671a03`). Started as a docs session and
+turned into a bug session; two of the fixes came out of a screen recording from a real iPhone.
+
+- **Docs caught up** (`011b1f7`) — session-state, CHANGELOG and STATUS had stopped at 2026-08-23, so
+  the whole live-API week existed only in the git log. Also `4671a03`: **`durationHours` is not a
+  gap** — matches are booked by the hour, so there's no half-hour duration to express (user), and the
+  wizard's ۶۰/۱۲۰ map onto 1/2. Only the silent truncation of `1.5` is still worth asking for.
+- **OTP paste** (`708087c`, **works**) — `handlePaste` was always there; the real input was
+  `opacity-0`, and neither iOS nor Android offers the long-press Paste menu on a fully transparent
+  field. Visible element, invisible contents instead. Confirmed pasting fills all five boxes.
+- **The iOS keyboard drift** (`ac70a4b`, **unverified**) — from the recording: focusing a field
+  dragged the whole page, the card sliding off the top, off the *right*, or behind the keyboard.
+  Safari never shrinks the layout viewport for the keyboard, so `min-h-dvh` stays full height and the
+  bottom-pinned `AuthCard` ends up under it; Safari then finds both scroll paths dead (document can't
+  scroll, `AppScroll`'s content is exactly its own height) and **pans the visual viewport** instead.
+  `AppScroll` is now sized to `--vvh`. **This is the one thing still needing an iPhone.**
+- **Wizard drafts** (`85ad11a`, `640ac98`) — autosave to localStorage + a resume bar on step ۱.
+  The asked-for "save as draft?" prompt was deliberately *not* built: the App Router has no
+  navigation-blocking hook, so it would catch the ✕ and miss the hardware back, a nav tap and the
+  edge swipe — one exit in four, while teaching people the draft is safe. Discard is a small
+  underlined label, not a matching pill, so an irreversible tap isn't sitting beside the wanted one.
+- **`/dev-login` was broken by the morning's 401 fix** (`aba2db2`) — the bypass token is one the API
+  rejects by design, and "the server is the authority" logged it straight out on the first
+  `/players/me`. Now exempt behind the same `NODE_ENV` guard the page uses for `notFound()`.
+- **Join requests moved to the top** (`503a1c7`) — درخواست‌های ورود was below the FAQ on the match
+  page; on a live match it's the most time-sensitive thing a creator does. It takes the slot under
+  `MatchStageCard` that creator/live leaves empty. A header button was rejected: the header is in
+  flow, so it scrolls away and would only help someone already at the top.
+
+### Next
+- **The iPhone is the blocker.** Unverified on iOS: the keyboard fix, plus the zoom lock and
+  `app/error.tsx` from earlier in the week. `/otp?phone=…&expires=…` reaches the screen with no
+  backend, and `/dev-login` reaches the guarded pages, so a dead API doesn't block any of it.
+- Push all six commits to both remotes.
+- Wizard submit (`POST /matches`) is still the next real feature — step ۲ produces a valid `clubId`
+  and 08-27 brought field-level errors; work around the missing-`title` 500 with a generated title.
+
 ## Session — 2026-08-27/28: zoom lock, 401 handling, copy
 On `main`, pushed to both remotes (`eae34d5`).
 
