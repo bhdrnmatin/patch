@@ -60,6 +60,9 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
         return (
           <div key={i} className="relative flex-1 h-full">
             <OtpBox value={digit} state={state} />
+            {/* Not opacity-0: iOS and Android both withhold the long-press paste callout
+                from a fully transparent field. Visible element, invisible contents —
+                the OtpBox behind it draws the digit. */}
             <input
               ref={(el) => { inputs.current[i] = el; }}
               type="text"
@@ -69,7 +72,7 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
               onChange={(e) => handleChange(i, e)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               onFocus={() => inputs.current[i]?.select()}
-              className="absolute inset-0 opacity-0 cursor-pointer"
+              className="absolute inset-0 cursor-pointer bg-transparent border-0 p-0 text-transparent caret-transparent selection:bg-transparent focus:outline-none"
             />
           </div>
         );
