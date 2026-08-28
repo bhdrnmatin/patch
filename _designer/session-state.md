@@ -1,5 +1,92 @@
 # Session State
 
+## Session — 2026-08-27/28: zoom lock, 401 handling, copy
+On `main`, pushed to both remotes (`eae34d5`).
+
+- **The app can no longer zoom** (`98c8c07`). Pinching pushed the fixed bars off-screen, and iOS
+  auto-zooms on focusing any field under 16px — which is every input here, they're all `text-sm`.
+  Three layers because none covers every browser: `user-scalable=no` + `maximum-scale=1` in the
+  viewport export (Android, the installed PWA, and the focus-zoom everywhere), `touch-action:
+  manipulation` on `body` for double-tap, and a `gesturestart` guard in `AppScroll` for pinch in an
+  iOS Safari tab, which ignores the meta. **Costs pinch-zoom as a reading aid** — if that bites, the
+  answer is larger text, not zoom back on.
+- **A 401 ends the session; a local clock no longer decides** (`9c9f0d3`). `apiFetch` only logged out
+  if `exp` had passed *here*, so rotating the JWT signing key on a deploy left every stored token
+  looking valid: the 401 fell through to the generic error screen, whose retry replayed the same 401,
+  with nothing routing back to `/login`. The server is the authority now — after the one
+  refresh-and-replay chance, a 401 clears the session. Safe because this API uses **403** for
+  authorization. `lib/api/client.test.ts` covers the four paths (key rotation, stale-token recovery,
+  refresh-then-still-401 with no loop, `auth:false` untouched): `npx tsx lib/api/client.test.ts`.
+- **Copy** (`eae34d5`): `/matches` is a date-strip page — it always shows one day — so the hero and
+  the empty state say **مچ‌های روز** rather than claiming the whole app is empty. Wizard: عمومی
+  points at the list by its new name, آمریکانو says بازیکنان (یاران was retired by the step-4 rework).
+
+## Session — 2026-08-24/25: the live API probe
+On `main`, pushed to both remotes. Ten commits; the bulk of the output is **`_designer/api-findings.md`**,
+which is now the record of what the deployed API *does* rather than what its spec claims. The backend
+redeployed repeatedly mid-probe, so several findings are dated snapshots.
+
+- **`scripts/api.sh`** (`c6acbc9`, README'd in `e5ed290`) — access tokens last 15 minutes, so every
+  hand-run curl needed a fresh one pasted in. The script does the whole dance: OTP login → verify →
+  admin login, then any GET/POST with the bearer attached and a refresh when `exp` passes. Session in
+  `.api-session.json`, **gitignored — it holds a real refresh token**. Settled three unconfirmed
+  integration notes: phone format is `09…` (not `+98…`), gender is `MALE`/`FEMALE`,
+  `profileCompletionStatus` is `COMPLETE`/`INCOMPLETE`. Later hardened (`3f30c8e`) to refuse writing a
+  session with no `accessToken` — the API 500s during deploys and the old save wrote that error body
+  straight over the stored tokens, losing the login.
+- **Court picker now fetches real clubs** (`b5a3cb2`) — step ۲ was picking from five invented Karaj
+  clubs, so the id it produced meant nothing and `POST /matches` requires a `clubId` it recognises.
+  `ClubResponse` maps onto `CourtOption` exactly (name→club, address→location); filtered to `ACTIVE`;
+  paging stood in for by one oversized page (five clubs, one city). **This is the first part of the
+  wizard that can produce a submittable match.**
+- **An error boundary at the app segment** (`8752174`) — there was none, and every accessor is read
+  through `useSuspenseQuery`, which throws when a fetch fails. Free while `lib/data` returned mocks;
+  not free now the court picker fetches. One boundary covers every page, so the read paths still to be
+  wired get it without further thought. Build-verified, **not yet seen rendering in a browser**.
+- **Roster names arrived** (`3f30c8e`) — the API replaced `organizerAccountId` with a nested organizer
+  object and put `firstName`/`lastName` on participants, so the players grid, the creator's name and
+  the approve/reject rows have something to render.
+
+### What the probe found (all in `_designer/api-findings.md`)
+- **`POST /matches` names the offending field now** (`a24151e`) — `loc: "format"` with a Persian
+  message for a bad enum, `loc: "clubId"` for an unknown club, so the wizard can finally highlight
+  what's wrong. Still open: a *missing* field comes back all-null (the `@NotNull` path skips the new
+  handler), a missing `title` still **500s**, bean-validation messages leak untranslated English, and
+  `scheduledAt` has picked up an **undocumented must-be-future constraint** the wizard should know.
+- **The create-match spec is wrong** (`01bd155`, `63d9ada`) — `title`, `capacity` and `durationHours`
+  are mandatory in practice but unannotated. Only `durationHours` is required on both sides: عنوان مچ
+  is labelled اختیاری and step ۱ gates on format and invite alone, and capacity isn't a concept the
+  wizard has (رقابتی caps at four, دوستانه/آمریکانو are deliberately uncapped — inexpressible).
+- **`durationHours` is an integer** (`31ffba8`) — the standard **90-minute padel slot has no
+  representation**, and sending `1.5` silently stores `1`. Zero and negatives rejected; no upper bound
+  (99 hours accepted).
+- **Every UUID 500 is one missing handler** (`e550b59`) — any id `UUID.fromString` can't parse throws
+  past the exception handlers on every controller; Java's lenient parser is why it looked
+  per-endpoint (a truncated uuid parses and 404s, one trailing character 500s). Also: **DELETE is a
+  soft delete** — the match becomes `CANCELLED` and stays readable by id and invite token, so a saved
+  link resolves to a cancelled match rather than a 404 and **the app must handle that state**.
+- **Invisible invitations** (`40b31fc`) — there's no organizer-side invitation list, and an invite
+  stays out of `participants` until accepted. Worse, the *design* has no pending state:
+  `PlayerSlotButton` renders a filled chip or a dashed افزودن بازیکن, so an already-invited player
+  looks identical to an empty slot, and re-inviting returns `matchmaking.invite.alreadyInvited` as a
+  raw key. The wizard models دعوت‌شده in step ۵, but it lives in the draft and dies on save.
+- **No player lookup** (`339a214`) — the JWT's account id is not the player id and there's no endpoint
+  for any player but yourself, so the wizard's add-a-Patch-player flow has no endpoint behind it.
+- **برگزار کننده has no API representation** (`8f46d71`) — the API knows exactly one organizer, the
+  caller who POSTs. We treat that as the *creator* and keep برگزار کننده (مربی) as a role a
+  player-creator can hand to a teammate, so `draft.myRole`/`draft.coach` are dropped on save. Flag the
+  vocabulary when raising it: the API's "organizer" is our creator, and the two read as synonyms in Persian.
+
+### Next
+- Wizard submit is the next real step: step ۲ produces a valid `clubId`, so wire `POST /matches`
+  against the field-level errors — but decide the `title`-500 and 90-minute-duration gaps first
+  (both need the backend).
+- Backend asks, in order: annotate the required create fields + stop the missing-`title` 500;
+  `durationHours` → minutes or a decimal; an organizer-side invitation list; a player lookup endpoint.
+- The error boundary and the whole zoom lock are **unverified on a device**.
+- Still carried from 08-23: the wizard-footer sliver check (step 1 → 2), `/activity` missing from
+  `BottomNav`, `TournamentCard`'s dead جزئیات تورنومنت CTA.
+
 ## Session — 2026-08-23: the Safari device pass
 All committed to `main` (6 commits) and pushed to both remotes. Everything here came from
 screenshots on a real iPhone against `10.49.218.155:3000` — this is the device check the

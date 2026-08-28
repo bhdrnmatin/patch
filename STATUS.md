@@ -263,17 +263,23 @@ Components live in `app/matches/create/_components/`.
 
 ---
 
-## API Integration (auth + profile)
+## API Integration (auth + profile + clubs)
 
-Branch `feat/api-auth-profile`. Wires the auth/profile flows to `api.patchapp.ir`;
-all other features stay on the mock `lib/data` seam (no endpoints yet). The API sends
-no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upstream.
+Branch `feat/api-auth-profile`. Wires the auth/profile flows to `api.patchapp.ir`, plus
+the court picker's club list (2026-08-25); every other feature stays on the mock `lib/data`
+seam. The API sends no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to
+the upstream. What the deployed API actually does — as opposed to what its spec claims —
+is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
 
 ### Infrastructure — `lib/api/`
 - [x] `config` / `session` (localStorage bearer, SSR-guarded, reactive) / `client` (`apiFetch`, `ApiError`, 401 handling)
 - [x] `types` (API DTOs) / `auth` (requestOtp/verifyOtp/logout) / `players` (getMe + profile updates)
 - [x] `useAuth` hook + `useRequireAuth`/`useRedirectIfAuthed`; `AuthGuard` — `app/_components/AuthGuard.tsx`
 - [x] `toLatinDigits` — `lib/persian.ts`; proxy rewrite — `next.config.ts`; `.env.example`
+- [x] `clubs` (`listClubs`, ACTIVE-filtered) — feeds the wizard's court picker via `lib/data/matches.ts`
+- [x] Error boundary — `app/error.tsx` (one at the app segment; every `useSuspenseQuery` read path is covered)
+- [x] `scripts/api.sh` — authenticated curl against the live API (OTP login → verify → admin login,
+      bearer attached, auto-refresh). Session in `.api-session.json`, **gitignored — real refresh token**
 
 ### Wired flows
 - [x] Login (request OTP), OTP (verify → tokens → route by profile completeness)
@@ -282,6 +288,8 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
 - [x] `/profile`: live avatar (`ProfileAvatarLive`, silhouette fallback), bio (`ProfileIdentity`), preferred-side chip (`ProfileMeta`)
 - [x] Logout row on `/profile` → `POST /auth/logout`; settings row hidden until settings flows exist
 - [x] Route guards: `(main)`, `/profile`, `/matches/*` layouts; login/otp redirect when authed
+- [x] Create wizard step ۲: court picker lists real clubs (`ClubResponse` → `CourtOption`), so the
+      `clubId` it produces is one the API recognises — the first wizard step that can submit
 
 ### Status
 - tsc + lint clean; all routes 200; same-origin proxy verified forwarding to upstream.
@@ -297,6 +305,16 @@ no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to the upst
   instead. The photo public/private toggle was removed (write-only, no read side on `/players/me`).
 - [x] **OTP resend + SMS autofill (2026-08-03/04):** resend button at cooldown zero; `autocomplete="one-time-code"`
   + multi-digit paste; Web OTP API wired for Android. Backend still owes the SMS `@<origin> #<code>` last line.
+- [x] **A rejected token ends the session (2026-08-28):** `apiFetch` used to log out only when `exp`
+  had passed locally, so a rotated signing key left dead tokens looking valid and the 401 dead-ended on
+  the error screen. After the one refresh-and-replay chance, a 401 now clears the session (this API uses
+  403 for authorization). Covered by `lib/api/client.test.ts` — `npx tsx lib/api/client.test.ts`.
+- [ ] **`POST /matches` is not wired yet** — step ۲ produces a valid `clubId` and 08-27 brought
+  field-level errors (`loc: "format"`, `loc: "clubId"`), but two backend gaps block submit: a missing
+  `title` 500s, and integer `durationHours` can't express a 90-minute match. See TODO.md.
+- [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
+  out of `participants` until accepted; the design has no pending state either. No player lookup
+  endpoint, so the wizard's add-a-Patch-player flow has nothing behind it.
 - (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 
 ---

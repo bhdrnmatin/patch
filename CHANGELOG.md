@@ -8,6 +8,78 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-28 — the list says which day it is
+
+- [Matches] `/matches` is a date-strip page — it always shows one day, never the whole backlog — but
+  the hero said مچ‌ها and the empty state said "هنوز مَچی نیست", which claims the app is empty when
+  only that day is. Both now say **مچ‌های روز**.
+- [Create] عمومی points at that list by its new name, and آمریکانو says بازیکنان rather than یاران,
+  which the step-۴ rework retired.
+
+### 2026-08-28 — a rejected token ends the session
+
+- [API] `apiFetch` only logged out when `exp` had passed **locally**. Rotate the JWT signing key on a
+  deploy and every issued token still looks valid here, so the 401 fell through to the generic error
+  screen — whose retry button replayed the same 401, with nothing routing back to `/login`.
+- [API] The server is the authority: after the one refresh-and-replay chance, a 401 ends the session.
+  Safe to treat that way because this API uses **403** for authorization, so nothing legitimate is caught.
+- [Verified] `lib/api/client.test.ts` covers the four paths — key rotation, a stale token that
+  recovers, refresh-then-still-401 (one retry, no loop), and `auth: false` calls left alone.
+  `npx tsx lib/api/client.test.ts`.
+
+### 2026-08-27 — the app stops zooming
+
+- [Chrome] Pinching pushed the fixed bars off-screen, and iOS auto-zooms whenever you focus a field
+  under 16px — which is every field here, they are all `text-sm`.
+- [Chrome] Three layers, because no single one covers every browser: `user-scalable=no` +
+  `maximum-scale=1` in the `viewport` export (Android, the installed PWA, and the input-focus zoom
+  everywhere), `touch-action: manipulation` on `body` for double-tap, and a `gesturestart` guard in
+  `AppScroll` for pinch in an iOS Safari tab, which ignores the meta.
+- [Tradeoff] This takes pinch-zoom away as a reading aid. If that bites, the answer is larger text,
+  not zoom back on.
+
+### 2026-08-25 — a failed fetch no longer crashes the page
+
+- [Infra] The app had no error boundary at all, and every accessor is read through `useSuspenseQuery`,
+  which throws when a fetch fails. That cost nothing while `lib/data` returned mocks — those could not
+  fail. Now that the court picker fetches clubs it can, and the API has gone down repeatedly while it
+  is being built.
+- [Infra] One boundary at the app segment (`app/error.tsx`) covers every page, so the read paths still
+  to be wired get it without further thought.
+- [Verified] Production build succeeds with it in the route tree. **Not yet seen rendering in a browser.**
+
+### 2026-08-25 — the court picker is fed by the API
+
+- [Create] Step ۲ was picking from five invented Karaj clubs, so the id it produced meant nothing to
+  the API — and `POST /matches` requires a `clubId` it recognises. Real clubs are seeded now, and
+  `ClubResponse` maps onto `CourtOption` exactly: name → club, address → location. **This makes step ۲
+  the first part of the wizard that can produce a submittable match.**
+- [API] Filtered to `ACTIVE` — the picker shouldn't offer a club that can't take a booking. Paging is
+  stood in for by one oversized page: five clubs, one city.
+- [Verified] Against the live endpoint — five clubs, five options, no empty fields.
+
+### 2026-08-24 — the live API is probed, and written down
+
+- [Tooling] `scripts/api.sh` does the whole auth dance (OTP login → verify → admin login, then any
+  GET/POST with the bearer attached, refreshing when `exp` passes) because access tokens last 15
+  minutes and every hand-run curl needed a fresh one pasted in first. Session in `.api-session.json`,
+  **gitignored — it holds a real refresh token**. Later hardened to refuse writing a session with no
+  `accessToken`: the API 500s during deploys, and the old save wrote that error body straight over the
+  stored tokens, losing the login.
+- [Docs] `_designer/api-findings.md` is the record of what the deployed API *does*, as opposed to what
+  its spec claims. The backend redeployed repeatedly during the probe, so entries are dated snapshots.
+- [API] What it found, all still open on the backend: `POST /matches` requires `title`, `capacity` and
+  `durationHours` without annotating them (a missing `title` **500s**); `durationHours` is an integer,
+  so the standard **90-minute padel slot has no representation** and `1.5` silently stores `1`; every
+  UUID 500 is one missing `MethodArgumentTypeMismatchException` handler; `DELETE` is a **soft delete**,
+  so a saved link resolves to a `CANCELLED` match rather than a 404; there is no player lookup and no
+  organizer-side invitation list, so an invited teammate is invisible until they accept — and the
+  design has no pending state to show them in either.
+- [API] Field-level create errors landed on 08-27: `loc: "format"` with a Persian message for a bad
+  enum, `loc: "clubId"` for an unknown club, so the wizard can finally highlight what's wrong. A
+  *missing* field still comes back all-null, and `scheduledAt` has picked up an undocumented
+  must-be-future constraint.
+
 ### 2026-08-23 — the scroll cue measures the right thing
 
 - [Create] The wizard's ⌄ cue never went away at the bottom of a step. It was asking *"can the
