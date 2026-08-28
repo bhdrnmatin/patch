@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { appScrollEl } from "@/app/_components/AppScroll";
@@ -12,7 +12,9 @@ import StepLocation from "./_components/StepLocation";
 import StepSchedule from "./_components/StepSchedule";
 import StepPlayers from "./_components/StepPlayers";
 import StepReview from "./_components/StepReview";
+import ResumeDraftBar from "./_components/ResumeDraftBar";
 import { getCourtOptions, getPickablePlayers, createMatch } from "@/lib/data";
+import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
 import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
@@ -63,6 +65,27 @@ function CreateMatchContent() {
   const [draft, setDraft] = useState<CreateMatchDraft>(emptyDraft);
   const patch = (p: Partial<CreateMatchDraft>) => setDraft((d) => ({ ...d, ...p }));
 
+  // A saved draft, offered but not applied — resuming is the user's choice.
+  // Read after mount because localStorage doesn't exist during SSR.
+  const [saved, setSaved] = useState<SavedDraft | null>(null);
+  // localStorage can't be read while rendering — the server has none, and a
+  // lazy initialiser would hydrate a bar the server didn't send. A mount effect
+  // is React's own answer for that; the cascading render it warns about is one,
+  // on mount, before anything is on screen.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setSaved(readDraft()), []);
+
+  const touched = JSON.stringify(draft) !== JSON.stringify(emptyDraft);
+
+  // Autosave rather than asking on the way out: the App Router gives no reliable
+  // hook on leaving (hardware back, a nav tap and the edge swipe all bypass the
+  // wizard's own ✕), so a prompt would catch one exit in four and silently drop
+  // the work on the rest. An untouched draft never writes, so opening the wizard
+  // and closing it again can't overwrite a real saved draft with an empty one.
+  useEffect(() => {
+    if (touched) writeDraft({ draft, step, maxStep });
+  }, [draft, step, maxStep, touched]);
+
   const goTo = (target: number) => {
     setStep(target);
     setMaxStep((m) => Math.max(m, target));
@@ -72,6 +95,7 @@ function CreateMatchContent() {
   const { mutate, isPending } = useMutation({
     mutationFn: createMatch,
     onSuccess: (id) => {
+      clearDraft();
       queryClient.invalidateQueries({ queryKey: ["matches"] });
       router.push(`/matches/${id}?role=creator&status=upcoming`);
     },
@@ -93,6 +117,23 @@ function CreateMatchContent() {
       </div>
 
       <div className="px-6 pt-4 flex flex-col gap-4">
+        {/* Goes as soon as they start filling this one in — whichever match they
+            end up making, the other one is no longer the one they're working on. */}
+        {saved && !touched && (
+          <ResumeDraftBar
+            onResume={() => {
+              setDraft(saved.draft);
+              setMaxStep(saved.maxStep);
+              setStep(saved.step);
+              setSaved(null);
+              appScrollEl()?.scrollTo({ top: 0 });
+            }}
+            onDiscard={() => {
+              clearDraft();
+              setSaved(null);
+            }}
+          />
+        )}
         {step === 0 && <StepDetails draft={draft} patch={patch} />}
         {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
         {step === 2 && <StepSchedule draft={draft} patch={patch} />}
