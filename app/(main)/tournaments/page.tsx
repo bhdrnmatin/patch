@@ -27,7 +27,7 @@ export default function TournamentsPage() {
   const [sort, setSort] = useState<MatchSort>(DEFAULT_MATCH_SORT);
 
   return (
-    <div className="w-full min-h-dvh">
+    <div className="w-full hero-page">
       <SportPageHeader
         title="تورنمنت"
         days={days}

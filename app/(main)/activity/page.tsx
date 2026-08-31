@@ -27,7 +27,7 @@ export default function ActivityPage() {
   const [sort, setSort] = useState<MatchSort>(DEFAULT_MATCH_SORT);
 
   return (
-    <div className="w-full min-h-dvh">
+    <div className="w-full hero-page">
       <SportPageHeader
         title="فعالیت‌ها"
         onFilter={() => setSheet("filter")}

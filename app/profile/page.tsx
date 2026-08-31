@@ -57,10 +57,11 @@ const navItems = [
 
 export default function ProfilePage() {
   return (
-    <main className="mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-[calc(6rem+var(--safe-b))]">
+    <main className="mx-auto w-full max-w-[430px] hero-page bg-surface pb-[calc(6rem+var(--safe-b))]">
       <ProfileHero />
 
-      {/* Main content — identity overlaps the hero via its own -mt-12 */}
+      {/* Main content — ProfileIdentity's pt-[60px] clears the avatar that
+          hangs out of the hero above */}
       <div className="px-6 flex flex-col gap-6 items-end">
         {/* Avatar + name (live) + city/gender chips */}
         <ProfileIdentity

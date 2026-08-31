@@ -138,10 +138,13 @@ body {
    while the layout they describe lived in this file. The spacer and the athlete
    photo read --hero-max the same way (h-[var(--hero-max)]).
 
-   Only put this on a page whose content can scroll at least that delta
-   (276-72 = 204px) past the viewport. A shorter page strands --collapse
-   part-way and every part parks mid-transition — which is what took the
-   collapse off the profile hero, a ~780px page with 60px of scroll. */
+   The page has to be able to scroll at least that delta (276-72 = 204px) past
+   the viewport, or --collapse strands part-way and every part parks
+   mid-transition. .hero-page below guarantees it, so a list page collapses the
+   same whether the API returned twenty rows or none. Without it /tournaments
+   (which has cards) collapsed and /matches and /activity did not. It does not
+   rescue a hero on a short page that sets its own height — that is what took
+   the collapse off the profile hero, a ~780px page with 60px of scroll. */
 :root {
   --hero-max: 276px;
   /* Bare title row: collapsed the title sits 20–52px. */
@@ -149,7 +152,7 @@ body {
   /* Surface band above every hero. iOS Safari tints its toolbars from the
      colour at the top of the page, so whatever touches that edge decides the
      bar. Leaving the hero flush there gave a blue bar on the fixed heroes and
-     a white one on /profile (whose hero scrolls away) — this band makes the
+     a white one on /profile (whose hero used to scroll away) — this band makes the
      app's own surface the top edge on every page, so the bar never changes. */
   --hero-gap: calc(env(safe-area-inset-top, 0px) + 12px);
 
@@ -161,6 +164,15 @@ body {
      this, and every page's bottom clearance adds it. env() only reports
      anything with viewport-fit=cover (set in the root `viewport` export). */
   --safe-b: env(safe-area-inset-bottom, 0px);
+}
+.hero-page {
+  /* A list page carrying a .hero-collapse header. Its own content decides how
+     far it scrolls, and an empty list scrolls nowhere — so guarantee the
+     collapse range here instead of leaving the header at the mercy of how much
+     data came back. --hero-min resolves to the :root 72px on the page (the
+     date strip's 130px only applies on the header element), so this reserves
+     the deeper of the two ranges and covers both variants. */
+  min-height: calc(var(--vvh, 100dvh) + var(--hero-max) - var(--hero-min));
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
@@ -185,6 +197,17 @@ body {
   top: calc(56px - 40px * var(--collapse, 0));
   transform: scale(calc(1 - 0.0834 * var(--collapse, 0)));
   transform-origin: left center;
+}
+.hero-collapse-avatar {
+  /* /profile's avatar straddles the hero's bottom edge and hangs 48px below
+     it, so it rides up as the header shrinks and would end up sitting on the
+     content under a 72px bar — the exact parking this collapse was pulled off
+     the profile hero for. Fade and shrink it out instead, gone by the halfway
+     point, well before the bar lands. The translateY carries the 48px overhang
+     that translate-y-12 used to hold: a utility transform would be clobbered
+     by the scale below. */
+  transform: translateY(3rem) scale(calc(1 - 0.4 * var(--collapse, 0)));
+  opacity: calc(1 - 2 * var(--collapse, 0));
 }
 .hero-collapse-photo {
   /* Fixed at the open height and anchored to the bottom, so it scales down

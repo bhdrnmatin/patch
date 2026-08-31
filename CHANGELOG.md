@@ -8,6 +8,73 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-08-31 — every hero collapses, not just the one with rows
+
+- [Hero] `/tournaments` collapsed its header fully and `/matches` and `/activity` did not. The header
+  was never the difference: `useCollapseHeader` maps scrollTop onto the header's own height delta, so
+  `--collapse` only reaches 1 if the page can scroll that far. Tournaments renders cards; the other
+  two are empty against a backend with no rows, so there was barely any scroll and every part parked
+  mid-transition.
+- [Hero] `.hero-page` (`min-height: calc(var(--vvh,100dvh) + var(--hero-max) - var(--hero-min))`)
+  guarantees the range on the page root, so a list page collapses the same whether the API returned
+  twenty rows or none. It reads the same tokens the header does rather than hardcoding 204px.
+  `--hero-min` resolves to the `:root` 72px on the page — the date strip's 130px only applies on the
+  header element — so it reserves the deeper of the two ranges and covers both variants. On
+  /tournaments it is only a floor and never binds.
+- [Profile] `ProfileHero` is a collapsing header now, not a static one. It was static because the
+  ~780px page could only offer ~60px of scroll and `--collapse` topped out around 0.3; `.hero-page`
+  removes that reason.
+- [Profile] The avatar was the other half, and the harder one: it straddles the header's bottom edge
+  and hangs 48px below, so it rides up with the collapse and would land on the content under a 72px
+  bar. `.hero-collapse-avatar` fades and shrinks it out by the halfway point, leaving the same
+  title-only bar the list pages collapse to. Its `translateY` carries the 48px overhang that
+  `translate-y-12` held — a utility transform would be clobbered by the scale.
+- [Profile] The hero is fixed now, so content scrolls *under* it rather than the page moving as one.
+  The spacer is `calc(var(--hero-max)+var(--hero-gap))`, exactly what the in-flow hero occupied, so
+  `ProfileIdentity`'s `pt-[60px]` still clears the overhang and the resting layout is unchanged.
+- [Verified] Rules present in the served CSS, `tsc` clean, eslint no errors. **The collapse itself is
+  unverified** — /matches, /activity and /profile are all behind `AuthGuard`, so a headless browser
+  with no session only ever sees the spinner. Needs a signed-in device.
+- [Note] The `globals.css` edit did not reach the browser until a restart with a cleared `.next` —
+  `.hero-collapse` was in the served chunk and `.hero-page` was not, while the rule sat on disk. The
+  known Turbopack stale-CSS miss; check the served chunk before re-diagnosing.
+
+### 2026-08-31 — the keyboard stops dragging the auth card off-screen
+
+- [Auth] Focusing the phone field on a real iPhone brought up the keypad and took the card with it:
+  hero image, then a tall empty band, no card anywhere. `AppScroll` sizes itself to `--vvh` so the
+  visual viewport is what scrolls, but every auth frame inside it was still on `dvh` — the *layout*
+  viewport, which iOS never shrinks for the keyboard. An 844px frame inside a ~430px box, and
+  `overflow-hidden` meant the bottom-pinned `AuthCard` was not merely below the fold, it was
+  unreachable.
+- [Auth] The frames read `--vvh` too: `AuthSlide`, the `(auth)` layout, and the login, otp,
+  profile-setup and assessment wrappers.
+- [Auth] Those wrappers use `min-h`, not `h`. With a fixed height plus `overflow-hidden` a card
+  taller than the shrunken frame would clip with no way to scroll to it; `min-h` lets the frame grow
+  and `AppScroll` scroll it instead.
+- [Auth] Onboarding deliberately keeps `h-dvh`. `StorySlide` is `w-full h-full` with every child
+  absolute, so it has no intrinsic height and collapses to zero against a non-definite parent — the
+  screen rendered black. It has no text input, so it never wanted the change.
+- [Verified] All five auth screens render correctly at rest; the keyboard behaviour confirmed on the
+  device. Completes `ac70a4b`, which fixed the scroller and left the content behind.
+
+### 2026-08-31 — the bare URL goes to the matches list
+
+- [Nav] `BottomNav`'s tabs are /matches, /clubs, /activity and /profile — nothing had linked to "/"
+  since the discover placeholder was written, so the only ways to reach it were typing the bare
+  origin and launching the installed PWA, whose `start_url` is "/". Both landed on a page reading
+  "Discover".
+- [Nav] The redirect lives in `next.config` rather than in the page. A page-level `redirect()` works,
+  but under streaming Next delivers it inside the RSC payload instead of as an HTTP redirect, so the
+  browser paints the empty shell before obeying it — a blank flash on every cold launch.
+  `redirects()` answers with a 307 before anything renders.
+- [Nav] Destination comes from `POST_AUTH_ROUTE`, so the bare URL, the PWA launch and every
+  post-auth hop stay on one constant. `app/(main)/page.tsx` is gone.
+- [Note] Deleting that route file while `next dev` was running poisoned Turbopack's persistent cache:
+  every HMR check panicked with `Failed to write app endpoint /(main)/page` and the overlay reloaded
+  the page, so every route in the group looked like a redirect loop. Stop the server, empty `.next`,
+  restart — and do that after deleting or renaming any `page.tsx` rather than trusting HMR.
+
 ### 2026-08-28 — the join requests come up to the top
 
 - [Match] درخواست‌های ورود was the last section on the page, below the promo card, the court card,

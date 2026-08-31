@@ -32,7 +32,7 @@ export default function MatchesPage() {
   }, [matchList, filter, sort]);
 
   return (
-    <div className="w-full min-h-dvh">
+    <div className="w-full hero-page">
       <MatchesHeader
         days={days}
         selectedId={selectedDay}

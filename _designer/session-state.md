@@ -1,5 +1,44 @@
 # Session State
 
+## Session — 2026-08-31: the root URL, the iPhone keyboard, and the collapsing heroes
+On `main`. Three commits, **not pushed** (both remotes are at `b12b8ab`). **An iPhone finally
+entered the loop**, which is what moved the keyboard fix from unverified to fixed.
+
+- **`/` redirects to `/matches`** (`05ae502`) — nothing had linked to the discover placeholder since
+  BottomNav's tabs became /matches, /clubs, /activity, /profile, but the bare origin and the
+  installed PWA (`start_url: "/"`) both still landed on it. In `next.config`, not the page: under
+  streaming a page-level `redirect()` travels inside the RSC payload, so the browser paints the empty
+  shell first. `redirects()` is a 307 before anything renders.
+- **The auth keyboard fix, now verified** (`6eec6bc`) — `AppScroll` was sized to `--vvh` but every
+  auth frame inside it was still `dvh`, the layout viewport iOS never shrinks for the keyboard. An
+  844px frame in a ~430px box with `overflow-hidden`, so the card wasn't below the fold, it was
+  unreachable. Frames read `--vvh` now, with `min-h` so a tall card grows and scrolls instead of
+  clipping. Onboarding deliberately keeps `h-dvh` — `StorySlide` has no intrinsic height and rendered
+  black against a non-definite parent. Completes `ac70a4b`.
+- **Every hero collapses** — `.hero-page` guarantees the 204px of scroll the collapse needs, so an
+  empty `/matches` behaves like a full `/tournaments`. `ProfileHero` is a collapsing header now too;
+  `.hero-collapse-avatar` fades out the avatar that straddles its bottom edge.
+
+### Two traps that cost most of the session
+- **Deleting a route file while `next dev` runs poisons Turbopack's cache.** Every HMR check panicked
+  (`Failed to write app endpoint /(main)/page`) and the overlay reloaded, so every route in the group
+  looked like an app-level redirect loop. I spent a long time in the auth guard before asking for the
+  terminal output, which named it immediately. **When the dev server is in play, read its log first.**
+- **The `globals.css` stale-CSS miss is real and repeated.** `.hero-collapse` was in the served chunk
+  and `.hero-page` was not, with the rule on disk. Only a restart with a cleared `.next` fixed it.
+
+### Next
+- **Push the three commits to both remotes.**
+- **Verify the collapse on a signed-in device.** /matches, /activity and /profile are behind
+  `AuthGuard`, so headless only ever sees the spinner — none of the collapse work is visually
+  confirmed. `/profile` especially: its hero is fixed now, so content scrolls under it, and the
+  avatar fade is a design call I made rather than one you chose.
+- **The old iPad (iOS 12.5.7) can never run this app** — Safari 12 has no `@layer`, so it drops every
+  Tailwind v4 utility, and no `visualViewport`, so it can't test the keyboard fix either. Tailwind
+  v4's floor is Safari 16.4. Don't debug against it.
+- Wizard submit (`POST /matches`) is still the next real feature; the missing-`title` 500 still needs
+  a generated title.
+
 ## Session — 2026-08-28 (pm): drafts, the iOS keyboard, and the doc catch-up
 Six commits on `main`, **not pushed** (both remotes are at `4671a03`). Started as a docs session and
 turned into a bug session; two of the fixes came out of a screen recording from a real iPhone.
