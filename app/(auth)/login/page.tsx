@@ -39,7 +39,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="flex items-center justify-center h-dvh overflow-hidden bg-black"
+      className="flex items-center justify-center min-h-[var(--vvh,100dvh)] overflow-hidden bg-black"
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
       <div className="relative w-full max-w-[430px] h-full">

@@ -7,7 +7,7 @@ interface AuthSlideProps {
 
 export default function AuthSlide({ backgroundImage, objectPosition = "50% 50%", children }: AuthSlideProps) {
   return (
-    <div className="relative w-full min-h-dvh overflow-hidden">
+    <div className="relative w-full min-h-[var(--vvh,100dvh)] overflow-hidden">
       <img
         src={backgroundImage}
         alt=""
