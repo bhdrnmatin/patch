@@ -207,7 +207,7 @@ Other recurring values (already in Tailwind's default scale):
 /(auth)/otp            → OTP code entry
 /(auth)/profile-setup  → name / city / gender form
 /(auth)/assessment     → 5-step skill survey
-/(main)/               → discover (placeholder)
+/(main)/               → 307 to /matches (next.config redirects; no discover page)
 /(main)/matches        → placeholder
 /(main)/leagues        → placeholder
 /(main)/tournaments    → placeholder
