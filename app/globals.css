@@ -169,10 +169,20 @@ body {
   /* A list page carrying a .hero-collapse header. Its own content decides how
      far it scrolls, and an empty list scrolls nowhere — so guarantee the
      collapse range here instead of leaving the header at the mercy of how much
-     data came back. --hero-min resolves to the :root 72px on the page (the
-     date strip's 130px only applies on the header element), so this reserves
-     the deeper of the two ranges and covers both variants. */
+     data came back.
+
+     It must reserve *this page's* range, not the deepest one. Reserving more
+     buys scroll the header has already finished using: --collapse hits 1, the
+     header stops shrinking, and the content keeps rising into it. That is how
+     /matches ended up drawing its empty state under the collapsed bar — 58px
+     of overshoot, exactly the 130-72 the date strip adds. So pair
+     .hero-page-dates with .hero-collapse-dates, the same way the header does. */
   min-height: calc(var(--vvh, 100dvh) + var(--hero-max) - var(--hero-min));
+}
+.hero-page-dates {
+  /* Mirrors .hero-collapse-dates: a hero with a date strip stops at 130px, so
+     its page only has 146px of collapse to scroll through. */
+  --hero-min: 130px;
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));

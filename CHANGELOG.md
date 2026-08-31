@@ -18,9 +18,11 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Hero] `.hero-page` (`min-height: calc(var(--vvh,100dvh) + var(--hero-max) - var(--hero-min))`)
   guarantees the range on the page root, so a list page collapses the same whether the API returned
   twenty rows or none. It reads the same tokens the header does rather than hardcoding 204px.
-  `--hero-min` resolves to the `:root` 72px on the page — the date strip's 130px only applies on the
-  header element — so it reserves the deeper of the two ranges and covers both variants. On
-  /tournaments it is only a floor and never binds.
+  A page must reserve *its own* range, not the deepest one: `.hero-page-dates` pairs with
+  `.hero-collapse-dates` so a date-strip page reserves 146px, not 204px. Reserving more buys scroll
+  the header has already finished using — `--collapse` hits 1, the header stops shrinking, and the
+  content keeps rising into it, which drew /matches' empty state 18px *under* the collapsed bar.
+  On /tournaments the min-height is only a floor and never binds.
 - [Profile] `ProfileHero` is a collapsing header now, not a static one. It was static because the
   ~780px page could only offer ~60px of scroll and `--collapse` topped out around 0.3; `.hero-page`
   removes that reason.
