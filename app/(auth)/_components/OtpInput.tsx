@@ -28,7 +28,15 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
 
   const handleChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const cleaned = toPersianDigits(e.target.value.replace(/[^0-9۰-۹]/g, ""));
-    if (!cleaned) return;
+    // Emptying a filled box — select-all then Delete, or the caret parked mid-code —
+    // has to remove that digit. Bailing here left a box clearable by Backspace and
+    // by nothing else. Same compaction Backspace does, so the two agree.
+    if (!cleaned) {
+      if (!value[index]) return;
+      onChange(value.slice(0, index) + value.slice(index + 1));
+      if (index > 0) inputs.current[index - 1]?.focus();
+      return;
+    }
     // SMS autofill (autocomplete="one-time-code") delivers the whole code to a
     // single field in one event — spread it across the boxes like a paste.
     if (cleaned.length > 1) {

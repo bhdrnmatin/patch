@@ -8,6 +8,35 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-02 — a WebKit harness for the OTP screen, and the two bugs it found
+
+- [Tooling] `scripts/otp-webkit.mjs` drives `/otp` in Playwright's WebKit under an iPhone 13 device
+  profile and asserts the input mechanics: five `one-time-code` boxes, Persian-only digits, focus
+  stepping, Backspace, paste (separators stripped, over-long codes truncated), the single-event SMS
+  autofill spread, submit gating, and clearing a box. Plain Node + `node:assert`, no framework; it
+  also fails on any console or page error. Deps are `--no-save` (same as puppeteer-core) so
+  package.json stays a product manifest, and the script exits 2 with the install command if the
+  import fails.
+- [Tooling] **It is not a Safari test.** Playwright ships its own WebKit build — same engine, none of
+  the browser chrome. The toolbar, the `visualViewport` keyboard and `env(safe-area-inset-*)` are all
+  absent, so everything `--vvh` and `--safe-b` exist for is still device-only. It covers the JS half.
+- [OTP] Hydration mismatch, found by the harness: `secondsLeft` was seeded from `Date.now()` in a
+  `useState` initialiser, so the server rendered `۰۰:۴۷` and the client rehydrated at `۰۰:۴۶`. React
+  answers a text mismatch by discarding the tree and re-rendering it — with `OtpInput` inside, that
+  can drop focus or an in-flight autofill. It starts `null` now and the countdown slot renders
+  nothing until the first tick. Seeding `0` would hydrate cleanly too, but paint the resend button
+  for one frame before the countdown replaced it.
+- [OTP] An emptied box now clears. `handleChange` bailed on `if (!cleaned) return`, so select-all +
+  Delete — or a caret parked mid-code — did nothing, and a box was clearable by Backspace and by
+  nothing else. It deletes the digit and steps focus back, using the same compaction Backspace
+  already does so the two paths agree. (Compaction means clearing digit ۳ of ۱۲۳۴۵ leaves ۱۲۴۵ with
+  the last box empty, rather than a hole; that is the pre-existing Backspace semantic, not new.)
+- [Note] Web OTP (`OTPCredential`, `otp/page.tsx:52`) is Chromium-only, and the guard correctly
+  no-ops in Safari. The open TODO about the backend ending the SMS with `@<origin> #<code>` therefore
+  buys **Android Chrome only** — iOS Safari uses a separate heuristic that just needs a recognisable
+  code near a keyword, no origin token. Two mechanisms, and the TODO reads as one.
+- [Verified] 10/10 in WebKit, no console or page errors; `tsc`, eslint and `next build` all clean.
+
 ### 2026-09-02 — the empty states stop sitting so far down the page
 
 - [Matches/Activity] `EmptyMatches` and `EmptyActivity` carried `py-20`, which stacked on the page

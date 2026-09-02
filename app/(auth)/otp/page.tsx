@@ -28,10 +28,15 @@ function OtpContent() {
   // replaced by each resend response so the countdown restarts.
   const [expiresAt, setExpiresAt] = useState(() => params.get("expires"));
 
-  // Tick every second so the remaining-time label counts down live.
-  const [secondsLeft, setSecondsLeft] = useState(() =>
-    expiresAt ? Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000)) : 0,
-  );
+  // Ticks every second so the remaining-time label counts down live. Null until
+  // the first tick lands, which is deliberate: seeding this from Date.now() in
+  // the initialiser had the server and the client disagree by a second, and
+  // React responds to a text mismatch by throwing the whole tree out and
+  // re-rendering it — with OtpInput inside, that can drop focus or an in-flight
+  // SMS autofill. Seeding 0 instead would hydrate cleanly but paint the resend
+  // button for one frame before the countdown replaces it. Rendering nothing
+  // until we know is the only option that is both stable and never wrong.
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   useEffect(() => {
     if (!expiresAt) return;
     const target = new Date(expiresAt).getTime();
@@ -63,8 +68,8 @@ function OtpContent() {
     return () => ac.abort();
   }, []);
 
-  const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:${String(
-    secondsLeft % 60,
+  const mmss = `${String(Math.floor((secondsLeft ?? 0) / 60)).padStart(2, "0")}:${String(
+    (secondsLeft ?? 0) % 60,
   ).padStart(2, "0")}`;
 
   // Field completeness only; the code's correctness is verified by the API.
@@ -109,7 +114,7 @@ function OtpContent() {
       >
         <div className="flex flex-col gap-4">
           <OtpInput value={otp} onChange={setOtp} />
-          {expiresAt && (
+          {expiresAt && secondsLeft !== null && (
             secondsLeft > 0 ? (
               <p className="text-xs text-white/80 text-center" dir="rtl">
                 {`ارسال مجدد کد تا ${toPersianDigits(mmss)}`}
