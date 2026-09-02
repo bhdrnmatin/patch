@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-02 — the empty states stop sitting so far down the page
+
+- [Matches/Activity] `EmptyMatches` and `EmptyActivity` carried `py-20`, which stacked on the page
+  wrapper's own `py-6` and left the ball icon 104px below the header. Halved to `py-10` (64px total).
+  Both files carried the identical class string and both pages are empty against the current backend,
+  so fixing only the one in the screenshot would have left the other wrong.
+- [Note] Not centred in the viewport instead: `.hero-page` deliberately makes these pages taller than
+  the screen so the header has room to collapse, so centring would park the empty state lower, not
+  higher.
+
 ### 2026-09-02 — the heroes go back to the top edge
 
 - [Hero] Every hero sat 12px below the top edge with a band of `bg-surface` above it, and was rounded
