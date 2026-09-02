@@ -40,11 +40,16 @@ Check these before writing new UI — reuse first.
 - Collapsing headers: `SportPageHeader` uses `useCollapseHeader()` (`lib/`) — it writes `--collapse` (0 open → 1 collapsed) onto the header element on a rAF, never through React state. **All the geometry lives in `globals.css`**: `--hero-max`/`--hero-min` on `:root` (+ the `.hero-collapse-dates` modifier for a date strip), and the `.hero-collapse*` rules size the title, buttons and photo off `--collapse`. The hook reads those two properties and derives the scroll range, so a caller can't disagree with the CSS. To add one: `fixed` header with `.hero-collapse`, plus an in-flow `h-[var(--hero-max)]` spacer, and **`.hero-page` on the page root** — the page must scroll ≥204px past the viewport or `--collapse` strands part-way and parks every part mid-transition, and `.hero-page` (`min-height: calc(var(--vvh,100dvh) + var(--hero-max) - var(--hero-min))`) guarantees that regardless of how many rows the API returned. **Pair `.hero-page-dates` with `.hero-collapse-dates`** — a page must reserve its own range, and reserving the deeper one buys scroll the header has finished using, so the content rises into the collapsed bar. Without it /tournaments collapsed and the emptier /matches and /activity did not. `profile/_components/ProfileHero` collapses too since `.hero-page` landed — it was static while the short page could only offer ~60px of scroll. Its avatar straddles the header's bottom edge, so `.hero-collapse-avatar` fades and shrinks it out by the halfway point rather than letting it park on the content below the bar
 - `CourtBackdrop` — SVG padel court at night, fills its parent; the default art for every hero.
   Also exports `heroTitleSize(title)` — the open title size, stepped by length
-- **`--hero-gap` (globals.css):** every hero sits this far below the top edge, so `bg-surface` is what
-  touches it. iOS Safari tints its toolbars from the colour at the top of the page — flush heroes gave
-  a blue bar on the fixed ones and a white one on `/profile` (whose hero used to scroll away). Keep the band:
-  a new hero needs `mt-[var(--hero-gap)]` in flow, or `top-[var(--hero-gap)]` plus a fixed `bg-surface`
-  strip and a `calc(var(--hero-max)+var(--hero-gap))` spacer if it's fixed
+- **`--hero-gap` (globals.css):** the inset above every hero — **`env(safe-area-inset-top)`, so 0 in a
+  Safari tab and 0 in today's standalone PWA.** Heroes are **flush to the top edge and full-bleed**,
+  square at the top and `rounded-b-group` at the bottom, which is what Figma draws. It used to add a
+  flat 12px so a band of `bg-surface` touched the top edge and iOS Safari sampled that instead of the
+  hero blue; the root `viewport` export pins `themeColor: "#F5F7FA"`, which Safari prefers over
+  sampling, and the asymmetry the band hid (four fixed heroes blue, `/profile`'s in-flow one scrolling
+  away to white) ended when `ProfileHero` became fixed. **If a blue toolbar comes back, `themeColor` is
+  the knob — don't restore the band.** A new hero still reads the token so a future
+  `black-translucent` status bar works: `mt-[var(--hero-gap)]` in flow, or `top-[var(--hero-gap)]`
+  plus a fixed `bg-surface` strip and a `calc(var(--hero-max)+var(--hero-gap))` spacer if it's fixed
 - `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
 - `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)

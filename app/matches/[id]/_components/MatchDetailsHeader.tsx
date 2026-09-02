@@ -22,7 +22,7 @@ export default function MatchDetailsHeader({ title, showEdit = true, bgImage, at
   const router = useRouter();
 
   return (
-    <header className="relative mt-[var(--hero-gap)] w-full h-[276px] rounded-group overflow-hidden bg-primary">
+    <header className="relative mt-[var(--hero-gap)] w-full h-[276px] rounded-b-group overflow-hidden bg-primary">
       {!bgImage && !athleteImage && <CourtBackdrop />}
 
       {/* Blurred stadium backdrop behind the athlete cutout, mirrored per Figma.

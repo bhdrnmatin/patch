@@ -149,12 +149,22 @@ body {
   --hero-max: 276px;
   /* Bare title row: collapsed the title sits 20–52px. */
   --hero-min: 72px;
-  /* Surface band above every hero. iOS Safari tints its toolbars from the
-     colour at the top of the page, so whatever touches that edge decides the
-     bar. Leaving the hero flush there gave a blue bar on the fixed heroes and
-     a white one on /profile (whose hero used to scroll away) — this band makes the
-     app's own surface the top edge on every page, so the bar never changes. */
-  --hero-gap: calc(env(safe-area-inset-top, 0px) + 12px);
+  /* Inset above every hero. It used to add a flat 12px so a band of bg-surface
+     touched the top edge and iOS Safari sampled *that* for its toolbar tint
+     instead of the hero blue. Two things retired the 12px: the root `viewport`
+     export pins `themeColor: #F5F7FA`, which Safari uses in preference to
+     sampling, and the asymmetry the band was papering over — four fixed heroes
+     holding a blue bar while /profile's in-flow one scrolled away to a white
+     one — ended when ProfileHero became fixed and collapsing too. The band was
+     also the whole reason the heroes were rounded on all four corners; Figma
+     has them full-bleed at the top, which is what they are again.
+
+     The env() term stays: it is 0 in a Safari tab and 0 in the installed PWA
+     (standalone starts the webview below an opaque status bar, tinted by
+     manifest theme_color #33A3FF), but it is the right hook if the app ever
+     takes `black-translucent` and draws under the status bar. If a blue
+     toolbar ever comes back, themeColor is the knob — not this. */
+  --hero-gap: env(safe-area-inset-top, 0px);
 
   /* Bottom safe zone. Two things live down there: the home indicator, and the
      strip iOS Safari vacates when it minimises its toolbar on scroll — which

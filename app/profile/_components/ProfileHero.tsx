@@ -38,11 +38,11 @@ export default function ProfileHero({ bgSrc, athleteSrc }: Props) {
           block below (which is z-10). */}
       <header
         ref={ref}
-        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-group"
+        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group"
       >
         {/* Art layer — clipped so the images stay inside the rounded header
             while the avatar below is free to hang over its bottom edge. */}
-        <div className="absolute inset-0 overflow-hidden rounded-group">
+        <div className="absolute inset-0 overflow-hidden rounded-b-group">
           {!bgSrc && !athleteSrc && <CourtBackdrop />}
 
           {/* Photo path, kept for a restored image: Figma's 414px backdrop
@@ -83,8 +83,9 @@ export default function ProfileHero({ bgSrc, athleteSrc }: Props) {
         </div>
       </header>
 
-      {/* The surface band the hero sits below — fixed too, so content
-          scrolling under the hero never shows through it. See --hero-gap. */}
+      {/* Fills --hero-gap so content scrolling under the hero never shows
+          through above it. Zero-height wherever safe-area-inset-top is 0,
+          which is a Safari tab and today's standalone PWA both. */}
       <div
         aria-hidden
         className="fixed top-0 left-1/2 -translate-x-1/2 z-40 h-[var(--hero-gap)] w-full max-w-[430px] bg-surface"

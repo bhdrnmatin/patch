@@ -48,7 +48,7 @@ export default function SportPageHeader({
     <>
       <header
         ref={ref}
-        className={`hero-collapse ${days ? "hero-collapse-dates" : ""} fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-group overflow-hidden`}
+        className={`hero-collapse ${days ? "hero-collapse-dates" : ""} fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group overflow-hidden`}
       >
         {/* Art: the drawn court by default, the photo pair when one is passed.
             Figma's photo geometry (414px backdrop anchored left in a 390 frame)
@@ -105,8 +105,9 @@ export default function SportPageHeader({
         )}
       </header>
 
-      {/* The surface band the hero sits below — fixed too, so the cards
-          scrolling under the hero never show through it. See --hero-gap. */}
+      {/* Fills --hero-gap so cards scrolling under the hero never show through
+          above it. Zero-height wherever safe-area-inset-top is 0, which is a
+          Safari tab and today's standalone PWA both. See --hero-gap. */}
       <div
         aria-hidden
         className="fixed top-0 left-1/2 -translate-x-1/2 z-40 h-[var(--hero-gap)] w-full max-w-[430px] bg-surface"

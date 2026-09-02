@@ -8,6 +8,33 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-02 — the heroes go back to the top edge
+
+- [Hero] Every hero sat 12px below the top edge with a band of `bg-surface` above it, and was rounded
+  on all four corners because of it. Figma draws them full-bleed: flush to the edge, square at the
+  top. Spotted in GNOME Web (WebKitGTK) against the Figma frame.
+- [Hero] `--hero-gap` is `env(safe-area-inset-top, 0px)` now — the flat `+ 12px` is gone. The token
+  stays because it is the right hook if the app ever takes an `apple-mobile-web-app-status-bar-style`
+  of `black-translucent` and draws under the status bar; today it resolves to 0 in a Safari tab and 0
+  in the standalone PWA (which starts the webview below an opaque status bar), so the fixed
+  `bg-surface` strip and the spacer's `+ var(--hero-gap)` both collapse to nothing on their own.
+- [Hero] `SportPageHeader`, `ProfileHero` and `MatchDetailsHeader` are `rounded-b-group`, not
+  `rounded-group`. The four-corner radius arrived with the band in `c6a0141` ("the heroes gained
+  `rounded-group` now that they no longer bleed to the edge") — they bleed again, so it goes.
+- [Hero] The band's premise had expired twice over. `c6a0141` added it *and* a pinned
+  `themeColor: "#F5F7FA"` in the root `viewport` export in the same commit, describing the latter as
+  "Safari's fallback when it can't sample" — backwards: iOS Safari uses a declared `theme-color` in
+  preference to sampling the page, so the band was belt over an already-fastened brace. And the
+  asymmetry it was papering over — four fixed heroes holding a blue bar while `/profile`'s in-flow one
+  scrolled away to a white one — ended two commits ago at `377aef5`, when `ProfileHero` became fixed
+  and collapsing like the rest.
+- [Verified] `tsc` clean, eslint clean, and the served CSS chunk carries the new `--hero-gap` (checked
+  before trusting the browser, per the standing Turbopack stale-CSS miss). Rendering confirmed in
+  GNOME Web / WebKitGTK 2.52.3.
+- [Unverified] **No iOS device was available.** WebKitGTK shares the engine but not Safari's chrome,
+  so the toolbar tint this all exists to control is untested. If a blue bar comes back on an iPhone,
+  the knob is `themeColor` in `app/layout.tsx` — the band should not be restored.
+
 ### 2026-08-31 — every hero collapses, not just the one with rows
 
 - [Hero] `/tournaments` collapsed its header fully and `/matches` and `/activity` did not. The header
