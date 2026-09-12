@@ -1,3 +1,7 @@
+// Parked 2026-09-12: onboarding is out of the product for now. The leading `_`
+// makes this a Next private folder — not a route, still compiled and type-checked,
+// so it does not rot. Rename back to `onboarding` to ship it again.
+
 "use client";
 
 import { useRouter } from "next/navigation";

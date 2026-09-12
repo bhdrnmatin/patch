@@ -1,20 +1,26 @@
 # Component Status
 
-## Onboarding Flow
+## Onboarding Flow — PARKED (2026-09-12)
+
+**Out of the product, not deleted.** The folder is `app/(auth)/_onboarding/` — the leading
+`_` makes it a Next private folder, so none of it routes, but it still compiles and
+type-checks and can be revived by renaming the folder back. Nothing in the app linked to
+it, so no other flow changed. Art directions: `feat/onboarding-drawn-art` and
+`feat/onboarding-generated`; the violet renders are the ones parked here.
 
 ### Base Components
 - [x] `Button` — `app/(auth)/_components/Button.tsx`
-- [x] `ProgressBar` — `app/(auth)/onboarding/_components/ProgressBar.tsx`
-- [x] `StoryCard` — `app/(auth)/onboarding/_components/StoryCard.tsx`
+- [x] `ProgressBar` — `app/(auth)/_onboarding/_components/ProgressBar.tsx`
+- [x] `StoryCard` — `app/(auth)/_onboarding/_components/StoryCard.tsx`
 
 ### Compound Components
-- [x] `OnboardingActions` — `app/(auth)/onboarding/_components/OnboardingActions.tsx`
+- [x] `OnboardingActions` — `app/(auth)/_onboarding/_components/OnboardingActions.tsx`
 
 ### Layout Components
-- [x] `StorySlide` — `app/(auth)/onboarding/_components/StorySlide.tsx`
+- [x] `StorySlide` — `app/(auth)/_onboarding/_components/StorySlide.tsx`
 
 ### Pages
-- [x] `OnboardingPage` — `app/(auth)/onboarding/page.tsx`
+- [x] `OnboardingPage` — `app/(auth)/_onboarding/page.tsx` (not routed)
 
 ### Infrastructure
 - [x] Yekan Bakh font (local OTF, 400/700) — `app/fonts/` + `app/layout.tsx` + `app/globals.css`
@@ -336,7 +342,6 @@ is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
 ## Notes
 - All assets are local now — no Figma CDN URLs in code. Images in `public/images/`, icons in `public/icons/`.
 - Background images optimized: WebP, resized to ≤1280px, q80 (~30MB PNG → 1.4MB total).
-- Post-onboarding destination: `/` (main app discover page).
 - All pages render as a centered `max-w-[430px]` column on a black backdrop (desktop-safe).
 
 ## Open items

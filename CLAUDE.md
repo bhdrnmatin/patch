@@ -28,7 +28,11 @@ Check these before writing new UI — reuse first.
 - `RadioOption` — RTL radio row, `selected?`, dark bg / blue circle when selected
 - `RadioGroup` — radio list container with dividers, `options[]`, `value`, `onChange`
 
-**Onboarding** — `app/(auth)/onboarding/_components/`
+**Onboarding (parked 2026-09-12)** — `app/(auth)/_onboarding/_components/`
+Not a route any more — the `_` prefix makes it a Next private folder, so it still
+compiles and type-checks but ships nothing. Rename the folder back to `onboarding`
+to revive it. The art directions also live on `feat/onboarding-drawn-art` and
+`feat/onboarding-generated`.
 - `ProgressBar` — 4-segment RTL indicator, `total`, `current` (0-indexed)
 - `StoryCard` — glassmorphic bottom card, fixed 362×198px, RTL text
 - `OnboardingActions` — button row (skip+next or full-width CTA), `isLast`
@@ -207,7 +211,6 @@ Other recurring values (already in Tailwind's default scale):
 ## Routing
 
 ```
-/(auth)/onboarding     → onboarding story slides (4 slides)
 /(auth)/login          → phone number entry
 /(auth)/otp            → OTP code entry
 /(auth)/profile-setup  → name / city / gender form

@@ -8,6 +8,23 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — onboarding is parked, not deleted
+
+- [Onboarding] Out of the product (user decision). `app/(auth)/onboarding/` →
+  `app/(auth)/_onboarding/`: the leading `_` makes it a **Next private folder**, so
+  `/onboarding` stops existing as a route while every file stays on disk, still compiled
+  and type-checked so it can't rot. Reviving it is one folder rename.
+- [Onboarding] **Nothing else changed, because nothing linked to it.** A repo-wide grep found
+  zero references outside the folder — `/` has redirected to `/matches` since 2026-08-31 and
+  no auth step routed into onboarding — so it was already an orphan URL.
+- [Onboarding] This also parks the open art decision. Parked here are the violet renders;
+  the two alternatives stay on `feat/onboarding-drawn-art` (drawn SVG) and
+  `feat/onboarding-generated` (generated sketches), along with that branch's unresolved
+  slide-۲ baked-vs-`BookingOverlay` question. `public/images/onboarding-*` kept.
+- [Verified] `tsc` clean; `next build` clean and the route list no longer prints `/onboarding`
+  (21 routes, all others unchanged). Same change verified on `feat/onboarding-generated`
+  first, where it also removed `/onboarding/lab`.
+
 ### 2026-09-02 — a WebKit harness for the OTP screen, and the two bugs it found
 
 - [Tooling] `scripts/otp-webkit.mjs` drives `/otp` in Playwright's WebKit under an iPhone 13 device
