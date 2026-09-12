@@ -8,6 +8,21 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — the Neshan key has to exist at build time, not run time
+
+- [Deploy] `NESHAN_API_KEY` is a **`--build-arg`, not a container env var.** Next resolves
+  `rewrites()` during `next build` and bakes the destination into `.next/routes-manifest.json` and
+  `standalone/server.js`, so a key supplied only to the running container arrives too late — the URL
+  is already written with an empty key and every court map 480s. Verified by building with a sentinel
+  value and finding it in both files.
+- [Deploy] `Dockerfile` takes `ARG NESHAN_API_KEY` and sets it as `ENV` **in the builder stage**;
+  `.gitlab-ci.yml` passes `--build-arg NESHAN_API_KEY="$NESHAN_API_KEY"` from a masked CI/CD variable.
+- **[Caution] An empty key fails quietly.** The build succeeds and the app runs; only the maps are
+  blank. Nothing in CI will tell you the variable is missing — check a court map after deploying.
+- **[Security] The key ends up inside the image**, since that is what baking means. Anyone who can
+  pull the image can read it. It's a static-map-only key with no domain restriction, so the exposure
+  is quota abuse rather than data; restrict it to the server's IP in the Neshan panel if that matters.
+
 ### 2026-09-12 — the auth keyboard, on a real Android phone
 
 Four bugs found by screen recording the OTP screen on a device. None reproduce in a headless

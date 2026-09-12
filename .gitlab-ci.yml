@@ -7,7 +7,12 @@ build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
-    - docker build --no-cache -t frontend:latest .
+    # NESHAN_API_KEY is a masked CI/CD variable (Settings → CI/CD → Variables).
+    # It must be a --build-arg, not a runtime env: Next bakes rewrite
+    # destinations into the build output. Empty here just means blank maps, not
+    # a failed build, so a missing variable fails quietly — check a court map
+    # after deploying.
+    - docker build --no-cache --build-arg NESHAN_API_KEY="$NESHAN_API_KEY" -t frontend:latest .
 
 deploy:
   stage: deploy

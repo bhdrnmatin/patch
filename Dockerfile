@@ -11,6 +11,15 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# next.config.ts resolves rewrites() during `next build` and bakes the result
+# into .next/routes-manifest.json, so the Neshan key has to exist HERE, at build
+# time. Setting it only on the running container does nothing — the destination
+# URL is already written, with an empty key, and every court map 480s.
+# Passed by CI as --build-arg from the NESHAN_API_KEY CI/CD variable.
+ARG NESHAN_API_KEY=""
+ENV NESHAN_API_KEY=$NESHAN_API_KEY
+
 RUN npm run build
 
 # ── runner: minimal production image ─────────────────────────────────────────
