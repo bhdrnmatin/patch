@@ -8,6 +8,51 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — the auth keyboard, on a real Android phone
+
+Four bugs found by screen recording the OTP screen on a device. None reproduce in a headless
+browser, and three of them only exist because a soft keyboard is involved.
+
+- [Auth] **A band of bare page showed under the card whenever the keyboard opened.** `AuthSlide`'s
+  art was `absolute inset-0` inside a slide sized `min-h:var(--vvh)`, so it shrank with the visual
+  viewport. Chrome reports the post-keyboard height on the *first* frame while the keyboard animates
+  in over ~200ms — for those frames the app had already collapsed and nothing covered the vacated
+  strip. The art is `fixed` now, which resolves against the layout viewport; no platform shrinks that
+  for a keyboard. Same change stops `absolute` **re-cropping the photo** into the shorter box, which
+  had the scene visibly re-framing as the keyboard arrived.
+- [Auth] **The card dropped to the floor and back on every keystroke.** `OtpInput` moves focus to the
+  next of five `<input>`s per digit; on Android that focus hop tears the keyboard down and rebuilds
+  it, and the reported height goes full for a frame or two in the gap. `--vvh` was written on every
+  `visualViewport` resize, so the bottom-pinned card followed it.
+- [Auth] `AppScroll`'s `--vvh` write is **asymmetric**, and it has to be. A blanket settle delay fixed
+  the keystroke drop and immediately caused a worse one: held at full height even briefly, the browser
+  scrolls the focused box into view inside the scroller, and that offset outlives the resize — the
+  card ended up scrolled off the top. So **shrink lands this frame** (the keyboard is arriving, and
+  any delay buys that scroll), while **growth waits 150ms and re-reads** (a focus-hop flicker has
+  already reversed; a real dismissal is still tall). Three passes to get here; the two rejected ones
+  are in the comment so nobody re-tries them.
+- [OTP] **Retyping any filled box wiped the code.** A filled box still holds its digit, so typing over
+  it delivers two characters — old and new — and the `cleaned.length > 1` branch read that as SMS
+  autofill and replaced the whole value with those two digits, restarting at box ۱. Now: two
+  characters into a box that already has one means keep the character that isn't there yet. Checking
+  both ends covers the caret landing before or after the digit; genuine autofill still arrives as five
+  in one event and is untouched.
+- [OTP] **Erase then type overwrote instead of refilling.** ۱۲۳۴۵ → Backspace → ۱۲۳۴_ → typing ۶ gave
+  ۱۲۳۵_. Both delete paths focused `index - 1`, the last *filled* box, and typing over a filled box
+  replaces it. After any deletion the caret now goes to the first **empty** box (`focusActive`), since
+  that is the only position where typing appends. Backspace also now deletes its own box's digit, or
+  the previous one when its own is already empty, so repeated presses walk the code down without
+  needing two per digit.
+- [OTP] All three were the same underlying mistake: rules derived from *which box has focus* rather
+  than *how many digits are in the value*.
+- [Tests] `scripts/otp-webkit.mjs` is 12 cases, up from 10. Each new one was confirmed to **fail with
+  the fix removed and pass with it restored**. One existing expectation changed: "focus should step
+  back one box" asserted `3`, which was the bug written down as a requirement — it asserts `4` now,
+  with a note saying why, so it doesn't get "fixed" back.
+- [Verified] `tsc` and eslint clean; 12/12 in WebKit. The band was also reproduced without a device by
+  forcing `--vvh` to 430px, which is exactly what the keyboard does. Everything else here was
+  confirmed on the phone, because nothing else reproduces off one.
+
 ### 2026-09-12 — the court address stopped shouting
 
 - [Create] Step ۲'s court address was `text-sm text-ink-soft`, which made it the largest, darkest text

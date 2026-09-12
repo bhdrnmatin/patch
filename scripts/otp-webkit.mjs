@@ -134,12 +134,26 @@ async function main() {
     assert.ok(await submit().isEnabled(), "should enable at five digits");
   });
 
-  await check("backspace clears a digit and steps back", async () => {
+  await check("backspace clears a digit and leaves the caret on the empty box", async () => {
     await page.locator(BOXES).first().click();
     await page.keyboard.type("12345");
     await page.keyboard.press("Backspace");
     assert.equal(await code(), fa("1234"), "last digit should be gone");
-    assert.equal(await focusedIndex(), 3, "focus should step back one box");
+    // Box ۴, not ۳. This asserted 3 until 2026-09-12, which was the bug: index 3
+    // still holds the ۴, so the next digit typed replaced it instead of filling
+    // the gap. The caret belongs on the first empty box after any deletion.
+    assert.equal(await focusedIndex(), 4, "caret should sit on the box just emptied");
+  });
+
+  await check("erase then type refills the gap instead of overwriting", async () => {
+    await page.locator(BOXES).first().click();
+    await page.keyboard.type("12345");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.type("6");
+    // The reported bug: ۱۲۳۴_ became ۱۲۳۵_ because the caret had stepped back
+    // onto the filled box.
+    assert.equal(await code(), fa("12346"), "the typed digit should fill the empty box");
+    assert.equal(await painted(), fa("12346"), "and the boxes should paint it");
   });
 
   await check("paste fills every box from one event", async () => {
@@ -169,6 +183,18 @@ async function main() {
     await page.keyboard.press("Delete");
     // Compacts, exactly as Backspace does — the two deletion paths agree.
     assert.equal(await code(), fa("1245"), "the third digit should be gone");
+  });
+
+  await check("retyping a filled box replaces one digit, not the whole code", async () => {
+    await page.locator(BOXES).first().click();
+    await page.keyboard.type("12345");
+    // Focus is still in the last box and the caret sits after its digit, so the
+    // field hands handleChange two characters. That is NOT autofill arriving:
+    // the multi-character branch used to read it as one and replace the whole
+    // value with those two digits, restarting the code at box ۱.
+    await page.keyboard.type("6");
+    assert.equal(await code(), fa("12346"), "only the last digit should change");
+    assert.equal(await painted(), fa("12346"), "and the boxes should paint it");
   });
 
   await browser.close();
