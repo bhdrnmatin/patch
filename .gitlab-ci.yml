@@ -4,6 +4,11 @@ stages:
 
 build:
   stage: build
+  # Matches patch-server-runner's `docker` tag. Without this the jobs are
+  # untagged and a tagged runner skips them, so every pipeline sat pending with
+  # "no matching runners" even though a runner was registered.
+  tags:
+    - docker
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
@@ -16,6 +21,8 @@ build:
 
 deploy:
   stage: deploy
+  tags:
+    - docker
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   variables:
