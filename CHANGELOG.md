@@ -8,6 +8,40 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — the court map is the real court, and مسیریابی works
+
+- [Matches][Create] **مسیریابی did nothing.** Both copies of it were a `<button>` with no `onClick`
+  — decoration. It's an `<a>` to `https://nshn.ir/?lat=&lng=` now, which opens the Neshan app when
+  it's installed and the web map otherwise (verified: 301 → `neshan.org/maps/share/<lat>,<lng>`).
+  It lands on the pin instead of starting a route, which is one tap short of directions but asks
+  for no geolocation permission.
+- [Matches][Create] **The map was a photo of San Francisco.** `court-map.webp`, hardcoded, on every
+  court in the app. Now a Neshan static map at the club's own coordinates.
+- [Data] **Root cause: `lib/data/matches.ts` was throwing the coordinates away.** The clubs API has
+  sent `latitude`/`longitude` all along (پدل‌پوینت is at `35.7890602, 50.9156921`); the
+  `ClubResponse → CourtOption` map kept only `{id, club, location}`. With no coordinates downstream,
+  both call sites had nothing to render but a placeholder. `CourtOption` carries `lat`/`lng` now, and
+  `MatchDetails` carries `courtLat`/`courtLng`.
+- [Refactor] **One bug in two files, so one component now.** `StepLocation` and `CourtCard` held
+  byte-identical copies of the image and the button. Both compose `CourtMap`
+  (`app/matches/[id]/_components/`) — closing the dedup TODO that predicted this exact drift.
+- [Config] `/map/static` rewrite proxies to `api.neshan.org/v5/static` with the key attached
+  server-side, matching the existing `/api/v1/*` idiom. `NESHAN_API_KEY` is a Neshan **service** key
+  (`service.*`) scoped to «نقشه نمایش نقشه - استاتیک» only, with no domain/IP restriction — the call
+  is server→server, so Neshan sees the server's IP and never a browser Referer. Without the key the
+  map is blank by design: Neshan answers `480` JSON, `onError` hides the image, and مسیریابی still
+  works since the link needs no key.
+- [Matches] Map zoom is **16, not 15**. At 15 a suburban court sits in unlabelled blocks; 16 is where
+  the side street the address names becomes readable — پدل‌پوینت is «مهرشهر چمن ۱ پلاک ۱۶» and
+  «چمن ۱» only appears at 16.
+- [Removed] `public/images/court-map.webp` (122KB) — nothing references it.
+- [Verified] `tsc` clean, eslint 0 errors. `/matches/create` and `/matches/[id]` both 200 with no
+  compile errors. **The map is confirmed rendering with a real key**: `/map/static` at پدل‌پوینت's
+  coordinates returns `200 image/png`, 700×425, and the image shows the pin on چمن in مهرشهر, Karaj —
+  the club's actual address. The deep link resolves too (`nshn.ir` 301 →
+  `neshan.org/maps/share/35.7890602,50.9156921`). **Not yet tapped on a phone** — whether nshn.ir
+  hands off to the installed Neshan app is untested.
+
 ### 2026-09-12 — onboarding is parked, not deleted
 
 - [Onboarding] Out of the product (user decision). `app/(auth)/onboarding/` →

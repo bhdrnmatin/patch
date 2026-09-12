@@ -89,7 +89,7 @@ function MatchDetailsContent() {
         <InfoBanner text={m.teamNote} />
 
         <PromoCard />
-        <CourtCard club={m.club} note={m.courtNote} />
+        <CourtCard club={m.club} note={m.courtNote} lat={m.courtLat} lng={m.courtLng} />
         <ShareCard restriction={m.restriction} matchId={id} />
         <FaqSection faq={m.faq} />
       </div>

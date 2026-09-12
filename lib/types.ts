@@ -167,6 +167,9 @@ export interface CourtOption {
   club: string;
   /** Human-readable address, e.g. "کرج، عظیمیه، میدان استاندارد". */
   location: string;
+  /** Club coordinates from the API. Optional — a club row may have neither. */
+  lat?: number;
+  lng?: number;
 }
 
 /**
@@ -238,6 +241,9 @@ export interface MatchDetails {
   restriction: string;
   /** Banner text inside the court card. */
   courtNote: string;
+  /** Court coordinates — drive the map and the مسیریابی link. */
+  courtLat?: number;
+  courtLng?: number;
   /** Banner text under the players grid. */
   teamNote: string;
   faq: FaqEntry[];

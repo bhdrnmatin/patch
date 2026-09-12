@@ -57,6 +57,16 @@ to revive it. The art directions also live on `feat/onboarding-drawn-art` and
 - `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
 - `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
+- `CourtMap` (`app/matches/[id]/_components/`) — a court's static map + مسیریابی link, from
+  `lat`/`lng`. **Composed by both `CourtCard` and the wizard's `StepLocation`** — they held identical
+  copies of a hardcoded San Francisco placeholder and a dead `<button>`, which is why the same bug
+  shipped twice. A third map goes through this, it doesn't re-copy the pair.
+  Map tiles are Neshan's static API behind the `/map/static` rewrite (`next.config.ts`), so
+  **`NESHAN_API_KEY` stays server-side** — an `<img>` can't send the `Api-Key` header and a `key=` in
+  the src would hand it to every client. No key → Neshan answers JSON, not an image → the component
+  hides the map and keeps the link, which needs no key. Coordinates come from the clubs API
+  (`ClubResponse.latitude/longitude` → `CourtOption.lat/lng`); they were being dropped on the floor
+  in `lib/data/matches.ts` until 2026-09-12.
 - Consumed by /matches, /tournaments, and /matches/[id]. Feature-local leaves still live in each feature's `_components/`.
 
 ## Scrolling — the document does not scroll

@@ -224,6 +224,8 @@ export const matchDetails: MatchDetails = {
   ],
   restriction: "بالای لول ۳",
   courtNote: "این مَچ به صورت آزاد برگذار می‌شود و جایزه‌ای ندارد.",
+  courtLat: 35.7088,
+  courtLng: 51.3854,
   teamNote: "تیم کشی در این مَچ مشخص نشده است.",
   faq: [
     {

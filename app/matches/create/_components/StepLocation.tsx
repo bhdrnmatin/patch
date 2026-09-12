@@ -4,6 +4,7 @@ import { useState } from "react";
 import SelectField from "./SelectField";
 import OptionSheet from "./OptionSheet";
 import InfoBanner from "../../[id]/_components/InfoBanner";
+import CourtMap from "../../[id]/_components/CourtMap";
 import type { CourtOption, CreateMatchDraft } from "../../../../lib/types";
 
 const YES_NO = [
@@ -76,19 +77,13 @@ export default function StepLocation({ draft, patch, courts }: Props) {
                   {selectedCourt.location}
                 </span>
               </div>
-              {/* Static map — exact pin isn't wired yet. */}
-              <img
-                src="/images/court-map.webp"
-                alt="موقعیت زمین روی نقشه"
-                className="w-full h-[203px] rounded-xl object-cover"
-              />
-              <button
-                type="button"
-                className="w-full bg-primary rounded-card px-4 py-3 text-sm font-bold leading-4 text-white active:opacity-90"
-                dir="rtl"
-              >
-                مسیریابی
-              </button>
+              {selectedCourt.lat !== undefined && selectedCourt.lng !== undefined && (
+                <CourtMap
+                  lat={selectedCourt.lat}
+                  lng={selectedCourt.lng}
+                  label={selectedCourt.club}
+                />
+              )}
             </div>
           )}
           <OptionSheet

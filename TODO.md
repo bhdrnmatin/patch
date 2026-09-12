@@ -128,15 +128,22 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       production (https); add a legacy `execCommand("copy")` fallback only if dev testing needs it.
 
 ### مکان rework (2026-08-04)
-- [ ] مسیریابی button (StepLocation selected-court card) is cosmetic — wire a maps deep link when available.
+- [x] مسیریابی button (StepLocation selected-court card) was cosmetic — **fixed 2026-09-12**: it's an
+      `<a>` to `nshn.ir/?lat=&lng=` (Neshan), which opens the app when installed and the web map
+      otherwise. Lands on the pin rather than starting a route, so it needs no geolocation permission.
       (The old "انتخاب روی نقشه" custom-court button was removed in this rework.)
 - [ ] Court picker is mock (5 hardcoded Karaj courts in `courtOptions`); `reserved` + `courtId` aren't sent
       anywhere — wire to a real courts/reservation API when it ships.
 - [ ] استان/شهر are locked to البرز/کرج (disabled `SelectField`) for single-city launch — swap for the live
       province→city searchable cascade (same pattern as profile-edit) when multi-city.
-- [ ] The court map is a static SF placeholder (`court-map.webp`) — replace with a real per-court map/tiles.
-- [ ] Possible dedup: the map + مسیریابی button in StepLocation duplicates match-details `CourtCard`;
-      extract a shared leaf if the Figma redesign keeps this shape.
+- [x] The court map was a static SF placeholder (`court-map.webp`) — **fixed 2026-09-12**: Neshan static
+      map at the club's real coordinates, proxied through `/map/static` so the key stays server-side.
+      The image is hidden (button kept) whenever that request fails. **Needs `NESHAN_API_KEY` set** —
+      until then every court map is blank by design.
+- [x] Dedup: the map + مسیریابی button in StepLocation duplicated match-details `CourtCard` —
+      **fixed 2026-09-12**, both compose `CourtMap`. That duplication is *why* the bug existed twice.
+- [ ] `MatchDetails.courtLat/courtLng` are mock values (باشگاه انقلاب ≈ 35.7088, 51.3854) — the match
+      details endpoint isn't wired, so a real match's map points at the mock club until it is.
 ### Refactor candidates
 - [x] StepChips 44px chips + keyboard-reachable current chip — **fixed 2026-07-12**.
 - [x] AvailabilityHeatmap `role="grid"` removed + `SWATCH_TONE` legend map — **fixed 2026-07-12**.

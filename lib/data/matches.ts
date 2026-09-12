@@ -44,7 +44,7 @@ export async function getCourtOptions(): Promise<CourtOption[]> {
   const { content } = await getClubs();
   return content
     .filter((c) => c.status === "ACTIVE")
-    .map((c) => ({ id: c.id, club: c.name, location: c.address }));
+    .map((c) => ({ id: c.id, club: c.name, location: c.address, lat: c.latitude, lng: c.longitude }));
 }
 
 export async function getPickablePlayers(): Promise<MatchPlayer[]> {

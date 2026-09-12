@@ -1,13 +1,16 @@
 import InfoBanner from "./InfoBanner";
+import CourtMap from "./CourtMap";
 import { EditIcon } from "./icons";
 
 interface Props {
   club: string;
   note: string;
+  lat?: number;
+  lng?: number;
 }
 
 /** اطلاعات زمین card: club name, notice banner, map, and routing button. */
-export default function CourtCard({ club, note }: Props) {
+export default function CourtCard({ club, note, lat, lng }: Props) {
   return (
     <section className="w-full bg-white rounded-group p-3 flex flex-col items-center gap-2 shadow-card">
       <div className="w-full flex items-center justify-between">
@@ -26,14 +29,9 @@ export default function CourtCard({ club, note }: Props) {
         {club}
       </h2>
       <InfoBanner text={note} />
-      <img src="/images/court-map.webp" alt={`نقشه ${club}`} className="w-full h-[203px] rounded-xl object-cover" />
-      <button
-        type="button"
-        className="w-full bg-primary rounded-card px-4 py-3 text-sm font-bold leading-4 text-white active:opacity-90"
-        dir="rtl"
-      >
-        مسیریابی
-      </button>
+      {lat !== undefined && lng !== undefined && (
+        <CourtMap lat={lat} lng={lng} label={club} />
+      )}
     </section>
   );
 }

@@ -6,6 +6,12 @@ import { POST_AUTH_ROUTE } from "./lib/routes";
 // Authorization header + request bodies (incl. multipart) pass straight through.
 const API_BASE_URL = process.env.API_BASE_URL ?? "https://api.patchapp.ir";
 
+// Neshan's static-map key. An <img> can't send the Api-Key header and a key= in
+// the src would ship it to every client, so /map/static proxies to Neshan with
+// the key attached server-side. Unset in dev → Neshan 401s → CourtMap hides the
+// image and keeps the مسیریابی link, which needs no key.
+const NESHAN_API_KEY = process.env.NESHAN_API_KEY ?? "";
+
 const nextConfig: NextConfig = {
   // LAN IPs allowed to load dev resources (phones on the local network).
   // Add your machine's current LAN IP here if it changes (DHCP).
@@ -22,6 +28,12 @@ const nextConfig: NextConfig = {
       {
         source: "/api/v1/:path*",
         destination: `${API_BASE_URL}/api/v1/:path*`,
+      },
+      {
+        // Caller supplies latitude/longitude/zoom/width/height/style/marker;
+        // Next merges those through and only the key is added here.
+        source: "/map/static",
+        destination: `https://api.neshan.org/v5/static?key=${NESHAN_API_KEY}`,
       },
     ];
   },
