@@ -8,6 +8,18 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — the court address stopped shouting
+
+- [Create] Step ۲'s court address was `text-sm text-ink-soft`, which made it the largest, darkest text
+  in its card while its own label «موقعیت زمین» whispered at `text-xs text-muted` — inverted hierarchy.
+  Now `text-xs ... leading-5`, keeping `text-ink-soft` so it still reads as the value rather than
+  collapsing into its label.
+- [Note] Worth knowing when sizing Persian text here: `layout.tsx` puts **`size-adjust: 128%`** on the
+  Yekan Bakh face (this 2019 build draws ~28% small in the em square), so every nominal size renders
+  ~28% larger than the number says. `text-sm` was landing near 18px of visible glyph.
+- [Checked] The typeface itself is correct — rendered the same string from `YekanBakhRegular.otf` and
+  width-matched it against the device screenshot; identical letterforms. It was never a fallback.
+
 ### 2026-09-12 — the court map is the real court, and مسیریابی works
 
 - [Matches][Create] **مسیریابی did nothing.** Both copies of it were a `<button>` with no `onClick`

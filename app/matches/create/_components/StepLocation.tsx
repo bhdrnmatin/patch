@@ -73,7 +73,11 @@ export default function StepLocation({ draft, patch, courts }: Props) {
                 <span className="text-xs text-muted" dir="rtl">
                   موقعیت زمین
                 </span>
-                <span className="text-sm text-ink-soft text-right" dir="rtl">
+                {/* Supporting detail, so it sits below its own label rather than
+                    shouting over it. text-sm here read as ~18px: the Yekan Bakh
+                    face carries size-adjust:128% (layout.tsx), so every nominal
+                    size lands ~28% larger than the number suggests. */}
+                <span className="text-xs text-ink-soft text-right leading-5" dir="rtl">
                   {selectedCourt.location}
                 </span>
               </div>
