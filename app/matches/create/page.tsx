@@ -42,7 +42,10 @@ const emptyDraft: CreateMatchDraft = {
 };
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
-  (d) => d.format !== null && d.invite !== null, // title (عنوان مَچ) is optional
+  // The title is required (user decision 2026-09-12). It was optional, which
+  // also meant `POST /matches` had to be handed an invented one — omitting it
+  // returns 500, not a validation error.
+  (d) => d.format !== null && d.invite !== null && d.title.trim().length > 0,
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
   (d) => d.date !== null && d.time !== null && d.duration !== null,
   (d) => d.myRole !== null,

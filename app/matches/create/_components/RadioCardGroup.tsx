@@ -7,6 +7,10 @@ export interface RadioCardOption {
   title: string;
   description: string;
   icon: React.ReactNode;
+  /** Not selectable. Pair with `note` so the card says why. */
+  disabled?: boolean;
+  /** Small pill beside the title, e.g. «به‌زودی» on a disabled card. */
+  note?: string;
 }
 
 interface Props {
@@ -45,10 +49,11 @@ export default function RadioCardGroup({ label, subtitle, options, value, onChan
               key={o.id}
               type="button"
               aria-pressed={selected}
+              disabled={o.disabled}
               onClick={() => onChange(o.id)}
-              className={`w-full flex items-center gap-3 rounded-group p-4 bg-white border shadow-card active:opacity-90 ${
-                selected ? "border-primary" : "border-edge"
-              }`}
+              className={`w-full flex items-center gap-3 rounded-group p-4 bg-white border shadow-card ${
+                o.disabled ? "opacity-50" : "active:opacity-90"
+              } ${selected ? "border-primary" : "border-edge"}`}
             >
               <span
                 aria-hidden
@@ -64,8 +69,15 @@ export default function RadioCardGroup({ label, subtitle, options, value, onChan
               </span>
 
               <span className="flex-1 min-w-0 flex flex-col items-end gap-0.5">
-                <span className="text-sm font-bold text-ink" dir="rtl">
-                  {o.title}
+                <span className="flex items-center gap-2">
+                  {o.note && (
+                    <span className="rounded-pill bg-surface px-2 py-0.5 text-tiny text-muted" dir="rtl">
+                      {o.note}
+                    </span>
+                  )}
+                  <span className="text-sm font-bold text-ink" dir="rtl">
+                    {o.title}
+                  </span>
                 </span>
                 <span className="text-xs text-muted leading-5 text-right" dir="rtl">
                   {o.description}

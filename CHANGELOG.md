@@ -8,6 +8,35 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-12 — create-match mapping, and the two backend walls behind it
+
+- [API] **`lib/api/matches.ts`** — `draftToCreateRequest` (pure, tested) + `createMatch`, with
+  `CreateMatchRequest`/`MatchResponse` DTOs in `lib/api/types.ts`. Schema pulled from
+  `GET /v3/api-docs` and every constraint confirmed against the live API, not assumed.
+- [API] The wizard's one "format" question is **two** API fields: آمریکانو → `AMERICANO`,
+  دوستانه → `OPEN_MATCH`, both `matchType: FRIENDLY`; رقابتی is `OPEN_MATCH` + `COMPETITIVE`.
+- [API] Three mismatches the mapping absorbs: a missing `title` **500s** so one is always
+  invented («مچ ۲۹ شهریور», Persian digits); `capacity` has a **minimum of 4** while دوستانه
+  and آمریکانو are deliberately uncapped, so the roster is floored at 4; `joinPolicy` is no
+  longer asked (step ۵ was removed) so it follows visibility — عمومی→`OPEN`,
+  خصوصی→`INVITE_LINK_ONLY`. `organizerJoins` maps to myRole: بازیکن takes a slot, برگزار کننده
+  does not.
+- **[Blocked] `scheduledAt` cannot express any Tehran hour.** It is a `java.time.Instant` and
+  "on the hour" is checked against **UTC** minutes. Iran is UTC+03:30, so Tehran ۱۸:۰۰ is
+  14:30Z and is rejected, while Tehran ۱۴:۳۰ is 11:00Z and succeeds. Courts book on the hour,
+  so the accepted times are exactly the ones nobody wants. **`createMatch` therefore stays on
+  the mock** (user decision) — flipping it would break the wizard for every user. The mapping
+  needs no change when the server validates in `Asia/Tehran`; see api-findings §0.
+- [Create] **رقابتی is greyed out** with a «به‌زودی» pill. `matchType: COMPETITIVE` returns 400
+  «مسابقات رقابتی هنوز فعال نشده‌اند», so picking it meant filling five steps to be refused at
+  submit. One flag, `COMPETITIVE_ENABLED` in `StepDetails.tsx`; the 2v2 team preview,
+  `MAX_TEAMMATES` and the capacity rule are all untouched and ready.
+- [Create] `RadioCardGroup` options gained `disabled` and `note`.
+- [Verified] `npx tsx lib/api/matches.test.ts` — 20 assertions covering the title fallback,
+  the capacity floor, `organizerJoins`, the ۲۴:۰۰ slot rolling to the next day, and the
+  Tehran offset. `tsc` + eslint clean; step ۱ rendered in WebKit with رقابتی confirmed
+  `disabled`. Probe matches were created against the live API and deleted.
+
 ### 2026-09-12 — the Neshan key has to exist at build time, not run time
 
 - [Deploy] `NESHAN_API_KEY` is a **`--build-arg`, not a container env var.** Next resolves

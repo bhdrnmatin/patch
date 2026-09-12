@@ -27,6 +27,45 @@ below was re-verified unchanged.
 
 ## Blockers
 
+### 0. `scheduledAt` cannot express any Tehran hour — **create-match is blocked on this**
+Probed 2026-09-12 against the live API. `scheduledAt` is parsed as a `java.time.Instant`
+and the "on the hour" rule is applied to the **UTC** minutes:
+
+| Sent | Result |
+|---|---|
+| `2026-09-20T11:00:00Z` | ✅ 201 |
+| `2026-09-20T18:00:00+03:30` (Tehran ۱۸:۰۰, = 14:30Z) | ❌ 400 `زمان شروع مچ باید دقیقاً روی ساعت باشد` |
+| `2026-09-20T14:30:00+03:30` (Tehran ۱۴:۳۰, = 11:00Z) | ✅ 201, stored `11:00:00Z` |
+| `2026-09-20T18:00:00` (no offset) | ❌ 400 `validation.invalidFormat … java.time.Instant` |
+
+**Iran is UTC+03:30, so no Tehran wall-clock hour ever has zero UTC minutes.** Every slot
+the wizard offers (۰۸:۰۰ … ۲۴:۰۰, all on the hour — `StepSchedule.tsx:23`) is rejected, and
+the only times that *are* accepted read as half-past to a user. Courts are booked on the
+hour, so the accepted set is exactly the set nobody wants.
+
+**Ask:** validate the hour in the club's local timezone (`Asia/Tehran`), not UTC. The app
+already sends the offset, so `18:00+03:30` should be accepted unchanged and no client
+change is needed once this lands.
+
+Until then `lib/data/mutations.ts` stays on the mock (user decision 2026-09-12). The
+mapping is written and tested — `lib/api/matches.ts` + `matches.test.ts` — and needs no
+edit when the fix ships.
+
+### 0b. رقابتی is refused outright
+`matchType: COMPETITIVE` → 400 `مسابقات رقابتی هنوز فعال نشده‌اند`, matching the spec's
+`Only FRIENDLY is accepted in this MVP`. Since the wizard's رقابتی maps to it, the option
+is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
+letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
+
+### 0c. Re-confirmed 2026-09-12
+- **A missing `title` still 500s** — unchanged since 2026-08-24. The wizard treats the
+  title as اختیاری, so `draftToCreateRequest` always invents one («مچ ۲۹ شهریور»).
+- `capacity` minimum is **4**, and the wizard has no capacity concept for دوستانه/آمریکانو,
+  so the mapping floors the roster size at 4.
+- Field-level errors are good now: `loc` is named and the message is Persian for
+  `matchType`, `scheduledAt` and `clubId`.
+
+
 ### 1. Identity — mostly fixed, two gaps left
 **Fixed 2026-08-25.** `MatchParticipantResponse` gained `firstName`/`lastName`, and
 `organizerAccountId` was replaced by a nested `organizer` object

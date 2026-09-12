@@ -73,3 +73,74 @@ export interface PageResponse<T> {
   size: number;
   totalElements: number;
 }
+
+/* ── Matches ────────────────────────────────────────────────────────────────
+ * Shapes from `GET /v3/api-docs`, verified against the live API 2026-09-12.
+ * Constraints the spec states and a probe confirmed:
+ *   · `matchType: COMPETITIVE` → 400 «مسابقات رقابتی هنوز فعال نشده‌اند»
+ *   · a missing `title` → 500, so it is required in practice
+ *   · `capacity` minimum 4, `durationHours` minimum 1
+ *   · `scheduledAt` is a java.time.Instant and must have zero UTC minutes
+ */
+
+export type ApiMatchFormat = "OPEN_MATCH" | "AMERICANO" | "MEXICANO";
+export type ApiMatchType = "FRIENDLY" | "COMPETITIVE";
+export type ApiVisibility = "PUBLIC" | "PRIVATE";
+export type ApiJoinPolicy = "OPEN" | "MANUAL_APPROVE" | "INVITE_LINK_ONLY";
+
+export interface CreateMatchRequest {
+  format: ApiMatchFormat;
+  matchType: ApiMatchType;
+  clubId: string;
+  /** ISO instant with an offset. Naive local time is rejected as unparseable. */
+  scheduledAt: string;
+  visibility: ApiVisibility;
+  joinPolicy: ApiJoinPolicy;
+  /** Declared optional; omitting it 500s. Max 80. */
+  title: string;
+  /** Declared optional; omitting it 400s. Minimum 4. */
+  capacity: number;
+  /** Declared optional; omitting it 400s. Minimum 1, integer. */
+  durationHours: number;
+  /** Max 500. */
+  description?: string;
+  /** Max 50. Not collected by the wizard. */
+  courtLabel?: string;
+  /** Does the organizer take a capacity slot? Defaults true when omitted. */
+  organizerJoins?: boolean;
+}
+
+export interface MatchOrganizerResponse {
+  accountId: string;
+  photoUrl: string | null;
+  firstName: string;
+  lastName: string;
+}
+
+export interface MatchParticipantResponse {
+  accountId: string;
+  photoUrl: string | null;
+  firstName: string;
+  lastName: string;
+}
+
+export interface MatchResponse {
+  id: string;
+  organizer: MatchOrganizerResponse;
+  format: ApiMatchFormat;
+  matchType: ApiMatchType;
+  title: string | null;
+  description: string | null;
+  capacity: number;
+  clubId: string;
+  courtLabel: string | null;
+  scheduledAt: string;
+  durationHours: number;
+  visibility: ApiVisibility;
+  joinPolicy: ApiJoinPolicy;
+  status: string;
+  inviteToken: string | null;
+  /** null on create; populated by `GET /matches/{id}`. */
+  participants: MatchParticipantResponse[] | null;
+}
+

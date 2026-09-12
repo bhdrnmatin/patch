@@ -5,12 +5,25 @@ import TextArea from "./TextArea";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
 import { MAX_TEAMMATES, type CreateMatchDraft } from "../../../../lib/types";
 
+/**
+ * رقابتی maps to the API's `matchType: COMPETITIVE`, which the backend refuses
+ * outright: `POST /matches` returns 400 «مسابقات رقابتی هنوز فعال نشده‌اند»
+ * (probed 2026-09-12). Letting it be picked means filling five steps to be
+ * turned away at submit, so it is greyed out until the backend enables it.
+ *
+ * **To re-enable, flip this one flag.** Everything else about رقابتی — the 2v2
+ * team preview, MAX_TEAMMATES, the capacity mapping — is untouched and working.
+ */
+const COMPETITIVE_ENABLED = false;
+
 const FORMAT_OPTIONS: RadioCardOption[] = [
   {
     id: "competitive",
     title: "رقابتی",
     description: "برای بازی جدی با ثبت نتیجه و تأثیر بر رنکینگ",
     icon: <TrophyIcon />,
+    disabled: !COMPETITIVE_ENABLED,
+    note: COMPETITIVE_ENABLED ? undefined : "به‌زودی",
   },
   {
     id: "friendly",
@@ -74,7 +87,7 @@ export default function StepDetails({ draft, patch }: Props) {
         onChange={(id) => patch({ invite: id as CreateMatchDraft["invite"] })}
       />
       <TextField
-        label="عنوان مَچ (اختیاری)"
+        label="عنوان مَچ"
         value={draft.title}
         onChange={(title) => patch({ title })}
         placeholder="مثلا راکت طلایی"
