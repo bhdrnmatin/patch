@@ -11,15 +11,15 @@ interface Props {
   open: boolean;
   slotLabel: string;
   /** The row's existing invite, if any — opens straight into the prefilled form
-   *  so a mistyped name or number can be corrected instead of re-added. */
-  invite?: { name: string; phone: string };
+   *  so a mistyped number can be corrected instead of re-added. */
+  invite?: { phone: string };
   players: MatchPlayer[];
   /** Player indexes already used by other rows — not selectable. */
   disabledPlayers: number[];
   /** Player index this row currently holds; tapping it clears the row. */
   selectedPlayer: number | null;
   onPickPlayer: (index: number) => void;
-  onInvite: (name: string, phone: string) => void;
+  onInvite: (phone: string) => void;
   /** Shown only when the row already holds someone, so it can be removed. */
   onClear?: () => void;
   onClose: () => void;
@@ -47,7 +47,6 @@ export default function AddPlayerSheet({
   onClose,
 }: Props) {
   const [view, setView] = useState<"menu" | "phone" | "players">("menu");
-  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
   // Reset on each open, adjusting state during render rather than in an effect:
@@ -62,15 +61,12 @@ export default function AddPlayerSheet({
       // starts at the menu. TextField(numeric) displays Persian digits, so seed
       // the stored Latin number back into that notation.
       setView(invite ? "phone" : selectedPlayer !== null ? "players" : "menu");
-      setName(invite?.name ?? "");
       setPhone(invite ? toPersianDigits(invite.phone) : "");
     }
   }
 
   const latin = toLatinDigits(phone);
-  const phoneOk = isValidMobile(phone);
-  const trimmedName = name.trim();
-  const valid = phoneOk && trimmedName.length > 0;
+  const valid = isValidMobile(phone);
 
   return (
     <BottomSheet open={open} title={`افزودن ${slotLabel}`} onClose={onClose}>
@@ -78,7 +74,7 @@ export default function AddPlayerSheet({
         <div className="flex flex-col gap-2">
           <MenuRow
             title="از بین بازیکنان پچ"
-            description="بازیکنانی که در پچ حساب دارند"
+            description="کسانی که قبلاً با آن‌ها بازی کرده‌اید"
             icon={<PeopleIcon />}
             onClick={() => setView("players")}
           />
@@ -111,24 +107,23 @@ export default function AddPlayerSheet({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <TextField label="نام" value={name} onChange={setName} placeholder="مثلا رضا محمدی" />
           <TextField
             label="شماره موبایل"
             value={phone}
             onChange={setPhone}
             placeholder="۰۹۱۲۳۴۵۶۷۸۹"
             numeric
-            error={phone && !phoneOk ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود." : undefined}
+            error={phone && !valid ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود." : undefined}
           />
           <p className="text-xs text-muted text-right leading-5" dir="rtl">
-            نام برای نمایش در فهرست بازیکنان است؛ دعوت پس از ثبت مچ پیامک می‌شود.
+            دعوت پس از ثبت مچ پیامک می‌شود.
           </p>
           <div className="flex gap-3">
             <BackButton className="flex-1" onClick={() => setView("menu")} />
             <button
               type="button"
               disabled={!valid}
-              onClick={() => onInvite(trimmedName, latin)}
+              onClick={() => onInvite(latin)}
               className="flex-1 h-12 rounded-pill bg-primary text-sm font-bold text-white active:opacity-80 disabled:opacity-40"
               dir="rtl"
             >

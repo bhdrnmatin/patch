@@ -48,5 +48,11 @@ export async function getCourtOptions(): Promise<CourtOption[]> {
 }
 
 export async function getPickablePlayers(): Promise<MatchPlayer[]> {
+  // Still the mock. The wizard's "از بین بازیکنان پچ" list is meant to be the
+  // people you have actually played with (user decision 2026-09-12) — not a
+  // directory of every Patch account, which is both useless to scroll and a way
+  // to enumerate other users. The copy in AddPlayerSheet already says that.
+  // Needs an endpoint that returns the current player's previous teammates;
+  // there is no player lookup of any kind on the API yet. See TODO.md.
   return pickablePlayers;
 }

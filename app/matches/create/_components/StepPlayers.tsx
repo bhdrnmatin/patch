@@ -83,7 +83,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
 
   const rowLabel = (row: number) => `بازیکن ${toPersianDigits(String(row + 2))}`;
   const rowValue = (t: Teammate) =>
-    t.kind === "player" ? players[t.index]?.name : `${t.name} (${toPersianDigits(t.phone)})`;
+    t.kind === "player" ? players[t.index]?.name : toPersianDigits(t.phone);
 
   return (
     <>
@@ -155,8 +155,8 @@ export default function StepPlayers({ draft, patch, players }: Props) {
           }
           closeSheets();
         }}
-        onInvite={(name, phone) => {
-          if (activeRow !== null) setRow(activeRow, { kind: "invite", name, phone });
+        onInvite={(phone) => {
+          if (activeRow !== null) setRow(activeRow, { kind: "invite", phone });
           closeSheets();
         }}
         onClear={

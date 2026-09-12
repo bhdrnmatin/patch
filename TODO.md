@@ -86,6 +86,12 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] createMatch stores only a MatchListItem; the details page still renders the shared mock for any id —
       per-id match storage when the API lands.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
+- [ ] **"از بین بازیکنان پچ" must list only players you have played with** (user decision 2026-09-12),
+      not every Patch account — a full directory is unscrollable and lets anyone enumerate users. The
+      sheet's copy says this already; `getPickablePlayers` still returns the mock. Blocked on an
+      endpoint for the current player's previous teammates — the API has no player lookup at all.
+- [x] Phone invites no longer ask for a name — **done 2026-09-12**, the number is the identity and is
+      what the roster, review and team preview display.
 
 ## Component QA — ds-qa-tw audit (2026-08-08)
 `AddPlayerSheet` (0 Critical, 2 Warning, 5 Suggestion) and the collapsing hero header
@@ -168,6 +174,16 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
+- [ ] **`POST /matches` — `scheduledAt` must validate in `Asia/Tehran`, not UTC.** Today the
+      "on the hour" check runs on UTC minutes and Iran is +03:30, so no Tehran hour is
+      accepted. Blocks create-match entirely; `lib/api/matches.ts` is written and tested and
+      needs no change once fixed. See `_designer/api-findings.md` §0.
+- [ ] **Enable `matchType: COMPETITIVE`.** رقابتی is greyed out until then — flip
+      `COMPETITIVE_ENABLED` in `StepDetails.tsx`.
+- [ ] **A missing `title` must not 500** (open since 2026-08-24). Worked around by always
+      sending a generated title.
+- [ ] **`capacity` should be nullable** — دوستانه/آمریکانو are uncapped by design; the mapping
+      floors the roster at the API's minimum of 4 to get past validation.
 - [x] **15-min logout — RESOLVED 2026-07-21:** the backend shipped `POST /auth/refresh`
       (`{refreshToken}` → `{accessToken, refreshToken}`, rotating). Token rotation is now wired in
       `lib/api/client.ts` (proactive refresh of an expired token + reactive refresh-and-replay on

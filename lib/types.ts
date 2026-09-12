@@ -180,7 +180,7 @@ export interface CourtOption {
  */
 export type Teammate =
   | { kind: "player"; index: number }
-  | { kind: "invite"; name: string; phone: string };
+  | { kind: "invite"; phone: string };
 
 /** Teammates allowed besides the creator in a رقابتی match (2v2 padel). */
 export const MAX_TEAMMATES = 3;
