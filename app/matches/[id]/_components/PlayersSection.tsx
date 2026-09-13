@@ -19,7 +19,11 @@ export default function PlayersSection({ players }: Props) {
           بازیکنان
         </h2>
       </div>
-      <ul className="grid grid-cols-2 gap-3">
+      {/* `dir="rtl"` reverses the inline axis so each row fills from the right.
+          With an odd roster the last chip then sits in the right column with the
+          gap on its left, instead of starting a row on the wrong side.
+          `PlayerChip` pins `dir="ltr"` so its own alignment is unaffected. */}
+      <ul className="grid grid-cols-2 gap-3" dir="rtl">
         {players.map((p, i) => (
           <li key={i}>
             <PlayerChip player={p} />

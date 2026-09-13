@@ -20,8 +20,11 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
         <StatusBadge status={status} />
       </div>
 
-      {/* Roster grid */}
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+      {/* Roster grid. `dir="rtl"` reverses the inline axis, which is what an RTL
+          roster needs: without it the grid fills from the left, so a lone player
+          sits in the wrong column and a pair reads back-to-front. `PlayerSlot`
+          pins its own direction, so it is unaffected by the flip. */}
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2" dir="rtl">
         {players.map((p, i) => (
           <PlayerSlot key={i} name={p.name} level={p.level} avatar={p.avatar} />
         ))}
