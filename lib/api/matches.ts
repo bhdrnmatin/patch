@@ -2,7 +2,7 @@ import { apiFetch } from "./client";
 import { JALALI_MONTHS, isoToJalali } from "../jalali";
 import { toPersianDigits } from "../persian";
 import type { CreateMatchDraft } from "../types";
-import type { CreateMatchRequest, MatchResponse } from "./types";
+import type { CreateMatchRequest, MatchResponse, PageResponse } from "./types";
 
 /** Tehran is UTC+03:30 — a fixed offset; Iran no longer observes DST. */
 const TEHRAN_OFFSET = "+03:30";
@@ -90,4 +90,14 @@ function toInstant(isoDate: string, time: string): string {
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */
 export function createMatch(body: CreateMatchRequest): Promise<MatchResponse> {
   return apiFetch<MatchResponse>("/matches", { method: "POST", body });
+}
+
+/**
+ * The matches list. One oversized page: the list screen has no pagination UI
+ * and filters client-side, so asking for more than exists is simpler than
+ * pretending to page.
+ * ponytail: real paging when the list is long enough to need it.
+ */
+export function listMatches(): Promise<PageResponse<MatchResponse>> {
+  return apiFetch<PageResponse<MatchResponse>>("/matches?size=100");
 }

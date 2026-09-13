@@ -29,7 +29,13 @@ export type MatchStatus = "active" | "held" | "not-held";
 
 export interface MatchPlayer {
   name: string;
-  level: number;
+  /**
+   * Skill level. Optional because the API carries none yet — levels, price and
+   * entry fee all land after the MVP (user, 2026-09-13). Until then `PlayerSlot`
+   * omits the line rather than printing «لول ۰», which would read as a real
+   * rating of zero.
+   */
+  level?: number;
   avatar?: string;
 }
 
@@ -39,12 +45,17 @@ export interface MatchListItem {
   title: string;
   status: MatchStatus;
   players: MatchPlayer[];
-  avgLevel: number;
+  /** Undefined when no player has a level — see `MatchPlayer.level`. */
+  avgLevel?: number;
   capacity: number;
   /** Persian month label, e.g. "بهمن ۱۴۰۴". */
   date: string;
-  /** Toman, integer. */
-  price: number;
+  /**
+   * Toman, integer. Undefined for an API match: pricing arrives after the MVP,
+   * and the wizard stopped asking for a fee on 2026-08-12. The card's CTA falls
+   * back to a plain label so it never implies the match is free.
+   */
+  price?: number;
 }
 
 export interface DayOption {

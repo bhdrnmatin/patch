@@ -27,7 +27,10 @@ export default function MatchesPage() {
     if (filter.levels.length > 0)
       list = list.filter((m) => filter.levels.includes(String(m.avgLevel)));
     if (sort.fee)
-      list = [...list].sort((a, b) => (sort.fee === "least" ? a.price - b.price : b.price - a.price));
+      // A match with no price (every API match — there is no such field) sorts as free.
+      list = [...list].sort((a, b) =>
+        sort.fee === "least" ? (a.price ?? 0) - (b.price ?? 0) : (b.price ?? 0) - (a.price ?? 0),
+      );
     return list;
   }, [matchList, filter, sort]);
 

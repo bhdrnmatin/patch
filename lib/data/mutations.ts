@@ -41,6 +41,13 @@ export async function respondToJoinRequest({
   }
 }
 
+/** Mean skill level, or undefined when nobody has one (every API player). */
+function averageLevel(players: MatchPlayer[]): number | undefined {
+  const levels = players.map((p) => p.level).filter((l): l is number => l !== undefined);
+  if (levels.length === 0) return undefined;
+  return Math.round(levels.reduce((sum, l) => sum + l, 0) / levels.length);
+}
+
 /** Create a match from the wizard draft; returns the new match id. */
 export async function createMatch(draft: CreateMatchDraft): Promise<string> {
   await delay();
@@ -60,7 +67,7 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
     title: draft.title,
     status: "active",
     players,
-    avgLevel: Math.round(players.reduce((sum, p) => sum + p.level, 0) / players.length),
+    avgLevel: averageLevel(players),
     // رقابتی is always 2v2; the other formats have no fixed size, so the roster
     // it was created with is the only capacity we can claim.
     capacity: draft.format === "competitive" ? 4 : players.length,
