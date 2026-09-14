@@ -118,10 +118,24 @@ export interface MatchOrganizerResponse {
 }
 
 export interface MatchParticipantResponse {
+  id: string;
+  matchId: string;
   accountId: string;
+  /**
+   * Declared as a bare string. Only "CONFIRMED" has been observed on the live
+   * API (2026-09-14) — the pending value is unknown, which is why join requests
+   * are not mapped yet. Ask the backend to declare the enum.
+   */
+  status: string;
+  /** e.g. "OPEN" — how they got in. Also undeclared. */
+  joinChannel: string;
+  requestedAt: string;
+  decidedAt: string | null;
   photoUrl: string | null;
   firstName: string;
   lastName: string;
+  /** Present for the organizer's own view; may be absent for others. */
+  phoneNumber?: string;
 }
 
 export interface MatchResponse {

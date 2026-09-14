@@ -7,7 +7,7 @@
  * Run: npx tsx lib/api/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { draftToCreateRequest } from "./matches";
+import { draftToCreateRequest, tehranTimeRange, FORMAT_LABELS } from "./matches";
 import type { CreateMatchDraft } from "../types";
 
 const base: CreateMatchDraft = {
@@ -79,5 +79,15 @@ assert.equal(draftToCreateRequest(d({ description: " بیا " })).description, "
 // An incomplete draft is a bug, not a request to send half a match.
 assert.throws(() => draftToCreateRequest(d({ courtId: null })), /missing a court/);
 assert.throws(() => draftToCreateRequest(d({ time: null })), /missing a court/);
+
+// tehranTimeRange: the API stores a UTC instant and Iran is a fixed +03:30, so
+// the hours a player reads are always shifted from what is stored.
+assert.equal(tehranTimeRange("2026-09-27T11:00:00Z", 1), "۱۴:۳۰ الی ۱۵:۳۰");
+assert.equal(tehranTimeRange("2026-09-27T14:30:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
+// Crossing midnight must not wrap to a negative or a 25th hour.
+assert.equal(tehranTimeRange("2026-09-27T20:30:00Z", 1), "۰۰:۰۰ الی ۰۱:۰۰");
+
+assert.equal(FORMAT_LABELS.AMERICANO, "آمریکانو");
+assert.equal(FORMAT_LABELS.OPEN_MATCH, "دوستانه");
 
 console.log("createMatch mapping: ok");

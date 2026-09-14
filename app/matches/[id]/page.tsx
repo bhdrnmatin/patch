@@ -86,12 +86,12 @@ function MatchDetailsContent() {
         <DescriptionCard text={m.description} />
 
         {playersPlacement === "middle" && <PlayersSection players={m.players} />}
-        <InfoBanner text={m.teamNote} />
+        {m.teamNote && <InfoBanner text={m.teamNote} />}
 
         <PromoCard />
         <CourtCard club={m.club} note={m.courtNote} lat={m.courtLat} lng={m.courtLng} />
         <ShareCard restriction={m.restriction} matchId={id} />
-        <FaqSection faq={m.faq} />
+        {m.faq.length > 0 && <FaqSection faq={m.faq} />}
       </div>
 
       <MatchCtaBar

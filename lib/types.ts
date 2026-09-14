@@ -232,8 +232,8 @@ export interface CreateMatchDraft {
 export interface MatchDetails {
   id: string;
   title: string;
-  /** Toman, integer. */
-  fee: number;
+  /** Toman, integer. Undefined until pricing ships (post-MVP), like `price`. */
+  fee?: number;
   /** e.g. "آمریکانو" */
   format: string;
   club: string;
@@ -242,21 +242,21 @@ export interface MatchDetails {
   creator: string;
   /** Persian date, e.g. "۱۷ بهمن". */
   date: string;
-  /** Signup deadline, e.g. "۱۵ بهمن". */
-  deadline: string;
+  /** Signup deadline, e.g. "۱۵ بهمن". No API field — omitted for a live match. */
+  deadline?: string;
   /** e.g. "۱۴:۰۰ الی ۱۵:۴۵". */
   timeRange: string;
   description: string;
   players: MatchPlayer[];
-  /** Entry restriction, e.g. "بالای لول ۳". */
-  restriction: string;
-  /** Banner text inside the court card. */
-  courtNote: string;
+  /** Entry restriction, e.g. "بالای لول ۳". Level-based, so it waits on levels. */
+  restriction?: string;
+  /** Banner text inside the court card. No API field. */
+  courtNote?: string;
   /** Court coordinates — drive the map and the مسیریابی link. */
   courtLat?: number;
   courtLng?: number;
-  /** Banner text under the players grid. */
-  teamNote: string;
+  /** Banner text under the players grid. No API field. */
+  teamNote?: string;
   faq: FaqEntry[];
   requests: JoinRequest[];
 }

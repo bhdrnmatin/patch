@@ -57,6 +57,19 @@ edit when the fix ships.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
+### 0d. Participant status enum is undeclared — blocks join requests
+`MatchParticipantResponse.status` is `"type": "string"` with no enum, and only **`CONFIRMED`**
+has ever been observed (2026-09-14). `POST /matches/{id}/participants/{id}/approve` and
+`/reject` exist, so a pending state must too — but producing one needs a second account
+joining a `MANUAL_APPROVE` match, which we cannot do yet.
+
+Consequence: `getMatchDetails` counts only `CONFIRMED` toward `filled` and returns
+`requests: []`, so the creator's join-request section never renders and
+`respondToJoinRequest` is unreachable.
+
+**Ask:** declare the enum for `status` and `joinChannel`. Same request as the match-level
+`status`, which has the same problem.
+
 ### 0c. Re-confirmed 2026-09-12
 - **A missing `title` still 500s** — unchanged since 2026-08-24. The wizard treats the
   title as اختیاری, so `draftToCreateRequest` always invents one («مچ ۲۹ شهریور»).

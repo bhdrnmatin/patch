@@ -353,8 +353,17 @@ opposed to what its spec claims — is recorded in
   exists and returns `{accountId, firstName, lastName, photoUrl}` — likely the source for
   «از بین بازیکنان پچ», which is meant to list people you have played with rather than every account;
   `getPickablePlayers` is still the mock.
-- [ ] **Not yet wired, all available today:** `GET /matches/{id}` (returns `participants` with a
-  per-participant status, so roster + pending requests both come from it), `POST /matches/{id}/join`,
+- [x] **Match details is live (2026-09-14):** `getMatchDetails` calls `GET /matches/{id}` and
+  resolves `clubId` against the cached clubs list for the club name and the coordinates `CourtMap`
+  needs — no extra round trip. Format maps to a Persian label, and `timeRange` converts the stored
+  UTC instant to Tehran (`+03:30`), so a match created at ۱۷:۳۰ reads back as ۱۷:۳۰. Six fields have
+  no API source and their cards omit themselves: `fee`, `deadline`, `restriction`, `courtNote`,
+  `teamNote`, `faq`.
+- [ ] **Join requests are not mapped** — `MatchParticipantResponse.status` is an undeclared string
+  and only `CONFIRMED` has been observed, so `filled` counts confirmed only and `requests` is `[]`.
+  `respondToJoinRequest` is unreachable until the enum is declared; the approve/reject endpoints
+  already exist. See api-findings §0d.
+- [ ] **Not yet wired, all available today:** `POST /matches/{id}/join`,
   `DELETE /matches/{id}/participants/me`, the approve/reject actions, and the invite-token flow.
 - [ ] **No endpoint exists at all for:** tournaments, activity, notification counts. Those stay on
   mocks regardless of anything above.

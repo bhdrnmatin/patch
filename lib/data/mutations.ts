@@ -8,7 +8,17 @@ import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
 
 const delay = (ms = 400) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-/** Accept or reject a pending join request (creator action). */
+/**
+ * Accept or reject a pending join request (creator action).
+ *
+ * **Currently unreachable.** `getMatchDetails` reads the API now and returns
+ * `requests: []`, because the pending participant status is unknown — so
+ * `JoinRequestsSection` never renders and nothing calls this. It still mutates
+ * the mock, which nothing reads.
+ *
+ * Rewire it to `POST /matches/{id}/participants/{participantId}/approve` and
+ * `/reject` (both exist) once the backend declares the participant status enum.
+ */
 export async function respondToJoinRequest({
   matchId,
   requestId,

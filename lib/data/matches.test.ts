@@ -45,9 +45,21 @@ assert.equal(toStatus(m({ status: "SOMETHING_NEW" })), "active",
   "an unknown status must not throw or mislabel");
 
 // The API stores firstName with a trailing space, so a naive join double-spaces.
-const withPlayer = toListItem(m({
-  participants: [{ accountId: "a1", photoUrl: null, firstName: "متین ", lastName: "بهادران" }],
-}));
+const participant = (over = {}) => ({
+  id: "p1",
+  matchId: "m1",
+  accountId: "a1",
+  status: "CONFIRMED",
+  joinChannel: "OPEN",
+  requestedAt: "2026-09-13T14:59:51Z",
+  decidedAt: "2026-09-13T14:59:51Z",
+  photoUrl: null,
+  firstName: "متین ",
+  lastName: "بهادران",
+  ...over,
+});
+
+const withPlayer = toListItem(m({ participants: [participant()] }));
 assert.equal(withPlayer.players[0].name, "متین بهادران");
 
 // The three fields the API cannot supply stay undefined — never 0.

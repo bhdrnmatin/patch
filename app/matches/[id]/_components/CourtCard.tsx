@@ -4,7 +4,8 @@ import { EditIcon } from "./icons";
 
 interface Props {
   club: string;
-  note: string;
+  /** Optional: no API field behind it. */
+  note?: string;
   lat?: number;
   lng?: number;
 }
@@ -28,7 +29,7 @@ export default function CourtCard({ club, note, lat, lng }: Props) {
       <h2 className="text-display font-bold text-ink-soft" dir="rtl">
         {club}
       </h2>
-      <InfoBanner text={note} />
+      {note && <InfoBanner text={note} />}
       {lat !== undefined && lng !== undefined && (
         <CourtMap lat={lat} lng={lng} label={club} />
       )}

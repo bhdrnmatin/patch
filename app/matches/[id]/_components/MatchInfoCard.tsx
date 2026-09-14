@@ -17,12 +17,16 @@ export default function MatchInfoCard({ match }: Props) {
   return (
     <SectionCard title="اطلاعات">
       <div className="grid grid-cols-2 gap-3" dir="rtl">
-        <InfoItem icon={<MoneyIcon />} label="هزینه ورودی">
-          <span className="flex items-center gap-1">
-            {toPersianDigits(match.fee.toLocaleString("en-US"))}
-            <TomanIcon className="size-4" />
-          </span>
-        </InfoItem>
+        {/* Pricing ships after the MVP; an entry fee of ۰ would read as free
+            rather than unknown, so the tile is dropped instead. */}
+        {match.fee !== undefined && (
+          <InfoItem icon={<MoneyIcon />} label="هزینه ورودی">
+            <span className="flex items-center gap-1">
+              {toPersianDigits(match.fee.toLocaleString("en-US"))}
+              <TomanIcon className="size-4" />
+            </span>
+          </InfoItem>
+        )}
         <InfoItem icon={<WhistleIcon className="size-5" />} label="فرمت مچ">
           {match.format}
         </InfoItem>

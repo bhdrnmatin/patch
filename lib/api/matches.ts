@@ -1,5 +1,6 @@
 import { apiFetch } from "./client";
 import { jalaliDayMonth } from "../jalali";
+import { toPersianDigits } from "../persian";
 import type { CreateMatchDraft } from "../types";
 import type { CreateMatchRequest, MatchResponse, PageResponse } from "./types";
 
@@ -90,6 +91,11 @@ export function createMatch(body: CreateMatchRequest): Promise<MatchResponse> {
   return apiFetch<MatchResponse>("/matches", { method: "POST", body });
 }
 
+/** One match, by id. Same shape as create returns, with `participants` filled. */
+export function getMatch(id: string): Promise<MatchResponse> {
+  return apiFetch<MatchResponse>(`/matches/${id}`);
+}
+
 /**
  * The matches list. One oversized page: the list screen has no pagination UI
  * and filters client-side, so asking for more than exists is simpler than
@@ -98,4 +104,31 @@ export function createMatch(body: CreateMatchRequest): Promise<MatchResponse> {
  */
 export function listMatches(): Promise<PageResponse<MatchResponse>> {
   return apiFetch<PageResponse<MatchResponse>>("/matches?size=100");
+}
+
+/** The API's format enum as the app writes it. آمریکانو/دوستانه are the two the
+ *  wizard can produce; MEXICANO exists in the API but has no UI yet. */
+export const FORMAT_LABELS: Record<MatchResponse["format"], string> = {
+  OPEN_MATCH: "دوستانه",
+  AMERICANO: "آمریکانو",
+  MEXICANO: "مکزیکانو",
+};
+
+/**
+ * "۱۴:۰۰ الی ۱۵:۰۰" — the match's window in Tehran local time.
+ *
+ * `scheduledAt` is a UTC instant, so it has to be shifted before the hours mean
+ * anything to a player. Iran is a fixed +03:30 with no DST, which is why this is
+ * arithmetic rather than an Intl timezone lookup.
+ */
+export function tehranTimeRange(scheduledAt: string, durationHours: number): string {
+  const start = new Date(scheduledAt).getTime() + 3.5 * 3600_000;
+  const end = start + durationHours * 3600_000;
+  const hhmm = (ms: number) => {
+    const d = new Date(ms);
+    return toPersianDigits(
+      `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`,
+    );
+  };
+  return `${hhmm(start)} الی ${hhmm(end)}`;
 }

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { ShareNodesIcon } from "./icons";
 
 interface Props {
-  restriction: string;
+  /** Optional: level-based, and levels ship after the MVP. */
+  restriction?: string;
   /** Match id — the invite link is this match's own URL. */
   matchId: string;
 }

@@ -1,13 +1,8 @@
 import { getClubs } from "@/lib/api/clubs";
-import { listMatches } from "@/lib/api/matches";
+import { FORMAT_LABELS, getMatch, listMatches, tehranTimeRange } from "@/lib/api/matches";
 import type { MatchResponse } from "@/lib/api/types";
 import { jalaliDayMonth } from "@/lib/jalali";
-import {
-  matchDays,
-  matchList,
-  matchDetails,
-  pickablePlayers,
-} from "@/lib/mock";
+import { matchDays, matchList, pickablePlayers } from "@/lib/mock";
 import type {
   DayOption,
   MatchListItem,
@@ -64,7 +59,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
       // space ("متین "), so a plain join renders "متین  بهادران" with a visible
       // double gap. Noted in api-findings §1; normalising here costs nothing and
       // does not depend on that ever being fixed.
-      name: `${p.firstName ?? ""} ${p.lastName ?? ""}`.replace(/\s+/g, " ").trim(),
+      name: fullName(p.firstName, p.lastName),
       avatar: p.photoUrl ?? undefined,
     })),
     capacity: m.capacity,
@@ -72,12 +67,58 @@ export function toListItem(m: MatchResponse): MatchListItem {
   };
 }
 
+/**
+ * Live: one match by id.
+ *
+ * Six of `MatchDetails`' fields have no API source and stay undefined, so their
+ * card drops itself rather than rendering a blank row — `fee`, `deadline`,
+ * `restriction`, `courtNote`, `teamNote` and the FAQ. Levels are absent too, so
+ * `players` carry names and photos only.
+ *
+ * The club is resolved against the clubs list rather than fetched per match:
+ * `MatchResponse` carries only `clubId`, and the app already loads all five
+ * clubs for the wizard's court picker. One cached query gives the name and the
+ * coordinates `CourtMap` needs, with no extra round trip.
+ */
 export async function getMatchDetails(id: string): Promise<MatchDetails> {
-  // One mock record for now; the real endpoint will key off `id`.
-  void id;
-  // Clone so mutations to the in-memory mock surface as a new reference on
-  // refetch (React Query's structural sharing skips same-reference results).
-  return structuredClone(matchDetails);
+  const [m, clubs] = await Promise.all([getMatch(id), getClubs()]);
+  const club = clubs.content.find((c) => c.id === m.clubId);
+
+  // "CONFIRMED" is the only participant status observed on the live API
+  // (2026-09-14) and the spec declares the field as a bare string, so it is the
+  // only one counted. See the note on `requests` below.
+  const confirmed = (m.participants ?? []).filter((p) => p.status === "CONFIRMED");
+
+  return {
+    id: m.id,
+    title: m.title ?? jalaliDayMonth(m.scheduledAt),
+    format: FORMAT_LABELS[m.format] ?? m.format,
+    club: club?.name ?? "—",
+    capacity: m.capacity,
+    filled: confirmed.length,
+    creator: fullName(m.organizer.firstName, m.organizer.lastName),
+    date: jalaliDayMonth(m.scheduledAt),
+    timeRange: tehranTimeRange(m.scheduledAt, m.durationHours),
+    description: m.description ?? "",
+    players: confirmed.map((p) => ({
+      name: fullName(p.firstName, p.lastName),
+      avatar: p.photoUrl ?? undefined,
+    })),
+    courtLat: club?.latitude,
+    courtLng: club?.longitude,
+    faq: [],
+    // Empty on purpose, not unfinished. Approving someone needs the *pending*
+    // participant status, and only "CONFIRMED" has ever been seen — producing a
+    // pending row needs a second account joining a MANUAL_APPROVE match, which
+    // this project cannot do yet. Guessing at "PENDING" is exactly the mistake
+    // the match-status mapping avoids. Ask the backend to declare the enum.
+    requests: [],
+  };
+}
+
+/** The API stores firstName with a trailing space, so collapse rather than trim. */
+function fullName(first?: string | null, last?: string | null): string {
+  return `${first ?? ""} ${last ?? ""}`.replace(/\s+/g, " ").trim();
 }
 
 /** Create-match wizard lookups */
