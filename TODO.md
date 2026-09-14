@@ -27,6 +27,11 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       `dayStrip()` derives it from the clock and `MatchListItem.day` (Tehran date) is what a cell
       matches. No day selected on open (user decision); re-tap clears. Tournaments/activity strips
       stay cosmetic — their list items carry no ISO date.
+- [ ] **Check what `Cache-Control` Neshan sends on `/v5/static`.** The `/map/static` rewrite passes
+      the upstream headers straight through, so if they are `no-store` every return to an
+      already-viewed club refetches an identical image. A club's coordinates don't move, so a
+      `headers()` rule in `next.config.ts` would make revisits instant — not added 2026-09-14 because
+      the current headers hadn't been seen. One curl decides it.
 - [ ] FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now unblocked** — `MatchListItem.day`
       is an ISO date, so all three are computable. Left unwired 2026-09-14: the strip already covers
       picking a day, so wire this only if the facet is worth keeping beside it.

@@ -19,6 +19,14 @@ since it was built.
 - `/tournaments` gets real dates but stays cosmetic — `TournamentListItem` carries only a
   pre-formatted Persian range, so a cell has nothing to match against.
 
+Also this session, from a report that the wizard's club switch felt broken:
+- **The court map was painting the previous club for ~2s.** Not latency — an `<img>` holds its old
+  pixels until the new `src` decodes, so the tap looked ignored. `CourtMap` hides the image until it
+  loads and pulses a placeholder instead. The round trip is unchanged; the ambiguity is gone.
+- **And `mapFailed` never reset** — a boolean carried one club's failure onto every club picked after
+  it. Both flags are keyed to their `src` now. Deferred: a `Cache-Control` on `/map/static` so a
+  revisited club is instant (TODO — needs Neshan's current headers looked at first).
+
 ### Worth knowing
 - **The stored API session had expired** (`توکن رفرش نامعتبر`) and cost an SMS to restore. This is the
   second session in a row it has; the password-login test account below is the fix, not a habit.

@@ -8,6 +8,18 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-14 — the court map stops looking broken while it loads
+
+- **[Create/Match details] Switching club left the previous club's map on screen for ~2s.** An
+  `<img>` whose `src` changes keeps painting the old image until the new one decodes, so the wizard's
+  court picker looked like it had ignored the tap — the address line updated instantly, but the map
+  is the element you look at. `CourtMap` now hides the image until it has loaded and pulses a
+  placeholder in its slot, so the switch registers on the tap rather than on arrival. The 2s is the
+  network round trip and is unchanged; only the ambiguity is gone.
+- **[Fix] One failed map hid the map for every club after it.** `mapFailed` was a boolean that never
+  reset when `lat`/`lng` changed, so a single blip (quota, a dropped request) disabled the map for the
+  rest of the step. Both the loaded and the failed flag are keyed to the `src` they apply to now.
+
 ### 2026-09-14 — the date strip is a real calendar, and it filters
 
 - **[Matches] The header date strip was mock and is now derived from the clock.** `lib/mock/index.ts`
