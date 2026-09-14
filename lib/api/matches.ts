@@ -162,18 +162,25 @@ export const FORMAT_LABELS: Record<MatchResponse["format"], string> = {
  * arithmetic rather than an Intl timezone lookup.
  */
 /**
+ * Iran is UTC+03:30 and observes no DST, so shifting an instant by this and then
+ * reading its UTC parts gives Tehran wall-clock time. Both readers below do
+ * exactly that; it lived twice as a bare `3.5 * 3600_000` until 2026-09-14.
+ */
+const TEHRAN_OFFSET_MS = 3.5 * 3600_000;
+
+/**
  * The Tehran calendar date of an instant, ISO "YYYY-MM-DD" — what the date
  * strip compares against. Same +3:30 shift as `tehranTimeRange`: a match at
  * 21:00 Tehran is 17:30Z, and reading the UTC date would be right, but one at
  * 02:00 Tehran is 22:30Z the day before, and would land on the wrong cell.
  */
 export function tehranDateISO(scheduledAt: string): string {
-  const d = new Date(new Date(scheduledAt).getTime() + 3.5 * 3600_000);
+  const d = new Date(new Date(scheduledAt).getTime() + TEHRAN_OFFSET_MS);
   return d.toISOString().slice(0, 10);
 }
 
 export function tehranTimeRange(scheduledAt: string, durationHours: number): string {
-  const start = new Date(scheduledAt).getTime() + 3.5 * 3600_000;
+  const start = new Date(scheduledAt).getTime() + TEHRAN_OFFSET_MS;
   const end = start + durationHours * 3600_000;
   const hhmm = (ms: number) => {
     const d = new Date(ms);
