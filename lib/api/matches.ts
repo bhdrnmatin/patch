@@ -1,6 +1,5 @@
 import { apiFetch } from "./client";
-import { JALALI_MONTHS, isoToJalali } from "../jalali";
-import { toPersianDigits } from "../persian";
+import { jalaliDayMonth } from "../jalali";
 import type { CreateMatchDraft } from "../types";
 import type { CreateMatchRequest, MatchResponse, PageResponse } from "./types";
 
@@ -47,10 +46,9 @@ export function draftToCreateRequest(draft: CreateMatchDraft): CreateMatchReques
  * without it — and four lines is cheap insurance against that.
  */
 function fallbackTitle(isoDate: string): string {
-  const { jm, jd } = isoToJalali(isoDate);
-  // Persian digits: this string is user-visible the moment the match is
-  // created, and Latin digits are wrong everywhere in this app.
-  return `مچ ${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`.slice(0, 80);
+  // jalaliDayMonth already returns Persian digits, which this string needs —
+  // it is user-visible the moment the match is created.
+  return `مچ ${jalaliDayMonth(isoDate)}`.slice(0, 80);
 }
 
 /**

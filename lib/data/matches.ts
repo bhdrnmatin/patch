@@ -1,8 +1,7 @@
 import { getClubs } from "@/lib/api/clubs";
 import { listMatches } from "@/lib/api/matches";
 import type { MatchResponse } from "@/lib/api/types";
-import { JALALI_MONTHS, isoToJalali } from "@/lib/jalali";
-import { toPersianDigits } from "@/lib/persian";
+import { jalaliDayMonth } from "@/lib/jalali";
 import {
   matchDays,
   matchList,
@@ -42,12 +41,6 @@ export async function getMatchList(): Promise<MatchListItem[]> {
   return [...content.map(toListItem), ...matchList];
 }
 
-/** "۱۴ مرداد" from an ISO instant, for the date line on a card. */
-function dayMonthLabel(iso: string): string {
-  const { jm, jd } = isoToJalali(iso.slice(0, 10));
-  return `${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`;
-}
-
 /**
  * `status` is an undeclared string in the spec (only OPEN and CANCELLED seen),
  * so only CANCELLED is trusted by name. Everything else is decided from the
@@ -64,7 +57,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
   return {
     id: m.id,
     // `title` is nullable in the response even though omitting it on create 500s.
-    title: m.title ?? dayMonthLabel(m.scheduledAt),
+    title: m.title ?? jalaliDayMonth(m.scheduledAt),
     status: toStatus(m),
     players: (m.participants ?? []).map((p) => ({
       // Collapse, don't just trim: the API stores firstName with its trailing
@@ -75,7 +68,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
       avatar: p.photoUrl ?? undefined,
     })),
     capacity: m.capacity,
-    date: dayMonthLabel(m.scheduledAt),
+    date: jalaliDayMonth(m.scheduledAt),
   };
 }
 

@@ -39,9 +39,13 @@ export default function PlayerPickList({ players, disabled, selected, onSelect }
                 <span className="text-xs font-bold text-ink-soft" dir="rtl">
                   {player.name}
                 </span>
-                <span className="text-xs text-muted" dir="rtl">
-                  لول {toPersianDigits(String(player.level))}
-                </span>
+                {/* Levels arrive after the MVP; an API player has none and
+            String(undefined) renders «لول undefined». */}
+                {player.level !== undefined && (
+                  <span className="text-xs text-muted" dir="rtl">
+                    لول {toPersianDigits(String(player.level))}
+                  </span>
+                )}
               </span>
               <img
                 src={player.avatar ?? "/images/avatar-placeholder.svg"}

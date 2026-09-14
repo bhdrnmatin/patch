@@ -24,8 +24,13 @@ export default function MatchesPage() {
   const visibleMatches = useMemo(() => {
     let list = matchList;
     if (filter.status.length > 0) list = list.filter((m) => filter.status.includes(m.status));
+    // A match with no level can't be judged against a level facet, so it stays
+    // visible rather than being filtered out. `String(undefined)` matched none
+    // of "1".."6", so picking any level emptied the whole list of API matches.
     if (filter.levels.length > 0)
-      list = list.filter((m) => filter.levels.includes(String(m.avgLevel)));
+      list = list.filter(
+        (m) => m.avgLevel === undefined || filter.levels.includes(String(m.avgLevel)),
+      );
     if (sort.fee)
       // A match with no price (every API match — there is no such field) sorts as free.
       list = [...list].sort((a, b) =>

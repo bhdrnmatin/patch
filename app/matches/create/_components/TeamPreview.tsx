@@ -48,7 +48,12 @@ export default function TeamPreview({ myRoleLabel, teammates, players }: Props) 
 
     const player = players[t.index];
     return player ? (
-      <Cell title={player.name} subtitle={`لول ${toPersianDigits(String(player.level))}`} />
+      <Cell
+        title={player.name}
+        // Levels arrive after the MVP, so an API player has none — the subtitle
+        // is omitted rather than reading «لول undefined».
+        subtitle={player.level === undefined ? undefined : `لول ${toPersianDigits(String(player.level))}`}
+      />
     ) : (
       <EmptyCell label={label} />
     );

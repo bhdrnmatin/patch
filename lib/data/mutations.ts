@@ -1,13 +1,6 @@
 import { matchDetails, matchList, pickablePlayers } from "@/lib/mock";
-import { JALALI_MONTHS, isoToJalali } from "@/lib/jalali";
-import { toPersianDigits } from "@/lib/persian";
+import { jalaliDayMonth } from "@/lib/jalali";
 import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
-
-/** "۱۴ مرداد" from an ISO gregorian date, for the match-list card. */
-function dayMonthLabel(iso: string): string {
-  const { jm, jd } = isoToJalali(iso);
-  return `${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`;
-}
 
 // Write-side seam — the twin of the read accessors in this folder. Today each
 // mutates the in-memory mock so an invalidated query refetches changed data;
@@ -71,7 +64,7 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
     // رقابتی is always 2v2; the other formats have no fixed size, so the roster
     // it was created with is the only capacity we can claim.
     capacity: draft.format === "competitive" ? 4 : players.length,
-    date: draft.date ? dayMonthLabel(draft.date) : "",
+    date: draft.date ? jalaliDayMonth(draft.date) : "",
     // The wizard stopped collecting an entry fee (step ۵ is the join method
     // only), so everything created here is free until a pricing field returns.
     price: 0,

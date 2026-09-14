@@ -38,9 +38,13 @@ export default function PlayerSlotButton({ player, slotLabel, onClick }: Props) 
         <span className="w-full text-xs font-bold leading-[11px] text-ink-soft truncate" dir="rtl">
           {player.name}
         </span>
-        <span className="text-xs leading-[11px] text-muted" dir="rtl">
-          لول {toPersianDigits(String(player.level))}
-        </span>
+        {/* Levels arrive after the MVP; an API player has none and
+            String(undefined) renders «لول undefined». */}
+        {player.level !== undefined && (
+          <span className="text-xs leading-[11px] text-muted" dir="rtl">
+            لول {toPersianDigits(String(player.level))}
+          </span>
+        )}
       </span>
       <img
         src={player.avatar ?? "/images/avatar-placeholder.svg"}

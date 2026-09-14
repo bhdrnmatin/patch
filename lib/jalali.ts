@@ -1,3 +1,4 @@
+import { toPersianDigits } from "./persian";
 // Inline jalali (Persian) <-> gregorian conversion — the canonical jalaali-js
 // algorithm (public domain), ported to TS. Only what the date picker needs:
 // conversion + month length. Self-check in lib/jalali.test.ts.
@@ -124,4 +125,17 @@ export function addDaysISO(iso: string, n: number): string {
   const [gy, gm, gd] = iso.split("-").map(Number);
   const d = new Date(gy, gm - 1, gd + n);
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/**
+ * "۱۴ مرداد" — jalali day + month name, in Persian digits.
+ *
+ * Accepts an ISO date or a full instant; only the date part is read. Three
+ * places had byte-identical copies of this (the matches list mapping, the mock
+ * createMatch, and the generated match title), which is two too many for a
+ * one-line format string.
+ */
+export function jalaliDayMonth(iso: string): string {
+  const { jm, jd } = isoToJalali(iso.slice(0, 10));
+  return `${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`;
 }
