@@ -1,5 +1,60 @@
 # Session State
 
+## Session — 2026-09-12/14: onboarding parked, maps, the auth keyboard, and the API
+18 commits, all pushed to **both** remotes (head `b77f9db`). Everything below is on `main`.
+
+### What shipped
+- **Onboarding is parked, not deleted** — `app/(auth)/_onboarding/`. The leading `_` makes it a Next
+  private folder: no route, still compiled. Nothing linked to it. Reviving it is a folder rename.
+- **Court maps are real** — Neshan static maps at the club's own coordinates, behind a `/map/static`
+  rewrite so `NESHAN_API_KEY` stays server-side. مسیریابی opens the Neshan app via `nshn.ir`. The
+  API had been sending `latitude`/`longitude` all along; `lib/data/matches.ts` was dropping them.
+- **The auth keyboard, fixed on a real Android phone** — four bugs, all in `97d06af`. The blank band
+  under the card (`AuthSlide` art is `fixed`, not `absolute`), the per-keystroke drop (`AppScroll`
+  writes `--vvh` asymmetrically — shrink immediately, growth after 150ms), and two OTP input bugs.
+  `scripts/otp-webkit.mjs` is 12 cases now.
+- **The API is wired much further**: matches list, match details, join requests, viewer role/stage,
+  and the join/leave/cancel CTAs — which had all been inert buttons.
+
+### The two things that are still blocked, and why
+- **`POST /matches` cannot be wired.** `scheduledAt` is validated "on the hour" against **UTC**
+  minutes and Iran is +03:30, so no Tehran wall-clock hour is ever accepted. The mapping is written
+  and tested (`lib/api/matches.ts`, `matches.test.ts`) and needs **no change** when the server
+  validates in `Asia/Tehran`. Reported to the backend 2026-09-13; re-probed 09-14, still broken.
+- **رقابتی is greyed out** — `matchType: COMPETITIVE` returns 400. One flag: `COMPETITIVE_ENABLED`
+  in `StepDetails.tsx`.
+- Full evidence and the consolidated ask: `_designer/api-findings.md` §0–§0d.
+
+### Traps worth not re-learning
+- **The API session cannot be shared.** Refresh tokens rotate, so the CLI file and a headless
+  browser invalidate each other — and a second browser run invalidates the first. Symptom is a
+  silent redirect to `/login`, which reads like a code bug. One browser run per login; do all
+  `scripts/api.sh` probing first. Each wasted session costs the user an OTP.
+- **`next build` over a running `next start` corrupts it** — 500s with an empty body. Stop the
+  server (by pid from `ss -lptn 'sport = :3000'`) before rebuilding.
+- **`next dev` + a WebKit instance exhausts this machine's RAM** — the dev server was killed six
+  times. Use `next build && next start` for headless checks; it was ready in 195ms and survived.
+- **Three id spaces.** `PlayerResponse.id` (player), JWT `sub` (account, via `getAccountId()`), and
+  `MatchParticipantResponse.id` (participant). Match ownership uses the *account* id; approve/reject
+  is addressed to the *participant* id. Comparing the wrong pair fails silently.
+- **Undeclared enums.** Match `status` and participant `status` are bare strings in the spec. Only
+  `CANCELLED`, `OPEN`, `CONFIRMED` and `REQUESTED` have been observed — the latter learned by having
+  a second account join a `MANUAL_APPROVE` match. Everything else is derived from the clock so an
+  undocumented value cannot mislabel a card.
+
+### Next
+- **«از بین بازیکنان پچ» is a promise the code does not keep** — the copy says «کسانی که قبلاً با
+  آن‌ها بازی کرده‌اید» but `getPickablePlayers` returns the mock. `GET /matches/invitations/suggestions`
+  exists; check what it is actually sorted by before trusting the label.
+- Then: the share-link flow (`GET /matches/invite/{token}`, `ShareCard` already exists and
+  `inviteToken` arrives on every match), and `GET /matches/invitations/me` for `/activity`.
+- **CI has never run.** `patch-server-runner` shows `Last contact: Never`, so nothing has deployed —
+  `app.patchapp.ir` is still serving a pre-2026-09-12 build. Needs Parsa.
+- Ask the backend for a **password-login test account** (`/auth/admin/login` exists); OTP-only
+  re-auth is what makes every headless check cost the user a text message.
+- Four seeded test matches and one pending join request are live in the production database, kept
+  deliberately so the list is not empty. Delete with `DELETE /matches/{id}` (soft).
+
 ## Session — 2026-08-31: the root URL, the iPhone keyboard, and the collapsing heroes
 On `main`. Three commits, **not pushed** (both remotes are at `b12b8ab`). **An iPhone finally
 entered the loop**, which is what moved the keyboard fix from unverified to fixed.
