@@ -157,6 +157,8 @@ export interface Court {
 /** Match Details page (/matches/[id]) */
 export type MatchDetailsStatus = "upcoming" | "live" | "finished";
 export type ViewerRole = "creator" | "player";
+/** Where the viewer stands in the match they're looking at. */
+export type ViewerParticipation = "none" | "requested" | "confirmed";
 
 export interface JoinRequest {
   /** The *participant* id — what approve/reject is addressed to, not an account id. */
@@ -241,6 +243,13 @@ export interface MatchDetails {
   organizerAccountId: string;
   /** Derived from the clock, not asked for — see `toDetailsStatus`. */
   stage: MatchDetailsStatus;
+  /**
+   * Whether the viewer is in this match. Drives the CTA: someone who has never
+   * asked to join must not be offered «لغو ارسال درخواست ورود».
+   */
+  viewerParticipation: ViewerParticipation;
+  /** The viewer's own participant id, for leaving. Absent when not involved. */
+  viewerParticipantId?: string;
   /** Toman, integer. Undefined until pricing ships (post-MVP), like `price`. */
   fee?: number;
   /** e.g. "آمریکانو" */

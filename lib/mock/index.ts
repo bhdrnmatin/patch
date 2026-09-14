@@ -207,6 +207,7 @@ export const matchDetails: MatchDetails = {
   // the signed-in account's makes the mock viewer a player rather than creator.
   organizerAccountId: "mock-organizer",
   stage: "upcoming",
+  viewerParticipation: "confirmed",
   fee: 23000,
   format: "آمریکانو",
   club: "باشگاه انقلاب",

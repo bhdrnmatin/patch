@@ -8,7 +8,7 @@
  * Run: npx tsx lib/data/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { toDetailsStatus, toListItem, toStatus, viewerRole } from "./matches";
+import { toDetailsStatus, toListItem, toStatus, viewerParticipation, viewerRole } from "./matches";
 import type { MatchResponse } from "../api/types";
 
 const hour = 3600_000;
@@ -111,6 +111,31 @@ assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
   assert.equal(requested[0].id, "p2", "the request carries the participant id, not the account id");
   // A rejected row is neither — it must not appear as a player or as a request.
   assert.equal(roster.filter((p) => ["CONFIRMED", "REQUESTED"].includes(p.status)).length, 2);
+}
+
+// viewerParticipation decides which CTA a player gets. Before this existed the
+// button came from role+stage alone, so a stranger was offered "cancel my
+// request" for a request they had never made.
+{
+  const me = "acc-me";
+  const rows = [
+    participant({ id: "p1", accountId: "acc-other", status: "CONFIRMED" }),
+    participant({ id: "p2", accountId: me, status: "REQUESTED" }),
+  ];
+  assert.deepEqual(viewerParticipation(rows, me), { state: "requested", participantId: "p2" });
+  assert.deepEqual(viewerParticipation(rows, "acc-nobody"), { state: "none" });
+  assert.deepEqual(viewerParticipation(rows, null), { state: "none" }, "signed out");
+  assert.deepEqual(viewerParticipation([], me), { state: "none" }, "empty roster");
+  assert.deepEqual(
+    viewerParticipation([participant({ id: "p3", accountId: me, status: "CONFIRMED" })], me),
+    { state: "confirmed", participantId: "p3" },
+  );
+  // A status we have never seen must not be read as being in the match — the
+  // safe reading offers to join rather than to leave.
+  assert.deepEqual(
+    viewerParticipation([participant({ id: "p4", accountId: me, status: "REJECTED" })], me),
+    { state: "none" },
+  );
 }
 
 console.log("matches list mapping: ok");

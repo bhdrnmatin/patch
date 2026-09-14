@@ -1,9 +1,11 @@
 import { getClubs } from "@/lib/api/clubs";
+import { getAccountId } from "@/lib/api/session";
 import { FORMAT_LABELS, getMatch, listMatches, tehranTimeRange } from "@/lib/api/matches";
-import type { MatchResponse } from "@/lib/api/types";
+import type { MatchParticipantResponse, MatchResponse } from "@/lib/api/types";
 import { jalaliDayMonth } from "@/lib/jalali";
 import { matchDays, matchList, pickablePlayers } from "@/lib/mock";
 import type {
+  ViewerParticipation,
   ViewerRole,
   MatchDetailsStatus,
   DayOption,
@@ -96,11 +98,15 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
   // the enum is still undeclared in the spec.
   const requested = participants.filter((p) => p.status === "REQUESTED");
 
+  const mine = viewerParticipation(participants, getAccountId());
+
   return {
     id: m.id,
     title: m.title ?? jalaliDayMonth(m.scheduledAt),
     organizerAccountId: m.organizer.accountId,
     stage: toDetailsStatus(m),
+    viewerParticipation: mine.state,
+    viewerParticipantId: mine.participantId,
     format: FORMAT_LABELS[m.format] ?? m.format,
     club: club?.name ?? "—",
     capacity: m.capacity,
@@ -136,6 +142,29 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
  * A null viewer (signed out, or an undecodable token) is a player: the safe side
  * of a decision that gates لغو مَچ and ویرایش.
  */
+/**
+ * Where the viewer stands in a match, from the participant rows.
+ *
+ * Pure and exported because the CTA hangs off it: someone who has never asked to
+ * join was being offered «لغو ارسال درخواست ورود» — cancel a request they never
+ * made — because the button was chosen by role and stage alone.
+ *
+ * Anything that is neither CONFIRMED nor REQUESTED counts as not involved. A
+ * rejected participant has not been observed (api-findings §0d), so this is the
+ * conservative reading: it offers to join rather than to leave.
+ */
+export function viewerParticipation(
+  participants: MatchParticipantResponse[],
+  viewerAccountId: string | null,
+): { state: ViewerParticipation; participantId?: string } {
+  if (!viewerAccountId) return { state: "none" };
+  const mine = participants.find((p) => p.accountId === viewerAccountId);
+  if (!mine) return { state: "none" };
+  if (mine.status === "CONFIRMED") return { state: "confirmed", participantId: mine.id };
+  if (mine.status === "REQUESTED") return { state: "requested", participantId: mine.id };
+  return { state: "none" };
+}
+
 export function viewerRole(organizerAccountId: string, viewerAccountId: string | null): ViewerRole {
   return viewerAccountId !== null && viewerAccountId === organizerAccountId ? "creator" : "player";
 }

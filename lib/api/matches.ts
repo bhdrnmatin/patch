@@ -111,6 +111,24 @@ export function listMatches(): Promise<PageResponse<MatchResponse>> {
   return apiFetch<PageResponse<MatchResponse>>("/matches?size=100");
 }
 
+/** Ask to join. On an OPEN match this confirms immediately; on MANUAL_APPROVE
+ *  it creates a REQUESTED row for the organizer to decide on. */
+export function joinMatch(matchId: string): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(`/matches/${matchId}/join`, { method: "POST" });
+}
+
+/** Leave, or withdraw a pending request — the same endpoint does both. */
+export function leaveMatch(matchId: string): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(`/matches/${matchId}/participants/me`, {
+    method: "DELETE",
+  });
+}
+
+/** Cancel a match (organizer). A soft delete: the match stays and becomes CANCELLED. */
+export function cancelMatch(matchId: string): Promise<MatchResponse> {
+  return apiFetch<MatchResponse>(`/matches/${matchId}`, { method: "DELETE" });
+}
+
 /**
  * Approve or reject a pending join request.
  *

@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import MatchDetailsHeader from "./_components/MatchDetailsHeader";
 import MatchStageCard from "./_components/MatchStageCard";
 import MatchInfoCard from "./_components/MatchInfoCard";
@@ -18,7 +18,8 @@ import JoinRequestsSection from "./_components/JoinRequestsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
 import { getMatchDetails, viewerRole } from "@/lib/data";
 import { getAccountId } from "@/lib/api/session";
-import type { MatchDetailsStatus, ViewerRole } from "../../../lib/types";
+import { cancelMatch, joinMatch, leaveMatch } from "@/lib/api/matches";
+import type { MatchDetailsStatus, ViewerParticipation, ViewerRole } from "../../../lib/types";
 
 const STAGE = {
   upcoming: { title: "در انتظار شروع بازی", nextLabel: "بازی شروع شده است", stage: 1 },
@@ -26,18 +27,50 @@ const STAGE = {
   finished: { title: "بازی تمام شده است", nextLabel: "نهایی کردن نتیجه", stage: 3 },
 } as const;
 
-const CTA: Record<ViewerRole, Record<MatchDetailsStatus, { label: string; caption?: string }>> = {
-  creator: {
-    upcoming: { label: "لغو مَچ" },
-    live: { label: "وارد کردن نتیجه" },
-    finished: { label: "نهایی کردن نتیجه" },
-  },
-  player: {
-    upcoming: { label: "لغو ارسال درخواست ورود", caption: "در انتظار تایید درخواست سازنده بازی" },
-    live: { label: "ترک مَچ", caption: "شما عضوی از بازی هستید" },
-    finished: { label: "مشاهده نتیجه", caption: "شما می‌توانید به نتیجه اعتراض کنید" },
-  },
-};
+/** What the CTA does when tapped. `results` navigates; the rest are mutations. */
+type CtaAction = "cancel-match" | "join" | "leave" | "results";
+
+/**
+ * The bottom CTA, from role × stage × **where the viewer stands**.
+ *
+ * That third input is the point. The old matrix used role and stage only, so a
+ * stranger opening a public match was offered «لغو ارسال درخواست ورود» — cancel
+ * a request they had never made — and a confirmed player got the same button
+ * instead of «ترک مَچ».
+ *
+ * Returns null when there is nothing to offer, and the page renders no bar at
+ * all rather than a button that does nothing.
+ */
+function ctaFor(
+  role: ViewerRole,
+  stage: MatchDetailsStatus,
+  part: ViewerParticipation,
+): { label: string; caption?: string; action: CtaAction } | null {
+  if (role === "creator") {
+    if (stage === "upcoming") return { label: "لغو مَچ", action: "cancel-match" };
+    return {
+      label: stage === "live" ? "وارد کردن نتیجه" : "نهایی کردن نتیجه",
+      action: "results",
+    };
+  }
+
+  if (stage === "finished") {
+    return part === "none"
+      ? null
+      : { label: "مشاهده نتیجه", caption: "شما می‌توانید به نتیجه اعتراض کنید", action: "results" };
+  }
+
+  if (part === "confirmed")
+    return { label: "ترک مَچ", caption: "شما عضوی از بازی هستید", action: "leave" };
+  if (part === "requested")
+    return {
+      label: "لغو ارسال درخواست ورود",
+      caption: "در انتظار تایید درخواست سازنده بازی",
+      action: "leave",
+    };
+  // Not involved. Joining a match already under way is not offered.
+  return stage === "upcoming" ? { label: "درخواست ورود", action: "join" } : null;
+}
 
 function MatchDetailsContent() {
   const params = useSearchParams();
@@ -65,9 +98,24 @@ function MatchDetailsContent() {
       ? statusParam
       : m.stage;
   const stage = STAGE[status];
-  const cta = CTA[role][status];
+  const cta = ctaFor(role, status, m.viewerParticipation);
   const router = useRouter();
-  const ctaGoesToResults = role === "creator" && status === "live";
+  const queryClient = useQueryClient();
+
+  const { mutate: runCta, isPending: ctaPending } = useMutation({
+    mutationFn: async (action: CtaAction) => {
+      if (action === "join") return void (await joinMatch(id));
+      if (action === "leave") return void (await leaveMatch(id));
+      if (action === "cancel-match") return void (await cancelMatch(id));
+    },
+    onSuccess: (_data, action) => {
+      // Refetch rather than patch: joining can land as CONFIRMED or REQUESTED
+      // depending on the match's joinPolicy, and only the server knows which.
+      queryClient.invalidateQueries({ queryKey: ["matchDetails", id] });
+      queryClient.invalidateQueries({ queryKey: ["matches"] });
+      if (action === "cancel-match") router.push("/matches");
+    },
+  });
 
   // Players grid placement varies by frame: player/live+finished show it right under
   // the stage card; creator/live hides it; everything else shows it after توضیحات.
@@ -108,11 +156,18 @@ function MatchDetailsContent() {
         {m.faq.length > 0 && <FaqSection faq={m.faq} />}
       </div>
 
-      <MatchCtaBar
-        label={cta.label}
-        caption={cta.caption}
-        onClick={ctaGoesToResults ? () => router.push(`/matches/${id}/results`) : undefined}
-      />
+      {cta && (
+        <MatchCtaBar
+          label={cta.label}
+          caption={cta.caption}
+          busy={ctaPending}
+          onClick={() =>
+            cta.action === "results"
+              ? router.push(`/matches/${id}/results`)
+              : runCta(cta.action)
+          }
+        />
+      )}
     </main>
   );
 }
