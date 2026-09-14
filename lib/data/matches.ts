@@ -4,6 +4,7 @@ import type { MatchResponse } from "@/lib/api/types";
 import { jalaliDayMonth } from "@/lib/jalali";
 import { matchDays, matchList, pickablePlayers } from "@/lib/mock";
 import type {
+  ViewerRole,
   MatchDetailsStatus,
   DayOption,
   MatchListItem,
@@ -117,6 +118,20 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     // the match-status mapping avoids. Ask the backend to declare the enum.
     requests: [],
   };
+}
+
+/**
+ * Creator or player, from the two account ids.
+ *
+ * Exported and tested because "creator" used to be the *default* — the page read
+ * `?role=` and fell back to creator — so seeing a creator view proves nothing on
+ * its own. Both branches are pinned in `matches.test.ts`.
+ *
+ * A null viewer (signed out, or an undecodable token) is a player: the safe side
+ * of a decision that gates لغو مَچ and ویرایش.
+ */
+export function viewerRole(organizerAccountId: string, viewerAccountId: string | null): ViewerRole {
+  return viewerAccountId !== null && viewerAccountId === organizerAccountId ? "creator" : "player";
 }
 
 /**

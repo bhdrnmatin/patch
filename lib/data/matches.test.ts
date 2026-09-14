@@ -8,7 +8,7 @@
  * Run: npx tsx lib/data/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { toDetailsStatus, toListItem, toStatus } from "./matches";
+import { toDetailsStatus, toListItem, toStatus, viewerRole } from "./matches";
 import type { MatchResponse } from "../api/types";
 
 const hour = 3600_000;
@@ -86,5 +86,13 @@ assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(2 * hour) 
   "cancelled outranks the clock — there is nothing left to do with it");
 assert.equal(toDetailsStatus(m({ status: "WHATEVER", scheduledAt: at(2 * hour) })), "upcoming",
   "an unknown status must not throw or mislabel");
+
+// viewerRole — both branches, because "creator" used to be the fallback when the
+// page read ?role= from the URL. A creator view on its own proves nothing.
+assert.equal(viewerRole("acc-1", "acc-1"), "creator");
+assert.equal(viewerRole("acc-1", "acc-2"), "player", "someone else's match");
+assert.equal(viewerRole("acc-1", null), "player", "signed out / undecodable token");
+assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
+  "must not fall back to creator, which is what the old URL default did");
 
 console.log("matches list mapping: ok");
