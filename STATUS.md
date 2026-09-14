@@ -269,13 +269,15 @@ Components live in `app/matches/create/_components/`.
 
 ---
 
-## API Integration (auth + profile + clubs)
+## API Integration (auth + profile + clubs + matches list)
 
-Branch `feat/api-auth-profile`. Wires the auth/profile flows to `api.patchapp.ir`, plus
-the court picker's club list (2026-08-25); every other feature stays on the mock `lib/data`
-seam. The API sends no CORS headers → `next.config.ts` proxies same-origin `/api/v1/*` to
-the upstream. What the deployed API actually does — as opposed to what its spec claims —
-is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
+Wires the auth/profile flows to `api.patchapp.ir`, plus the court picker's club list
+(2026-08-25) and the matches list (2026-09-13); every other feature stays on the mock
+`lib/data` seam. **Read the blockers below before picking up create-match** — the mapping
+is finished and deliberately unwired. The API sends no CORS headers → `next.config.ts`
+proxies same-origin `/api/v1/*` to the upstream. What the deployed API actually does — as
+opposed to what its spec claims — is recorded in
+[`_designer/api-findings.md`](_designer/api-findings.md).
 
 ### Create-match drafts
 - [x] `lib/draft.ts` — one half-finished wizard in localStorage (autosaved on every change; a draft
@@ -321,12 +323,41 @@ is recorded in [`_designer/api-findings.md`](_designer/api-findings.md).
   had passed locally, so a rotated signing key left dead tokens looking valid and the 401 dead-ended on
   the error screen. After the one refresh-and-replay chance, a 401 now clears the session (this API uses
   403 for authorization). Covered by `lib/api/client.test.ts` — `npx tsx lib/api/client.test.ts`.
-- [ ] **`POST /matches` is not wired yet** — step ۲ produces a valid `clubId` and 08-27 brought
-  field-level errors (`loc: "format"`, `loc: "clubId"`), so submit is buildable. One backend gap to
-  work around: a missing `title` 500s. See TODO.md.
+- [x] **Matches list is live (2026-09-13):** `getMatchList` calls `GET /matches` and maps
+  `MatchResponse` → `MatchListItem` (`lib/data/matches.ts`, tested by `lib/data/matches.test.ts`).
+  Verified in WebKit against real matches. Three card fields have no API source until after the MVP —
+  per-player `level`, the `avgLevel` average, and `price` — so they are optional and the card drops
+  the element rather than showing «لول ۰» or a free-entry tag. The card's CTA is now a real
+  `Link` to `/matches/{id}`; it had been a `<button>` with no handler, so the list had no route
+  into a match at all.
+- [ ] **`POST /matches` — mapping written and tested, deliberately NOT wired (2026-09-12).**
+  `lib/api/matches.ts` (`draftToCreateRequest` + `createMatch`) and `lib/api/matches.test.ts` are
+  done; `lib/data/mutations.ts` still writes to the mock. **Blocked on one backend bug:**
+  `scheduledAt` is a `java.time.Instant` and the "exactly on the hour" rule is checked against **UTC**
+  minutes, while Iran is UTC+03:30 — so Tehran ۱۸:۰۰ (`18:00+03:30` = 14:30Z) is rejected and only
+  half-past-Tehran times are accepted. Every slot the wizard offers fails, so flipping it today would
+  break the wizard for every user. **The mapping needs no change when the server validates in
+  `Asia/Tehran`** — it already sends the offset. Re-probed and still broken 2026-09-13.
+  Evidence: `_designer/api-findings.md` §0.
+- [ ] **رقابتی is disabled in the UI (2026-09-12)** — `matchType: COMPETITIVE` returns 400
+  «مسابقات رقابتی هنوز فعال نشده‌اند», matching the spec's *Only FRIENDLY is accepted in this MVP*.
+  Greyed out with a «به‌زودی» pill behind `COMPETITIVE_ENABLED` in `StepDetails.tsx` — one flag to
+  flip. The 2v2 team preview, `MAX_TEAMMATES` and the capacity rule are untouched and ready.
+- [ ] **A missing `title` still 500s** (open since 2026-08-24) — worked around: step ۱ now *requires*
+  a title (user decision), and the mapping keeps a generated fallback for drafts saved before that.
+  `capacity` is required with a minimum of 4 while دوستانه/آمریکانو are uncapped by design, so the
+  mapping floors the roster at 4.
 - [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
-  out of `participants` until accepted; the design has no pending state either. No player lookup
-  endpoint, so the wizard's add-a-Patch-player flow has nothing behind it.
+  out of `participants` until accepted; the design has no pending state either. Phone invites dropped
+  the name field on 2026-09-12 (the number is the identity). `GET /matches/invitations/suggestions`
+  exists and returns `{accountId, firstName, lastName, photoUrl}` — likely the source for
+  «از بین بازیکنان پچ», which is meant to list people you have played with rather than every account;
+  `getPickablePlayers` is still the mock.
+- [ ] **Not yet wired, all available today:** `GET /matches/{id}` (returns `participants` with a
+  per-participant status, so roster + pending requests both come from it), `POST /matches/{id}/join`,
+  `DELETE /matches/{id}/participants/me`, the approve/reject actions, and the invite-token flow.
+- [ ] **No endpoint exists at all for:** tournaments, activity, notification counts. Those stay on
+  mocks regardless of anything above.
 - (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 
 ---
