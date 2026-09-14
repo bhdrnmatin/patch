@@ -7,6 +7,11 @@ import {
   isLeapJalaaliYear,
   jalaliToISO,
   jalaliWeekdayOfISO,
+  dayStrip,
+  todayISO,
+  addDaysISO,
+  isoToJalali,
+  JALALI_WEEKDAY_NAMES,
 } from "./jalali";
 
 // Nowruz anchors (jalali 1/1 ↔ gregorian).
@@ -38,5 +43,19 @@ for (let jm = 1; jm <= 12; jm += 1) {
 assert.equal(jalaliWeekdayOfISO("2026-08-05"), 4);
 // ISO helper matches.
 assert.equal(jalaliToISO(1405, 5, 14), "2026-08-05");
+
+// Date strip: one cell per day, ids are ISO dates, `past` covers exactly the
+// days before today, and the weekday name matches the calendar column.
+const strip = dayStrip(2, 14);
+assert.equal(strip.length, 17);
+assert.equal(strip.filter((d) => d.past).length, 2);
+assert.equal(strip[2].id, todayISO());
+assert.equal(strip[2].past, false);
+assert.equal(strip[0].id, addDaysISO(todayISO(), -2));
+assert.equal(strip[16].id, addDaysISO(todayISO(), 14));
+for (const d of strip) {
+  assert.equal(d.day, isoToJalali(d.id).jd);
+  assert.equal(d.weekday, JALALI_WEEKDAY_NAMES[jalaliWeekdayOfISO(d.id)]);
+}
 
 console.log("jalali self-check passed ✓");

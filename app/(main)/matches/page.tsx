@@ -14,7 +14,11 @@ type Sheet = "sort" | "filter" | null;
 export default function MatchesPage() {
   const { data: days = [] } = useQuery({ queryKey: ["matchDays"], queryFn: getMatchDays });
   const { data: matchList = [], isLoading } = useQuery({ queryKey: ["matches"], queryFn: getMatchList });
-  const [selectedDay, setSelectedDay] = useState("d17");
+  // No day selected on open: the list shows every match, and the strip narrows
+  // only once a cell is tapped (user decision 2026-09-14). Defaulting to today
+  // would open the page empty — matches are days out, not hours. Re-tapping the
+  // selected cell clears it, which is the only way back to the full list.
+  const [selectedDay, setSelectedDay] = useState("");
   const [sheet, setSheet] = useState<Sheet>(null);
   const [filter, setFilter] = useState<MatchFilter>(DEFAULT_MATCH_FILTER);
   const [sort, setSort] = useState<MatchSort>(DEFAULT_MATCH_SORT);
@@ -22,7 +26,7 @@ export default function MatchesPage() {
   // distance/date/type facets and distance/date sorts have no backing fields
   // on MatchListItem yet — they select but don't narrow until the API adds data.
   const visibleMatches = useMemo(() => {
-    let list = matchList;
+    let list = selectedDay ? matchList.filter((m) => m.day === selectedDay) : matchList;
     if (filter.status.length > 0) list = list.filter((m) => filter.status.includes(m.status));
     // A match with no level can't be judged against a level facet, so it stays
     // visible rather than being filtered out. `String(undefined)` matched none
@@ -37,14 +41,14 @@ export default function MatchesPage() {
         sort.fee === "least" ? (a.price ?? 0) - (b.price ?? 0) : (b.price ?? 0) - (a.price ?? 0),
       );
     return list;
-  }, [matchList, filter, sort]);
+  }, [matchList, selectedDay, filter, sort]);
 
   return (
     <div className="w-full hero-page hero-page-dates">
       <MatchesHeader
         days={days}
         selectedId={selectedDay}
-        onSelect={setSelectedDay}
+        onSelect={(id) => setSelectedDay((cur) => (cur === id ? "" : id))}
         onFilter={() => setSheet("filter")}
         onSort={() => setSheet("sort")}
       />
@@ -59,7 +63,7 @@ export default function MatchesPage() {
             ))}
             {visibleMatches.length === 0 && matchList.length > 0 && (
               <p className="text-sm text-muted text-center py-10" dir="rtl">
-                مَچی با این فیلترها پیدا نشد.
+                {selectedDay ? "مَچی برای این روز پیدا نشد." : "مَچی با این فیلترها پیدا نشد."}
               </p>
             )}
           </>

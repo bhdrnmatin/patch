@@ -1,9 +1,9 @@
 import { getClubs } from "@/lib/api/clubs";
 import { getAccountId } from "@/lib/api/session";
-import { FORMAT_LABELS, getMatch, listMatches, tehranTimeRange } from "@/lib/api/matches";
+import { FORMAT_LABELS, getMatch, listMatches, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import type { MatchParticipantResponse, MatchResponse } from "@/lib/api/types";
-import { jalaliDayMonth } from "@/lib/jalali";
-import { matchDays, matchList, pickablePlayers } from "@/lib/mock";
+import { dayStrip, jalaliDayMonth } from "@/lib/jalali";
+import { matchList, pickablePlayers } from "@/lib/mock";
 import type {
   ViewerParticipation,
   ViewerRole,
@@ -20,8 +20,17 @@ import type {
 // `fetch` that maps the response into the same view-model type. Callers (and
 // their React Query keys) don't change.
 
+/**
+ * The header date strip, derived from the clock — two days back so the dimmed
+ * past cells the design shows exist, then a month forward. Ids are ISO dates,
+ * which is what `MatchListItem.day` is compared against.
+ *
+ * A month, not a fortnight, because matches are scheduled further out than the
+ * strip first reached: of the four on the live API on 2026-09-14, one sat 18
+ * days away and no cell could select it.
+ */
 export async function getMatchDays(): Promise<DayOption[]> {
-  return matchDays;
+  return dayStrip(2, 30);
 }
 
 /**
@@ -68,6 +77,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
     })),
     capacity: m.capacity,
     date: jalaliDayMonth(m.scheduledAt),
+    day: tehranDateISO(m.scheduledAt),
   };
 }
 

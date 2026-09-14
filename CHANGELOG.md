@@ -8,6 +8,29 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-14 — the date strip is a real calendar, and it filters
+
+- **[Matches] The header date strip was mock and is now derived from the clock.** `lib/mock/index.ts`
+  held seven hardcoded cells (۱۵–۲۱ بهمن, two flagged `past`) and both pages hardcoded `"d17"` as the
+  selection, so the dates never moved and tapping one narrowed nothing. `dayStrip(back, forward)` in
+  `lib/jalali.ts` builds the row from `todayISO`/`addDaysISO`/`isoToJalali` — the conversion the
+  wizard's calendar already used — with ISO dates as ids and `past` relative to today.
+- **The window is today−2 → today+30.** Two back because the design draws dimmed past cells; a month
+  forward because a fortnight was not enough: of the four matches on the live API on 2026-09-14, one
+  sat 18 days out and **no cell could select it**.
+- **[Matches] Selecting a day narrows the list.** `MatchListItem.day` carries the match's Tehran
+  calendar date, from `tehranDateISO` — the same +3:30 shift as `tehranTimeRange`, and it has to be:
+  a 02:00 Tehran match is 22:30Z the previous day, and reading the UTC date would file it under the
+  wrong cell. Verified against all four live matches; each lands on a reachable cell.
+- **No day is selected on open** (user decision 2026-09-14). Defaulting to today would have opened
+  `/matches` on «مَچی برای این روز پیدا نشد» — the live matches are ۰۲/۰۳/۰۴/۱۰ مهر, and none is
+  today. The strip narrows only once tapped, and re-tapping the selected cell clears it, which is the
+  only way back to the full list. Flipping the default to today is one line when volume justifies it.
+- **[Tournaments] Its strip is real but still cosmetic.** `TournamentListItem` carries only a
+  pre-formatted Persian range («۱۵-۱۷ آذر ۱۴۰۴»), so there is no date to compare a cell against.
+- Self-checks extended: `dayStrip` shape/ids/`past`/weekday in `lib/jalali.test.ts`, and
+  `tehranDateISO`'s midnight crossing in `lib/api/matches.test.ts`.
+
 ### 2026-09-12 — create-match mapping, and the two backend walls behind it
 
 - [API] **`lib/api/matches.ts`** — `draftToCreateRequest` (pure, tested) + `createMatch`, with

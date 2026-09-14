@@ -60,6 +60,7 @@ export async function createMatch(draft: CreateMatchDraft): Promise<string> {
     // it was created with is the only capacity we can claim.
     capacity: draft.format === "competitive" ? 4 : players.length,
     date: draft.date ? jalaliDayMonth(draft.date) : "",
+    day: draft.date ?? "",
     // The wizard stopped collecting an entry fee (step ۵ is the join method
     // only), so everything created here is free until a pricing field returns.
     price: 0,

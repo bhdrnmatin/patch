@@ -139,3 +139,26 @@ export function jalaliDayMonth(iso: string): string {
   const { jm, jd } = isoToJalali(iso.slice(0, 10));
   return `${toPersianDigits(String(jd))} ${JALALI_MONTHS[jm - 1]}`;
 }
+
+/** Full weekday names, same column order as `JALALI_WEEKDAYS` (0 = شنبه). */
+export const JALALI_WEEKDAY_NAMES = [
+  "شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه",
+];
+
+/**
+ * The date strip: `back` days before today through `forward` days after, each
+ * carrying its ISO date as the id so a caller can compare it to a match date.
+ * `past` is relative to today, which is what dims a cell.
+ */
+export function dayStrip(back: number, forward: number) {
+  const today = todayISO();
+  return Array.from({ length: back + forward + 1 }, (_, i) => {
+    const iso = addDaysISO(today, i - back);
+    return {
+      id: iso,
+      day: isoToJalali(iso).jd,
+      weekday: JALALI_WEEKDAY_NAMES[jalaliWeekdayOfISO(iso)],
+      past: i < back,
+    };
+  });
+}

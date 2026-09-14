@@ -19,7 +19,7 @@ export default function TournamentsPage() {
     queryKey: ["tournaments"],
     queryFn: getTournamentList,
   });
-  const [selectedDay, setSelectedDay] = useState("d17");
+  const [selectedDay, setSelectedDay] = useState("");
   const [sheet, setSheet] = useState<Sheet>(null);
   // Sheets are controlled now; tournament cards don't consume these yet
   // (TournamentListItem lacks the filterable fields — see TODO.md).
@@ -32,7 +32,7 @@ export default function TournamentsPage() {
         title="تورنمنت"
         days={days}
         selectedId={selectedDay}
-        onSelect={setSelectedDay}
+        onSelect={(id) => setSelectedDay((cur) => (cur === id ? "" : id))}
         onFilter={() => setSheet("filter")}
         onSort={() => setSheet("sort")}
       />

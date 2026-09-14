@@ -1,5 +1,37 @@
 # Session State
 
+## Session — 2026-09-14 (pm): the date strip stops being a prop
+One commit on `main`. The header calendar on `/matches` and `/tournaments` was mock and had been
+since it was built.
+
+- **It was seven hardcoded cells** — ۱۵–۲۱ بهمن in `lib/mock/index.ts`, two flagged `past`, and both
+  pages pinned `useState("d17")`. The dates never moved with the clock and tapping one narrowed
+  nothing. `dayStrip(back, forward)` in `lib/jalali.ts` builds it from `todayISO`/`addDaysISO`/
+  `isoToJalali` — the conversion the wizard's calendar already had, so no new date code.
+- **Selecting a day filters now.** `MatchListItem.day` is the match's **Tehran** calendar date via
+  `tehranDateISO`, the same +3:30 shift as `tehranTimeRange`. The shift is not cosmetic: a 02:00
+  Tehran match is 22:30Z the day before, and the UTC date would file it one cell early.
+- **The live data drove two decisions.** The four seeded matches are ۰۲/۰۳/۰۴/۱۰ مهر (09-24, 09-25,
+  09-26, 10-02) — none today, and the last one **18 days out**. So the window went from a fortnight
+  to today−2 → today+30 (it had been unreachable), and **no day is selected on open** (user
+  decision): the strip narrows only when tapped, re-tapping clears, and `/matches` opens showing all
+  four instead of an empty "today". Flipping the default to today is one line when volume justifies it.
+- `/tournaments` gets real dates but stays cosmetic — `TournamentListItem` carries only a
+  pre-formatted Persian range, so a cell has nothing to match against.
+
+### Worth knowing
+- **The stored API session had expired** (`توکن رفرش نامعتبر`) and cost an SMS to restore. This is the
+  second session in a row it has; the password-login test account below is the fix, not a habit.
+- **Guessing would have shipped this wrong.** The fortnight window and the default-to-today both
+  looked fine until the real `scheduledAt` values were on screen. One authenticated GET decided both.
+
+### Next
+The 2026-09-12/14 list below still stands unchanged — «از بین بازیکنان پچ», the share-link flow,
+`GET /matches/invitations/me`, CI, and the password-login account. One item added by this session:
+- FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now computable** from `MatchListItem.day`.
+  Left unwired deliberately — the strip already picks a day, so decide whether the facet earns its
+  place beside it before building it.
+
 ## Session — 2026-09-12/14: onboarding parked, maps, the auth keyboard, and the API
 18 commits, all pushed to **both** remotes (head `b77f9db`). Everything below is on `main`.
 

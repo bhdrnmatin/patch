@@ -161,6 +161,17 @@ export const FORMAT_LABELS: Record<MatchResponse["format"], string> = {
  * anything to a player. Iran is a fixed +03:30 with no DST, which is why this is
  * arithmetic rather than an Intl timezone lookup.
  */
+/**
+ * The Tehran calendar date of an instant, ISO "YYYY-MM-DD" — what the date
+ * strip compares against. Same +3:30 shift as `tehranTimeRange`: a match at
+ * 21:00 Tehran is 17:30Z, and reading the UTC date would be right, but one at
+ * 02:00 Tehran is 22:30Z the day before, and would land on the wrong cell.
+ */
+export function tehranDateISO(scheduledAt: string): string {
+  const d = new Date(new Date(scheduledAt).getTime() + 3.5 * 3600_000);
+  return d.toISOString().slice(0, 10);
+}
+
 export function tehranTimeRange(scheduledAt: string, durationHours: number): string {
   const start = new Date(scheduledAt).getTime() + 3.5 * 3600_000;
   const end = start + durationHours * 3600_000;

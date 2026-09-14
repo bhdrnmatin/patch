@@ -6,23 +6,11 @@ import type {
   Court,
   MatchListItem,
   TournamentListItem,
-  DayOption,
   MatchDetails,
   ActivitySection,
   MatchPlayer,
 } from "@/lib/types";
 
-
-/** Horizontal date strip in the Matches header (۱۵–۲۱ بهمن). */
-export const matchDays: DayOption[] = [
-  { id: "d15", day: 15, weekday: "شنبه", past: true },
-  { id: "d16", day: 16, weekday: "یکشنبه", past: true },
-  { id: "d17", day: 17, weekday: "دوشنبه" },
-  { id: "d18", day: 18, weekday: "سه‌شنبه" },
-  { id: "d19", day: 19, weekday: "چهارشنبه" },
-  { id: "d20", day: 20, weekday: "پنج‌شنبه" },
-  { id: "d21", day: 21, weekday: "جمعه" },
-];
 
 /** Cards shown on the Matches list page. */
 // Empty on a fresh start so /matches shows the empty state (see EmptyMatches).

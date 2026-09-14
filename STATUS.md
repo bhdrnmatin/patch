@@ -106,7 +106,8 @@ All components live in `app/(main)/matches/_components/` unless noted.
 - [x] `SelectChip` — selectable pill for sheets (selected / unselected)
 
 ### Compound Components
-- [x] `DateSelector` — horizontal scroll row of `DateCell`
+- [x] `DateSelector` — horizontal scroll row of `DateCell`; the days are real (`dayStrip()` off the
+      clock, today−2 → today+30) and selecting one filters `/matches` — 2026-09-14
 - [x] `MatchCard` — full match card (badge + title + player grid + meta + price)
 - [x] `MatchesHeader` — hero header (bg + title + 2 `IconButton` + `DateSelector`)
 - [x] Collapsing hero — `lib/useCollapseHeader.ts` writes `--collapse` (0→1) onto the header on scroll

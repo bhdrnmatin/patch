@@ -23,8 +23,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       controlled (`MatchSort`/`MatchFilter` + exported defaults); /matches sorts by fee and filters
       by status + level; tournaments/activity pass their own (still-cosmetic) state.
 - [x] Wire FilterSheet selections to actually filter `matchList` — **done 2026-07-12** (see above).
-- [ ] Sort by مسافت/تاریخ and filter by مسافت/تاریخ/نوع select but don't narrow — `MatchListItem`
-      has no backing fields; wire when the API adds them. Same for tournaments/activity lists.
+- [x] The header date strip narrows `/matches` — **done 2026-09-14**: it was hardcoded mock days;
+      `dayStrip()` derives it from the clock and `MatchListItem.day` (Tehran date) is what a cell
+      matches. No day selected on open (user decision); re-tap clears. Tournaments/activity strips
+      stay cosmetic — their list items carry no ISO date.
+- [ ] FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now unblocked** — `MatchListItem.day`
+      is an ISO date, so all three are computable. Left unwired 2026-09-14: the strip already covers
+      picking a day, so wire this only if the facet is worth keeping beside it.
+- [ ] Sort by مسافت/تاریخ and filter by مسافت/نوع select but don't narrow — `MatchListItem` has no
+      distance or match-type field; wire when the API adds them. Same for tournaments/activity lists.
 - [ ] MatchCard: consider `<ul>/<li>` list semantics + `<h2>` heading order.
 
 ## Token gaps — Match Details audit (2026-06-10)

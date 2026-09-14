@@ -7,7 +7,7 @@
  * Run: npx tsx lib/api/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { draftToCreateRequest, tehranTimeRange, FORMAT_LABELS } from "./matches";
+import { draftToCreateRequest, tehranDateISO, tehranTimeRange, FORMAT_LABELS } from "./matches";
 import type { CreateMatchDraft } from "../types";
 
 const base: CreateMatchDraft = {
@@ -86,6 +86,11 @@ assert.equal(tehranTimeRange("2026-09-27T11:00:00Z", 1), "۱۴:۳۰ الی ۱۵:
 assert.equal(tehranTimeRange("2026-09-27T14:30:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
 // Crossing midnight must not wrap to a negative or a 25th hour.
 assert.equal(tehranTimeRange("2026-09-27T20:30:00Z", 1), "۰۰:۰۰ الی ۰۱:۰۰");
+
+// The Tehran date, not the UTC one: 20:30Z is already the 28th in Tehran, and
+// 21:00 Tehran on the 27th is 17:30Z the same day.
+assert.equal(tehranDateISO("2026-09-27T17:30:00Z"), "2026-09-27");
+assert.equal(tehranDateISO("2026-09-27T20:30:00Z"), "2026-09-28");
 
 assert.equal(FORMAT_LABELS.AMERICANO, "آمریکانو");
 assert.equal(FORMAT_LABELS.OPEN_MATCH, "دوستانه");
