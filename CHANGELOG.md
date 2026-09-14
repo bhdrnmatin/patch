@@ -8,6 +8,23 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-14 — the match-details hero collapses too
+
+- **[Match details] `/matches/[id]`'s header now shrinks on scroll like the list pages.** It was the
+  last static hero: a 276px block in flow. It takes `useCollapseHeader` + `.hero-collapse` and goes
+  `fixed` with the `--hero-gap` filler and the in-flow spacer — the same three pieces
+  `SportPageHeader` and `ProfileHero` carry, so no new geometry is stated in the component.
+- The back button reuses `.hero-collapse-actions` (the list pages' filter/sort rule) and the title
+  reuses `.hero-collapse-title` with `--title-open: 32px` — fixed rather than stepped by glyph count,
+  since the match name is user data, landing at 19px collapsed like every other hero.
+- **The page carries `.hero-page`.** A match with no description and no FAQ is short, and without the
+  guaranteed range `--collapse` strands part-way — the same failure that took the collapse off the
+  profile hero.
+- **New rule `.hero-collapse-pills`.** The share/edit pills sit on the hero's bottom edge, so the
+  collapse carries them up into the back button — the profile avatar's collision exactly. They shrink
+  and fade out, reaching **zero scale** at `--collapse` 0.45: opacity alone would leave two invisible
+  buttons hit-testable right where برگشت lands, swallowing the tap.
+
 ### 2026-09-14 — the court map stops looking broken while it loads
 
 - **[Create/Match details] Switching club left the previous club's map on screen for ~2s.** An

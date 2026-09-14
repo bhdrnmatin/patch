@@ -133,7 +133,7 @@ function MatchDetailsContent() {
   const joinRequests = role === "creator" && m.requests.length > 0 ? m.requests : null;
 
   return (
-    <main className="relative mx-auto w-full max-w-[430px] min-h-dvh bg-surface pb-36">
+    <main className="hero-page relative mx-auto w-full max-w-[430px] bg-surface pb-36">
       <MatchDetailsHeader title={m.title} showEdit={role === "creator"} />
 
       <div className="px-6 pt-4 flex flex-col gap-4">

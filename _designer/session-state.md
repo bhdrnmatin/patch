@@ -27,13 +27,30 @@ Also this session, from a report that the wizard's club switch felt broken:
   it. Both flags are keyed to their `src` now. Deferred: a `Cache-Control` on `/map/static` so a
   revisited club is instant (TODO — needs Neshan's current headers looked at first).
 
+- **`/matches/[id]`'s hero collapses now**, the last static one. Same `useCollapseHeader` +
+  `.hero-collapse` + `.hero-page` pieces as the list pages, reusing `.hero-collapse-actions` for the
+  back button and `.hero-collapse-title` (fixed `--title-open: 32px` — the match name is user data).
+  One new rule, `.hero-collapse-pills`: the share/edit pills ride the bottom edge up into the back
+  button, so they go to **zero scale** by `--collapse` 0.45 — opacity 0 alone stays hit-testable and
+  an invisible pill would swallow the tap meant for برگشت. **Not verified on a device** (see below).
+
 ### Worth knowing
+- **The dev server was `next start`, not `next dev`.** Three changes looked broken on the phone
+  because nothing had been compiled since before the session — no HMR on a production server. Check
+  `ps -eo args | grep next` before diagnosing "my change isn't showing"; the served CSS chunk is the
+  other tell (`curl` the chunk and grep for the new class). The server was restarted on a clean
+  build; note `.next` is a **mountpoint** (`/dev/nvme0n1p2`), so clear its contents, don't `rm -rf` it.
 - **The stored API session had expired** (`توکن رفرش نامعتبر`) and cost an SMS to restore. This is the
   second session in a row it has; the password-login test account below is the fix, not a habit.
 - **Guessing would have shipped this wrong.** The fortnight window and the default-to-today both
   looked fine until the real `scheduledAt` values were on screen. One authenticated GET decided both.
 
 ### Next
+- **Verify the match-details collapse on the phone** — it was committed unseen at session close. The
+  part to check is that **برگشت still works once the bar is collapsed**: the pills land where the
+  back button ends up, and the zero-scale rule is what keeps them from eating the tap. Reasoned, not
+  observed.
+
 The 2026-09-12/14 list below still stands unchanged — «از بین بازیکنان پچ», the share-link flow,
 `GET /matches/invitations/me`, CI, and the password-login account. One item added by this session:
 - FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now computable** from `MatchListItem.day`.

@@ -229,6 +229,17 @@ body {
   transform: translateY(3rem) scale(calc(1 - 0.4 * var(--collapse, 0)));
   opacity: calc(1 - 2 * var(--collapse, 0));
 }
+.hero-collapse-pills {
+  /* /matches/[id]'s share + edit pills sit on the hero's bottom edge, so the
+     collapse carries them up into the back button — the same collision the
+     profile avatar has, and the same answer: shrink and fade them out early
+     rather than let them park in the bar. They reach zero scale at --collapse
+     0.45, which is what stops two invisible buttons from swallowing the tap
+     meant for برگشت; opacity alone leaves them hit-testable. */
+  opacity: calc(1 - 2.2 * var(--collapse, 0));
+  transform: scale(max(0, 1 - 2.2 * var(--collapse, 0)));
+  transform-origin: bottom center;
+}
 .hero-collapse-photo {
   /* Fixed at the open height and anchored to the bottom, so it scales down
      with the header instead of object-cover re-cropping into a face. */

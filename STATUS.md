@@ -112,8 +112,9 @@ All components live in `app/(main)/matches/_components/` unless noted.
 - [x] `MatchesHeader` — hero header (bg + title + 2 `IconButton` + `DateSelector`)
 - [x] Collapsing hero — `lib/useCollapseHeader.ts` writes `--collapse` (0→1) onto the header on scroll
       and the `.hero-collapse*` rules in `globals.css` shrink every part (title, buttons, date strip,
-      photo, profile avatar). Used by `SportPageHeader` and `ProfileHero`; both are `fixed` with a
-      same-height spacer so the page never reflows
+      photo, profile avatar, match-details pills). Used by `SportPageHeader`, `ProfileHero` and
+      `MatchDetailsHeader` — all `fixed` with a same-height spacer so the page never reflows.
+      `/matches/[id]` joined on 2026-09-14; every hero in the app collapses now
 - [x] `FilterSection` — labeled group of `SelectChip`
 - [x] `BottomSheet` — modal shell (overlay + sheet + header + footer)
 
