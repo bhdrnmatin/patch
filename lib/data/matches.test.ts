@@ -8,7 +8,7 @@
  * Run: npx tsx lib/data/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { toListItem, toStatus } from "./matches";
+import { toDetailsStatus, toListItem, toStatus } from "./matches";
 import type { MatchResponse } from "../api/types";
 
 const hour = 3600_000;
@@ -75,5 +75,16 @@ assert.equal(toListItem(m({ title: null })).date, toListItem(m({ title: null }))
   "a titleless match falls back to its date label");
 
 assert.equal(toListItem(m()).capacity, 4);
+
+// toDetailsStatus picks which of the three detail frames a match is in. The page
+// used to read this from a query param, so every visitor saw "upcoming".
+assert.equal(toDetailsStatus(m({ scheduledAt: at(2 * hour) })), "upcoming");
+assert.equal(toDetailsStatus(m({ scheduledAt: at(-0.5 * hour), durationHours: 1 })), "live",
+  "started but the hour has not elapsed");
+assert.equal(toDetailsStatus(m({ scheduledAt: at(-3 * hour), durationHours: 1 })), "finished");
+assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(2 * hour) })), "finished",
+  "cancelled outranks the clock — there is nothing left to do with it");
+assert.equal(toDetailsStatus(m({ status: "WHATEVER", scheduledAt: at(2 * hour) })), "upcoming",
+  "an unknown status must not throw or mislabel");
 
 console.log("matches list mapping: ok");

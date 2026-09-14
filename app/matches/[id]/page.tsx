@@ -17,6 +17,7 @@ import FaqSection from "./_components/FaqSection";
 import JoinRequestsSection from "./_components/JoinRequestsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
 import { getMatchDetails } from "@/lib/data";
+import { getAccountId } from "@/lib/api/session";
 import type { MatchDetailsStatus, ViewerRole } from "../../../lib/types";
 
 const STAGE = {
@@ -40,16 +41,29 @@ const CTA: Record<ViewerRole, Record<MatchDetailsStatus, { label: string; captio
 
 function MatchDetailsContent() {
   const params = useSearchParams();
-  const role: ViewerRole = params.get("role") === "player" ? "player" : "creator";
-  const statusParam = params.get("status");
-  const status: MatchDetailsStatus =
-    statusParam === "live" || statusParam === "finished" ? statusParam : "upcoming";
-
   const { id } = useParams<{ id: string }>();
   const { data: m } = useSuspenseQuery({
     queryKey: ["matchDetails", id],
     queryFn: () => getMatchDetails(id),
   });
+
+  // Both of these used to come from `?role=` and `?status=`, which was a device
+  // for building the six Figma frames — and it shipped, so every visitor got the
+  // creator view of every match, «لغو مَچ» included. They are real data now: the
+  // organizer's account id against the token's `sub`, and the stage off the
+  // clock. The query params still override, but only outside production, so the
+  // frames stay reachable for design review without being a live footgun.
+  const derivedRole: ViewerRole = m.organizerAccountId === getAccountId() ? "creator" : "player";
+  const roleParam = params.get("role");
+  const statusParam = params.get("status");
+  const overridable = process.env.NODE_ENV !== "production";
+
+  const role: ViewerRole =
+    overridable && (roleParam === "player" || roleParam === "creator") ? roleParam : derivedRole;
+  const status: MatchDetailsStatus =
+    overridable && (statusParam === "live" || statusParam === "finished" || statusParam === "upcoming")
+      ? statusParam
+      : m.stage;
   const stage = STAGE[status];
   const cta = CTA[role][status];
   const router = useRouter();

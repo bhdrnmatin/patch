@@ -203,6 +203,10 @@ const mockJoinRequest = (id: string) => ({
 export const matchDetails: MatchDetails = {
   id: "1",
   title: "راکت طلایی",
+  // Read by the results page, which still uses this record. Any id that is not
+  // the signed-in account's makes the mock viewer a player rather than creator.
+  organizerAccountId: "mock-organizer",
+  stage: "upcoming",
   fee: 23000,
   format: "آمریکانو",
   club: "باشگاه انقلاب",

@@ -232,6 +232,13 @@ export interface CreateMatchDraft {
 export interface MatchDetails {
   id: string;
   title: string;
+  /**
+   * The organizer's **account** id — compare with `getAccountId()` to decide the
+   * viewer's role. Not `PlayerResponse.id`; the API keeps two id spaces.
+   */
+  organizerAccountId: string;
+  /** Derived from the clock, not asked for — see `toDetailsStatus`. */
+  stage: MatchDetailsStatus;
   /** Toman, integer. Undefined until pricing ships (post-MVP), like `price`. */
   fee?: number;
   /** e.g. "آمریکانو" */

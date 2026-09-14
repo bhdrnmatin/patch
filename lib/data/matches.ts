@@ -4,6 +4,7 @@ import type { MatchResponse } from "@/lib/api/types";
 import { jalaliDayMonth } from "@/lib/jalali";
 import { matchDays, matchList, pickablePlayers } from "@/lib/mock";
 import type {
+  MatchDetailsStatus,
   DayOption,
   MatchListItem,
   MatchDetails,
@@ -92,6 +93,8 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
   return {
     id: m.id,
     title: m.title ?? jalaliDayMonth(m.scheduledAt),
+    organizerAccountId: m.organizer.accountId,
+    stage: toDetailsStatus(m),
     format: FORMAT_LABELS[m.format] ?? m.format,
     club: club?.name ?? "—",
     capacity: m.capacity,
@@ -114,6 +117,27 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     // the match-status mapping avoids. Ask the backend to declare the enum.
     requests: [],
   };
+}
+
+/**
+ * Which of the three detail frames a match is in, worked out from the clock.
+ *
+ * The page used to read this from a `?status=` query param — a device for
+ * building the Figma frames that had shipped. Same reasoning as the list's
+ * `toStatus`: the match-level `status` enum is undeclared, so only CANCELLED is
+ * trusted by name and the rest is arithmetic on `scheduledAt + durationHours`.
+ *
+ * A cancelled match maps to `finished` because there is nothing left to do with
+ * it, and the CTA matrix has no cancelled column. Worth revisiting if the design
+ * grows one.
+ */
+export function toDetailsStatus(m: MatchResponse): MatchDetailsStatus {
+  if (m.status === "CANCELLED") return "finished";
+  const start = new Date(m.scheduledAt).getTime();
+  const end = start + m.durationHours * 3600_000;
+  const now = Date.now();
+  if (now < start) return "upcoming";
+  return now < end ? "live" : "finished";
 }
 
 /** The API stores firstName with a trailing space, so collapse rather than trim. */

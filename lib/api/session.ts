@@ -71,6 +71,31 @@ function accessTokenExpiryMs(): number | null {
 }
 
 /**
+ * The signed-in account's id, from the access token's `sub` claim.
+ *
+ * **Not the same as `PlayerResponse.id`.** The API keeps two id spaces — the JWT
+ * subject is an *account* id, `/players/me` returns a *player* id, and they do
+ * not match. Match ownership is expressed with the account id
+ * (`MatchResponse.organizer.accountId`), so this is what "am I the organizer?"
+ * has to compare against; comparing the player id says no every time.
+ *
+ * Read from the token rather than an endpoint because no endpoint exposes it.
+ * UI only — the server decides what a caller may actually do.
+ */
+export function getAccountId(): string | null {
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(
+      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+    return typeof payload.sub === "string" ? payload.sub : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * True only when there's no token or its `exp` has passed. A non-decodable
  * token is treated as NOT expired — let the server be the judge. Used to tell a
  * genuine "session ended" from a transient backend 401.
