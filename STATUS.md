@@ -365,7 +365,10 @@ opposed to what its spec claims — is recorded in
   `filled` counts confirmed, `requests` are the requested rows keyed by **participant** id, and
   `respondToJoinRequest` posts to `/participants/{id}/approve|reject`. `JoinRequest.level` and
   `.side` have no API source, so that meta line omits itself. Both enums are still undeclared in
-  the spec — see api-findings §0d.
+  the spec — see api-findings §0d. **Approve confirmed on a device 2026-09-14:** the row clears,
+  the player joins the roster and شرکت کنندگان increments. Reject is still untried.
+  Also confirmed on device: the court map renders from the club's real coordinates, the list
+  card's «مشاهده مچ» reaches the details page, and the auth keyboard flows still behave.
 - [x] **Viewer role and stage are derived (2026-09-14):** the details page no longer reads
   `?role=`/`?status=` from the URL in production. Role compares
   `MatchResponse.organizer.accountId` with the JWT `sub` (`getAccountId()` — note this is an
