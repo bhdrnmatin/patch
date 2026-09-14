@@ -1,4 +1,5 @@
-import { matchDetails, matchList, pickablePlayers } from "@/lib/mock";
+import { matchList, pickablePlayers } from "@/lib/mock";
+import { decideParticipant } from "@/lib/api/matches";
 import { jalaliDayMonth } from "@/lib/jalali";
 import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
 
@@ -11,13 +12,10 @@ const delay = (ms = 400) => new Promise<void>((resolve) => setTimeout(resolve, m
 /**
  * Accept or reject a pending join request (creator action).
  *
- * **Currently unreachable.** `getMatchDetails` reads the API now and returns
- * `requests: []`, because the pending participant status is unknown — so
- * `JoinRequestsSection` never renders and nothing calls this. It still mutates
- * the mock, which nothing reads.
- *
- * Rewire it to `POST /matches/{id}/participants/{participantId}/approve` and
- * `/reject` (both exist) once the backend declares the participant status enum.
+ * `requestId` is the **participant** id from `MatchDetails.requests`, which is
+ * what the endpoint is addressed to. The caller invalidates `matchDetails`, so
+ * the roster and the remaining requests both come back from the server rather
+ * than being patched locally.
  */
 export async function respondToJoinRequest({
   matchId,
@@ -28,20 +26,7 @@ export async function respondToJoinRequest({
   requestId: string;
   accept: boolean;
 }): Promise<void> {
-  // Single mock match for now; the real endpoint keys off `matchId`.
-  void matchId;
-  await delay();
-
-  const request = matchDetails.requests.find((r) => r.id === requestId);
-  matchDetails.requests = matchDetails.requests.filter((r) => r.id !== requestId);
-
-  if (accept && request && matchDetails.filled < matchDetails.capacity) {
-    matchDetails.players = [
-      ...matchDetails.players,
-      { name: request.name, level: request.level, avatar: request.avatar },
-    ];
-    matchDetails.filled += 1;
-  }
+  await decideParticipant(matchId, requestId, accept);
 }
 
 /** Mean skill level, or undefined when nobody has one (every API player). */

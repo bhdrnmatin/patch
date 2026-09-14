@@ -159,11 +159,13 @@ export type MatchDetailsStatus = "upcoming" | "live" | "finished";
 export type ViewerRole = "creator" | "player";
 
 export interface JoinRequest {
+  /** The *participant* id — what approve/reject is addressed to, not an account id. */
   id: string;
   name: string;
-  level: number;
-  /** Preferred side, e.g. "راست". */
-  side: string;
+  /** No API source: levels ship after the MVP. */
+  level?: number;
+  /** Preferred side, e.g. "راست". `MatchParticipantResponse` doesn't carry it. */
+  side?: string;
   avatar?: string;
 }
 

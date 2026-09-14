@@ -359,10 +359,18 @@ opposed to what its spec claims — is recorded in
   UTC instant to Tehran (`+03:30`), so a match created at ۱۷:۳۰ reads back as ۱۷:۳۰. Six fields have
   no API source and their cards omit themselves: `fee`, `deadline`, `restriction`, `courtNote`,
   `teamNote`, `faq`.
-- [ ] **Join requests are not mapped** — `MatchParticipantResponse.status` is an undeclared string
-  and only `CONFIRMED` has been observed, so `filled` counts confirmed only and `requests` is `[]`.
-  `respondToJoinRequest` is unreachable until the enum is declared; the approve/reject endpoints
-  already exist. See api-findings §0d.
+- [x] **Join requests are live (2026-09-14):** the participant status values were learned by
+  experiment — a second account joining a `MANUAL_APPROVE` match produces
+  `status: "REQUESTED"`, `joinChannel: "REQUEST"`, against the organizer's `CONFIRMED`/`OPEN`.
+  `filled` counts confirmed, `requests` are the requested rows keyed by **participant** id, and
+  `respondToJoinRequest` posts to `/participants/{id}/approve|reject`. `JoinRequest.level` and
+  `.side` have no API source, so that meta line omits itself. Both enums are still undeclared in
+  the spec — see api-findings §0d.
+- [x] **Viewer role and stage are derived (2026-09-14):** the details page no longer reads
+  `?role=`/`?status=` from the URL in production. Role compares
+  `MatchResponse.organizer.accountId` with the JWT `sub` (`getAccountId()` — note this is an
+  *account* id, not `PlayerResponse.id`); stage comes off the clock. Verified with two accounts:
+  the organizer gets ویرایش + «لغو مَچ», a non-organizer gets «لغو ارسال درخواست ورود».
 - [ ] **Not yet wired, all available today:** `POST /matches/{id}/join`,
   `DELETE /matches/{id}/participants/me`, the approve/reject actions, and the invite-token flow.
 - [ ] **No endpoint exists at all for:** tournaments, activity, notification counts. Those stay on

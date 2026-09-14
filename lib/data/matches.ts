@@ -89,7 +89,12 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
   // "CONFIRMED" is the only participant status observed on the live API
   // (2026-09-14) and the spec declares the field as a bare string, so it is the
   // only one counted. See the note on `requests` below.
-  const confirmed = (m.participants ?? []).filter((p) => p.status === "CONFIRMED");
+  const participants = m.participants ?? [];
+  const confirmed = participants.filter((p) => p.status === "CONFIRMED");
+  // "REQUESTED" + joinChannel "REQUEST" is what POST /matches/{id}/join produces
+  // on a MANUAL_APPROVE match — observed 2026-09-14 with a second account, since
+  // the enum is still undeclared in the spec.
+  const requested = participants.filter((p) => p.status === "REQUESTED");
 
   return {
     id: m.id,
@@ -111,12 +116,13 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     courtLat: club?.latitude,
     courtLng: club?.longitude,
     faq: [],
-    // Empty on purpose, not unfinished. Approving someone needs the *pending*
-    // participant status, and only "CONFIRMED" has ever been seen — producing a
-    // pending row needs a second account joining a MANUAL_APPROVE match, which
-    // this project cannot do yet. Guessing at "PENDING" is exactly the mistake
-    // the match-status mapping avoids. Ask the backend to declare the enum.
-    requests: [],
+    // `id` is the participant id, which is what approve/reject is addressed to.
+    // `level` and `side` have no source — the row omits them.
+    requests: requested.map((p) => ({
+      id: p.id,
+      name: fullName(p.firstName, p.lastName),
+      avatar: p.photoUrl ?? undefined,
+    })),
   };
 }
 

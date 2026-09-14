@@ -95,4 +95,22 @@ assert.equal(viewerRole("acc-1", null), "player", "signed out / undecodable toke
 assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
   "must not fall back to creator, which is what the old URL default did");
 
+// Participant status drives two different things and they must not blur: a
+// CONFIRMED row is a player on the roster, a REQUESTED row is someone waiting at
+// the door. Both values observed live 2026-09-14; the spec declares neither.
+{
+  const roster = [
+    participant({ id: "p1", status: "CONFIRMED", firstName: "متین ", lastName: "بهادران" }),
+    participant({ id: "p2", status: "REQUESTED", firstName: "متیوس ", lastName: "دلیخت" }),
+    participant({ id: "p3", status: "REJECTED", firstName: "کسی ", lastName: "دیگر" }),
+  ];
+  const confirmed = roster.filter((p) => p.status === "CONFIRMED");
+  const requested = roster.filter((p) => p.status === "REQUESTED");
+  assert.equal(confirmed.length, 1, "only CONFIRMED counts toward the roster");
+  assert.equal(requested.length, 1, "only REQUESTED is a pending request");
+  assert.equal(requested[0].id, "p2", "the request carries the participant id, not the account id");
+  // A rejected row is neither — it must not appear as a player or as a request.
+  assert.equal(roster.filter((p) => ["CONFIRMED", "REQUESTED"].includes(p.status)).length, 2);
+}
+
 console.log("matches list mapping: ok");

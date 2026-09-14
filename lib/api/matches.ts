@@ -2,7 +2,12 @@ import { apiFetch } from "./client";
 import { jalaliDayMonth } from "../jalali";
 import { toPersianDigits } from "../persian";
 import type { CreateMatchDraft } from "../types";
-import type { CreateMatchRequest, MatchResponse, PageResponse } from "./types";
+import type {
+  CreateMatchRequest,
+  MatchParticipantResponse,
+  MatchResponse,
+  PageResponse,
+} from "./types";
 
 /** Tehran is UTC+03:30 — a fixed offset; Iran no longer observes DST. */
 const TEHRAN_OFFSET = "+03:30";
@@ -104,6 +109,23 @@ export function getMatch(id: string): Promise<MatchResponse> {
  */
 export function listMatches(): Promise<PageResponse<MatchResponse>> {
   return apiFetch<PageResponse<MatchResponse>>("/matches?size=100");
+}
+
+/**
+ * Approve or reject a pending join request.
+ *
+ * `participantId` is `MatchParticipantResponse.id`, not an account id. Only the
+ * organizer may call these; the server enforces it.
+ */
+export function decideParticipant(
+  matchId: string,
+  participantId: string,
+  accept: boolean,
+): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(
+    `/matches/${matchId}/participants/${participantId}/${accept ? "approve" : "reject"}`,
+    { method: "POST" },
+  );
 }
 
 /** The API's format enum as the app writes it. آمریکانو/دوستانه are the two the

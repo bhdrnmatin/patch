@@ -57,18 +57,26 @@ edit when the fix ships.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
-### 0d. Participant status enum is undeclared — blocks join requests
-`MatchParticipantResponse.status` is `"type": "string"` with no enum, and only **`CONFIRMED`**
-has ever been observed (2026-09-14). `POST /matches/{id}/participants/{id}/approve` and
-`/reject` exist, so a pending state must too — but producing one needs a second account
-joining a `MANUAL_APPROVE` match, which we cannot do yet.
+### 0d. Participant status enum — values learned by observation, still undeclared
+`MatchParticipantResponse.status` and `joinChannel` are both `"type": "string"` with no enum.
+Resolved by experiment on 2026-09-14 with a second account joining a `MANUAL_APPROVE` match:
 
-Consequence: `getMatchDetails` counts only `CONFIRMED` toward `filled` and returns
-`requests: []`, so the creator's join-request section never renders and
-`respondToJoinRequest` is unreachable.
+| situation | `status` | `joinChannel` |
+|---|---|---|
+| organizer, `organizerJoins` default | `CONFIRMED` | `OPEN` |
+| someone who asked to join, awaiting approval | **`REQUESTED`** | **`REQUEST`** |
 
-**Ask:** declare the enum for `status` and `joinChannel`. Same request as the match-level
-`status`, which has the same problem.
+Join requests are wired on that basis: `filled` counts `CONFIRMED`, `requests` are the
+`REQUESTED` rows, and approve/reject post to
+`/matches/{id}/participants/{participantId}/approve|reject`.
+
+**Still an ask:** declare both enums in the spec. We are relying on two strings nobody has
+written down, and we have not seen what a rejected or cancelled participant looks like — the
+mapping treats anything that is neither value as belonging to neither list, which is safe but
+untested. Same request as the match-level `status`.
+
+**Also:** `participants[].photoUrl` is a **presigned S3 URL** with `X-Amz-*` query parameters,
+so it expires. Fine to render immediately; do not cache or persist one.
 
 ### 0c. Re-confirmed 2026-09-12
 - **A missing `title` still 500s** — unchanged since 2026-08-24. The wizard treats the

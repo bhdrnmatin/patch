@@ -29,11 +29,20 @@ export default function JoinRequestRow({ request, matchId }: Props) {
           <span className="text-xs font-bold text-ink-soft" dir="rtl">
             {request.name}
           </span>
-          <span className="flex items-center gap-3 text-xs text-muted">
-            <span dir="rtl">لول {toPersianDigits(String(request.level))}</span>
-            <span className="w-px h-3 bg-edge" />
-            <span dir="rtl">ساید ترجیحی: {request.side}</span>
-          </span>
+          {/* Neither has an API source yet — levels ship after the MVP and the
+              participant payload carries no preferred side. The whole meta line
+              disappears rather than showing «لول undefined». */}
+          {(request.level !== undefined || request.side !== undefined) && (
+            <span className="flex items-center gap-3 text-xs text-muted">
+              {request.level !== undefined && (
+                <span dir="rtl">لول {toPersianDigits(String(request.level))}</span>
+              )}
+              {request.level !== undefined && request.side !== undefined && (
+                <span className="w-px h-3 bg-edge" />
+              )}
+              {request.side !== undefined && <span dir="rtl">ساید ترجیحی: {request.side}</span>}
+            </span>
+          )}
         </div>
         <img
           src={request.avatar ?? "/images/avatar-placeholder.svg"}
