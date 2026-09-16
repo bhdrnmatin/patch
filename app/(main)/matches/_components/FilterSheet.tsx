@@ -3,7 +3,7 @@
 import { toPersianDigits } from "@/lib/persian";
 import BottomSheet from "./BottomSheet";
 import FilterSection, { type ChipOption } from "./FilterSection";
-import { FilterSearchIcon } from "../../_components/icons";
+import { FilterIcon } from "../../_components/icons";
 
 const STATUS: ChipOption[] = [
   { id: "active", label: "جاری" },
@@ -82,7 +82,7 @@ export default function FilterSheet({ open, onClose, value, onChange }: Props) {
   );
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="فیلتر" icon={<FilterSearchIcon className="size-4" />} footer={footer}>
+    <BottomSheet open={open} onClose={onClose} title="فیلتر" icon={<FilterIcon className="size-4" />} footer={footer}>
       <FilterSection label="وضعیت" options={STATUS} value={value.status} onChange={toggle("status")} />
       <FilterSection label="رده‌بندی" options={LEVELS} value={value.levels} onChange={toggle("levels")} />
       <FilterSection label="مسافت" options={DISTANCE} value={value.distance} onChange={toggle("distance")} />

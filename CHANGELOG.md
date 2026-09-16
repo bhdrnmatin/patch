@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — list-page header polish
+- [Header] **Past days no longer look selected.** Glass `DateCell` drew past days as dark glass, so the
+  strip opened with two "selected" cells. Past is now the light cell at 50% opacity, and selected is
+  the one dark cell (`bg-ink`). Radius → `rounded-field`.
+- [Header] **Collapsed date strip clears the buttons.** A dated hero now stops at 146px (was 130): the
+  collapsed filter/sort buttons end at 62px and the strip used to start at 66px, which read as stuck
+  together on the phone. `.hero-collapse-dates` and `.hero-page-dates` moved together; `--collapse`
+  still reaches 1 on /matches and /tournaments with a 16px gap.
+- [Icons] Filter uses the narrowing-lines glyph (the funnel-with-magnifier read as search); sort gets
+  opposed arrows. `FilterSearchIcon` → `FilterIcon`.
+
 ### 2026-09-16 — night photos on login and OTP
 - [Auth] **New art on ورود and تایید شماره** — the court and racket night photos, with the PATCH
   wordmark and tagline baked in. `AuthSlide pinTop` pins them to the top at full width and fades into

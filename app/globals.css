@@ -198,22 +198,24 @@ body:has(.bg-night) {
      buys scroll the header has already finished using: --collapse hits 1, the
      header stops shrinking, and the content keeps rising into it. That is how
      /matches ended up drawing its empty state under the collapsed bar — 58px
-     of overshoot, exactly the 130-72 the date strip adds. So pair
+     of overshoot, exactly the 130-72 the date strip added then. So pair
      .hero-page-dates with .hero-collapse-dates, the same way the header does. */
   min-height: calc(var(--vvh, 100dvh) + var(--hero-max) - var(--hero-min));
 }
 .hero-page-dates {
-  /* Mirrors .hero-collapse-dates: a hero with a date strip stops at 130px, so
-     its page only has 146px of collapse to scroll through. */
-  --hero-min: 130px;
+  /* Mirrors .hero-collapse-dates: a hero with a date strip stops at 146px, so
+     its page only has 130px of collapse to scroll through. */
+  --hero-min: 146px;
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
 }
 .hero-collapse-dates {
-  /* The date strip stays full size 12px off the bottom, so 130 keeps its 56px
-     clear of the collapsed filter/sort buttons above it. */
-  --hero-min: 130px;
+  /* The date strip stays full size (52px) 12px off the bottom, so it starts at
+     --hero-min − 64. The collapsed buttons end at 62px (a 48px box at top 16,
+     scaled to 44 about its centre), so 146 leaves a 16px gap. It was 130, a 6px gap the buttons and cells read as
+     stuck together across on the phone (user, 2026-09-16). */
+  --hero-min: 146px;
 }
 .hero-collapse-title {
   /* The title is the header's subject, not its label: it opens at

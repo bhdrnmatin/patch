@@ -4,22 +4,24 @@
 
 type IconProps = { className?: string };
 
-export function FilterSearchIcon({ className }: IconProps) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
-      <path d="M14.32 19.07c0 .61-.4 1.41-.91 1.72l-1.41.91c-1.31.81-3.13-.1-3.13-1.72v-5.35c0-.71-.4-1.62-.81-2.12L4.22 8.47c-.51-.51-.91-1.41-.91-2.02V4.13c0-1.21.91-2.12 2.02-2.12h13.34c1.11 0 2.02.91 2.02 2.02v2.22c0 .81-.51 1.82-1.01 2.32" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16.07 16.52a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="m19.87 17.12-1-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function SortIcon({ className }: IconProps) {
+/** Narrowing lines — the filter glyph from the 2026-09-16 header mockup. It
+ *  replaced a funnel-with-magnifier that read as search. */
+export function FilterIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path d="M3 7h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M6 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M10 17h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Opposed arrows. The lines glyph went to filter, which the mockup draws with it. */
+export function SortIcon({ className }: IconProps) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path d="M7 4v16M7 4 3.5 7.5M7 4l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M17 20V4M17 20l-3.5-3.5M17 20l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

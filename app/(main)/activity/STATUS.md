@@ -29,7 +29,7 @@ Legend: `[ ]` todo · `[x]` done · `[R]` reused (no work)
 - [R] `SportPageHeader` — (main)/_components (date strip now optional)
 - [R] `FilterSheet`, `SortSheet` — matches/_components (match facets; revisit if activity-specific)
 - [R] `BottomNav` — (main)/_components (global in layout)
-- [R] icons `FilterSearchIcon` / `SortIcon`, hero images — via header
+- [R] icons `FilterIcon` / `SortIcon`, hero images — via header
 
 ## Assets
 - [x] `public/images/activity-court.webp` — card thumbnail (360px, q80)

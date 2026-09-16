@@ -4,7 +4,7 @@ import type { DayOption } from "@/lib/types";
 import { useCollapseHeader } from "@/lib/useCollapseHeader";
 import IconButton from "./IconButton";
 import DateSelector from "./DateSelector";
-import { FilterSearchIcon, SortIcon } from "./icons";
+import { FilterIcon, SortIcon } from "./icons";
 import CourtBackdrop, { heroTitleSize } from "./CourtBackdrop";
 
 interface Props {
@@ -83,7 +83,7 @@ export default function SportPageHeader({
         {/* Filter + sort buttons (visual left). `top` comes from the collapse
             rules, not a utility, so it can ride up as the header shrinks. */}
         <div className="hero-collapse-actions absolute left-6 flex items-center gap-2">
-          <IconButton label="فیلتر" icon={<FilterSearchIcon />} onClick={onFilter} />
+          <IconButton label="فیلتر" icon={<FilterIcon />} onClick={onFilter} />
           <IconButton label="مرتب‌سازی" icon={<SortIcon />} onClick={onSort} />
         </div>
 
