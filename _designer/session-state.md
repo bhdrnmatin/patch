@@ -1,5 +1,45 @@
 # Session State
 
+## Session — 2026-09-16: create-match goes live, and phone invites with it
+Four commits on `main`, plus the LAN-IP one. The match-details collapse from 09-14 was confirmed on
+the phone at session start.
+
+- **The UTC-hour bug is still there** (re-probed: `18:00+03:30` → 400, `14:30+03:30` → 201). User
+  chose to work around it: **every match is stored 30 minutes early** (`API_SHIFT_MS`,
+  `lib/api/matches.ts`) and `matchStartMs` adds it back for every reader — time range, strip day,
+  both status clocks. Early, not late, so server-side timing errs before the start. Verified live:
+  sent `14:00Z`, read back ۱۸:۰۰. **Any new `scheduledAt` reader goes through those helpers.**
+- **`createMatch` posts to the API**; the `matchList` mock is gone. The three matches created before
+  the shift now read 30 minutes later than they did.
+- **Phone invites are sent** right after create. Probed with the second account (متیوس,
+  `09981830972`): a number on Patch resolves to its `inviteeAccountId`, stays `PENDING`, and is not in
+  `participants` until accepted. **Invites are phone-only** — `accountIds` → 400 — and
+  `/invitations/suggestions` has no phone, so «از بین بازیکنان پچ» can't send. User: keep it
+  visible on the mock and wait for the backend.
+- **Invite errors show at the button** (user asked): own number and duplicates are refused when
+  افزودن/ذخیره is tapped. The own number comes from `patch.phone`, **saved at OTP verify** — no
+  endpoint returns it, so a pre-09-16 login lacks it until re-login. Whatever the server still refuses
+  is listed by `InviteFailures` in the wizard before رفتن به مَچ; raw i18n keys are translated.
+- Pre-push review found two bugs the wiring made live, both fixed: **a failed create was silent**
+  (now the server's message above the footer), and **past hours today were pickable** (now
+  `isSchedulable` greys them and gates step ۳).
+
+### Worth knowing
+- **DELETE on a match soft-cancels.** Every probe match this session is `CANCELLED`, not gone.
+- **The phone's login is a separate token chain** from `.api-session.json` — testing on the phone
+  doesn't kill the terminal session. Only sharing one pair does (see memory). Headless runs wrote the
+  rotated pair back and the CLI session survived all three.
+- Dev server was started with `next dev -p 3000`; phone URL `http://192.168.1.45:3000`.
+- **Invites send real SMS** (unverified for non-Patch numbers). Test only with the two own accounts.
+
+### Next
+- **Ask backend:** invite by `accountIds`; Persian `failureMessage` instead of raw keys; the UTC-hour
+  fix (then `API_SHIFT_MS` → 0 plus a migration of shifted matches).
+- Test the wizard end to end on the phone (the headless runs seeded drafts rather than tapping through
+  all five steps).
+- Still open from before: share-link flow, `GET /matches/invitations/me` for `/activity`, CI, the
+  password-login test account.
+
 ## Session — 2026-09-14 (pm): the date strip stops being a prop
 One commit on `main`. The header calendar on `/matches` and `/tournaments` was mock and had been
 since it was built.

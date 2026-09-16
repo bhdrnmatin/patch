@@ -51,5 +51,18 @@ sheet is ever open and no history entry is torn down mid-interaction.
 | 11 | Warning | Chaining two BottomSheets breaks on device — one sheet's history cleanup races the other's push | Fixed v2 — single sheet, three views |
 | 12 | Suggestion | Props are up to 10 (`players`/`disabledPlayers`/`selectedPlayer`/`onPickPlayer` added). Rule 5.3 suggests compound composition at 10+; acceptable for a feature composite driven by one parent, but it's the ceiling. | Open |
 
+## v3 — 2026-09-16 | fix
+
+- `checkInvite(phone)` prop: the افزودن/ذخیره tap refuses your own number and one another row holds,
+  the two failures the API would otherwise report only after the match exists. The message goes
+  through `TextField`'s existing `error` slot and clears on the next edit.
+- Rechecked the v1 Warnings against the code: both were already resolved and never marked.
+
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 1 | Warning | Mobile rule implemented twice | Fixed — `isValidMobile()` in `lib/persian.ts`, used by `/login` and this sheet |
+| 2 | Warning | Validation silent to a screen reader | Fixed — `TextField` sets `aria-invalid` + `aria-describedby` and renders the error as `role="alert"` |
+| 12 | Suggestion | Props now 11 with `checkInvite` — past the rule-5.3 ceiling noted in v2. Still one parent; split the phone view out if a 12th arrives. | Open |
+
 ### Status
-Open: 0 Critical, 2 Warning, 6 Suggestion | Fixed: 1 | Accepted: 2
+Open: 0 Critical, 0 Warning, 6 Suggestion | Fixed: 3 | Accepted: 2

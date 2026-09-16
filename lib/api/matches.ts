@@ -106,6 +106,16 @@ function toInstant(isoDate: string, time: string): string {
   return new Date(wallAsUtc - TEHRAN_OFFSET_MS - API_SHIFT_MS).toISOString().replace(".000Z", "Z");
 }
 
+/**
+ * Whether the API will take this start: `scheduledAt` must be in the future, and
+ * it's the *shifted* instant it checks, so a slot closes 30 minutes before it
+ * starts. The wizard greys out anything this rejects rather than letting the
+ * server answer in English («must be a future date»).
+ */
+export function isSchedulable(isoDate: string, time: string, now = Date.now()): boolean {
+  return new Date(toInstant(isoDate, time)).getTime() > now;
+}
+
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */
 export function createMatch(body: CreateMatchRequest): Promise<MatchResponse> {
   return apiFetch<MatchResponse>("/matches", { method: "POST", body });

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toPersianDigits } from "../../../../lib/persian";
+import { isSchedulable } from "../../../../lib/api/matches";
 import {
   JALALI_MONTHS,
   JALALI_WEEKDAYS,
@@ -150,13 +151,18 @@ export default function StepSchedule({ draft, patch }: Props) {
         >
           {TIME_SLOTS.map((t) => {
             const selected = draft.time === t;
+            // Only today has closed slots; the page re-renders often enough
+            // (every tap) that a slot closing while it sits here is caught at
+            // the step gate in page.tsx instead of with a timer.
+            const closed = draft.date !== null && !isSchedulable(draft.date, t);
             return (
               <button
                 key={t}
                 type="button"
                 aria-pressed={selected}
+                disabled={closed}
                 onClick={() => patch({ time: t })}
-                className={`h-11 px-4 shrink-0 rounded-card text-sm font-bold border shadow-card active:opacity-80 ${
+                className={`h-11 px-4 shrink-0 rounded-card text-sm font-bold border shadow-card active:opacity-80 disabled:opacity-40 ${
                   selected ? "bg-primary border-primary text-white" : "bg-white border-edge text-ink-soft"
                 }`}
               >

@@ -8,6 +8,13 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — the wizard says when create fails
+- **A failed create shows why.** The server's message (Persian) appears above the footer and the
+  draft stays; before this a 400 or a dropped connection just stopped the spinner.
+- **Past hours today can't be picked.** Slots the API would reject are greyed out and step ۳ won't
+  pass one — including in a resumed draft. The cutoff is 30 minutes before the start, because of the
+  storage shift.
+
 ### 2026-09-16 — phone invites are sent
 - [API] **The wizard's phone invites go out** after the match is created, via
   `POST /matches/{id}/invitations`. A number on Patch resolves to its account and sits `PENDING`

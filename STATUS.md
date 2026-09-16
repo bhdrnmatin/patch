@@ -225,7 +225,10 @@ Components live in `app/matches/create/_components/`.
 - [x] `RadioCardGroup` — icon/title/description radio cards (`aria-pressed` toggles) — steps ۱، ۴ و ۵
       (step ۵ = نحوه ورود بازیکنان, shown only when the match is عمومی)
 - [x] `AddPlayerSheet` — how a teammate row gets filled: pick from Patch players, or invite a phone
-      number (۱۱ digits, `09…`). Menu + phone field in one sheet; also removes a filled row
+      number (۱۱ digits, `09…`). Menu + phone field in one sheet; also removes a filled row. The
+      invite button refuses your own number and one already added (`checkInvite`, 2026-09-16)
+- [x] `InviteFailures` — replaces the steps when the match was created but some invites weren't:
+      each number + reason, and the footer becomes رفتن به مَچ (2026-09-16)
 - [x] `RadioCardGroup` also carries step ۵ (نحوه ورود بازیکنان) — see the Removed section
 
 ### Compound Components
@@ -248,7 +251,9 @@ Components live in `app/matches/create/_components/`.
   calendar in the 2026-08-05 timing rework.
 
 ### Pages
-- [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator)
+- [x] `CreateMatchPage` — `app/matches/create/page.tsx` — `CreateMatchDraft` state + per-step validation + `createMatch` mutation (redirects to the new match as creator, or lists failed invites first).
+      Step ۳ is gated on `isSchedulable` (no past slot today); a failed create shows the server's
+      message above the footer and keeps the draft
 
 ### Data
 - [x] `CreateMatchDraft` / `CourtOption` / `Teammate` / `MAX_TEAMMATES` — `lib/types.ts`
@@ -259,7 +264,8 @@ Components live in `app/matches/create/_components/`.
 - [x] `courtOptions` / `pickablePlayers` mocks + accessors
 - [x] `lib/jalali.ts` — dependency-free jalali↔gregorian conversion + month/weekday names,
       self-checked by `lib/jalali.test.ts`
-- [x] `createMatch` mutation — `lib/data/mutations.ts` (unshifts into `matchList`, returns id)
+- [x] `createMatch` mutation — `lib/data/mutations.ts` — `POST /matches`, then
+      `POST /matches/{id}/invitations` for the phone invites; returns `{ id, failedInvites }` (live 2026-09-16)
 
 ### Reused (not rebuilt)
 - `StageDial`, `BottomSheet`, `SelectChip`/`FilterSection`, `PlayerPickerSheet`, `DateSelector`/`DateCell`,
@@ -332,14 +338,11 @@ opposed to what its spec claims — is recorded in
   the element rather than showing «لول ۰» or a free-entry tag. The card's CTA is now a real
   `Link` to `/matches/{id}`; it had been a `<button>` with no handler, so the list had no route
   into a match at all.
-- [ ] **`POST /matches` — mapping written and tested, deliberately NOT wired (2026-09-12).**
-  `lib/api/matches.ts` (`draftToCreateRequest` + `createMatch`) and `lib/api/matches.test.ts` are
-  done; `lib/data/mutations.ts` still writes to the mock. **Blocked on one backend bug:**
-  `scheduledAt` is a `java.time.Instant` and the "exactly on the hour" rule is checked against **UTC**
-  minutes, while Iran is UTC+03:30 — so Tehran ۱۸:۰۰ (`18:00+03:30` = 14:30Z) is rejected and only
-  half-past-Tehran times are accepted. Every slot the wizard offers fails, so flipping it today would
-  break the wizard for every user. **The mapping needs no change when the server validates in
-  `Asia/Tehran`** — it already sends the offset. Re-probed and still broken 2026-09-13.
+- [x] **`POST /matches` is live (2026-09-16), with a workaround.** The backend still checks "on the
+  hour" in **UTC** (re-probed 2026-09-16) and Iran is UTC+03:30, so no Tehran hour passes. User
+  decision: store every match **30 minutes early** (`API_SHIFT_MS` in `lib/api/matches.ts`) — Tehran
+  ۱۸:۰۰ goes up as `14:00Z` — and read it back through `matchStartMs`. Set the shift to 0 when the
+  backend validates in `Asia/Tehran`, and migrate the matches stored under it.
   Evidence: `_designer/api-findings.md` §0.
 - [ ] **رقابتی is disabled in the UI (2026-09-12)** — `matchType: COMPETITIVE` returns 400
   «مسابقات رقابتی هنوز فعال نشده‌اند», matching the spec's *Only FRIENDLY is accepted in this MVP*.
@@ -349,12 +352,13 @@ opposed to what its spec claims — is recorded in
   a title (user decision), and the mapping keeps a generated fallback for drafts saved before that.
   `capacity` is required with a minimum of 4 while دوستانه/آمریکانو are uncapped by design, so the
   mapping floors the roster at 4.
+- [x] **Phone invites are sent (2026-09-16)** — `POST /matches/{id}/invitations` right after create. A
+  number on Patch resolves to its account (`inviteeAccountId`) and stays `PENDING` until accepted.
 - [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
-  out of `participants` until accepted; the design has no pending state either. Phone invites dropped
-  the name field on 2026-09-12 (the number is the identity). `GET /matches/invitations/suggestions`
-  exists and returns `{accountId, firstName, lastName, photoUrl}` — likely the source for
-  «از بین بازیکنان پچ», which is meant to list people you have played with rather than every account;
-  `getPickablePlayers` is still the mock.
+  out of `participants` until accepted; the design has no pending state either.
+- [ ] **«از بین بازیکنان پچ» can't send** — the API invites by phone only (`accountIds` → 400), and
+  `GET /matches/invitations/suggestions` returns `{accountId, firstName, lastName, photoUrl}`, no phone.
+  Kept visible on the mock while the backend adds account ids (user decision 2026-09-16).
 - [x] **Match details is live (2026-09-14):** `getMatchDetails` calls `GET /matches/{id}` and
   resolves `clubId` against the cached clubs list for the club name and the coordinates `CourtMap`
   needs — no extra round trip. Format maps to a Persian label, and `timeRange` converts the stored

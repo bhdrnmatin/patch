@@ -17,5 +17,15 @@ Notes: court-grid buttons and picker rows use `aria-pressed`; search input has `
 empty court-search state handled ("زمینی پیدا نشد"); map `img` has meaningful alt; submit runs
 `createMatch` via useMutation with `isPending` on the CTA and `["matches"]` invalidation.
 
+## v2 — 2026-09-16 | fix
+Wiring `createMatch` to the API turned two quiet gaps into live bugs.
+
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 7 | Critical | A failed create showed nothing — `useMutation` had no error path, so a 400 or a dropped connection just stopped the spinner on step ۵ | Fixed — `ApiError.message` (the server's Persian) as `role="alert"` above the footer; cleared on any step change |
+| 8 | Warning | Every time slot was tappable on today, and the server rejects a past start in English (`must be a future date`) | Fixed — `isSchedulable` disables closed slots and gates step ۳, so a resumed stale draft can't pass either |
+| 9 | Note | `InviteFailures` (new): report card for invites the server refused after create. RTL per the flex rule, tokens only, reuses `ResumeDraftBar`'s card idiom | Clean |
+| 4 | Note | Teammate identity = indexes into `pickablePlayers` | Still accepted — phone invites are real now; Patch players wait on invite-by-account-id |
+
 ### Status
-Open: 0 | Fixed: 0 | Accepted: 4
+Open: 0 | Fixed: 2 | Accepted: 4

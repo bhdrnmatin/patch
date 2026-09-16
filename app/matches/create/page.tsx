@@ -16,6 +16,7 @@ import ResumeDraftBar from "./_components/ResumeDraftBar";
 import InviteFailures from "./_components/InviteFailures";
 import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
+import { isSchedulable } from "@/lib/api/matches";
 import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
@@ -48,7 +49,9 @@ const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   // returns 500, not a validation error.
   (d) => d.format !== null && d.invite !== null && d.title.trim().length > 0,
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
-  (d) => d.date !== null && d.time !== null && d.duration !== null,
+  // A time can close while the draft sits (or was saved yesterday evening), so
+  // re-check it here too, not only when the slot is drawn.
+  (d) => d.date !== null && d.time !== null && d.duration !== null && isSchedulable(d.date, d.time),
   (d) => d.myRole !== null,
   () => true,
 ];
@@ -91,6 +94,7 @@ function CreateMatchContent() {
   }, [draft, step, maxStep, touched]);
 
   const goTo = (target: number) => {
+    reset(); // an error from تایید و ثبت is about the answers they're going back to change
     setStep(target);
     setMaxStep((m) => Math.max(m, target));
     appScrollEl()?.scrollTo({ top: 0 });
@@ -101,7 +105,7 @@ function CreateMatchContent() {
   const [created, setCreated] = useState<{ id: string; failedInvites: FailedInvite[] } | null>(null);
   const openMatch = (id: string) => router.push(`/matches/${id}?role=creator&status=upcoming`);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, error, reset } = useMutation({
     mutationFn: createMatch,
     onSuccess: (result) => {
       clearDraft();
@@ -158,6 +162,14 @@ function CreateMatchContent() {
             {step === 2 && <StepSchedule draft={draft} patch={patch} />}
             {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
             {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
+            {/* Nothing was created, so the draft is intact — say why and let
+                them fix it or retry. ApiError carries the server's Persian
+                message, or a connection one when there was no response. */}
+            {step === 4 && error && (
+              <p role="alert" className="text-sm text-danger text-right leading-6" dir="rtl">
+                {error.message || "ثبت مَچ انجام نشد. دوباره تلاش کنید."}
+              </p>
+            )}
           </>
         )}
         {/* Clearance for the fixed footer, and the marker WizardFooter's scroll
