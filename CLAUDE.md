@@ -175,6 +175,7 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Input/OTP border | `border-input-border` | `#6783A0` |
 | Radio group border | `border-group-border` / `divide-group-border` | `#57728E` |
 | Slide fallback bg | `bg-slide-bg` | `#EEFFFC` |
+| Night auth photo edge (login/OTP art fades into it) | `bg-night` | `#020F26` |
 | Headings / primary text | `text-ink` | `#00254D` |
 | Body/meta text, icons | `text-ink-soft` | `#253343` |
 | Secondary text | `text-muted` | `#6783A0` |
@@ -182,7 +183,8 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Separator lines | `bg-divider` | `#E5EAF0` |
 | Light borders, avatar bg | `border-edge` / `bg-edge` | `#D0DDEC` |
 | Button radius | `rounded-pill` | `44px` |
-| Input/card radius | `rounded-card` | `32px` |
+| Card radius | `rounded-card` | `32px` |
+| Auth field / OTP box radius (rounded square) | `rounded-field` | `14px` |
 | 24px radius — cards, radio groups, header/CTA corners (`rounded-group`, `rounded-t-group`, `rounded-b-group`; never raw `rounded-3xl`) | `rounded-group` | `24px` |
 | Auth card blur | `backdrop-blur-card` | `5px` |
 | Story card blur | `backdrop-blur-story` | `3.5px` |

@@ -88,11 +88,13 @@ export default function OtpInput({ value, onChange }: OtpInputProps) {
   };
 
   return (
-    <div className="flex gap-4 h-[49px] w-full" onPaste={handlePaste}>
+    <div className="flex justify-between gap-2 w-full" onPaste={handlePaste}>
       {digits.map((digit, i) => {
         const state = digit ? "filled" : i === value.length ? "active" : "empty";
         return (
-          <div key={i} className="relative flex-1 h-full">
+          // Square, capped at 52px and spread across the row; on a narrow
+          // phone flex-1 lets them shrink before the row can overflow.
+          <div key={i} className="relative flex-1 max-w-[52px] aspect-square">
             <OtpBox value={digit} state={state} />
             {/* Not opacity-0: iOS and Android both withhold the long-press paste callout
                 from a fully transparent field. Visible element, invisible contents —

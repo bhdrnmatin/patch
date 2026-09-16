@@ -103,7 +103,7 @@ export default function AuthSelect({
               focusOption(0);
             }
           }}
-          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border pr-4 pl-9 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
+          className="w-full h-full rounded-field bg-black/[0.32] border border-input-border pr-4 pl-9 text-sm leading-4 flex items-center justify-between focus:outline-none focus:border-primary shadow-card"
         >
           <span className={selected ? "text-white" : "text-white/40"}>
             {selected ? selected.label : placeholder ?? label}

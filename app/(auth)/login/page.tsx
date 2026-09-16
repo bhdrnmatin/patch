@@ -43,15 +43,16 @@ export default function LoginPage() {
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
       <div className="relative w-full max-w-[430px] h-full">
-        <AuthSlide backgroundImage={BG} objectPosition="30% 50%">
+        <AuthSlide backgroundImage={BG} pinTop>
           <AuthCard
             title="ورود"
-            subtitle="لطفا شماره موبایل خود را وارد کنید"
+            subtitle="شماره موبایل خود را وارد کنید"
           >
             <div className="flex flex-col gap-4">
               <AuthInput
                 label="شماره موبایل"
-                placeholder="۰۹۳۳۵۵۴۰۰۵۲"
+                placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                icon={<PhoneIcon />}
                 value={phone}
                 onChange={setPhone}
                 numeric
@@ -72,5 +73,14 @@ export default function LoginPage() {
         </AuthSlide>
       </div>
     </div>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.5 18.5h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
   );
 }

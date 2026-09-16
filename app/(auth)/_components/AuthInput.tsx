@@ -13,10 +13,12 @@ interface AuthInputProps {
   showLabel?: boolean;
   name?: string;
   disabled?: boolean;
+  /** Leading icon, pinned left behind a divider (the phone field). */
+  icon?: React.ReactNode;
 }
 
 const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInput(
-  { label, value, onChange, placeholder, numeric, persianOnly, maxLength, showLabel, name, disabled },
+  { label, value, onChange, placeholder, numeric, persianOnly, maxLength, showLabel, name, disabled, icon },
   ref
 ) {
   const id = useId();
@@ -60,6 +62,11 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
         </label>
       )}
       <div className="relative h-12 w-full">
+        {icon && (
+          <span className="pointer-events-none absolute left-0 inset-y-0 w-12 flex items-center justify-center text-white/70 after:absolute after:right-0 after:inset-y-3 after:w-px after:bg-white/15">
+            {icon}
+          </span>
+        )}
         <input
           ref={ref}
           id={id}
@@ -70,9 +77,10 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInpu
           onChange={handleChange}
           onCompositionEnd={handleCompositionEnd}
           disabled={disabled}
-          dir="rtl"
+          // A number reads left to right, so it starts where the icon ends.
+          dir={numeric ? "ltr" : "rtl"}
           maxLength={maxLength}
-          className="w-full h-full rounded-card bg-black/[0.32] border border-input-border px-4 text-white text-sm leading-4 placeholder-white/40 focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed shadow-card"
+          className={`w-full h-full rounded-field bg-black/[0.32] border border-input-border px-4 ${icon ? "pl-16" : ""} text-white text-sm leading-4 placeholder-white/40 focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed shadow-card`}
           placeholder={placeholder ?? label}
         />
       </div>

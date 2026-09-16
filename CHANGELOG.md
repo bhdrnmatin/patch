@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — night photos on login and OTP
+- [Auth] **New art on ورود and تایید شماره** — the court and racket night photos, with the PATCH
+  wordmark and tagline baked in. `AuthSlide pinTop` pins them to the top at full width and fades into
+  `bg-night` (`#020F26`, the photos' edge), because `object-cover` cropped the sides on tall phones and
+  pushed the tagline onto the screen edge.
+- [Auth] **Fields and OTP boxes are rounded squares** — new `rounded-field` (14px) on the OTP boxes,
+  `AuthInput`, `AuthSelect` and `AuthSearchSelect`. OTP boxes are square, up to 52px, spread across the row.
+- [Auth] The card gets a `white/10` border; the phone field a leading icon and left-to-right digits;
+  «لطفا» dropped from both subtitles. `scripts/otp-webkit.mjs` still 12/12.
+
 ### 2026-09-16 — the wizard says when create fails
 - **A failed create shows why.** The server's message (Persian) appears above the footer and the
   draft stays; before this a 400 or a dropped connection just stopped the spinner.

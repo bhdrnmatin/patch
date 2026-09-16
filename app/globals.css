@@ -23,6 +23,8 @@
   --color-input-border: #6783A0;
   --color-group-border: #57728E;
   --color-slide-bg: #EEFFFC;
+  /* The edge colour of the night auth photos — what their art fades into. */
+  --color-night: #020F26;
 
   /* Neutral scale (light UI) */
   --color-ink: #00254D;        /* headings, primary text */
@@ -41,6 +43,8 @@
   --radius-pill: 44px;
   --radius-card: 32px;
   --radius-group: 24px;
+  /* Auth fields and OTP boxes — a rounded square, not a pill (user, 2026-09-16). */
+  --radius-field: 14px;
   --radius-sheet: 40px;
 
   --blur-card: 5px;

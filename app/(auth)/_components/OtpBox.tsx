@@ -13,7 +13,7 @@ export default function OtpBox({ value, state }: OtpBoxProps) {
   return (
     <div
       aria-hidden="true"
-      className={`flex-1 h-full rounded-card flex items-center justify-center ${styles[state]}`}
+      className={`size-full rounded-field flex items-center justify-center ${styles[state]}`}
     >
       <span className="text-white font-bold text-otp leading-none">
         {value}

@@ -107,10 +107,10 @@ function OtpContent() {
         : null;
 
   return (
-    <AuthSlide backgroundImage={BG}>
+    <AuthSlide backgroundImage={BG} pinTop>
       <AuthCard
         title="تایید شماره"
-        subtitle={`لطفا کد ارسال شده به شماره ${toPersianDigits(phone)} را وارد کنید`}
+        subtitle={`کد ارسال شده به شماره ${toPersianDigits(phone)} را وارد کنید`}
       >
         <div className="flex flex-col gap-4">
           <OtpInput value={otp} onChange={setOtp} />
