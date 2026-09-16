@@ -42,8 +42,11 @@ export async function getMatchDays(): Promise<DayOption[]> {
  * element instead of showing «لول ۰» or a free-entry price tag.
  */
 export async function getMatchList(): Promise<MatchListItem[]> {
-  const { content } = await listMatches();
-  return content.map(toListItem);
+  // The club name is garnish on a list row: if the clubs call fails, show the
+  // matches without it rather than failing the whole list.
+  const [{ content }, clubs] = await Promise.all([listMatches(), getClubs().catch(() => null)]);
+  const clubName = new Map(clubs?.content.map((c) => [c.id, c.name]));
+  return content.map((m) => toListItem(m, clubName.get(m.clubId)));
 }
 
 /**
@@ -58,7 +61,7 @@ export function toStatus(m: MatchResponse): MatchListItem["status"] {
 }
 
 /** Exported for `matches.test.ts`. */
-export function toListItem(m: MatchResponse): MatchListItem {
+export function toListItem(m: MatchResponse, club?: string): MatchListItem {
   return {
     id: m.id,
     // `title` is nullable in the response even though omitting it on create 500s.
@@ -75,6 +78,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
     capacity: m.capacity,
     date: jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     day: tehranDateISO(m.scheduledAt),
+    club,
   };
 }
 

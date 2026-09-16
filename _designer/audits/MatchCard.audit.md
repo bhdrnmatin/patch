@@ -11,5 +11,12 @@ Sub-parts audited separately: [[StatusBadge]], [[PlayerSlot]], [[MetaItem]], [[P
 
 Regression check: n/a (v1)
 
+## v2 — 2026-09-16 | layout pass (user mockup)
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 4 | Note | A compact version replaced the roster grid with an organizer avatar + byline; the user brought the player cards back the same day. Kept from that pass: club in the meta row, `rounded-group`, chevron CTA, tighter gaps | Accepted — roster stays on the card |
+| 5 | Note | The meta row stays centred over the CTA (user). A right-aligned try hit the flex trap: `justify-end` under `dir="rtl"` left-aligned it | Clean |
+| 6 | Note | `club` added to `MatchListItem` from `getClubs()`, dropped rather than fatal if that call fails | Clean |
+
 ### Status
-Open: 1 | Fixed: 1 | Accepted: 1
+Open: 1 | Fixed: 1 | Accepted: 2

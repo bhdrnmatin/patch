@@ -5,19 +5,28 @@ import StatusBadge from "./StatusBadge";
 import PlayerSlot from "./PlayerSlot";
 import MetaItem from "./MetaItem";
 import PriceTag from "./PriceTag";
-import { ChartIcon, PeopleIcon, CalendarIcon } from "../../_components/icons";
+import { ChartIcon, PeopleIcon, CalendarIcon, PinIcon, ChevronLeftIcon } from "../../_components/icons";
 
-/** Full match card: status + title, 2×3 roster grid, meta row, and the CTA
- *  through to the match. */
+/**
+ * Match card: title + status, the roster grid, one meta row, and the CTA
+ * through to the match.
+ *
+ * A compact version (2026-09-16) swapped the roster for an organizer avatar and
+ * byline; the user brought the player cards back the same day. No organizer row
+ * now — the organizer is almost always in the roster, so it would show twice.
+ */
 export default function MatchCard({ match }: { match: MatchListItem }) {
-  const { id, title, status, players, avgLevel, capacity, date, price } = match;
+  const { id, title, status, players, club, avgLevel, capacity, date, price } = match;
 
   return (
-    <article className="bg-white rounded-card p-3 flex flex-col gap-4 shadow-pop">
-      {/* Top row: status badge (left) + title (right) */}
-      <div className="flex items-center justify-between" dir="rtl">
-        <h3 className="text-base font-bold text-ink">{title}</h3>
+    <article className="bg-white rounded-group p-3 flex flex-col gap-3 shadow-pop">
+      {/* Title row. LTR wrapper so the badge pins left; dir="rtl" only on the
+          title (CLAUDE.md flex trap). */}
+      <div className="flex items-center gap-3">
         <StatusBadge status={status} />
+        <h3 dir="rtl" className="flex-1 min-w-0 text-base font-bold text-ink text-right truncate">
+          {title}
+        </h3>
       </div>
 
       {/* Roster grid. `dir="rtl"` reverses the inline axis, which is what an RTL
@@ -30,32 +39,29 @@ export default function MatchCard({ match }: { match: MatchListItem }) {
         ))}
       </div>
 
-      {/* Meta row */}
-      <div className="flex items-center justify-center gap-3" dir="rtl">
+      {/* Centred over the CTA (user). RTL so the items read place → date →
+          players from the right; justify-center is unaffected by the flip. */}
+      <div className="flex items-center justify-center gap-3 flex-wrap" dir="rtl">
+        {club && <MetaItem icon={<PinIcon />} label={club} />}
         <MetaItem icon={<CalendarIcon />} label={date} />
-        <span className="w-px h-4 bg-divider" />
         <MetaItem icon={<PeopleIcon />} label={`${toPersianDigits(String(capacity))} نفر`} />
         {/* Levels arrive after the MVP, so a live match has none to average.
             Shown only when actually known — «میانگین لول: ۰» would be a lie. */}
         {avgLevel !== undefined && (
-          <>
-            <span className="w-px h-4 bg-divider" />
-            <MetaItem icon={<ChartIcon />} label={`میانگین لول: ${toPersianDigits(String(avgLevel))}`} />
-          </>
+          <MetaItem icon={<ChartIcon />} label={`میانگین لول: ${toPersianDigits(String(avgLevel))}`} />
         )}
       </div>
 
-      {/* The way into the match. This was a dead <button> and the list had no
-          route to the details page at all, so the card was a leaf.
-          It shows the price when there is one; the API has no price field until
-          after the MVP, and until then the CTA reads as a plain invitation
-          rather than claiming the match is free. */}
+      {/* The way into the match. Shows the price when there is one; the API has
+          no price field until after the MVP, so until then it reads as a plain
+          invitation rather than claiming the match is free. */}
       <Link
         href={`/matches/${id}`}
-        className="h-10 w-full rounded-pill bg-primary hover:bg-primary-hover active:opacity-80 flex items-center justify-center text-white font-bold text-sm"
+        className="h-11 w-full rounded-pill bg-primary hover:bg-primary-hover active:opacity-80 flex items-center justify-center gap-1.5 text-white font-bold text-sm"
         dir="rtl"
       >
         {price !== undefined ? <PriceTag amount={price} /> : "مشاهده مچ"}
+        <ChevronLeftIcon />
       </Link>
     </article>
   );

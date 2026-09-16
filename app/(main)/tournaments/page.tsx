@@ -37,7 +37,7 @@ export default function TournamentsPage() {
         onSort={() => setSheet("sort")}
       />
 
-      <div className="px-6 py-6 flex flex-col gap-4">
+      <div className="px-4 py-6 flex flex-col gap-4">
         {tournamentList.map((t) => (
           <TournamentCard key={t.id} tournament={t} />
         ))}

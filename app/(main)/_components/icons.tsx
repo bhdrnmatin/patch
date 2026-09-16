@@ -57,6 +57,24 @@ export function CalendarIcon({ className }: IconProps) {
   );
 }
 
+export function PinIcon({ className }: IconProps) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={className} aria-hidden>
+      <path d="M8 8.953a2.08 2.08 0 1 0 0-4.16 2.08 2.08 0 0 0 0 4.16Z" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M2.413 5.66c1.314-5.773 9.867-5.767 11.174.007.766 3.386-1.34 6.253-3.187 8.026a3.463 3.463 0 0 1-4.807 0C3.753 11.92 1.647 9.047 2.413 5.66Z" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+/** Points left — "forward" in an RTL reading order. */
+export function ChevronLeftIcon({ className }: IconProps) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={className} aria-hidden>
+      <path d="M10 13 5 8l5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function TomanIcon({ className }: IconProps) {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={className} aria-hidden>

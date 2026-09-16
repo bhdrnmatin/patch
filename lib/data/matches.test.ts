@@ -63,6 +63,8 @@ const participant = (over = {}) => ({
 
 const withPlayer = toListItem(m({ participants: [participant()] }));
 assert.equal(withPlayer.players[0].name, "متین بهادران");
+assert.equal(withPlayer.club, undefined, "no club when the lookup did not resolve one");
+assert.equal(toListItem(m(), "پدل‌پوینت").club, "پدل‌پوینت");
 
 // The three fields the API cannot supply stay undefined — never 0.
 assert.equal(withPlayer.avgLevel, undefined, "no level source anywhere in the API");

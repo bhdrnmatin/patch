@@ -52,6 +52,8 @@ export interface MatchListItem {
   date: string;
   /** Tehran calendar date, ISO "YYYY-MM-DD" — matched against the date strip. */
   day: string;
+  /** Club name, resolved from the clubs list. Undefined if that lookup failed. */
+  club?: string;
   /**
    * Toman, integer. Undefined for an API match: pricing arrives after the MVP,
    * and the wizard stopped asking for a fee on 2026-08-12. The card's CTA falls

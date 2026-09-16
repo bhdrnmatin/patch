@@ -53,7 +53,7 @@ export default function MatchesPage() {
         onSort={() => setSheet("sort")}
       />
 
-      <div className="px-6 py-6 flex flex-col gap-6">
+      <div className="px-4 py-6 flex flex-col gap-3">
         {matchList.length === 0 && !isLoading ? (
           <EmptyMatches />
         ) : (

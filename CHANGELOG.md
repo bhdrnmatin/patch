@@ -8,6 +8,15 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — match cards: club in the meta row, wider list
+- [Matches] Card meta row (centred over the CTA) gains the **club** (pin icon), ahead of date and players; the CTA gets a
+  chevron; card radius `rounded-group`, tighter gaps. The roster grid stays: a compact variant that
+  swapped it for an organizer byline was tried and reverted the same day (user). CTA stays brand
+  blue (the mockup's navy was declined).
+- [Data] `MatchListItem.club`, from `getClubs()` alongside the list — omitted, not fatal, if that call
+  fails. `PinIcon` / `ChevronLeftIcon` join the shared icon set.
+- [Layout] `/matches` and `/tournaments` gutters 24px → 16px, matching `/activity`; cards 12px apart.
+
 ### 2026-09-16 — a court photo behind every hero
 - [Header] **All five heroes show `/images/hero-court.webp`** instead of the drawn SVG court, carrying
   the login/OTP night photography into the app. `CourtBackdrop` holds it at the open height, anchored
