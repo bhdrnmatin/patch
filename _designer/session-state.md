@@ -34,8 +34,10 @@ the phone at session start.
   Around it: `bg-night` fallback, `IconButton` `bg-black/40`, glass `DateCell` `bg-white/85` with a
   `bg-primary` selection and faded past days, filter/sort glyphs from the mockup, collapsed dated hero
   140px (10px gap — 130 looked stuck, 146 too loose). The login canvas rule moved to `.auth-night`.
-  Generated in two passes; the second was an edit of the first. For a replacement, generate at
-  1536×1024 with:
+  Generated in three passes, each an edit of the last; the third re-lit it from night to daylight
+  blue (user: the dark photo fought the bright brand blue — keep the palette, change the photo).
+  For a replacement, generate at 1536×1024 with the prompt below, then ask for a daylight-blue edit
+  keeping the title zone around `#254C7A`:
 
   > Wide cinematic photograph of an outdoor padel court at night, 3:2 landscape, 1536x1024. A dark
   > matte padel racket leans against the glass-and-mesh side wall in the lower-left, a fluorescent

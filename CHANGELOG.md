@@ -8,12 +8,18 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
-### 2026-09-16 — a night court photo behind every hero
+### 2026-09-16 — a court photo behind every hero
 - [Header] **All five heroes show `/images/hero-court.webp`** instead of the drawn SVG court, carrying
   the login/OTP night photography into the app. `CourtBackdrop` holds it at the open height, anchored
   top, so collapsing clips it (the bar keeps the sky) rather than re-cropping into the racket.
+- [Header] **Re-lit to daylight blue** the same day: the night version read as a dark block against
+  the bright `#33A3FF` UI. Palette kept as is; the photo changed instead.
 - [Header] Readability over the photo: headers fall back to `bg-night`; `IconButton` `bg-black/16` →
-  `/40`; glass `DateCell` `bg-white/60` → `/85`, with the selected day in `bg-primary`.
+  `/40`; glass `DateCell` `bg-white/60` → `/85`. Selected day `bg-ink` (brand blue matched the bright
+  turf and disappeared); past days `text-muted` on an opaque cell instead of 50% opacity.
+- [Header] **Lime accent on the selected day** — new `accent` token `#C7F000` (the ball's colour):
+  1px `border-accent` plus a small `bg-accent` dot under the weekday, from the user's mockup. The «جاری» status badge
+  gets the same dot.
 - [Header] Collapsed dated hero is 140px (was 146): a 10px gap between the buttons and the strip.
 - [Auth] The navy-canvas rule is `body:has(.auth-night)` now — keyed to `bg-night` it would have
   painted every hero page's canvas navy once the heroes used the token.

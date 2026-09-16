@@ -39,6 +39,7 @@
   --color-success-soft: #E8F5E9; /* held-status badge background */
   --color-success-deep: #2E7D32; /* readable green text on success-soft */
   --color-danger: #FF4869;       /* notification dots, destructive accents */
+  --color-accent: #C7F000;       /* ball lime — the selected day in the hero date strip */
 
   --radius-pill: 44px;
   --radius-card: 32px;

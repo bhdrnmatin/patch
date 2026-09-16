@@ -12,9 +12,12 @@ export default function StatusBadge({ status }: { status: MatchStatus }) {
   return (
     <span
       dir="rtl"
-      className={`inline-flex items-center justify-center px-3 h-7 rounded-pill text-xs ${TONES[status]}`}
+      className={`inline-flex items-center justify-center gap-1.5 px-3 h-7 rounded-pill text-xs ${TONES[status]}`}
     >
       {statusLabels[status]}
+      {/* A live match gets the ball-lime dot, the same accent as the selected
+          hero date. dir="rtl" puts it after the label, on the left. */}
+      {status === "active" && <span aria-hidden className="size-1.5 rounded-full bg-accent" />}
     </span>
   );
 }
