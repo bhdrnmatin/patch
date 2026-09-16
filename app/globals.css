@@ -73,6 +73,15 @@ body {
   touch-action: manipulation;
 }
 
+/* Login and OTP sit on the night photos (AuthSlide pinTop draws a bg-night
+   layer). Android Chrome paints its system navigation bar, and iOS Safari its
+   toolbars, from the page canvas rather than anything drawn over it, so on
+   those screens the canvas has to be night too — it was the off-white app
+   background, a white strip under the dark art. */
+body:has(.bg-night) {
+  background: var(--color-night);
+}
+
 /* Motion: pressed states ease instead of snapping; keyboard focus is visible. */
 @layer base {
   button,

@@ -15,6 +15,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
   pushed the tagline onto the screen edge.
 - [Auth] **Fields and OTP boxes are rounded squares** — new `rounded-field` (14px) on the OTP boxes,
   `AuthInput`, `AuthSelect` and `AuthSearchSelect`. OTP boxes are square, up to 52px, spread across the row.
+- [Auth] **No white bar under the night screens.** Android Chrome paints its system navigation bar
+  (and iOS Safari its toolbars) from the page canvas, which was the off-white app background.
+  `body:has(.bg-night)` turns the canvas navy on login and OTP only.
 - [Auth] The card gets a `white/10` border; the phone field a leading icon and left-to-right digits;
   «لطفا» dropped from both subtitles. `scripts/otp-webkit.mjs` still 12/12.
 
