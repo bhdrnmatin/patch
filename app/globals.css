@@ -73,12 +73,12 @@ body {
   touch-action: manipulation;
 }
 
-/* Login and OTP sit on the night photos (AuthSlide pinTop draws a bg-night
-   layer). Android Chrome paints its system navigation bar, and iOS Safari its
+/* Login and OTP sit on the night photos (AuthSlide pinTop draws an .auth-night
+   layer — its own class, since the in-app heroes use bg-night too). Android Chrome paints its system navigation bar, and iOS Safari its
    toolbars, from the page canvas rather than anything drawn over it, so on
    those screens the canvas has to be night too — it was the off-white app
    background, a white strip under the dark art. */
-body:has(.bg-night) {
+body:has(.auth-night) {
   background: var(--color-night);
 }
 
@@ -203,9 +203,9 @@ body:has(.bg-night) {
   min-height: calc(var(--vvh, 100dvh) + var(--hero-max) - var(--hero-min));
 }
 .hero-page-dates {
-  /* Mirrors .hero-collapse-dates: a hero with a date strip stops at 146px, so
-     its page only has 130px of collapse to scroll through. */
-  --hero-min: 146px;
+  /* Mirrors .hero-collapse-dates: a hero with a date strip stops at 140px, so
+     its page only has 136px of collapse to scroll through. */
+  --hero-min: 140px;
 }
 .hero-collapse {
   height: calc(var(--hero-max) - (var(--hero-max) - var(--hero-min)) * var(--collapse, 0));
@@ -213,9 +213,9 @@ body:has(.bg-night) {
 .hero-collapse-dates {
   /* The date strip stays full size (52px) 12px off the bottom, so it starts at
      --hero-min − 64. The collapsed buttons end at 62px (a 48px box at top 16,
-     scaled to 44 about its centre), so 146 leaves a 16px gap. It was 130, a 6px gap the buttons and cells read as
-     stuck together across on the phone (user, 2026-09-16). */
-  --hero-min: 146px;
+     scaled to 44 about its centre), so 140 leaves a 10px gap. 130 (6px) read
+     as stuck together on the phone, 146 (16px) as too loose (user, 2026-09-16). */
+  --hero-min: 140px;
 }
 .hero-collapse-title {
   /* The title is the header's subject, not its label: it opens at

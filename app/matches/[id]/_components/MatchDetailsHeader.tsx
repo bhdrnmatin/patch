@@ -36,7 +36,7 @@ export default function MatchDetailsHeader({ title, showEdit = true, bgImage, at
     <>
       <header
         ref={ref}
-        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] rounded-b-group overflow-hidden bg-primary"
+        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] rounded-b-group overflow-hidden bg-night"
       >
         {!bgImage && !athleteImage && <CourtBackdrop />}
 

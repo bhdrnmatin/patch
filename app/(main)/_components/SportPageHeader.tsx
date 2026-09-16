@@ -48,7 +48,7 @@ export default function SportPageHeader({
     <>
       <header
         ref={ref}
-        className={`hero-collapse ${days ? "hero-collapse-dates" : ""} fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group overflow-hidden`}
+        className={`hero-collapse ${days ? "hero-collapse-dates" : ""} fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-night rounded-b-group overflow-hidden`}
       >
         {/* Art: the drawn court by default, the photo pair when one is passed.
             Figma's photo geometry (414px backdrop anchored left in a 390 frame)

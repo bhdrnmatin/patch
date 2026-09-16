@@ -15,10 +15,11 @@ interface Props {
 export default function DateCell({ day, weekday, selected, past, tone = "glass", onClick }: Props) {
   const skin =
     tone === "glass"
-      ? // Selected is the one dark cell. Past used to be dark glass too, so the
-        // strip opened with two "selected" days before anything was tapped.
+      ? // Over the night photo: near-white cells so they don't go grey, the
+        // brand blue for the one selected day, and past days faded rather than
+        // dark — dark glass used to read as a second selection.
         `border-white/15 backdrop-blur-[2px] ${
-          selected ? "bg-ink text-white" : past ? "bg-white/60 text-ink-soft opacity-50" : "bg-white/60 text-ink-soft"
+          selected ? "bg-primary text-white" : past ? "bg-white/85 text-ink-soft opacity-50" : "bg-white/85 text-ink-soft"
         }`
       : selected
         ? "border-primary bg-primary text-white"

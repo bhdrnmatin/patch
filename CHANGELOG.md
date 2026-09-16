@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — a night court photo behind every hero
+- [Header] **All five heroes show `/images/hero-court.webp`** instead of the drawn SVG court, carrying
+  the login/OTP night photography into the app. `CourtBackdrop` holds it at the open height, anchored
+  top, so collapsing clips it (the bar keeps the sky) rather than re-cropping into the racket.
+- [Header] Readability over the photo: headers fall back to `bg-night`; `IconButton` `bg-black/16` →
+  `/40`; glass `DateCell` `bg-white/60` → `/85`, with the selected day in `bg-primary`.
+- [Header] Collapsed dated hero is 140px (was 146): a 10px gap between the buttons and the strip.
+- [Auth] The navy-canvas rule is `body:has(.auth-night)` now — keyed to `bg-night` it would have
+  painted every hero page's canvas navy once the heroes used the token.
+
 ### 2026-09-16 — list-page header polish
 - [Header] **Past days no longer look selected.** Glass `DateCell` drew past days as dark glass, so the
   strip opened with two "selected" cells. Past is now the light cell at 50% opacity, and selected is

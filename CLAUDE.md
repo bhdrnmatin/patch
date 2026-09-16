@@ -42,7 +42,7 @@ to revive it. The art directions also live on `feat/onboarding-drawn-art` and
 - `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
 - `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and /tournaments. **Collapses on scroll**: `useCollapseHeader` (`lib/`) writes `--collapse` 0→1 onto it and the `.hero-collapse-*` rules in `globals.css` shrink every part. Fixed + a same-height spacer, so the page never reflows
 - Collapsing headers: `SportPageHeader` uses `useCollapseHeader()` (`lib/`) — it writes `--collapse` (0 open → 1 collapsed) onto the header element on a rAF, never through React state. **All the geometry lives in `globals.css`**: `--hero-max`/`--hero-min` on `:root` (+ the `.hero-collapse-dates` modifier for a date strip), and the `.hero-collapse*` rules size the title, buttons and photo off `--collapse`. The hook reads those two properties and derives the scroll range, so a caller can't disagree with the CSS. To add one: `fixed` header with `.hero-collapse`, plus an in-flow `h-[var(--hero-max)]` spacer, and **`.hero-page` on the page root** — the page must scroll ≥204px past the viewport or `--collapse` strands part-way and parks every part mid-transition, and `.hero-page` (`min-height: calc(var(--vvh,100dvh) + var(--hero-max) - var(--hero-min))`) guarantees that regardless of how many rows the API returned. **Pair `.hero-page-dates` with `.hero-collapse-dates`** — a page must reserve its own range, and reserving the deeper one buys scroll the header has finished using, so the content rises into the collapsed bar. Without it /tournaments collapsed and the emptier /matches and /activity did not. `profile/_components/ProfileHero` collapses too since `.hero-page` landed — it was static while the short page could only offer ~60px of scroll. Its avatar straddles the header's bottom edge, so `.hero-collapse-avatar` fades and shrinks it out by the halfway point rather than letting it park on the content below the bar. `matches/[id]/_components/MatchDetailsHeader` collapses too since 2026-09-14 — it reuses `.hero-collapse-actions` for its back button and `.hero-collapse-title` with a fixed `--title-open: 32px` (the match name is user data, so it truncates instead of stepping), and its share/edit pills ride the bottom edge up into that back button, so `.hero-collapse-pills` takes them to **zero scale** by `--collapse` 0.45 — opacity 0 alone stays hit-testable and the invisible pill swallows the tap meant for برگشت. Every hero in the app collapses now
-- `CourtBackdrop` — SVG padel court at night, fills its parent; the default art for every hero.
+- `CourtBackdrop` — the shared night court photo, held at open height; the art for every hero.
   Also exports `heroTitleSize(title)` — the open title size, stepped by length
 - **`--hero-gap` (globals.css):** the inset above every hero — **`env(safe-area-inset-top)`, so 0 in a
   Safari tab and 0 in today's standalone PWA.** Heroes are **flush to the top edge and full-bleed**,
@@ -142,27 +142,31 @@ Grid children are **not** exempt from the flex half: the same `dir="rtl"` flips
 step can just set `dir="rtl"` on their grids and stop thinking about it. A new tile
 component for an RTL grid must do the same.
 
-## Hero header art — the court is drawn, not photographed
+## Hero header art — one night court photo
 
 All five art headers (`/matches`, `/tournaments`, `/activity`, `/matches/[id]`, `/profile`) render
-`CourtBackdrop` — an SVG padel court at night, plus an oversized title. **There is no header
-photography and no scrim.** The sky gradient (`#0A4E92 → #3BA9FF`) carries white title text on its
-own at ~4.5:1; don't add a `from-black/*` overlay back.
+`CourtBackdrop` — since 2026-09-16 a **photo**, `/images/hero-court.webp` (a racket and ball against
+the wall, bottom-left, on a night court), shared by all five, plus an oversized white title. It
+continues the night photos on login/OTP. The drawn SVG court it replaced is in git history.
 
-Two rules this replaced a photo pipeline to satisfy:
-- **It scales, it doesn't crop.** `preserveAspectRatio="none"` is deliberate — the court squashes
-  with a collapsing header. The old photo re-cropped into a sliver of an athlete's legs past
-  `--collapse` ~0.5.
-- **The title is the subject.** `heroTitleSize()` steps the open size 62 / 54 / 44px by glyph count
-  (ZWNJ doesn't count) so the longest title clears the left gutter; `.hero-collapse-title` reads it
-  as `--title-open` and lands at 19px. `/matches/[id]` is the exception — the match name is user data,
-  so it truncates at a fixed 32px instead of stepping.
+Rules the photo was generated and placed to satisfy:
+- **It clips, it doesn't re-crop.** The image is held at the *open* height (`--hero-max`) and anchored
+  top, so a collapsing header only clips its bottom and the bar keeps the dark sky. Never give it
+  `h-full` — `object-cover` would re-crop into the racket as the header shrinks (why photos were
+  dropped the first time).
+- **Its zones are the header's zones.** Racket bottom-left under the filter/sort buttons, calm right
+  half for the title, plain turf behind the date strip, empty sky on top. A replacement image must
+  keep that layout; the generation prompt is in `_designer/session-state.md` (2026-09-16).
+- **No scrim.** The photo is dark enough for white titles; don't add a `from-black/*` overlay.
+- Headers use `bg-night` as the fallback while the photo loads. The login/OTP canvas rule is scoped
+  to `.auth-night`, **not** `bg-night`, or every page with a hero would paint its canvas navy.
+- `heroTitleSize()` still steps the open title 62 / 54 / 44px by glyph count; `/matches/[id]`
+  truncates at a fixed 32px (user data).
+- Over the photo, `IconButton` is `bg-black/40` and glass `DateCell`s are `bg-white/85` with a
+  `bg-primary` selection — the lighter values vanished against it.
 
-The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still work and restore the old
-layered path, scrim included. If you use them, the no-ghost rule applies: the **backdrop must be
-subject-free**, or the sharp subject must sit exactly over its blurred self — when a Figma backdrop
-bakes the subject in, pre-bake one opaque image at Figma's layer geometry rather than passing a
-transparent cutout over it (→ offset ghost).
+The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still restore the old layered
+cutout path, scrim included; the no-ghost rule applies if you use them.
 
 ## Design Tokens
 

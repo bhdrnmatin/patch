@@ -1,59 +1,31 @@
 /**
- * Header art: a padel court at night, drawn rather than photographed.
+ * Header art for all five heroes: a night padel court photo
+ * (`/images/hero-court.webp`, 1280×853), one shared image rather than one per
+ * page — the titles already tell the pages apart.
  *
- * Replaces the blurred-backdrop + sharp-cutout image pair the art headers used
- * to layer. Vector, so it compresses with a collapsing header instead of
- * object-cover re-cropping into a face — which is what made the photo unusable
- * once `--collapse` passed ~0.5. `preserveAspectRatio="none"` is deliberate:
- * the court is meant to squash with the header, not letterbox inside it.
+ * It replaced a drawn SVG court on 2026-09-16 (user decision, to continue the
+ * night photos on login/OTP). The reason photos were dropped before was that
+ * `object-cover` re-cropped them into a sliver of an athlete as the header
+ * collapsed. This one can't: it is held at the *open* height and anchored to
+ * the top, so collapsing only clips its bottom away and the bar keeps the dark
+ * sky. The composition was generated around the header's zones — racket
+ * bottom-left under the buttons, calm right half for the title, plain turf
+ * behind the date strip.
  *
- * Geometry is one head-on perspective — far edge 162→228 at y=104, near edge
- * -150→540 at y=330, both cropped by the 390×276 frame. The net sits at y=139,
- * the service line at y=200. The sky gradient (#0A4E92 → #3BA9FF) is what
- * carries white title text; there is no black scrim over this.
- *
- * Gradient ids are static — only one art header renders per page.
+ * Nudged up 1rem (and grown by the same) so the ball sits mostly above the date
+ * strip; it still tucks ~5px behind the first cell. Clearing it fully needs a
+ * ~57px zoom, which crops the racket off the left edge — not worth it. `bg-night` shows while
+ * the photo loads, the same navy as its shadows.
  */
 export default function CourtBackdrop() {
   return (
-    <svg
-      viewBox="0 0 390 276"
-      preserveAspectRatio="none"
-      aria-hidden
-      focusable="false"
-      className="absolute inset-0 h-full w-full"
-    >
-      <defs>
-        <linearGradient id="court-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0A4E92" />
-          <stop offset=".55" stopColor="#2489E4" />
-          <stop offset="1" stopColor="#3BA9FF" />
-        </linearGradient>
-        <linearGradient id="court-surface" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity=".20" />
-          <stop offset=".7" stopColor="#fff" stopOpacity=".05" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="court-floodlight" cx=".5" cy=".16" r=".62">
-          <stop offset="0" stopColor="#BFE4FF" stopOpacity=".32" />
-          <stop offset="1" stopColor="#BFE4FF" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      <rect width="390" height="276" fill="url(#court-sky)" />
-      <ellipse cx="195" cy="34" rx="250" ry="110" fill="url(#court-floodlight)" />
-      <path d="M162 104 L228 104 L540 330 L-150 330 Z" fill="url(#court-surface)" />
-
-      {/* Side walls, centre line, service line */}
-      <line x1="162" y1="104" x2="-150" y2="330" stroke="#fff" strokeWidth="1.5" opacity=".4" />
-      <line x1="228" y1="104" x2="540" y2="330" stroke="#fff" strokeWidth="1.5" opacity=".4" />
-      <line x1="195" y1="104" x2="195" y2="330" stroke="#fff" strokeWidth="1" opacity=".18" />
-      <line x1="30" y1="200" x2="360" y2="200" stroke="#fff" strokeWidth="1.2" opacity=".24" />
-
-      {/* Net */}
-      <rect x="99" y="139" width="193" height="11" fill="#fff" opacity=".12" />
-      <line x1="99" y1="139" x2="292" y2="139" stroke="#fff" strokeWidth="1.5" opacity=".5" />
-    </svg>
+    <div aria-hidden className="absolute inset-0 bg-night">
+      <img
+        src="/images/hero-court.webp"
+        alt=""
+        className="absolute inset-x-0 -top-4 h-[calc(var(--hero-max)+1rem)] w-full max-w-none object-cover"
+      />
+    </div>
   );
 }
 

@@ -38,7 +38,7 @@ export default function ProfileHero({ bgSrc, athleteSrc }: Props) {
           block below (which is z-10). */}
       <header
         ref={ref}
-        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-primary rounded-b-group"
+        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] bg-night rounded-b-group"
       >
         {/* Art layer — clipped so the images stay inside the rounded header
             while the avatar below is free to hang over its bottom edge. */}

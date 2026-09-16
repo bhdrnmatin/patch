@@ -16,7 +16,7 @@ interface AuthSlideProps {
 export default function AuthSlide({ backgroundImage, objectPosition = "50% 50%", pinTop, children }: AuthSlideProps) {
   return (
     <div className="relative w-full min-h-[var(--vvh,100dvh)] overflow-hidden">
-      {pinTop && <div className="fixed inset-0 bg-night" />}
+      {pinTop && <div className="auth-night fixed inset-0 bg-night" />}
       {/* fixed, not absolute. Absolute sized the art to the slide, and the slide
           is min-h:var(--vvh) — so the moment the keyboard opened, the art shrank
           with it. Chrome reports the post-keyboard visualViewport height on the

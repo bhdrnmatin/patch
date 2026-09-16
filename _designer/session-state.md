@@ -29,6 +29,25 @@ the phone at session start.
   border, phone icon. `body:has(.bg-night)` paints the canvas navy so Android's nav bar isn't white.
   User confirmed all of it on the phone.
 
+- **All five heroes are a photo now** (`CourtBackdrop` → `/images/hero-court.webp`), replacing the
+  drawn court. Held at open height and anchored top so the collapse clips instead of re-cropping.
+  Around it: `bg-night` fallback, `IconButton` `bg-black/40`, glass `DateCell` `bg-white/85` with a
+  `bg-primary` selection and faded past days, filter/sort glyphs from the mockup, collapsed dated hero
+  140px (10px gap — 130 looked stuck, 146 too loose). The login canvas rule moved to `.auth-night`.
+  Generated in two passes; the second was an edit of the first. For a replacement, generate at
+  1536×1024 with:
+
+  > Wide cinematic photograph of an outdoor padel court at night, 3:2 landscape, 1536x1024. A dark
+  > matte padel racket leans against the glass-and-mesh side wall in the lower-left, a fluorescent
+  > yellow-green padel ball at its base, both inside the left 30% of the width; the top of the handle
+  > at ~45% of the height, the bottom of the ball above 75%. Clean regular pattern of round, evenly
+  > spaced holes on the racket face. Top-left corner (left 35%, top 38%) calm and dark. Right half,
+  > especially 30–60% height, clean and evenly lit: out-of-focus net and fence far back, no lights or
+  > hard edges. Top 25% a smooth dark deep-blue sky. Moody premium sports photography, shallow depth
+  > of field, monochrome blue (#0A2A5E shadows to #1E6FD9), blue turf; the ball is the only non-blue
+  > colour. No text, logos, people, decorative curves, light streaks, lens flares or visible floodlights
+  > in the upper half.
+
 ### Worth knowing
 - **DELETE on a match soft-cancels.**
 - **Clearing `.next` under a phone that has the page open** leaves it running old JS against new
