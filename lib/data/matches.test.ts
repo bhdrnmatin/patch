@@ -12,7 +12,9 @@ import { toDetailsStatus, toListItem, toStatus, viewerParticipation, viewerRole 
 import type { MatchResponse } from "../api/types";
 
 const hour = 3600_000;
-const at = (ms: number) => new Date(Date.now() + ms).toISOString();
+// A stored `scheduledAt` for a match really starting `ms` from now — the API
+// copy sits 30 minutes early (API_SHIFT_MS in lib/api/matches.ts).
+const at = (ms: number) => new Date(Date.now() + ms - 0.5 * hour).toISOString();
 
 const m = (over: Partial<MatchResponse> = {}): MatchResponse => ({
   id: "m1",

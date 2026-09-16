@@ -1,9 +1,9 @@
 import { getClubs } from "@/lib/api/clubs";
 import { getAccountId } from "@/lib/api/session";
-import { FORMAT_LABELS, getMatch, listMatches, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
+import { FORMAT_LABELS, getMatch, listMatches, matchStartMs, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import type { MatchParticipantResponse, MatchResponse } from "@/lib/api/types";
 import { dayStrip, jalaliDayMonth } from "@/lib/jalali";
-import { matchList, pickablePlayers } from "@/lib/mock";
+import { pickablePlayers } from "@/lib/mock";
 import type {
   ViewerParticipation,
   ViewerRole,
@@ -40,13 +40,10 @@ export async function getMatchDays(): Promise<DayOption[]> {
  * the level average, and price all arrive after the MVP (user, 2026-09-13).
  * They are left undefined rather than defaulted to 0, so the card can drop the
  * element instead of showing «لول ۰» or a free-entry price tag.
- *
- * Locally created matches still come from the mock, since `createMatch` is not
- * wired (see `lib/api/matches.ts`), so both are concatenated until it is.
  */
 export async function getMatchList(): Promise<MatchListItem[]> {
   const { content } = await listMatches();
-  return [...content.map(toListItem), ...matchList];
+  return content.map(toListItem);
 }
 
 /**
@@ -56,7 +53,7 @@ export async function getMatchList(): Promise<MatchListItem[]> {
  */
 export function toStatus(m: MatchResponse): MatchListItem["status"] {
   if (m.status === "CANCELLED") return "not-held";
-  const endsAt = new Date(m.scheduledAt).getTime() + m.durationHours * 3600_000;
+  const endsAt = matchStartMs(m.scheduledAt) + m.durationHours * 3600_000;
   return endsAt < Date.now() ? "held" : "active";
 }
 
@@ -65,7 +62,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
   return {
     id: m.id,
     // `title` is nullable in the response even though omitting it on create 500s.
-    title: m.title ?? jalaliDayMonth(m.scheduledAt),
+    title: m.title ?? jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     status: toStatus(m),
     players: (m.participants ?? []).map((p) => ({
       // Collapse, don't just trim: the API stores firstName with its trailing
@@ -76,7 +73,7 @@ export function toListItem(m: MatchResponse): MatchListItem {
       avatar: p.photoUrl ?? undefined,
     })),
     capacity: m.capacity,
-    date: jalaliDayMonth(m.scheduledAt),
+    date: jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     day: tehranDateISO(m.scheduledAt),
   };
 }
@@ -112,7 +109,7 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
 
   return {
     id: m.id,
-    title: m.title ?? jalaliDayMonth(m.scheduledAt),
+    title: m.title ?? jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     organizerAccountId: m.organizer.accountId,
     stage: toDetailsStatus(m),
     viewerParticipation: mine.state,
@@ -122,7 +119,7 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     capacity: m.capacity,
     filled: confirmed.length,
     creator: fullName(m.organizer.firstName, m.organizer.lastName),
-    date: jalaliDayMonth(m.scheduledAt),
+    date: jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     timeRange: tehranTimeRange(m.scheduledAt, m.durationHours),
     description: m.description ?? "",
     players: confirmed.map((p) => ({
@@ -193,7 +190,7 @@ export function viewerRole(organizerAccountId: string, viewerAccountId: string |
  */
 export function toDetailsStatus(m: MatchResponse): MatchDetailsStatus {
   if (m.status === "CANCELLED") return "finished";
-  const start = new Date(m.scheduledAt).getTime();
+  const start = matchStartMs(m.scheduledAt);
   const end = start + m.durationHours * 3600_000;
   const now = Date.now();
   if (now < start) return "upcoming";

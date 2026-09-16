@@ -4,18 +4,12 @@ import type {
   League,
   Tournament,
   Court,
-  MatchListItem,
   TournamentListItem,
   MatchDetails,
   ActivitySection,
   MatchPlayer,
 } from "@/lib/types";
 
-
-/** Cards shown on the Matches list page. */
-// Empty on a fresh start so /matches shows the empty state (see EmptyMatches).
-// Sample entries live in git history; createMatch() unshifts new matches here.
-export const matchList: MatchListItem[] = [];
 
 export const players: Player[] = [
   { id: "p1", name: "Sara Ahmadi", avatar: "", sport: ["padel"], skillLevel: "intermediate", location: "Tehran" },

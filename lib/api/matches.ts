@@ -9,8 +9,32 @@ import type {
   PageResponse,
 } from "./types";
 
-/** Tehran is UTC+03:30 — a fixed offset; Iran no longer observes DST. */
-const TEHRAN_OFFSET = "+03:30";
+/**
+ * Iran is UTC+03:30 and observes no DST, so shifting an instant by this and then
+ * reading its UTC parts gives Tehran wall-clock time.
+ */
+const TEHRAN_OFFSET_MS = 3.5 * 3600_000;
+
+/**
+ * **Workaround, not a model of the world.** `POST /matches` checks "on the hour"
+ * against *UTC* minutes, and no Tehran hour has zero UTC minutes, so every slot
+ * the wizard offers is rejected (`_designer/api-findings.md` §0, still true
+ * 2026-09-16). Until the backend validates in Asia/Tehran, a match is stored
+ * this much **earlier** than it really starts — Tehran ۱۸:۰۰ goes up as 14:00Z,
+ * not 14:30Z — and every reader adds it back through `matchStartMs`.
+ *
+ * Earlier rather than later so anything the server times off `scheduledAt`
+ * (the must-be-future check, closing joins) errs early, never after the start.
+ *
+ * ponytail: when the backend fix lands, set this to 0 — but matches created
+ * while it was 30 will then read half an hour early; migrate them or recreate.
+ */
+const API_SHIFT_MS = 30 * 60_000;
+
+/** When the match really starts, in epoch ms — `scheduledAt` with the shift undone. */
+export function matchStartMs(scheduledAt: string): number {
+  return new Date(scheduledAt).getTime() + API_SHIFT_MS;
+}
 
 /**
  * Wizard draft → `POST /matches` body.
@@ -70,25 +94,15 @@ function capacityFor(draft: CreateMatchDraft): number {
 }
 
 /**
- * "2026-09-20" + "18:00" → "2026-09-20T18:00:00+03:30".
- *
- * The offset is not optional: a naive local string comes back as
- * `validation.invalidFormat … java.time.Instant`.
- *
- * **This is currently rejected for every slot the wizard offers.** The API
- * requires zero *UTC* minutes, and Tehran is +03:30, so every local hour lands
- * on :30 UTC. Sending the local hour is still right — the fix belongs on the
- * server, which should validate the hour in the club's own timezone — so this
- * deliberately does not shift the time to make the check pass.
+ * "2026-09-20" + "18:00" (Tehran) → "2026-09-20T14:00:00Z" — the real instant,
+ * 14:30Z, minus `API_SHIFT_MS` so its UTC minutes are zero. A naive local string
+ * is unparseable to the API, which is why this always sends a full instant.
  */
 function toInstant(isoDate: string, time: string): string {
-  // The picker's last slot is 24:00, which is midnight on the following day.
-  if (time === "24:00") {
-    const next = new Date(`${isoDate}T00:00:00Z`);
-    next.setUTCDate(next.getUTCDate() + 1);
-    return `${next.toISOString().slice(0, 10)}T00:00:00${TEHRAN_OFFSET}`;
-  }
-  return `${isoDate}T${time}:00${TEHRAN_OFFSET}`;
+  // The picker's last slot is 24:00; an hour overflow rolls into the next day.
+  const [h, min] = time.split(":").map(Number);
+  const wallAsUtc = Date.UTC(+isoDate.slice(0, 4), +isoDate.slice(5, 7) - 1, +isoDate.slice(8, 10), h, min);
+  return new Date(wallAsUtc - TEHRAN_OFFSET_MS - API_SHIFT_MS).toISOString().replace(".000Z", "Z");
 }
 
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */
@@ -155,32 +169,22 @@ export const FORMAT_LABELS: Record<MatchResponse["format"], string> = {
 };
 
 /**
- * "۱۴:۰۰ الی ۱۵:۰۰" — the match's window in Tehran local time.
- *
- * `scheduledAt` is a UTC instant, so it has to be shifted before the hours mean
- * anything to a player. Iran is a fixed +03:30 with no DST, which is why this is
- * arithmetic rather than an Intl timezone lookup.
- */
-/**
- * Iran is UTC+03:30 and observes no DST, so shifting an instant by this and then
- * reading its UTC parts gives Tehran wall-clock time. Both readers below do
- * exactly that; it lived twice as a bare `3.5 * 3600_000` until 2026-09-14.
- */
-const TEHRAN_OFFSET_MS = 3.5 * 3600_000;
-
-/**
  * The Tehran calendar date of an instant, ISO "YYYY-MM-DD" — what the date
  * strip compares against. Same +3:30 shift as `tehranTimeRange`: a match at
  * 21:00 Tehran is 17:30Z, and reading the UTC date would be right, but one at
  * 02:00 Tehran is 22:30Z the day before, and would land on the wrong cell.
  */
 export function tehranDateISO(scheduledAt: string): string {
-  const d = new Date(new Date(scheduledAt).getTime() + TEHRAN_OFFSET_MS);
+  const d = new Date(matchStartMs(scheduledAt) + TEHRAN_OFFSET_MS);
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * "۱۴:۰۰ الی ۱۵:۰۰" — the match's window in Tehran local time. Arithmetic rather
+ * than an Intl timezone lookup because the offset is fixed.
+ */
 export function tehranTimeRange(scheduledAt: string, durationHours: number): string {
-  const start = new Date(scheduledAt).getTime() + TEHRAN_OFFSET_MS;
+  const start = matchStartMs(scheduledAt) + TEHRAN_OFFSET_MS;
   const end = start + durationHours * 3600_000;
   const hhmm = (ms: number) => {
     const d = new Date(ms);

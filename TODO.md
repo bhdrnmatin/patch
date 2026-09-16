@@ -95,8 +95,8 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       "approval" is what should produce the `JoinRequest` rows the details page already renders, and
       "invite" is what should reject a join that doesn't come through the invite link. In git history
       (`StepSettings.tsx`, `JOIN_METHOD_OPTIONS`).
-- [ ] createMatch stores only a MatchListItem; the details page still renders the shared mock for any id —
-      per-id match storage when the API lands.
+- [ ] createMatch sends **only the match** — picked teammates (mock `pickablePlayers`, no account ids)
+      and phone invites stay in the draft and are dropped on submit.
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
 - [ ] **"از بین بازیکنان پچ" must list only players you have played with** (user decision 2026-09-12),
       not every Patch account — a full directory is unscrollable and lets anyone enumerate users. The
@@ -188,8 +188,8 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 ### Blocked on backend
 - [ ] **`POST /matches` — `scheduledAt` must validate in `Asia/Tehran`, not UTC.** Today the
       "on the hour" check runs on UTC minutes and Iran is +03:30, so no Tehran hour is
-      accepted. Blocks create-match entirely; `lib/api/matches.ts` is written and tested and
-      needs no change once fixed. See `_designer/api-findings.md` §0.
+      accepted. Worked around since 2026-09-16 by storing matches 30 min early (`API_SHIFT_MS`);
+      once fixed, set it to 0 and migrate the matches stored shifted. See `_designer/api-findings.md` §0.
 - [ ] **Enable `matchType: COMPETITIVE`.** رقابتی is greyed out until then — flip
       `COMPETITIVE_ENABLED` in `StepDetails.tsx`.
 - [ ] **A missing `title` must not 500** (open since 2026-08-24). Worked around by always

@@ -62,10 +62,16 @@ assert.equal(draftToCreateRequest(d({ myRole: "captain" })).organizerJoins, fals
 assert.equal(draftToCreateRequest(d({ duration: 60 })).durationHours, 1);
 assert.equal(draftToCreateRequest(d({ duration: 120 })).durationHours, 2);
 
-// scheduledAt carries Tehran's offset — a naive string is unparseable to the API.
-assert.equal(draftToCreateRequest(d()).scheduledAt, "2026-09-20T18:00:00+03:30");
+// scheduledAt is Tehran ۱۸:۰۰ (14:30Z) sent 30 minutes early, so its UTC minutes
+// are zero — the API rejects anything else (API_SHIFT_MS).
+assert.equal(draftToCreateRequest(d()).scheduledAt, "2026-09-20T14:00:00Z");
 // The picker's last slot is midnight, which belongs to the next day.
-assert.equal(draftToCreateRequest(d({ time: "24:00" })).scheduledAt, "2026-09-21T00:00:00+03:30");
+assert.equal(draftToCreateRequest(d({ time: "24:00" })).scheduledAt, "2026-09-20T20:00:00Z");
+// Early-morning slots cross back into the previous UTC day.
+assert.equal(draftToCreateRequest(d({ time: "02:00" })).scheduledAt, "2026-09-19T22:00:00Z");
+// Round trip: what the wizard sends reads back as what the player picked.
+assert.equal(tehranTimeRange(draftToCreateRequest(d()).scheduledAt, 1), "۱۸:۰۰ الی ۱۹:۰۰");
+assert.equal(tehranDateISO(draftToCreateRequest(d({ time: "24:00" })).scheduledAt), "2026-09-21");
 
 // visibility drives joinPolicy now that step ۵ is gone.
 assert.equal(draftToCreateRequest(d({ invite: "public" })).joinPolicy, "OPEN");
@@ -80,17 +86,15 @@ assert.equal(draftToCreateRequest(d({ description: " بیا " })).description, "
 assert.throws(() => draftToCreateRequest(d({ courtId: null })), /missing a court/);
 assert.throws(() => draftToCreateRequest(d({ time: null })), /missing a court/);
 
-// tehranTimeRange: the API stores a UTC instant and Iran is a fixed +03:30, so
-// the hours a player reads are always shifted from what is stored.
-assert.equal(tehranTimeRange("2026-09-27T11:00:00Z", 1), "۱۴:۳۰ الی ۱۵:۳۰");
-assert.equal(tehranTimeRange("2026-09-27T14:30:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
+// tehranTimeRange: stored instant + 30min shift + 3:30 offset = +4:00 on the wire.
+assert.equal(tehranTimeRange("2026-09-27T14:00:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
 // Crossing midnight must not wrap to a negative or a 25th hour.
-assert.equal(tehranTimeRange("2026-09-27T20:30:00Z", 1), "۰۰:۰۰ الی ۰۱:۰۰");
+assert.equal(tehranTimeRange("2026-09-27T20:00:00Z", 1), "۰۰:۰۰ الی ۰۱:۰۰");
 
-// The Tehran date, not the UTC one: 20:30Z is already the 28th in Tehran, and
-// 21:00 Tehran on the 27th is 17:30Z the same day.
-assert.equal(tehranDateISO("2026-09-27T17:30:00Z"), "2026-09-27");
-assert.equal(tehranDateISO("2026-09-27T20:30:00Z"), "2026-09-28");
+// The Tehran date, not the UTC one: 20:00Z is already the 28th in Tehran, and
+// 21:00 Tehran on the 27th is 17:00Z the same day.
+assert.equal(tehranDateISO("2026-09-27T17:00:00Z"), "2026-09-27");
+assert.equal(tehranDateISO("2026-09-27T20:00:00Z"), "2026-09-28");
 
 assert.equal(FORMAT_LABELS.AMERICANO, "آمریکانو");
 assert.equal(FORMAT_LABELS.OPEN_MATCH, "دوستانه");

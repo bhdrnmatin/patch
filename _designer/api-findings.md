@@ -38,6 +38,9 @@ and the "on the hour" rule is applied to the **UTC** minutes:
 | `2026-09-20T14:30:00+03:30` (Tehran ۱۴:۳۰, = 11:00Z) | ✅ 201, stored `11:00:00Z` |
 | `2026-09-20T18:00:00` (no offset) | ❌ 400 `validation.invalidFormat … java.time.Instant` |
 
+**Re-probed 2026-09-16: unchanged.** `2026-09-25T18:00:00+03:30` → 400, `14:30+03:30` → 201 (stored
+`11:00:00Z`). The probe match was DELETEd, which soft-cancels (`status: CANCELLED`), not removes.
+
 **Iran is UTC+03:30, so no Tehran wall-clock hour ever has zero UTC minutes.** Every slot
 the wizard offers (۰۸:۰۰ … ۲۴:۰۰, all on the hour — `StepSchedule.tsx:23`) is rejected, and
 the only times that *are* accepted read as half-past to a user. Courts are booked on the
@@ -47,9 +50,11 @@ hour, so the accepted set is exactly the set nobody wants.
 already sends the offset, so `18:00+03:30` should be accepted unchanged and no client
 change is needed once this lands.
 
-Until then `lib/data/mutations.ts` stays on the mock (user decision 2026-09-12). The
-mapping is written and tested — `lib/api/matches.ts` + `matches.test.ts` — and needs no
-edit when the fix ships.
+**Worked around 2026-09-16 (user decision), create-match is live.** Every match is stored
+30 minutes *early* — Tehran ۱۸:۰۰ goes up as `14:00Z` — and every reader adds it back
+through `matchStartMs` (`API_SHIFT_MS` in `lib/api/matches.ts`). Verified with a real
+create: `14:00Z` → 201, reads back ۱۸:۰۰. When the backend fix ships, set the shift to 0,
+and deal with the matches stored under it: they will read half an hour early.
 
 ### 0b. رقابتی is refused outright
 `matchType: COMPETITIVE` → 400 `مسابقات رقابتی هنوز فعال نشده‌اند`, matching the spec's

@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — creating a match hits the API
+- [API] **`createMatch` posts to `POST /matches`** instead of the in-memory mock, which is gone.
+- [API] **Times are stored 30 minutes early.** The backend still checks "on the hour" in UTC
+  (re-probed today), and no Tehran hour qualifies, so ۱۸:۰۰ goes up as `14:00Z`. `matchStartMs`
+  undoes it for every reader — the time range, the date strip's day, and both status clocks.
+  Earlier, not later, so any server-side timing errs before the start. `API_SHIFT_MS` goes to 0
+  when the backend validates in Asia/Tehran.
+- The three live matches created before this now read 30 minutes later than they did.
+- Match dates (`jalaliDayMonth`) read the Tehran date, not the UTC one — a 02:00 match was a day early.
+- Teammates and phone invites are not sent yet (TODO).
+
 ### 2026-09-14 — the match-details hero collapses too
 
 - **[Match details] `/matches/[id]`'s header now shrinks on scroll like the list pages.** It was the
