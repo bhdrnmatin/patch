@@ -13,7 +13,8 @@ import StepSchedule from "./_components/StepSchedule";
 import StepPlayers from "./_components/StepPlayers";
 import StepReview from "./_components/StepReview";
 import ResumeDraftBar from "./_components/ResumeDraftBar";
-import { getCourtOptions, getPickablePlayers, createMatch } from "@/lib/data";
+import InviteFailures from "./_components/InviteFailures";
+import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
 import type { CreateMatchDraft } from "../../../lib/types";
 
@@ -95,12 +96,20 @@ function CreateMatchContent() {
     appScrollEl()?.scrollTo({ top: 0 });
   };
 
+  // Set only when the match was created but some invites weren't: the wizard
+  // stays put to say which, instead of jumping to a match that hides it.
+  const [created, setCreated] = useState<{ id: string; failedInvites: FailedInvite[] } | null>(null);
+  const openMatch = (id: string) => router.push(`/matches/${id}?role=creator&status=upcoming`);
+
   const { mutate, isPending } = useMutation({
     mutationFn: createMatch,
-    onSuccess: (id) => {
+    onSuccess: (result) => {
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ["matches"] });
-      router.push(`/matches/${id}?role=creator&status=upcoming`);
+      if (result.failedInvites.length > 0) {
+        setCreated(result);
+        appScrollEl()?.scrollTo({ top: 0 });
+      } else openMatch(result.id);
     },
   });
 
@@ -115,9 +124,12 @@ function CreateMatchContent() {
         total={STEP_LABELS.length}
         onClose={() => router.push("/matches")}
       />
-      <div className="mt-4">
-        <StepChips labels={STEP_LABELS} current={step} maxStep={maxStep} onJump={goTo} />
-      </div>
+      {/* Gone once the match exists — there's no step left to jump back to. */}
+      {!created && (
+        <div className="mt-4">
+          <StepChips labels={STEP_LABELS} current={step} maxStep={maxStep} onJump={goTo} />
+        </div>
+      )}
 
       <div className="px-6 pt-4 flex flex-col gap-4">
         {/* Goes as soon as they start filling this one in — whichever match they
@@ -137,11 +149,17 @@ function CreateMatchContent() {
             }}
           />
         )}
-        {step === 0 && <StepDetails draft={draft} patch={patch} />}
-        {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
-        {step === 2 && <StepSchedule draft={draft} patch={patch} />}
-        {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
-        {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
+        {created ? (
+          <InviteFailures failed={created.failedInvites} />
+        ) : (
+          <>
+            {step === 0 && <StepDetails draft={draft} patch={patch} />}
+            {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
+            {step === 2 && <StepSchedule draft={draft} patch={patch} />}
+            {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
+            {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
+          </>
+        )}
         {/* Clearance for the fixed footer, and the marker WizardFooter's scroll
             cue measures against — its top edge is where real content ends. */}
         <div id={WIZARD_END_ID} className="h-[calc(6rem+var(--safe-b))]" aria-hidden />
@@ -153,15 +171,19 @@ function CreateMatchContent() {
           as a blue sliver in the 12px gap, old centred glyph and all.
           `.fixed-bar`'s translateZ only promotes the layer; it doesn't force
           its contents to repaint. */}
-      <WizardFooter
-        key={step > 0 ? "with-back" : "no-back"}
-        nextLabel={isLast ? "تایید و ثبت" : "بعدی"}
-        backLabel={isLast ? "بازگشت" : "قبلی"}
-        onNext={() => (isLast ? mutate(draft) : goTo(step + 1))}
-        nextDisabled={!isStepValid[step](draft)}
-        pending={isPending}
-        onBack={step > 0 ? () => goTo(step - 1) : undefined}
-      />
+      {created ? (
+        <WizardFooter key="created" nextLabel="رفتن به مَچ" onNext={() => openMatch(created.id)} />
+      ) : (
+        <WizardFooter
+          key={step > 0 ? "with-back" : "no-back"}
+          nextLabel={isLast ? "تایید و ثبت" : "بعدی"}
+          backLabel={isLast ? "بازگشت" : "قبلی"}
+          onNext={() => (isLast ? mutate(draft) : goTo(step + 1))}
+          nextDisabled={!isStepValid[step](draft)}
+          pending={isPending}
+          onBack={step > 0 ? () => goTo(step - 1) : undefined}
+        />
+      )}
     </main>
   );
 }

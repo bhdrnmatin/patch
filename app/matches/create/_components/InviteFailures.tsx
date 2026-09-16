@@ -1,0 +1,35 @@
+import { toPersianDigits } from "../../../../lib/persian";
+import type { FailedInvite } from "../../../../lib/data/mutations";
+
+/**
+ * Shown in place of the steps when the match was created but some invites
+ * weren't. The match exists by then, so this is a report, not a form — the way
+ * on is the footer's رفتن به مچ, and the fix is the match's invite link.
+ */
+export default function InviteFailures({ failed }: { failed: FailedInvite[] }) {
+  return (
+    <section className="w-full bg-white border border-edge rounded-group p-4 shadow-card flex flex-col gap-3">
+      {/* LTR wrapper so items-end pins right; dir on the text itself. */}
+      <div className="flex flex-col items-end text-right gap-1">
+        <p dir="rtl" className="text-sm font-bold text-ink">
+          مَچ ثبت شد، اما این دعوت‌ها ارسال نشد
+        </p>
+        <p dir="rtl" className="text-xs text-muted leading-5">
+          می‌توانید از صفحه مَچ با لینک دعوت اضافه‌شان کنید.
+        </p>
+      </div>
+      <ul className="flex flex-col divide-y divide-divider">
+        {failed.map((f) => (
+          <li key={f.phone} className="flex flex-col items-end text-right gap-0.5 py-2">
+            <span dir="ltr" className="text-sm font-bold text-ink-soft">
+              {toPersianDigits(f.phone)}
+            </span>
+            <span dir="rtl" className="text-xs text-danger leading-5">
+              {f.reason}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}

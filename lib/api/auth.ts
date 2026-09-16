@@ -1,5 +1,5 @@
 import { apiFetch } from "./client";
-import { clearSession, getRefreshToken, setTokens } from "./session";
+import { clearSession, getRefreshToken, setPhone, setTokens } from "./session";
 import type { RequestOtpResponse, VerifyOtpResponse } from "./types";
 
 /** Send an OTP code to the phone number. Public (no bearer yet). */
@@ -11,7 +11,7 @@ export function requestOtp(phoneNumber: string): Promise<RequestOtpResponse> {
   });
 }
 
-/** Verify the OTP; on success persists the returned tokens. */
+/** Verify the OTP; on success persists the returned tokens and the phone. */
 export async function verifyOtp(phoneNumber: string, code: string): Promise<VerifyOtpResponse> {
   const tokens = await apiFetch<VerifyOtpResponse>("/otp/verify", {
     method: "POST",
@@ -19,6 +19,7 @@ export async function verifyOtp(phoneNumber: string, code: string): Promise<Veri
     auth: false,
   });
   setTokens(tokens);
+  setPhone(phoneNumber);
   return tokens;
 }
 

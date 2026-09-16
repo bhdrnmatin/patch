@@ -4,6 +4,7 @@ import { toPersianDigits } from "../persian";
 import type { CreateMatchDraft } from "../types";
 import type {
   CreateMatchRequest,
+  InviteDirectResponse,
   MatchParticipantResponse,
   MatchResponse,
   PageResponse,
@@ -108,6 +109,35 @@ function toInstant(isoDate: string, time: string): string {
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */
 export function createMatch(body: CreateMatchRequest): Promise<MatchResponse> {
   return apiFetch<MatchResponse>("/matches", { method: "POST", body });
+}
+
+/**
+ * Invite phone numbers into an existing match. The only invite the API has:
+ * a number that belongs to a Patch account resolves to it (`inviteeAccountId`),
+ * and nobody is on the roster until they accept.
+ */
+export function inviteByPhone(matchId: string, phoneNumbers: string[]): Promise<InviteDirectResponse[]> {
+  return apiFetch<InviteDirectResponse[]>(`/matches/${matchId}/invitations`, {
+    method: "POST",
+    body: { phoneNumbers },
+  });
+}
+
+/** The raw keys `failureMessage` has been seen returning, in words a player reads. */
+const INVITE_FAILURES: Record<string, string> = {
+  "matchmaking.invite.alreadyInvited": "قبلاً به این مچ دعوت شده است.",
+  "matchmaking.invite.alreadyParticipant": "از قبل عضو این مچ است.",
+};
+
+/**
+ * A `failureMessage` fit to show. The Persian ones pass through (with their
+ * Latin digits converted); a raw key is translated, or replaced with a generic
+ * line rather than put on screen as `matchmaking.…`.
+ */
+export function inviteFailureText(message: string | null): string {
+  if (!message) return "دعوت ارسال نشد.";
+  if (/^[\w.]+$/.test(message)) return INVITE_FAILURES[message] ?? "دعوت ارسال نشد.";
+  return toPersianDigits(message);
 }
 
 /** One match, by id. Same shape as create returns, with `participants` filled. */

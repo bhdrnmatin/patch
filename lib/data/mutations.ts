@@ -1,4 +1,10 @@
-import { createMatch as apiCreateMatch, decideParticipant, draftToCreateRequest } from "@/lib/api/matches";
+import {
+  createMatch as apiCreateMatch,
+  decideParticipant,
+  draftToCreateRequest,
+  inviteByPhone,
+  inviteFailureText,
+} from "@/lib/api/matches";
 import type { CreateMatchDraft } from "@/lib/types";
 
 // Write-side seam — the twin of the read accessors in this folder. Callers
@@ -24,14 +30,40 @@ export async function respondToJoinRequest({
   await decideParticipant(matchId, requestId, accept);
 }
 
+/** A phone the wizard couldn't invite, with the reason to show. */
+export interface FailedInvite {
+  phone: string;
+  reason: string;
+}
+
 /**
- * Create a match from the wizard draft; returns the new match id.
+ * Create a match from the wizard draft, then invite its phone numbers.
  *
- * Only the match itself goes up. Teammates are picked from the mock
- * `pickablePlayers`, which have no account ids, and phone invites have no wired
- * endpoint yet — both stay in the draft and are dropped here (see TODO.md).
+ * Invites can only go to a match that exists, so they're a second request, and
+ * a failure there must not read as "the match failed" — it was created. They
+ * come back as `failedInvites` for the wizard to show instead.
+ *
+ * Patch-player teammates aren't sent: the pick list is still the mock, and the
+ * API invites by phone only (asked the backend for account ids; see TODO.md).
  */
-export async function createMatch(draft: CreateMatchDraft): Promise<string> {
+export async function createMatch(
+  draft: CreateMatchDraft,
+): Promise<{ id: string; failedInvites: FailedInvite[] }> {
   const { id } = await apiCreateMatch(draftToCreateRequest(draft));
-  return id;
+
+  const phones = draft.teammates.flatMap((t) => (t.kind === "invite" ? [t.phone] : []));
+  if (phones.length === 0) return { id, failedInvites: [] };
+
+  try {
+    const results = await inviteByPhone(id, phones);
+    const failedInvites = results
+      .filter((r) => !r.success)
+      .map((r) => ({ phone: r.phoneNumber, reason: inviteFailureText(r.failureMessage) }));
+    return { id, failedInvites };
+  } catch {
+    return {
+      id,
+      failedInvites: phones.map((phone) => ({ phone, reason: "دعوت ارسال نشد. اتصال را بررسی کنید." })),
+    };
+  }
 }

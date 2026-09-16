@@ -7,7 +7,7 @@
  * Run: npx tsx lib/api/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { draftToCreateRequest, tehranDateISO, tehranTimeRange, FORMAT_LABELS } from "./matches";
+import { draftToCreateRequest, inviteFailureText, tehranDateISO, tehranTimeRange, FORMAT_LABELS } from "./matches";
 import type { CreateMatchDraft } from "../types";
 
 const base: CreateMatchDraft = {
@@ -98,5 +98,11 @@ assert.equal(tehranDateISO("2026-09-27T20:00:00Z"), "2026-09-28");
 
 assert.equal(FORMAT_LABELS.AMERICANO, "آمریکانو");
 assert.equal(FORMAT_LABELS.OPEN_MATCH, "دوستانه");
+
+// Invite failures: raw keys never reach the screen; Persian passes, digits converted.
+assert.equal(inviteFailureText("matchmaking.invite.alreadyInvited"), "قبلاً به این مچ دعوت شده است.");
+assert.equal(inviteFailureText("matchmaking.invite.somethingNew"), "دعوت ارسال نشد.");
+assert.equal(inviteFailureText("شماره موبایل «0912» معتبر نیست"), "شماره موبایل «۰۹۱۲» معتبر نیست");
+assert.equal(inviteFailureText(null), "دعوت ارسال نشد.");
 
 console.log("createMatch mapping: ok");

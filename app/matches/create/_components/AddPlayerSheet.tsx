@@ -20,6 +20,9 @@ interface Props {
   selectedPlayer: number | null;
   onPickPlayer: (index: number) => void;
   onInvite: (phone: string) => void;
+  /** Why this (valid, Latin) number can't be added, checked when the invite
+   *  button is tapped — e.g. it's your own or another row's. */
+  checkInvite: (phone: string) => string | undefined;
   /** Shown only when the row already holds someone, so it can be removed. */
   onClear?: () => void;
   onClose: () => void;
@@ -43,11 +46,14 @@ export default function AddPlayerSheet({
   selectedPlayer,
   onPickPlayer,
   onInvite,
+  checkInvite,
   onClear,
   onClose,
 }: Props) {
   const [view, setView] = useState<"menu" | "phone" | "players">("menu");
   const [phone, setPhone] = useState("");
+  // Set by tapping افزودن; cleared as soon as the number is edited.
+  const [inviteError, setInviteError] = useState<string>();
 
   // Reset on each open, adjusting state during render rather than in an effect:
   // this component stays mounted (like every other sheet here) so that its
@@ -62,6 +68,7 @@ export default function AddPlayerSheet({
       // the stored Latin number back into that notation.
       setView(invite ? "phone" : selectedPlayer !== null ? "players" : "menu");
       setPhone(invite ? toPersianDigits(invite.phone) : "");
+      setInviteError(undefined);
     }
   }
 
@@ -110,10 +117,13 @@ export default function AddPlayerSheet({
           <TextField
             label="شماره موبایل"
             value={phone}
-            onChange={setPhone}
+            onChange={(v) => {
+              setPhone(v);
+              setInviteError(undefined);
+            }}
             placeholder="۰۹۱۲۳۴۵۶۷۸۹"
             numeric
-            error={phone && !valid ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود." : undefined}
+            error={phone && !valid ? "شماره باید ۱۱ رقم باشد و با ۰۹ شروع شود." : inviteError}
           />
           <p className="text-xs text-muted text-right leading-5" dir="rtl">
             دعوت پس از ثبت مچ پیامک می‌شود.
@@ -123,7 +133,11 @@ export default function AddPlayerSheet({
             <button
               type="button"
               disabled={!valid}
-              onClick={() => onInvite(latin)}
+              onClick={() => {
+                const error = checkInvite(latin);
+                if (error) setInviteError(error);
+                else onInvite(latin);
+              }}
               className="flex-1 h-12 rounded-pill bg-primary text-sm font-bold text-white active:opacity-80 disabled:opacity-40"
               dir="rtl"
             >

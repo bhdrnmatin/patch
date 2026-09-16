@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-16 — phone invites are sent
+- [API] **The wizard's phone invites go out** after the match is created, via
+  `POST /matches/{id}/invitations`. A number on Patch resolves to its account and sits `PENDING`
+  until accepted — it isn't on the roster before then (probed with a second account).
+- **Errors show at the button.** Tapping افزودن/ذخیره refuses your own number («این شماره خودتان
+  است.») and one already in the match («این شماره را قبلاً اضافه کرده‌اید.») — the two failures the
+  server would otherwise report only once the match exists. Your phone is saved at OTP verify for this.
+- **Whatever still fails is listed in the wizard.** The match exists by then, so instead of opening it
+  the wizard shows each number and why, with رفتن به مَچ to continue. Raw keys never reach the screen.
+- «از بین بازیکنان پچ» stays as it was: the API invites by phone only (backend asked for account ids).
+
 ### 2026-09-16 — creating a match hits the API
 - [API] **`createMatch` posts to `POST /matches`** instead of the in-memory mock, which is gone.
 - [API] **Times are stored 30 minutes early.** The backend still checks "on the hour" in UTC

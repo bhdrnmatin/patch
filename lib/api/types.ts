@@ -138,6 +138,15 @@ export interface MatchParticipantResponse {
   phoneNumber?: string;
 }
 
+/** One row of `POST /matches/{id}/invitations` — each phone succeeds or fails alone. */
+export interface InviteDirectResponse {
+  phoneNumber: string;
+  success: boolean;
+  /** Persian for a malformed number, but a raw i18n key for the others
+   *  (`matchmaking.invite.alreadyInvited`) — see `inviteFailureText`. */
+  failureMessage: string | null;
+}
+
 export interface MatchResponse {
   id: string;
   organizer: MatchOrganizerResponse;

@@ -13,6 +13,7 @@ export const DEV_BYPASS_TOKEN = "dev-bypass";
 
 const ACCESS_KEY = "patch.accessToken";
 const REFRESH_KEY = "patch.refreshToken";
+const PHONE_KEY = "patch.phone";
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -49,7 +50,23 @@ export function clearSession(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(ACCESS_KEY);
   window.localStorage.removeItem(REFRESH_KEY);
+  window.localStorage.removeItem(PHONE_KEY);
   emit();
+}
+
+/**
+ * The signed-in user's own mobile, saved at OTP verify. No endpoint returns it
+ * and the JWT doesn't carry it, so a session from before 2026-09-16 has none
+ * until its next login. UI only — it stops you inviting yourself to a match.
+ */
+export function getPhone(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(PHONE_KEY);
+}
+
+export function setPhone(phone: string): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(PHONE_KEY, phone);
 }
 
 export function hasSession(): boolean {

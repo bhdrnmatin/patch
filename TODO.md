@@ -95,13 +95,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       "approval" is what should produce the `JoinRequest` rows the details page already renders, and
       "invite" is what should reject a join that doesn't come through the invite link. In git history
       (`StepSettings.tsx`, `JOIN_METHOD_OPTIONS`).
-- [ ] createMatch sends **only the match** — picked teammates (mock `pickablePlayers`, no account ids)
-      and phone invites stay in the draft and are dropped on submit.
+- [ ] createMatch sends the match and its **phone invites**, but not picked Patch players — the pick
+      list is the mock, and the API invites by phone only. Kept visible (user decision 2026-09-16)
+      while the backend adds account ids; see "Blocked on backend".
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
 - [ ] **"از بین بازیکنان پچ" must list only players you have played with** (user decision 2026-09-12),
       not every Patch account — a full directory is unscrollable and lets anyone enumerate users. The
-      sheet's copy says this already; `getPickablePlayers` still returns the mock. Blocked on an
-      endpoint for the current player's previous teammates — the API has no player lookup at all.
+      sheet's copy says this already; `getPickablePlayers` still returns the mock.
+      `GET /matches/invitations/suggestions` now returns exactly that list (accountId + name + photo,
+      no phone), so reading is unblocked — sending is not, see "Blocked on backend".
 - [x] Phone invites no longer ask for a name — **done 2026-09-12**, the number is the identity and is
       what the roster, review and team preview display.
 
@@ -135,9 +137,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       the iOS URL-bar resize, neither of which headless reproduces.
 
 ### Add-player rework (2026-08-08)
-- [ ] Phone invites are collected into the draft (`TeammateSlot = {kind:"invite", phone}`) but never
-      sent — there's no invite endpoint. `createMatch` deliberately leaves invited numbers out of the
-      roster until they accept. Wire the SMS invite when the API ships.
+- [x] Phone invites are sent — **done 2026-09-16**, `POST /matches/{id}/invitations` right after the
+      create. Own number and duplicates are refused at the sheet's button; anything the server still
+      rejects is listed on the wizard (`InviteFailures`) before رفتن به مَچ. The own-number check needs
+      `patch.phone`, saved at OTP verify, so sessions from before that skip it until next login.
 - [ ] The invite link is just the match URL, so it only exists **after** creation (`ShareCard` on
       `/matches/[id]`). If invites need to go out from inside the wizard, the backend has to mint a
       draft/pending-match token first.
@@ -190,6 +193,11 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       "on the hour" check runs on UTC minutes and Iran is +03:30, so no Tehran hour is
       accepted. Worked around since 2026-09-16 by storing matches 30 min early (`API_SHIFT_MS`);
       once fixed, set it to 0 and migrate the matches stored shifted. See `_designer/api-findings.md` §0.
+- [ ] **Invite by account id** — `POST /matches/{id}/invitations` takes `phoneNumbers` only
+      (`accountIds` → 400 `phoneNumbers must not be empty`), and suggestions carry no phone, so a
+      player picked from «از بین بازیکنان پچ» can't be invited. Asked 2026-09-16.
+- [ ] **Translate invite `failureMessage` keys** — `alreadyInvited`/`alreadyParticipant` come back raw;
+      `inviteFailureText` maps the two we've seen and hides any other.
 - [ ] **Enable `matchType: COMPETITIVE`.** رقابتی is greyed out until then — flip
       `COMPETITIVE_ENABLED` in `StepDetails.tsx`.
 - [ ] **A missing `title` must not 500** (open since 2026-08-24). Worked around by always

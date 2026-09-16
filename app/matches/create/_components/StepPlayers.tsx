@@ -7,6 +7,7 @@ import AddPlayerSheet from "./AddPlayerSheet";
 import OptionSheet from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
 import { toPersianDigits } from "../../../../lib/persian";
+import { getPhone } from "../../../../lib/api/session";
 import { MAX_TEAMMATES, type CreateMatchDraft, type MatchPlayer, type Teammate } from "../../../../lib/types";
 
 const ROLE_OPTIONS: RadioCardOption[] = [
@@ -154,6 +155,15 @@ export default function StepPlayers({ draft, patch, players }: Props) {
             else setRow(activeRow, { kind: "player", index: playerIndex });
           }
           closeSheets();
+        }}
+        checkInvite={(phone) => {
+          // Both of these would come back from the API as a failed invite, but
+          // only after the match exists — catch them while they can still be fixed.
+          if (phone === getPhone()) return "این شماره خودتان است.";
+          const taken = draft.teammates.some(
+            (t, i) => i !== activeRow && t.kind === "invite" && t.phone === phone,
+          );
+          if (taken) return "این شماره را قبلاً اضافه کرده‌اید.";
         }}
         onInvite={(phone) => {
           if (activeRow !== null) setRow(activeRow, { kind: "invite", phone });
