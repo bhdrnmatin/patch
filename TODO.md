@@ -261,3 +261,12 @@ Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. A
       list). Roving focus used instead of `aria-activedescendant`. Verified 2026-08-03.
 - [ ] Minor (suggestions): AuthGuard blank-flash loader; LogoutRow `aria-busy`; `aria-controls` on the
       dropdown triggers. Details in _designer/audits/.
+
+## Hero/list visual pass — 2026-09-16
+- [ ] **Delete the dead photo-cutout props** on `SportPageHeader` (`bgImage`/`athleteImage`),
+      `MatchDetailsHeader` (same) and `ProfileHero` (`bgSrc`/`athleteSrc`), plus their scrim branches.
+      No caller passes them; `CourtBackdrop` is the only art path. CLAUDE.md's hero section mentions
+      them — drop that paragraph too.
+- [ ] The ball in `hero-court.webp` tucks ~5px behind the first date cell. Clearing it needs a ~57px
+      zoom that crops the racket, so it's accepted; revisit only with a re-framed photo.
+- [ ] Past-day date cells look grey in the collapsed bar over the photo — minor, raised by me, not the user.

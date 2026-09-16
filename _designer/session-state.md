@@ -1,7 +1,7 @@
 # Session State
 
-## Session — 2026-09-16: create-match goes live, and phone invites with it
-Four commits on `main`, plus the LAN-IP one. The match-details collapse from 09-14 was confirmed on
+## Session — 2026-09-16: create-match goes live, phone invites, and a visual pass
+All pushed to both remotes (head `2cd250d`). The match-details collapse from 09-14 was confirmed on
 the phone at session start.
 
 - **The UTC-hour bug is still there** (re-probed: `18:00+03:30` → 400, `14:30+03:30` → 201). User
@@ -59,6 +59,15 @@ the phone at session start.
   rotated pair back and the CLI session survived all three.
 - Dev server was started with `next dev -p 3000`; phone URL `http://192.168.1.45:3000`.
 - **Invites send real SMS** (unverified for non-Patch numbers). Test only with the two own accounts.
+
+- **Later the same day, visual pass on the list pages** (all from user mockups, checked on the phone):
+  date strip — navy selected day with a **lime `accent` (`#C7F000`, the ball)** 1px border + dot,
+  past days grey *text* on an opaque cell (opacity let the photo through the digits); the «جاری»
+  badge gets the lime dot; filter/sort glyphs; the photo re-lit from night to daylight blue (user:
+  keep the bright palette, change the photo). Match cards: club added to the meta row (centred),
+  chevron CTA, 16px page gutters, 12px between cards.
+- **Tried and reverted by the user:** a subtitle under «مچ‌های روز»; a compact card that swapped the
+  player grid for an organizer byline; the mockup's navy CTA (declined up front — brand blue stays).
 
 ### Next
 - **Ask backend:** invite by `accountIds`; Persian `failureMessage` instead of raw keys; the UTC-hour
