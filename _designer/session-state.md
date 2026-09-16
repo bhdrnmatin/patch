@@ -24,8 +24,15 @@ the phone at session start.
   (now the server's message above the footer), and **past hours today were pickable** (now
   `isSchedulable` greys them and gates step ۳).
 
+- **Login/OTP redesigned from the user's mockup** — night photos (PATCH wordmark + tagline baked in)
+  pinned top via `AuthSlide pinTop`, rounded-square fields/OTP boxes (`rounded-field` 14px), card
+  border, phone icon. `body:has(.bg-night)` paints the canvas navy so Android's nav bar isn't white.
+  User confirmed all of it on the phone.
+
 ### Worth knowing
-- **DELETE on a match soft-cancels.** Every probe match this session is `CANCELLED`, not gone.
+- **DELETE on a match soft-cancels.**
+- **Clearing `.next` under a phone that has the page open** leaves it running old JS against new
+  HTML: the phone field showed digits but ادامه never enabled. A reload fixed it — not an app bug. Every probe match this session is `CANCELLED`, not gone.
 - **The phone's login is a separate token chain** from `.api-session.json` — testing on the phone
   doesn't kill the terminal session. Only sharing one pair does (see memory). Headless runs wrote the
   rotated pair back and the CLI session survived all three.

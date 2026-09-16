@@ -10,5 +10,10 @@
 ## v2 — 2026-06-03 | refactor
 Added `aria-hidden="true"` — OtpInput's hidden inputs handle all interaction and screen reader state.
 
+## v-next — 2026-09-16 | change review
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| n1 | Note | Rounded square (`rounded-field`), sized by `OtpInput`'s `max-w-[52px] aspect-square` cells, which shrink on narrow phones instead of overflowing. `scripts/otp-webkit.mjs` 12/12 after the change | Clean |
+
 ### Status
 Open: 0 | Fixed: 1 | Accepted: 3

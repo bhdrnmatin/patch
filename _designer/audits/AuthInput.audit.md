@@ -23,5 +23,10 @@ Regression check vs v2: findings #1–7 still clean (label/id, forwardRef, name,
 |---|----------|---------|--------|
 | 8 | Suggestion | `persianOnly` filter uses `onChange` + `compositionend` + imperative `e.target.value` reset to survive Android/Gboard composition. Pragmatic and sound; per-keystroke masking on mobile IMEs is inherently best-effort (submit-time guard in profile-setup backs it up). | Accepted — documented mobile fix |
 
+## v-next — 2026-09-16 | change review
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| n1 | Note | `icon` prop (decorative, `pointer-events-none`, icon SVG `aria-hidden`); `numeric` fields are now `dir="ltr"` so digits start after the icon; radius → `rounded-field`. Only `/login` passes `numeric`/`icon` | Clean |
+
 ### Status
 Open: 0 | Fixed: 5 | Accepted: 3
