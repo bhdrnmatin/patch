@@ -15,7 +15,7 @@ const NESHAN_API_KEY = process.env.NESHAN_API_KEY ?? "";
 const nextConfig: NextConfig = {
   // LAN IPs allowed to load dev resources (phones on the local network).
   // Add your machine's current LAN IP here if it changes (DHCP).
-  allowedDevOrigins: ["192.168.1.36", "192.168.1.44", "10.59.1.155", "172.20.10.2", "10.64.123.155"],
+  allowedDevOrigins: ["192.168.1.36", "192.168.1.44", "192.168.1.45", "10.59.1.155", "172.20.10.2", "10.64.123.155"],
   output: "standalone",
   // There is no discover page — BottomNav's tabs are /matches, /clubs,
   // /activity and /profile. Redirect here rather than from the page so the
