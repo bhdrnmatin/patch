@@ -249,7 +249,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [ ] `/activity` shows **invitations only**. Join requests you have sent, matches you are in and
       results waiting on you are all plausible sections — none has an endpoint that serves the
       viewer's own rows yet.
-- [ ] Wire `/activity` into BottomNav (nav has 4 tabs + add; no Activity slot — page shows no active tab).
+- [x] **`/activity` in the BottomNav — done 2026-09-19.** The tab was there all along, labelled
+      «کاوش» from when the page was a mock discovery feed; renamed «فعالیت‌ها», and its red dot is
+      real now — `getUnreadCounts` counts the invitations waiting for an answer. Every other route
+      still has no notifications source.
 ### Refactor candidates
 - [x] ActivityCard (Warning): card title `<span>`s → **fixed 2026-06-17**: wrapped in `<h3>`.
 - [x] ActivityCard: `rounded-3xl` → `rounded-group` token — **fixed 2026-06-17**.

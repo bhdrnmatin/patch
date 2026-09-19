@@ -1,7 +1,17 @@
-// Unread notification counts keyed by route — drives the red dot on the
-// BottomNav tabs. Empty today (no notifications backend yet); when the API (or
-// a websocket) exists, swap the body for the real source. The query key and
-// callers don't change.
+import { getMyInvitations } from "@/lib/api/matches";
+
+/**
+ * Unread counts keyed by route — the red dot on the BottomNav tabs.
+ *
+ * Only `/activity` has a real source: the invitations waiting for an answer,
+ * which is what that page shows. There is no notifications backend, so every
+ * other route stays silent rather than inventing a number.
+ *
+ * A failure is not worth a broken nav on every page, so it counts as zero.
+ */
 export async function getUnreadCounts(): Promise<Record<string, number>> {
-  return {};
+  const pending = await getMyInvitations()
+    .then(({ content }) => content.filter((i) => i.status === "PENDING").length)
+    .catch(() => 0);
+  return pending > 0 ? { "/activity": pending } : {};
 }

@@ -115,7 +115,9 @@ const addActions: AddAction[] = [
 const tabs: Tab[] = [
   { href: "/matches", Icon: MatchesIcon, label: "مَچ‌ها" },
   { href: "/clubs", Icon: CupIcon, label: "باشگاه‌ها", comingSoon: true },
-  { href: "/activity", Icon: DiscoverIcon, label: "کاوش" },
+  // «کاوش» until 2026-09-19, when the page stopped being a mock feed and became
+  // the invitations sent to you — the tab's name should say what is behind it.
+  { href: "/activity", Icon: DiscoverIcon, label: "فعالیت‌ها" },
   { href: "/profile", Icon: ProfileIcon, label: "پروفایل" },
 ];
 
