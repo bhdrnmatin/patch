@@ -354,6 +354,9 @@ opposed to what its spec claims — is recorded in
   mapping floors the roster at 4.
 - [x] **Phone invites are sent (2026-09-16)** — `POST /matches/{id}/invitations` right after create. A
   number on Patch resolves to its account (`inviteeAccountId`) and stays `PENDING` until accepted.
+- [x] **Both status enums are declared (2026-09-19)** — `MatchStatus` and `ParticipantStatus` are
+  types now. Fixed two bugs they exposed: `AUTO_CANCELLED` read as a live match, and the list card
+  counted rejected/left/kicked rows as players.
 - [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
   out of `participants` until accepted; the design has no pending state either.
 - [x] **«از بین بازیکنان پچ» sends — live 2026-09-19.** The suggestions now carry `phoneNumber`,

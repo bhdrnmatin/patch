@@ -88,6 +88,24 @@ export type ApiMatchType = "FRIENDLY" | "COMPETITIVE";
 export type ApiVisibility = "PUBLIC" | "PRIVATE";
 export type ApiJoinPolicy = "OPEN" | "MANUAL_APPROVE" | "INVITE_LINK_ONLY";
 
+/**
+ * Declared by the backend on 2026-09-19, after four months as a bare `string`
+ * in the spec (api-findings §0d). There is no LIVE — a match in progress is
+ * still OPEN — so the live/upcoming split stays arithmetic on `scheduledAt`.
+ * `AUTO_CANCELLED` is the one nobody had seen: a match the server cancelled
+ * itself, and it counts as cancelled everywhere `CANCELLED` does.
+ */
+export type ApiMatchStatus = "OPEN" | "FINISHED" | "CANCELLED" | "AUTO_CANCELLED";
+
+/** Declared 2026-09-19 with the above. Only CONFIRMED is on the court; only
+ *  REQUESTED is waiting to be. REJECTED, LEFT and KICKED are all out. */
+export type ApiParticipantStatus =
+  | "CONFIRMED"
+  | "REQUESTED"
+  | "REJECTED"
+  | "LEFT"
+  | "KICKED";
+
 export interface CreateMatchRequest {
   format: ApiMatchFormat;
   matchType: ApiMatchType;
@@ -121,12 +139,8 @@ export interface MatchParticipantResponse {
   id: string;
   matchId: string;
   accountId: string;
-  /**
-   * Declared as a bare string. Only "CONFIRMED" has been observed on the live
-   * API (2026-09-14) — the pending value is unknown, which is why join requests
-   * are not mapped yet. Ask the backend to declare the enum.
-   */
-  status: string;
+  /** Declared 2026-09-19; see `ApiParticipantStatus`. */
+  status: ApiParticipantStatus;
   /** e.g. "OPEN" — how they got in. Also undeclared. */
   joinChannel: string;
   requestedAt: string;
@@ -177,7 +191,8 @@ export interface MatchResponse {
   durationHours: number;
   visibility: ApiVisibility;
   joinPolicy: ApiJoinPolicy;
-  status: string;
+  /** Declared 2026-09-19; see `ApiMatchStatus`. */
+  status: ApiMatchStatus;
   inviteToken: string | null;
   /** null on create; populated by `GET /matches/{id}`. */
   participants: MatchParticipantResponse[] | null;

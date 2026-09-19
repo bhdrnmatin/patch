@@ -9,7 +9,7 @@
  */
 import assert from "node:assert/strict";
 import { toDetailsStatus, toListItem, toStatus, viewerParticipation, viewerRole } from "./matches";
-import type { MatchResponse } from "../api/types";
+import type { MatchParticipantResponse, MatchResponse } from "../api/types";
 
 const hour = 3600_000;
 // A stored `scheduledAt` for a match really starting `ms` from now — the API
@@ -36,18 +36,22 @@ const m = (over: Partial<MatchResponse> = {}): MatchResponse => ({
   ...over,
 });
 
-// status: only CANCELLED is trusted by name; the rest comes off the clock,
-// so an undocumented enum value can't silently mislabel a card.
+// status: the enum was declared 2026-09-19 (OPEN/FINISHED/CANCELLED/AUTO_CANCELLED).
+// Both cancelled values read the same; OPEN carries no LIVE, so held vs active is
+// still the clock's answer.
 assert.equal(toStatus(m({ status: "CANCELLED" })), "not-held");
+assert.equal(toStatus(m({ status: "AUTO_CANCELLED" })), "not-held",
+  "the server cancelling counts as cancelled — it read as a live match before 2026-09-19");
+assert.equal(toStatus(m({ status: "FINISHED", scheduledAt: at(24 * hour) })), "held",
+  "FINISHED outranks the clock");
 assert.equal(toStatus(m({ scheduledAt: at(24 * hour) })), "active", "future");
 assert.equal(toStatus(m({ scheduledAt: at(-24 * hour) })), "held", "well past");
 assert.equal(toStatus(m({ scheduledAt: at(-0.5 * hour), durationHours: 1 })), "active",
   "still being played — start is past but the hour has not elapsed");
-assert.equal(toStatus(m({ status: "SOMETHING_NEW" })), "active",
-  "an unknown status must not throw or mislabel");
+assert.equal(toStatus(m({ status: "OPEN", scheduledAt: at(24 * hour) })), "active");
 
 // The API stores firstName with a trailing space, so a naive join double-spaces.
-const participant = (over = {}) => ({
+const participant = (over: Partial<MatchParticipantResponse> = {}): MatchParticipantResponse => ({
   id: "p1",
   matchId: "m1",
   accountId: "a1",
@@ -63,6 +67,22 @@ const participant = (over = {}) => ({
 
 const withPlayer = toListItem(m({ participants: [participant()] }));
 assert.equal(withPlayer.players[0].name, "متین بهادران");
+// The card's roster is CONFIRMED only. Until the enum was declared this mapped
+// every row, so someone rejected, gone or removed was drawn as a player.
+assert.deepEqual(
+  toListItem(
+    m({
+      participants: [
+        participant({ id: "p1", status: "CONFIRMED", firstName: "متین ", lastName: "بهادران" }),
+        participant({ id: "p2", status: "REQUESTED" }),
+        participant({ id: "p3", status: "REJECTED" }),
+        participant({ id: "p4", status: "LEFT" }),
+        participant({ id: "p5", status: "KICKED" }),
+      ],
+    }),
+  ).players.map((p) => p.name),
+  ["متین بهادران"],
+);
 assert.equal(withPlayer.club, undefined, "no club when the lookup did not resolve one");
 assert.equal(toListItem(m(), "پدل‌پوینت").club, "پدل‌پوینت");
 
@@ -88,8 +108,10 @@ assert.equal(toDetailsStatus(m({ scheduledAt: at(-0.5 * hour), durationHours: 1 
 assert.equal(toDetailsStatus(m({ scheduledAt: at(-3 * hour), durationHours: 1 })), "finished");
 assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(2 * hour) })), "finished",
   "cancelled outranks the clock — there is nothing left to do with it");
-assert.equal(toDetailsStatus(m({ status: "WHATEVER", scheduledAt: at(2 * hour) })), "upcoming",
-  "an unknown status must not throw or mislabel");
+assert.equal(toDetailsStatus(m({ status: "AUTO_CANCELLED", scheduledAt: at(2 * hour) })), "finished",
+  "same as CANCELLED");
+assert.equal(toDetailsStatus(m({ status: "FINISHED", scheduledAt: at(2 * hour) })), "finished",
+  "the server's word beats the clock");
 
 // viewerRole — both branches, because "creator" used to be the fallback when the
 // page read ?role= from the URL. A creator view on its own proves nothing.
@@ -101,12 +123,14 @@ assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
 
 // Participant status drives two different things and they must not blur: a
 // CONFIRMED row is a player on the roster, a REQUESTED row is someone waiting at
-// the door. Both values observed live 2026-09-14; the spec declares neither.
+// the door. The full enum (2026-09-19) adds REJECTED, LEFT and KICKED — all out.
 {
   const roster = [
     participant({ id: "p1", status: "CONFIRMED", firstName: "متین ", lastName: "بهادران" }),
     participant({ id: "p2", status: "REQUESTED", firstName: "متیوس ", lastName: "دلیخت" }),
     participant({ id: "p3", status: "REJECTED", firstName: "کسی ", lastName: "دیگر" }),
+    participant({ id: "p4", status: "LEFT" }),
+    participant({ id: "p5", status: "KICKED" }),
   ];
   const confirmed = roster.filter((p) => p.status === "CONFIRMED");
   const requested = roster.filter((p) => p.status === "REQUESTED");
@@ -115,6 +139,14 @@ assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
   assert.equal(requested[0].id, "p2", "the request carries the participant id, not the account id");
   // A rejected row is neither — it must not appear as a player or as a request.
   assert.equal(roster.filter((p) => ["CONFIRMED", "REQUESTED"].includes(p.status)).length, 2);
+  // LEFT and KICKED are out too — viewerParticipation offers them the door back in.
+  for (const status of ["REJECTED", "LEFT", "KICKED"] as const) {
+    assert.deepEqual(
+      viewerParticipation([participant({ id: "x", accountId: "acc-me", status })], "acc-me"),
+      { state: "none" },
+      `${status} is not in the match`,
+    );
+  }
 }
 
 // viewerParticipation decides which CTA a player gets. Before this existed the

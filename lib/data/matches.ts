@@ -49,14 +49,21 @@ export async function getMatchList(): Promise<MatchListItem[]> {
 }
 
 /**
- * `status` is an undeclared string in the spec (only OPEN and CANCELLED seen),
- * so only CANCELLED is trusted by name. Everything else is decided from the
+ * The enum was declared on 2026-09-19: OPEN, FINISHED, CANCELLED, AUTO_CANCELLED.
+ * Both cancelled values mean the same to a reader. There is no LIVE, so
+ * everything else is decided from the
  * clock, which can't drift out of sync with an enum nobody documented.
  */
 export function toStatus(m: MatchResponse): MatchListItem["status"] {
-  if (m.status === "CANCELLED") return "not-held";
+  if (isCancelled(m)) return "not-held";
+  if (m.status === "FINISHED") return "held";
   const endsAt = matchStartMs(m.scheduledAt) + m.durationHours * 3600_000;
   return endsAt < Date.now() ? "held" : "active";
+}
+
+/** A match the organizer cancelled, or the server did on their behalf. */
+function isCancelled(m: MatchResponse): boolean {
+  return m.status === "CANCELLED" || m.status === "AUTO_CANCELLED";
 }
 
 /** Exported for `matches.test.ts`. */
@@ -66,7 +73,11 @@ export function toListItem(m: MatchResponse, club?: string): MatchListItem {
     // `title` is nullable in the response even though omitting it on create 500s.
     title: m.title ?? jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     status: toStatus(m),
-    players: (m.participants ?? []).map((p) => ({
+    // CONFIRMED only, like the details page: the other four statuses are people
+    // who asked and were refused, left, or were removed (enum declared
+    // 2026-09-19), and every one of them was being drawn onto the card as a
+    // player and counted against the capacity.
+    players: (m.participants ?? []).filter((p) => p.status === "CONFIRMED").map((p) => ({
       // Collapse, don't just trim: the API stores firstName with its trailing
       // space ("متین "), so a plain join renders "متین  بهادران" with a visible
       // double gap. Noted in api-findings §1; normalising here costs nothing and
@@ -185,15 +196,15 @@ export function viewerRole(organizerAccountId: string, viewerAccountId: string |
  *
  * The page used to read this from a `?status=` query param — a device for
  * building the Figma frames that had shipped. Same reasoning as the list's
- * `toStatus`: the match-level `status` enum is undeclared, so only CANCELLED is
- * trusted by name and the rest is arithmetic on `scheduledAt + durationHours`.
+ * `toStatus`: the enum is declared now (2026-09-19) but carries no LIVE, so the
+ * live/upcoming split is still arithmetic on `scheduledAt + durationHours`.
  *
  * A cancelled match maps to `finished` because there is nothing left to do with
  * it, and the CTA matrix has no cancelled column. Worth revisiting if the design
  * grows one.
  */
 export function toDetailsStatus(m: MatchResponse): MatchDetailsStatus {
-  if (m.status === "CANCELLED") return "finished";
+  if (isCancelled(m) || m.status === "FINISHED") return "finished";
   const start = matchStartMs(m.scheduledAt);
   const end = start + m.durationHours * 3600_000;
   const now = Date.now();

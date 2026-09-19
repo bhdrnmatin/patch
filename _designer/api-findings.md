@@ -94,7 +94,7 @@ stays** — keep the hour in `LOCK_MS`.
 **Ask:** confirm the lock window is intended at one hour, and document it. Inviting someone
 to a match that has not started doesn't obviously belong behind the same gate as editing it.
 
-### 0d. Participant status enum — values learned by observation, still undeclared
+### 0d. Both status enums — **declared by the backend 2026-09-19**
 `MatchParticipantResponse.status` and `joinChannel` are both `"type": "string"` with no enum.
 Resolved by experiment on 2026-09-14 with a second account joining a `MANUAL_APPROVE` match:
 
@@ -107,10 +107,27 @@ Join requests are wired on that basis: `filled` counts `CONFIRMED`, `requests` a
 `REQUESTED` rows, and approve/reject post to
 `/matches/{id}/participants/{participantId}/approve|reject`.
 
-**Still an ask:** declare both enums in the spec. We are relying on two strings nobody has
-written down, and we have not seen what a rejected or cancelled participant looks like — the
-mapping treats anything that is neither value as belonging to neither list, which is safe but
-untested. Same request as the match-level `status`.
+**Answered 2026-09-19.** The backend gave both enums:
+
+```
+MatchStatus        OPEN, FINISHED, CANCELLED, AUTO_CANCELLED
+ParticipantStatus  CONFIRMED, REQUESTED, REJECTED, LEFT, KICKED
+```
+
+Both are types in `lib/api/types.ts` now, and the guesses held — CONFIRMED is the roster,
+REQUESTED is the door, and the three we had never seen are all "not in the match".
+
+Two things the enum changed, both fixed the same day:
+- **`AUTO_CANCELLED` was read as a live match.** Only `CANCELLED` was trusted by name, so a
+  match the server cancelled itself kept its «جاری» badge and a CTA to join.
+- **The list card drew every participant as a player.** `toListItem` mapped the rows
+  unfiltered while the details page filtered to CONFIRMED, so a rejected, departed or removed
+  person appeared on the card and counted against capacity. Now both filter.
+
+`MatchStatus` has **no LIVE**: a match in progress is still OPEN, so live-vs-upcoming stays
+arithmetic on `scheduledAt + durationHours`. `FINISHED` is trusted when it's set.
+
+`joinChannel` is still an undeclared string (`OPEN`, `REQUEST` observed) — nothing reads it.
 
 **Also:** `participants[].photoUrl` is a **presigned S3 URL** with `X-Amz-*` query parameters,
 so it expires. Fine to render immediately; do not cache or persist one.
