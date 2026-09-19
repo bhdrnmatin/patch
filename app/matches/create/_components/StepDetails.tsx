@@ -87,10 +87,10 @@ export default function StepDetails({ draft, patch }: Props) {
         onChange={(id) => patch({ invite: id as CreateMatchDraft["invite"] })}
       />
       <TextField
-        label="عنوان مَچ"
+        label="عنوان مَچ (اختیاری)"
         value={draft.title}
         onChange={(title) => patch({ title })}
-        placeholder="مثلا راکت طلایی"
+        placeholder="مثلا پدل عصر پنجشنبه"
       />
       <TextArea
         label="توضیحات (اختیاری)"

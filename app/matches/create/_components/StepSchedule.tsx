@@ -150,7 +150,10 @@ export default function StepSchedule({ draft, patch }: Props) {
           dir="rtl"
         >
           {TIME_SLOTS.map((t) => {
-            const selected = draft.time === t;
+            // Every hour the match covers is filled — ۰۸:۰۰ for ۱۲۰ دقیقه lights ۰۸ and ۰۹.
+            const start = draft.time ? Number(draft.time.slice(0, 2)) : null;
+            const h = Number(t.slice(0, 2));
+            const selected = start !== null && h >= start && h < start + (draft.duration ?? 60) / 60;
             // Only today has closed slots; the page re-renders often enough
             // (every tap) that a slot closing while it sits here is caught at
             // the step gate in page.tsx instead of with a timer.
@@ -159,7 +162,7 @@ export default function StepSchedule({ draft, patch }: Props) {
               <button
                 key={t}
                 type="button"
-                aria-pressed={selected}
+                aria-pressed={draft.time === t}
                 disabled={closed}
                 onClick={() => patch({ time: t })}
                 className={`h-11 px-4 shrink-0 rounded-card text-sm font-bold border shadow-card active:opacity-80 disabled:opacity-40 ${

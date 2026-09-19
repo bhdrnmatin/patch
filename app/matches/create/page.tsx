@@ -16,7 +16,7 @@ import ResumeDraftBar from "./_components/ResumeDraftBar";
 import InviteFailures from "./_components/InviteFailures";
 import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
-import { isSchedulable } from "@/lib/api/matches";
+import { autoTitle, isSchedulable } from "@/lib/api/matches";
 import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
@@ -44,10 +44,9 @@ const emptyDraft: CreateMatchDraft = {
 };
 
 const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
-  // The title is required (user decision 2026-09-12). It was optional, which
-  // also meant `POST /matches` had to be handed an invented one — omitting it
-  // returns 500, not a validation error.
-  (d) => d.format !== null && d.invite !== null && d.title.trim().length > 0,
+  // The title is optional (user decision 2026-09-17); an empty one is generated
+  // from the club and time at submit (`autoTitle`).
+  (d) => d.format !== null && d.invite !== null,
   (d) => d.reserved === true && d.courtId !== null, // must have reserved a court + picked it
   // A time can close while the draft sits (or was saved yesterday evening), so
   // re-check it here too, not only when the slot is drawn.
@@ -190,7 +189,14 @@ function CreateMatchContent() {
           key={step > 0 ? "with-back" : "no-back"}
           nextLabel={isLast ? "تایید و ثبت" : "بعدی"}
           backLabel={isLast ? "بازگشت" : "قبلی"}
-          onNext={() => (isLast ? mutate(draft) : goTo(step + 1))}
+          onNext={() =>
+            isLast
+              ? mutate({
+                  ...draft,
+                  title: draft.title.trim() || autoTitle(draft, courts.find((c) => c.id === draft.courtId)?.club),
+                })
+              : goTo(step + 1)
+          }
           nextDisabled={!isStepValid[step](draft)}
           pending={isPending}
           onBack={step > 0 ? () => goTo(step - 1) : undefined}

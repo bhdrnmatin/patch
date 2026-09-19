@@ -60,10 +60,11 @@ export async function createMatch(
       .filter((r) => !r.success)
       .map((r) => ({ phone: r.phoneNumber, reason: inviteFailureText(r.failureMessage) }));
     return { id, failedInvites };
-  } catch {
-    return {
-      id,
-      failedInvites: phones.map((phone) => ({ phone, reason: "دعوت ارسال نشد. اتصال را بررسی کنید." })),
-    };
+  } catch (e) {
+    // The server's own reason when it answered; apiFetch's connection message
+    // (status 0) when it didn't. A 2026-09-17 failure said «اتصال» while the
+    // invite had in fact been created, so don't guess.
+    const reason = e instanceof Error && e.message ? e.message : "دعوت ارسال نشد.";
+    return { id, failedInvites: phones.map((phone) => ({ phone, reason })) };
   }
 }

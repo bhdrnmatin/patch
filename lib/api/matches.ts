@@ -1,5 +1,4 @@
 import { apiFetch } from "./client";
-import { jalaliDayMonth } from "../jalali";
 import { toPersianDigits } from "../persian";
 import type { CreateMatchDraft } from "../types";
 import type {
@@ -61,7 +60,7 @@ export function draftToCreateRequest(draft: CreateMatchDraft): CreateMatchReques
     // The wizard stopped asking (step ۵ was removed 2026-08-20), so it follows
     // visibility: a public match anyone can join, a private one only by link.
     joinPolicy: draft.invite === "private" ? "INVITE_LINK_ONLY" : "OPEN",
-    title: draft.title.trim() || fallbackTitle(draft.date),
+    title: draft.title.trim() || autoTitle(draft),
     capacity: capacityFor(draft),
     durationHours: Math.max(1, Math.round(draft.duration / 60)),
     ...(draft.description.trim() ? { description: draft.description.trim().slice(0, 500) } : {}),
@@ -71,15 +70,14 @@ export function draftToCreateRequest(draft: CreateMatchDraft): CreateMatchReques
 }
 
 /**
- * A backstop, not the normal path: step ۱ requires a title as of 2026-09-12, so
- * this only fires for a draft saved before that. Kept because the failure mode
- * it prevents is a **500** — the API declares `title` optional and then dies
- * without it — and four lines is cheap insurance against that.
+ * The title a match gets when step ۱'s is left empty (optional since
+ * 2026-09-17): «باشگاه انقلاب، ساعت ۱۸:۰۰». The wizard passes the club name,
+ * which the draft only holds as an id; without it this still beats sending no
+ * title, which the API declares optional and then answers with a **500**.
  */
-function fallbackTitle(isoDate: string): string {
-  // jalaliDayMonth already returns Persian digits, which this string needs —
-  // it is user-visible the moment the match is created.
-  return `مچ ${jalaliDayMonth(isoDate)}`.slice(0, 80);
+export function autoTitle(draft: CreateMatchDraft, club?: string): string {
+  const time = toPersianDigits(draft.time ?? "");
+  return `${club ?? "مچ"}، ساعت ${time}`.slice(0, 80);
 }
 
 /**
@@ -107,13 +105,20 @@ function toInstant(isoDate: string, time: string): string {
 }
 
 /**
- * Whether the API will take this start: `scheduledAt` must be in the future, and
- * it's the *shifted* instant it checks, so a slot closes 30 minutes before it
- * starts. The wizard greys out anything this rejects rather than letting the
- * server answer in English («must be a future date»).
+ * A match **locks one hour before `scheduledAt`** and from then on the API
+ * refuses every write touching it — creating it, and inviting anyone to it
+ * («زمان قفل این مچ فرارسیده و دیگر هیچ تغییری ممکن نیست», probed 2026-09-19).
+ * It's the *shifted* instant that's checked, so in real time a slot closes
+ * **90 minutes** before it starts: the hour of lock plus `API_SHIFT_MS`.
+ *
+ * The wizard greys out anything this rejects. Before 2026-09-19 it only
+ * excluded slots already past, so the last two offerable hours took five steps
+ * of answers and then a 400 — or, worse, created the match and lost its invites.
  */
+const LOCK_MS = 60 * 60_000;
+
 export function isSchedulable(isoDate: string, time: string, now = Date.now()): boolean {
-  return new Date(toInstant(isoDate, time)).getTime() > now;
+  return new Date(toInstant(isoDate, time)).getTime() > now + LOCK_MS;
 }
 
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */

@@ -8,6 +8,7 @@ import { WhistleIcon, CourtIcon, MatchesIcon } from "../../../(main)/_components
 import ReviewPlayers, { type ReviewRow } from "./ReviewPlayers";
 import { toPersianDigits } from "../../../../lib/persian";
 import { JALALI_MONTHS, isoToJalali } from "../../../../lib/jalali";
+import { autoTitle } from "../../../../lib/api/matches";
 import type { CourtOption, CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
 const FORMAT_LABELS: Record<NonNullable<CreateMatchDraft["format"]>, string> = {
@@ -63,7 +64,8 @@ export default function StepReview({ draft, courts, players, onEdit }: Props) {
   const court = courts.find((c) => c.id === draft.courtId);
   const note = inviteNote(draft);
   const description = draft.description.trim();
-  const title = draft.title.trim();
+  // What will actually be sent — the generated one when step ۱ was left empty.
+  const title = draft.title.trim() || autoTitle(draft, court?.club);
 
   const timeRange = draft.time
     ? `${toPersianDigits(draft.time)}${
@@ -95,14 +97,12 @@ export default function StepReview({ draft, courts, players, onEdit }: Props) {
       <section className="w-full bg-white rounded-group px-3 divide-y divide-divider shadow-card">
         <Group title="مشخصات" onEdit={() => onEdit(0)}>
           {/* نمایش isn't a tile — the banner above already says it, louder. */}
-          <Tile wide={!title} icon={<WhistleIcon className="size-5" />} label="حالت بازی">
+          <Tile icon={<WhistleIcon className="size-5" />} label="حالت بازی">
             {draft.format ? FORMAT_LABELS[draft.format] : "—"}
           </Tile>
-          {title && (
-            <Tile icon={<MatchesIcon className="size-5" />} label="عنوان">
-              {title}
-            </Tile>
-          )}
+          <Tile icon={<MatchesIcon className="size-5" />} label="عنوان">
+            {title}
+          </Tile>
           {description && (
             <p className="col-span-2 text-sm leading-relaxed text-ink-soft text-right" dir="rtl">
               {description}

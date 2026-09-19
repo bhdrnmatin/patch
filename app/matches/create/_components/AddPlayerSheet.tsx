@@ -91,16 +91,7 @@ export default function AddPlayerSheet({
             icon={<PhoneIcon />}
             onClick={() => setView("phone")}
           />
-          {onClear && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="w-full h-12 rounded-card text-sm font-bold text-danger active:opacity-80"
-              dir="rtl"
-            >
-              حذف این بازیکن
-            </button>
-          )}
+          {onClear && <ClearButton onClick={onClear} />}
         </div>
       ) : view === "players" ? (
         <div className="flex flex-col gap-3">
@@ -110,6 +101,9 @@ export default function AddPlayerSheet({
             selected={selectedPlayer}
             onSelect={onPickPlayer}
           />
+          {/* Re-tapping the picked player also clears the row, but nothing says
+              so — the explicit button is how a row gets removed. */}
+          {onClear && <ClearButton onClick={onClear} />}
           <BackButton className="w-full" onClick={() => setView("menu")} />
         </div>
       ) : (
@@ -144,9 +138,25 @@ export default function AddPlayerSheet({
               {invite ? "ذخیره" : "افزودن"}
             </button>
           </div>
+          {/* An invited row opens straight on this form, never the menu — so
+              without this here an added number had no way to be removed. */}
+          {onClear && <ClearButton onClick={onClear} />}
         </div>
       )}
     </BottomSheet>
+  );
+}
+
+function ClearButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full h-12 rounded-card text-sm font-bold text-danger active:opacity-80"
+      dir="rtl"
+    >
+      حذف این بازیکن
+    </button>
   );
 }
 
