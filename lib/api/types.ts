@@ -168,6 +168,24 @@ export interface InviteSuggestionResponse {
   phoneNumber: string;
 }
 
+/**
+ * An invitation, from `GET /matches/invitations/me` (the invitee's own) or
+ * inside an `InviteDirectResponse`. It carries `matchId` and nothing else about
+ * the match, so a list of these needs a `GET /matches/{id}` each to say what
+ * they are invitations *to*.
+ *
+ * `status` is a bare string in the spec; only `PENDING` has been observed
+ * (2026-09-19). Accepting is `POST …/{id}/accept`, declining is `DELETE …/{id}`.
+ */
+export interface MatchInvitationResponse {
+  id: string;
+  matchId: string;
+  inviteeAccountId: string;
+  status: string;
+  createdAt: string;
+  acceptedAt: string | null;
+}
+
 /** One row of `POST /matches/{id}/invitations` — each phone succeeds or fails alone. */
 export interface InviteDirectResponse {
   phoneNumber: string;

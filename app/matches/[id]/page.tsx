@@ -119,6 +119,9 @@ function MatchDetailsContent() {
       // depending on the match's joinPolicy, and only the server knows which.
       queryClient.invalidateQueries({ queryKey: ["matchDetails", id] });
       queryClient.invalidateQueries({ queryKey: ["matches"] });
+      // Joining closes any invitation to this match, so /activity's card for it
+      // is stale — and answering a card the server has closed is a 409.
+      queryClient.invalidateQueries({ queryKey: ["activitySections"] });
       if (action === "cancel-match") router.push("/matches");
     },
   });

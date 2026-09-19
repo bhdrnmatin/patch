@@ -126,6 +126,9 @@ export interface TournamentListItem {
 export interface ActivityAction {
   label: string;
   variant: "outline" | "filled";
+  /** What tapping it does. The page owns the mutations; the data layer only
+   *  names the intent, so a card stays serialisable. */
+  kind: "accept-invite" | "open-match";
 }
 
 /** One meta line on an Activity card; tone drives its color/weight. */
@@ -137,7 +140,10 @@ export interface ActivityMetaLine {
 
 /** View-model for a card on the Activity list. */
 export interface ActivityItem {
+  /** The invitation id for an invite card — what accept/decline is addressed to. */
   id: string;
+  /** Where «مشاهده مَچ» goes, and what the card is about. */
+  matchId: string;
   image: string;
   /** Overlay label on the thumbnail, e.g. "در انتظار واریز". */
   status: string;

@@ -75,6 +75,29 @@ client now holds other players' phone numbers only to name people the server alr
 The list is short and can be empty (one entry on the test account), so it reads as
 "people you have played with" rather than a directory — which is what the design asks for.
 
+### 0g. Invitations: the invitee can accept, and nothing else — 2026-09-19
+Wiring `/activity` to `GET /matches/invitations/me` turned up four undocumented things,
+three of them on a phone:
+
+- **There is no invitee-side decline.** `DELETE /matches/invitations/{id}` is the *organizer*
+  cancelling an invitation they sent; the invitee gets 403 «شما برگذار کننده این مچ نیستید».
+  So an unwanted invitation stays in their list forever. The card offers «مشاهده مَچ» and
+  «پذیرفتن» only — a decline button would be one that always fails. **Ask for the verb.**
+- **Joining a match closes its invitation.** Answer the card afterwards and the API says 409
+  «این دعوت‌نامه قبلاً پذیرفته شده است», though the person never touched the invite. The page
+  refetches on any error, so a card the server has closed drops itself.
+- **`joinChannel: DIRECT_INVITE`** is what accepting produces — a third value beside `OPEN`
+  and `REQUEST`. A plain join after an invite still reads `OPEN`.
+- **Invitation `status`** is another bare string: `PENDING` when created, `CANCELLED` once the
+  organizer deletes it, and something we have not seen once accepted (`acceptedAt` fills in).
+
+**Ask:** declare `InvitationStatus` and `joinChannel` the way `MatchStatus` was, and give the
+invitee a way to say no.
+
+**Shape cost:** the response carries `matchId` and nothing else about the match, so the page
+spends one `GET /matches/{id}` per pending invitation to name it. Fine at this size; a batch
+or an expanded response is the fix if a player can ever have many.
+
 ### 0e. A match locks an hour before `scheduledAt` — probed 2026-09-19
 Every write touching a match is refused from one hour before its `scheduledAt`:
 `زمان قفل این مچ فرارسیده و دیگر هیچ تغییری ممکن نیست`. Confirmed on both `POST /matches`

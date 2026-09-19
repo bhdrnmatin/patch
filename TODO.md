@@ -241,8 +241,14 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)
-- [ ] ActivityCard actions are placeholder `<button>`s (no onClick/navigation) — wire to the relevant
+- [ ] ActivityCard actions beyond invitations are still placeholders — wire to the relevant
       flows (cancel/pay/approve/details) when those exist.
+- [x] **`/activity` shows pending invitations — done 2026-09-19.** `getActivitySections` reads
+      `GET /matches/invitations/me` and one `GET /matches/{id}` per invite; the card accepts or
+      opens the match. No decline: that DELETE is organizer-only (api-findings §0g).
+- [ ] `/activity` shows **invitations only**. Join requests you have sent, matches you are in and
+      results waiting on you are all plausible sections — none has an endpoint that serves the
+      viewer's own rows yet.
 - [ ] Wire `/activity` into BottomNav (nav has 4 tabs + add; no Activity slot — page shows no active tab).
 ### Refactor candidates
 - [x] ActivityCard (Warning): card title `<span>`s → **fixed 2026-06-17**: wrapped in `<h3>`.

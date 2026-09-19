@@ -1,4 +1,4 @@
-import type { ActivityItem, ActivityMetaLine } from "@/lib/types";
+import type { ActivityAction, ActivityItem, ActivityMetaLine } from "@/lib/types";
 import StatusThumb from "./StatusThumb";
 import ActivityButton from "./ActivityButton";
 
@@ -9,8 +9,18 @@ const META_TONE: Record<ActivityMetaLine["tone"], string> = {
   faint: "text-muted",
 };
 
+interface Props {
+  item: ActivityItem;
+  /** The page owns what an action does — the card only reports which was tapped. */
+  onAction?: (kind: ActivityAction["kind"]) => void;
+  /** True while one of this card's actions is in flight. */
+  busy?: boolean;
+  /** What the server said when the last action failed. */
+  error?: string;
+}
+
 /** Activity list card: title + meta on the right, status thumbnail on the left, actions below. */
-export default function ActivityCard({ item }: { item: ActivityItem }) {
+export default function ActivityCard({ item, onAction, busy, error }: Props) {
   const { image, status, title, meta, actions } = item;
 
   return (
@@ -38,9 +48,20 @@ export default function ActivityCard({ item }: { item: ActivityItem }) {
         <StatusThumb image={image} status={status} />
       </div>
 
+      {error && (
+        <p role="alert" dir="rtl" className="px-2 text-tiny leading-5 text-danger text-right">
+          {error}
+        </p>
+      )}
+
       <div className="flex items-end justify-center gap-3">
         {actions.map((action, i) => (
-          <ActivityButton key={i} {...action} />
+          <ActivityButton
+            key={i}
+            {...action}
+            disabled={busy}
+            onClick={onAction && (() => onAction(action.kind))}
+          />
         ))}
       </div>
     </article>

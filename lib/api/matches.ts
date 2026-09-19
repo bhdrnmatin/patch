@@ -5,6 +5,7 @@ import type {
   CreateMatchRequest,
   InviteDirectResponse,
   InviteSuggestionResponse,
+  MatchInvitationResponse,
   MatchParticipantResponse,
   MatchResponse,
   PageResponse,
@@ -145,6 +146,29 @@ export function inviteByPhone(matchId: string, phoneNumbers: string[]): Promise<
  */
 export function getInviteSuggestions(): Promise<InviteSuggestionResponse[]> {
   return apiFetch<InviteSuggestionResponse[]>("/matches/invitations/suggestions");
+}
+
+/** The invitations sent *to* the signed-in player. One page, like the matches list. */
+export function getMyInvitations(): Promise<PageResponse<MatchInvitationResponse>> {
+  return apiFetch<PageResponse<MatchInvitationResponse>>("/matches/invitations/me?size=100");
+}
+
+/** Accept an invitation — the invitee joins, so this answers with their participant row. */
+export function acceptInvitation(invitationId: string): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(`/matches/invitations/${invitationId}/accept`, {
+    method: "POST",
+  });
+}
+
+/**
+ * Cancel an invitation **you sent**. Organizer-only: the invitee gets 403
+ * «شما برگذار کننده این مچ نیستید» (probed on a phone 2026-09-19), so there is
+ * no way for them to decline — the API has no invitee-side verb at all. Unused
+ * until the organizer's own invitation list exists; kept so the next person
+ * doesn't re-probe it.
+ */
+export function cancelInvitation(invitationId: string): Promise<void> {
+  return apiFetch<void>(`/matches/invitations/${invitationId}`, { method: "DELETE" });
 }
 
 /** The raw keys `failureMessage` has been seen returning, in words a player reads. */
