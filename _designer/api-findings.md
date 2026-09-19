@@ -129,6 +129,14 @@ arithmetic on `scheduledAt + durationHours`. `FINISHED` is trusted when it's set
 
 `joinChannel` is still an undeclared string (`OPEN`, `REQUEST` observed) — nothing reads it.
 
+**Observed 2026-09-19, both worth knowing:**
+- **`GET /matches` never returns a cancelled match.** Cancelling one removes it from the list
+  outright (confirmed by cancelling every match on the account — `totalElements: 0`, while each
+  one still answers by id). So `toStatus`'s `not-held` can only ever come from a details page;
+  no card will carry «برگزار نشده».
+- **`AUTO_CANCELLED` is what a match that didn't fill becomes.** «راکت طلایی» — one confirmed
+  player — holds it after its start time passed. Nothing asks for it; the server decides.
+
 **Also:** `participants[].photoUrl` is a **presigned S3 URL** with `X-Amz-*` query parameters,
 so it expires. Fine to render immediately; do not cache or persist one.
 
