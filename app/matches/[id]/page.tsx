@@ -45,6 +45,7 @@ function ctaFor(
   role: ViewerRole,
   stage: MatchDetailsStatus,
   part: ViewerParticipation,
+  needsApproval: boolean,
 ): { label: string; caption?: string; action: CtaAction } | null {
   if (role === "creator") {
     if (stage === "upcoming") return { label: "لغو مَچ", action: "cancel-match" };
@@ -69,7 +70,12 @@ function ctaFor(
       action: "leave",
     };
   // Not involved. Joining a match already under way is not offered.
-  return stage === "upcoming" ? { label: "درخواست ورود", action: "join" } : null;
+  // Only a MANUAL_APPROVE match makes this a request; everywhere else the API
+  // confirms immediately, and «درخواست ورود» promised a wait that never came.
+  if (stage !== "upcoming") return null;
+  return needsApproval
+    ? { label: "درخواست ورود", caption: "پس از تایید سازنده عضو مَچ می‌شوید", action: "join" }
+    : { label: "پیوستن به مَچ", action: "join" };
 }
 
 function MatchDetailsContent() {
@@ -98,7 +104,7 @@ function MatchDetailsContent() {
       ? statusParam
       : m.stage;
   const stage = STAGE[status];
-  const cta = ctaFor(role, status, m.viewerParticipation);
+  const cta = ctaFor(role, status, m.viewerParticipation, m.needsApproval);
   const router = useRouter();
   const queryClient = useQueryClient();
 

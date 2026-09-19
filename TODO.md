@@ -193,6 +193,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       "on the hour" check runs on UTC minutes and Iran is +03:30, so no Tehran hour is
       accepted. Worked around since 2026-09-16 by storing matches 30 min early (`API_SHIFT_MS`);
       once fixed, set it to 0 and migrate the matches stored shifted. See `_designer/api-findings.md` §0.
+- [ ] **The one-hour match lock is undocumented, and invites sit behind it** (probed 2026-09-19,
+      api-findings §0e) — every write is refused from an hour before `scheduledAt`, which with
+      `API_SHIFT_MS` is 90 minutes before the real start. Step ۳ greys those slots now (`LOCK_MS`
+      in `lib/api/matches.ts`); ask whether invites need to be gated with edits at all.
 - [ ] **Invite by account id** — `POST /matches/{id}/invitations` takes `phoneNumbers` only
       (`accountIds` → 400 `phoneNumbers must not be empty`), and suggestions carry no phone, so a
       player picked from «از بین بازیکنان پچ» can't be invited. Asked 2026-09-16.

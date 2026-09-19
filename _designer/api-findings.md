@@ -62,6 +62,25 @@ and deal with the matches stored under it: they will read half an hour early.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
+### 0e. A match locks an hour before `scheduledAt` — probed 2026-09-19
+Every write touching a match is refused from one hour before its `scheduledAt`:
+`زمان قفل این مچ فرارسیده و دیگر هیچ تغییری ممکن نیست`. Confirmed on both `POST /matches`
+(at 07:41Z an `08:00:00Z` match is refused, `09:00:00Z` is created) and
+`POST /matches/{id}/invitations`. The lock is undocumented — nothing in the spec mentions it.
+
+**It bites the wizard twice over**, because the stored instant is `API_SHIFT_MS` early:
+a Tehran ۱۲:۰۰ slot is stored `08:00Z`, so it locks at `07:00Z` — **90 minutes before the
+match really starts**. Reported from the phone on 2026-09-19: the match was created and
+then *both* its invites came back failed, which is the worst shape this can take, since
+invites can only be sent to a match that already exists.
+
+`isSchedulable()` now requires the stored instant to be more than an hour out, so step ۳
+greys those slots. **When the UTC-hour bug is fixed and `API_SHIFT_MS` goes to 0, the lock
+stays** — keep the hour in `LOCK_MS`.
+
+**Ask:** confirm the lock window is intended at one hour, and document it. Inviting someone
+to a match that has not started doesn't obviously belong behind the same gate as editing it.
+
 ### 0d. Participant status enum — values learned by observation, still undeclared
 `MatchParticipantResponse.status` and `joinChannel` are both `"type": "string"` with no enum.
 Resolved by experiment on 2026-09-14 with a second account joining a `MANUAL_APPROVE` match:

@@ -118,6 +118,7 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     stage: toDetailsStatus(m),
     viewerParticipation: mine.state,
     viewerParticipantId: mine.participantId,
+    needsApproval: m.joinPolicy === "MANUAL_APPROVE",
     format: FORMAT_LABELS[m.format] ?? m.format,
     club: club?.name ?? "—",
     capacity: m.capacity,

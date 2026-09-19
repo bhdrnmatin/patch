@@ -254,6 +254,12 @@ export interface MatchDetails {
   viewerParticipation: ViewerParticipation;
   /** The viewer's own participant id, for leaving. Absent when not involved. */
   viewerParticipantId?: string;
+  /**
+   * Whether joining waits for the organizer (`joinPolicy: MANUAL_APPROVE`). On
+   * every other policy the API confirms on the spot, so the CTA must not promise
+   * a request — observed 2026-09-19: «درخواست ورود» joined immediately.
+   */
+  needsApproval: boolean;
   /** Toman, integer. Undefined until pricing ships (post-MVP), like `price`. */
   fee?: number;
   /** e.g. "آمریکانو" */
