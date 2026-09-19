@@ -7,7 +7,6 @@ import type {
   TournamentListItem,
   MatchDetails,
   ActivitySection,
-  MatchPlayer,
 } from "@/lib/types";
 
 
@@ -242,4 +241,3 @@ export const matchDetails: MatchDetails = {
 
 
 /** Players the creator can pre-fill into teams — excludes the current user. */
-export const pickablePlayers: MatchPlayer[] = matchDetails.players.slice(1);

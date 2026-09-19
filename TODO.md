@@ -99,11 +99,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       list is the mock, and the API invites by phone only. Kept visible (user decision 2026-09-16)
       while the backend adds account ids; see "Blocked on backend".
 - [ ] Teammate identity = indexes into `pickablePlayers` (no `MatchPlayer.id`) — same API-era switch as results.
-- [ ] **"از بین بازیکنان پچ" must list only players you have played with** (user decision 2026-09-12),
-      not every Patch account — a full directory is unscrollable and lets anyone enumerate users. The
-      sheet's copy says this already; `getPickablePlayers` still returns the mock.
-      `GET /matches/invitations/suggestions` now returns exactly that list (accountId + name + photo,
-      no phone), so reading is unblocked — sending is not, see "Blocked on backend".
+- [x] **"از بین بازیکنان پچ" lists only players you have played with — done 2026-09-19.**
+      `getPickablePlayers` reads `GET /matches/invitations/suggestions`, which is exactly that list
+      and now carries `phoneNumber`, so the picked player is invited by phone like a typed one. The
+      list can legitimately come back empty, and the sheet says so instead of rendering nothing.
 - [x] Phone invites no longer ask for a name — **done 2026-09-12**, the number is the identity and is
       what the roster, review and team preview display.
 
@@ -197,9 +196,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       api-findings §0e) — every write is refused from an hour before `scheduledAt`, which with
       `API_SHIFT_MS` is 90 minutes before the real start. Step ۳ greys those slots now (`LOCK_MS`
       in `lib/api/matches.ts`); ask whether invites need to be gated with edits at all.
-- [ ] **Invite by account id** — `POST /matches/{id}/invitations` takes `phoneNumbers` only
-      (`accountIds` → 400 `phoneNumbers must not be empty`), and suggestions carry no phone, so a
-      player picked from «از بین بازیکنان پچ» can't be invited. Asked 2026-09-16.
+- [ ] **Invite by account id** — still 400 `phoneNumbers must not be empty` (re-probed 2026-09-19,
+      `accountIds` and `inviteeAccountIds` both). No longer blocking: suggestions carry `phoneNumber`
+      now, so the picker invites by phone. Worth having anyway — it would stop the client handling
+      other people's numbers to invite someone the server already knows.
 - [ ] **Translate invite `failureMessage` keys** — `alreadyInvited`/`alreadyParticipant` come back raw;
       `inviteFailureText` maps the two we've seen and hides any other.
 - [ ] **Enable `matchType: COMPETITIVE`.** رقابتی is greyed out until then — flip

@@ -1,9 +1,8 @@
 import { getClubs } from "@/lib/api/clubs";
 import { getAccountId } from "@/lib/api/session";
-import { FORMAT_LABELS, getMatch, listMatches, matchStartMs, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
+import { FORMAT_LABELS, getInviteSuggestions, getMatch, listMatches, matchStartMs, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import type { MatchParticipantResponse, MatchResponse } from "@/lib/api/types";
 import { dayStrip, jalaliDayMonth } from "@/lib/jalali";
-import { pickablePlayers } from "@/lib/mock";
 import type {
   ViewerParticipation,
   ViewerRole,
@@ -221,11 +220,16 @@ export async function getCourtOptions(): Promise<CourtOption[]> {
 }
 
 export async function getPickablePlayers(): Promise<MatchPlayer[]> {
-  // Still the mock. The wizard's "از بین بازیکنان پچ" list is meant to be the
-  // people you have actually played with (user decision 2026-09-12) — not a
-  // directory of every Patch account, which is both useless to scroll and a way
-  // to enumerate other users. The copy in AddPlayerSheet already says that.
-  // Needs an endpoint that returns the current player's previous teammates;
-  // there is no player lookup of any kind on the API yet. See TODO.md.
-  return pickablePlayers;
+  // Live since 2026-09-19. The API's own suggestions — never a directory of
+  // every account, which is both useless to scroll and a way to enumerate other
+  // users (user decision 2026-09-12; AddPlayerSheet's copy says as much).
+  //
+  // It was the mock until the suggestions started carrying `phoneNumber`: invites
+  // go by phone only, so a list without one could show people it couldn't invite.
+  const suggestions = await getInviteSuggestions();
+  return suggestions.map((p) => ({
+    name: fullName(p.firstName, p.lastName),
+    avatar: p.photoUrl ?? undefined,
+    phone: p.phoneNumber,
+  }));
 }

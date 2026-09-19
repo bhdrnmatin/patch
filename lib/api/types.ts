@@ -138,6 +138,22 @@ export interface MatchParticipantResponse {
   phoneNumber?: string;
 }
 
+/**
+ * One person `GET /matches/invitations/suggestions` offers to invite.
+ *
+ * `phoneNumber` is the point: the invite endpoint takes phone numbers only
+ * (account ids are still 400, re-probed 2026-09-19), so without it the wizard's
+ * «از بین بازیکنان پچ» list could show people it had no way to invite. The API
+ * started sending it between 2026-09-16 and 2026-09-19.
+ */
+export interface InviteSuggestionResponse {
+  accountId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl: string | null;
+  phoneNumber: string;
+}
+
 /** One row of `POST /matches/{id}/invitations` — each phone succeeds or fails alone. */
 export interface InviteDirectResponse {
   phoneNumber: string;

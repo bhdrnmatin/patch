@@ -105,7 +105,7 @@ function CreateMatchContent() {
   const openMatch = (id: string) => router.push(`/matches/${id}?role=creator&status=upcoming`);
 
   const { mutate, isPending, error, reset } = useMutation({
-    mutationFn: createMatch,
+    mutationFn: (d: CreateMatchDraft) => createMatch(d, players),
     onSuccess: (result) => {
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ["matches"] });

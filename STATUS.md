@@ -356,9 +356,10 @@ opposed to what its spec claims — is recorded in
   number on Patch resolves to its account (`inviteeAccountId`) and stays `PENDING` until accepted.
 - [ ] **Invitations are invisible after save** — no organizer-side invitation list, and an invite stays
   out of `participants` until accepted; the design has no pending state either.
-- [ ] **«از بین بازیکنان پچ» can't send** — the API invites by phone only (`accountIds` → 400), and
-  `GET /matches/invitations/suggestions` returns `{accountId, firstName, lastName, photoUrl}`, no phone.
-  Kept visible on the mock while the backend adds account ids (user decision 2026-09-16).
+- [x] **«از بین بازیکنان پچ» sends — live 2026-09-19.** The suggestions now carry `phoneNumber`,
+  which is all the phone-only invite endpoint ever needed, so `getPickablePlayers` reads
+  `GET /matches/invitations/suggestions` and a picked player is invited like a typed number.
+  `accountIds` is still 400; it is no longer in the way.
 - [x] **Match details is live (2026-09-14):** `getMatchDetails` calls `GET /matches/{id}` and
   resolves `clubId` against the cached clubs list for the club name and the coordinates `CourtMap`
   needs — no extra round trip. Format maps to a Persian label, and `timeRange` converts the stored

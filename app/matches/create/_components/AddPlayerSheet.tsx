@@ -95,12 +95,20 @@ export default function AddPlayerSheet({
         </div>
       ) : view === "players" ? (
         <div className="flex flex-col gap-3">
-          <PlayerPickList
-            players={players}
-            disabled={disabledPlayers}
-            selected={selectedPlayer}
-            onSelect={onPickPlayer}
-          />
+          {/* The API suggests people you've played with, so a new organizer's
+              list is legitimately empty — say so instead of showing nothing. */}
+          {players.length === 0 ? (
+            <p className="text-sm text-muted text-right leading-6" dir="rtl">
+              هنوز کسی برای پیشنهاد نیست. با شماره موبایل دعوت کنید.
+            </p>
+          ) : (
+            <PlayerPickList
+              players={players}
+              disabled={disabledPlayers}
+              selected={selectedPlayer}
+              onSelect={onPickPlayer}
+            />
+          )}
           {/* Re-tapping the picked player also clears the row, but nothing says
               so — the explicit button is how a row gets removed. */}
           {onClear && <ClearButton onClick={onClear} />}

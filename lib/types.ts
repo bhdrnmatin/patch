@@ -30,6 +30,12 @@ export type MatchStatus = "active" | "held" | "not-held";
 export interface MatchPlayer {
   name: string;
   /**
+   * Only the wizard's pick list carries one, from the invite suggestions — it is
+   * how a picked player is invited, since the API invites by phone alone. Never
+   * rendered; a roster player has none.
+   */
+  phone?: string;
+  /**
    * Skill level. Optional because the API carries none yet — levels, price and
    * entry fee all land after the MVP (user, 2026-09-13). Until then `PlayerSlot`
    * omits the line rather than printing «لول ۰», which would read as a real

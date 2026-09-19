@@ -4,6 +4,7 @@ import type { CreateMatchDraft } from "../types";
 import type {
   CreateMatchRequest,
   InviteDirectResponse,
+  InviteSuggestionResponse,
   MatchParticipantResponse,
   MatchResponse,
   PageResponse,
@@ -136,6 +137,14 @@ export function inviteByPhone(matchId: string, phoneNumbers: string[]): Promise<
     method: "POST",
     body: { phoneNumbers },
   });
+}
+
+/**
+ * Who this player can be invited from the picker: the people the API suggests,
+ * each with the phone number an invite is addressed to. A bare array, not a page.
+ */
+export function getInviteSuggestions(): Promise<InviteSuggestionResponse[]> {
+  return apiFetch<InviteSuggestionResponse[]>("/matches/invitations/suggestions");
 }
 
 /** The raw keys `failureMessage` has been seen returning, in words a player reads. */

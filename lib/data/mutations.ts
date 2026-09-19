@@ -5,7 +5,7 @@ import {
   inviteByPhone,
   inviteFailureText,
 } from "@/lib/api/matches";
-import type { CreateMatchDraft } from "@/lib/types";
+import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
 
 // Write-side seam — the twin of the read accessors in this folder. Callers
 // invalidate their queries afterwards, so changed data comes back from the server.
@@ -43,15 +43,25 @@ export interface FailedInvite {
  * a failure there must not read as "the match failed" — it was created. They
  * come back as `failedInvites` for the wizard to show instead.
  *
- * Patch-player teammates aren't sent: the pick list is still the mock, and the
- * API invites by phone only (asked the backend for account ids; see TODO.md).
+ * Both kinds of teammate go out the same way, by phone: the API still refuses
+ * account ids (re-probed 2026-09-19), and a picked player carries the number the
+ * suggestion came with. Dropping a duplicate keeps one typed number and the same
+ * person picked from the list from becoming two invites, one of which the server
+ * would refuse as `alreadyInvited`.
  */
 export async function createMatch(
   draft: CreateMatchDraft,
+  players: MatchPlayer[],
 ): Promise<{ id: string; failedInvites: FailedInvite[] }> {
   const { id } = await apiCreateMatch(draftToCreateRequest(draft));
 
-  const phones = draft.teammates.flatMap((t) => (t.kind === "invite" ? [t.phone] : []));
+  const phones = [
+    ...new Set(
+      draft.teammates.flatMap((t) =>
+        t.kind === "invite" ? [t.phone] : (players[t.index]?.phone ?? []),
+      ),
+    ),
+  ];
   if (phones.length === 0) return { id, failedInvites: [] };
 
   try {

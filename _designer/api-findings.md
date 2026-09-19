@@ -62,6 +62,19 @@ and deal with the matches stored under it: they will read half an hour early.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
+### 0f. Invite suggestions carry a phone now — 2026-09-19
+`GET /matches/invitations/suggestions` returns `{accountId, firstName, lastName, photoUrl,
+phoneNumber}`. The phone is new (absent 2026-09-16) and it unblocks the wizard's
+«از بین بازیکنان پچ», which could previously show people it had no way to invite, since
+`POST /matches/{id}/invitations` takes `phoneNumbers` only.
+
+`accountIds` is **still refused** — re-probed 2026-09-19, both `accountIds` and
+`inviteeAccountIds` answer 400 `phoneNumbers: must not be empty`. Worth fixing anyway: the
+client now holds other players' phone numbers only to name people the server already knows.
+
+The list is short and can be empty (one entry on the test account), so it reads as
+"people you have played with" rather than a directory — which is what the design asks for.
+
 ### 0e. A match locks an hour before `scheduledAt` — probed 2026-09-19
 Every write touching a match is refused from one hour before its `scheduledAt`:
 `زمان قفل این مچ فرارسیده و دیگر هیچ تغییری ممکن نیست`. Confirmed on both `POST /matches`
