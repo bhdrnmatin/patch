@@ -140,7 +140,10 @@ export interface ActivityMetaLine {
 
 /** View-model for a card on the Activity list. */
 export interface ActivityItem {
-  /** The invitation id for an invite card — what accept/decline is addressed to. */
+  /** What the card is. Only an invitation can be answered, and only invitations
+   *  count toward the nav's red dot — a match you are already in is not news. */
+  kind: "invitation" | "match";
+  /** The invitation id for an invite card; the match id for a match card. */
   id: string;
   /** Where «مشاهده مَچ» goes, and what the card is about. */
   matchId: string;

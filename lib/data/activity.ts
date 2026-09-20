@@ -1,51 +1,81 @@
+import { getActivity, isMatchActivity } from "@/lib/api/activity";
 import { getMatch, getMyInvitations, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import { getClubs } from "@/lib/api/clubs";
 import { jalaliDayMonth } from "@/lib/jalali";
-import { toDetailsStatus } from "./matches";
-import type { ActivitySection } from "@/lib/types";
+import { fullName, toDetailsStatus } from "./matches";
+import type { ActivityItem, ActivitySection } from "@/lib/types";
+import { toPersianDigits } from "@/lib/persian";
+import type { MatchResponse } from "@/lib/api/types";
 
 /**
- * Live since 2026-09-19: the invitations sent to the signed-in player.
+ * The two things worth a player's attention: invitations waiting for an answer,
+ * and the matches they are part of.
  *
- * This is the page's whole purpose for now. An invite used to arrive by SMS and
- * then exist nowhere in the app — the invitee could only find the match by
- * searching the list, and «رفتن به مَچ» from the wizard was the organizer's only
- * evidence it had been sent.
+ * They come from different endpoints because only one of them can be answered.
+ * `GET /activity` (2026-09-20) serves the feed — each row carries the **whole
+ * match**, so naming it costs nothing — but an invitation is not in it, and
+ * accepting is addressed to the invitation's own id. So invitations stay on
+ * `GET /matches/invitations/me`, which is also the only list that can be
+ * answered from here.
  *
- * `GET /matches/invitations/me` carries a `matchId` and nothing else, so each
- * pending invitation costs a `GET /matches/{id}`. They run in parallel and there
- * are only ever a handful; a batch endpoint would be the fix if that changes.
- * A match that 404s (cancelled and swept, say) drops its card rather than
- * failing the page.
+ * Unknown feed rows are skipped, not guessed at: the backend can add kinds
+ * without this page inventing a card for them.
  */
 export async function getActivitySections(): Promise<ActivitySection[]> {
-  const { content } = await getMyInvitations();
-  const pending = content.filter((i) => i.status === "PENDING");
-  if (pending.length === 0) return [];
+  const [invitations, feed, clubs] = await Promise.all([
+    getMyInvitations().catch(() => null),
+    getActivity().catch(() => null),
+    getClubs(),
+  ]);
 
-  const clubs = await getClubs();
+  const clubName = (id: string) => clubs.content.find((c) => c.id === id)?.name ?? "—";
+
+  const invites = await invitationCards(invitations?.content ?? [], clubName);
+  const matches = (feed?.content ?? [])
+    .filter(isMatchActivity)
+    .map((row) => matchCard(row.detail.match, row.detail.role, clubName))
+    // A match you were invited to and have not answered is in neither list
+    // twice: the feed only carries matches you are already part of.
+    .filter((card) => !invites.some((i) => i.matchId === card.matchId));
+
+  return [
+    invites.length > 0 ? { heading: { right: "دعوت‌ها" }, items: invites } : null,
+    matches.length > 0 ? { heading: { right: "مَچ‌های شما" }, items: matches } : null,
+  ].filter((s) => s !== null);
+}
+
+/**
+ * The invitations still worth answering.
+ *
+ * An invitation outlives its match — cancelling one leaves every invitation
+ * PENDING for ever, with no sweep — so a card is only drawn for a match that is
+ * still ahead. The feed can't replace this: it carries no invitation rows, and
+ * accepting needs the invitation id, which only this endpoint gives.
+ *
+ * `GET /matches/invitations/me` names no match, so each pending one costs a
+ * `GET /matches/{id}`. They run in parallel and there are only ever a handful.
+ */
+async function invitationCards(
+  invitations: { id: string; matchId: string; status: string }[],
+  clubName: (id: string) => string,
+): Promise<ActivityItem[]> {
+  const pending = invitations.filter((i) => i.status === "PENDING");
   const cards = await Promise.all(
     pending.map(async (invite) => {
       const match = await getMatch(invite.matchId).catch(() => null);
-      // An invitation outlives its match: cancelling one leaves every invitation
-      // PENDING for ever, so without this the card — and the nav's dot — sat
-      // there offering to join a match that no longer happens.
       if (!match || toDetailsStatus(match) !== "upcoming") return null;
-      const club = clubs.content.find((c) => c.id === match.clubId);
       return {
+        kind: "invitation" as const,
         id: invite.id,
         matchId: match.id,
         image: "/images/hero-court.webp",
         status: "دعوت به مَچ",
-        title: [match.title ?? jalaliDayMonth(tehranDateISO(match.scheduledAt))],
+        title: [matchTitle(match)],
         meta: [
+          { text: whenLine(match), tone: "strong" as const },
+          { text: clubName(match.clubId), tone: "muted" as const },
           {
-            text: `${jalaliDayMonth(tehranDateISO(match.scheduledAt))} · ${tehranTimeRange(match.scheduledAt, match.durationHours)}`,
-            tone: "strong" as const,
-          },
-          { text: club?.name ?? "—", tone: "muted" as const },
-          {
-            text: `دعوت از ${match.organizer.firstName} ${match.organizer.lastName}`.trim(),
+            text: `دعوت از ${fullName(match.organizer.firstName, match.organizer.lastName)}`,
             tone: "faint" as const,
           },
         ],
@@ -59,7 +89,30 @@ export async function getActivitySections(): Promise<ActivitySection[]> {
       };
     }),
   );
-
-  const items = cards.filter((c) => c !== null);
-  return items.length > 0 ? [{ heading: { right: "دعوت‌ها" }, items }] : [];
+  return cards.filter((c) => c !== null);
 }
+
+/** A match you are in. The role is the API's; only ORGANIZER has been seen. */
+function matchCard(match: MatchResponse, role: string, clubName: (id: string) => string): ActivityItem {
+  const confirmed = (match.participants ?? []).filter((p) => p.status === "CONFIRMED").length;
+  return {
+    kind: "match",
+    // The feed has no row id of its own, and one match is one card.
+    id: match.id,
+    matchId: match.id,
+    image: "/images/hero-court.webp",
+    status: role === "ORGANIZER" ? "برگزار کننده" : "بازیکن",
+    title: [matchTitle(match)],
+    meta: [
+      { text: whenLine(match), tone: "strong" },
+      { text: clubName(match.clubId), tone: "muted" },
+      { text: `${toPersianDigits(String(confirmed))} از ${toPersianDigits(String(match.capacity))} بازیکن`, tone: "faint" },
+    ],
+    actions: [{ label: "مشاهده مَچ", variant: "outline", kind: "open-match" }],
+  };
+}
+
+const matchTitle = (m: MatchResponse) => m.title ?? jalaliDayMonth(tehranDateISO(m.scheduledAt));
+
+const whenLine = (m: MatchResponse) =>
+  `${jalaliDayMonth(tehranDateISO(m.scheduledAt))} · ${tehranTimeRange(m.scheduledAt, m.durationHours)}`;

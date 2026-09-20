@@ -137,7 +137,10 @@ export default function BottomNav() {
     queryFn: getActivitySections,
   });
   const unreadCounts = {
-    "/activity": (activitySections ?? []).reduce((n, s) => n + s.items.length, 0),
+    // Invitations only — a match you are already in is not something to answer.
+    "/activity": (activitySections ?? [])
+      .flatMap((s) => s.items)
+      .filter((i) => i.kind === "invitation").length,
   } as Record<string, number>;
   // Set when the menu closes because the user tapped one of its links — that
   // navigation supersedes the history entry we pushed, so skip the rollback.

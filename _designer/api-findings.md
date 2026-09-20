@@ -62,6 +62,41 @@ and deal with the matches stored under it: they will read half an hour early.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
+### 0h. `GET /api/v1/activity` — the feed, shipped 2026-09-20
+Paged (`page`/`size`), rows of `{type, referenceId, relevantAt, detail}`, ordered by
+`relevantAt`. `type` and `detail` are a bare string and an untyped object in the spec; only
+**`MATCH`** has been seen, and its detail is `{role, match}` with the **whole `MatchResponse`
+embedded**, participants and organizer included.
+
+It replaced the N+1 the page was built on. Two things it does not do, so the invitations
+endpoint stays beside it:
+- **No invitation rows** — the feed carries matches you are already in, so an unanswered
+  invitation is not in it.
+- **Accepting needs the invitation id**, which only `GET /matches/invitations/me` gives.
+
+Unknown `type`s are skipped rather than guessed at. **Ask:** declare `type` and `role` (only
+`ORGANIZER` observed, from an account that organises everything), and say whether invitations
+are ever coming into the feed — if they are, the page drops its second call.
+
+### 0i. The hour bug is not fixed, it is silent — re-probed 2026-09-20
+`+03:30` times are accepted now instead of 400, but the "on the hour" rule still runs on UTC
+and the server **floors** anything else:
+
+| Sent | Stored |
+|---|---|
+| `2026-09-26T18:00:00+03:30` (Tehran ۱۸:۰۰ = 14:30Z) | `14:00:00Z` — **30 minutes early** |
+| `2026-09-26T18:30:00+03:30` (= 15:00Z) | `15:00:00Z` — exact |
+| `2026-09-26T20:00:00+03:30` (= 16:30Z) | `16:00:00Z` — **30 minutes early** |
+| `2026-09-26T14:30:00Z` | `14:00:00Z` |
+
+So every on-the-hour Tehran match silently loses half an hour, with nothing to say so. **This
+is worse than the 400**, which at least announced itself. `API_SHIFT_MS` is unchanged and
+still correct — the wizard sends the floored instant itself and every reader adds it back —
+but it now compensates for truncation rather than dodging a rejection.
+
+**Ask again:** evaluate the hour in `Asia/Tehran`. A user who picks ۱۸:۰۰ has a match stored
+at ۱۷:۳۰ today.
+
 ### 0f. Invite suggestions carry a phone now — 2026-09-19
 `GET /matches/invitations/suggestions` returns `{accountId, firstName, lastName, photoUrl,
 phoneNumber}`. The phone is new (absent 2026-09-16) and it unblocks the wizard's

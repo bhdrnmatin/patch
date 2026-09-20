@@ -213,7 +213,7 @@ export function toDetailsStatus(m: MatchResponse): MatchDetailsStatus {
 }
 
 /** The API stores firstName with a trailing space, so collapse rather than trim. */
-function fullName(first?: string | null, last?: string | null): string {
+export function fullName(first?: string | null, last?: string | null): string {
   return `${first ?? ""} ${last ?? ""}`.replace(/\s+/g, " ").trim();
 }
 
