@@ -1,5 +1,84 @@
 # Session State
 
+## Session — 2026-09-17/20: the wizard on a real phone, and /activity becomes real
+Eleven commits, all pushed to both remotes (head `b24a66d`). The session was a phone in the
+user's hand and a terminal probing the live API — almost nothing here was decided by reading code.
+
+### The wizard, tested end to end for the first time
+Five steps tapped through by hand on the phone. Four things came back:
+- **The title is optional again** and an empty one is generated from the club and the start time
+  («باشگاه انقلاب، ساعت ۱۸:۰۰»), shown on step ۵ before submit. The placeholder stopped suggesting
+  «راکت طلایی», which is a real match now.
+- **A duration fills every hour it covers** — ۰۸:۰۰ for ۱۲۰ دقیقه lights ۰۸ and ۰۹. `aria-pressed`
+  still marks the start alone.
+- **A player could not be removed.** An added row opens on the view it came from — the phone form or
+  the pick list — and «حذف این بازیکن» was on neither, only on the menu those views skip.
+- **A failed invite blamed the connection whatever happened.** It now shows the server's own reason,
+  which is how the next two findings were found at all.
+
+### The match lock — the day's real bug
+**A match locks one hour before `scheduledAt` and the API then refuses every write to it,
+invitations included** (api-findings §0e). With `API_SHIFT_MS` storing matches half an hour early,
+that lands **90 minutes before the real start**. The user hit the worst shape of it: the match was
+created and then *both* its invites were refused, and an invite can only go to a match that already
+exists. `isSchedulable` now wants the stored instant more than an hour out, so step ۳ greys those
+slots. **When the UTC bug is fixed and `API_SHIFT_MS` goes to 0, the hour in `LOCK_MS` stays.**
+
+### The backend answered three asks, and we found the answers were worth having
+- **Both status enums declared** — `MatchStatus OPEN/FINISHED/CANCELLED/AUTO_CANCELLED` and
+  `ParticipantStatus CONFIRMED/REQUESTED/REJECTED/LEFT/KICKED`. The guesses held, but the values we
+  had never seen exposed two live bugs: **`AUTO_CANCELLED` read as a live match**, and **the match
+  card drew every participant as a player**, counting rejected/left/kicked against the capacity.
+  `AUTO_CANCELLED` is not theoretical — it is what a match that never fills becomes at kickoff.
+- **`InvitationStatus PENDING/ACCEPTED/CANCELLED`** and
+  **`JoinChannel OPEN/REQUEST/INVITE_LINK/DIRECT_INVITE`** followed. `INVITE_LINK` is the share-link
+  flow, unbuilt — and per the backend's own comment it auto-confirms *regardless of visibility or
+  join policy*, which is the thing to think about when building it.
+- **Invite suggestions carry `phoneNumber` now**, which unblocked «از بین بازیکنان پچ»: it reads the
+  live suggestions and a picked player is invited by phone like a typed one. `accountIds` is still
+  400 and no longer matters.
+
+### /activity, built twice in one session
+Built on `GET /matches/invitations/me` + one `GET /matches/{id}` per invitation — then the backend
+shipped **`GET /api/v1/activity`** (§0h) and it was rebuilt on that the same day. Two sections:
+«دعوت‌ها» (answerable) and «مَچ‌های شما» (the feed). **Invitations still need their own call** — the
+feed carries only matches you are already in, and accepting is addressed to the invitation id.
+Unknown feed `type`s are skipped, not guessed at.
+- **There is no invitee-side decline.** `DELETE /matches/invitations/{id}` is the organizer
+  cancelling one they sent; the invitee gets 403. A decline button would always fail, so there isn't
+  one — «مشاهده مَچ» and «پذیرفتن» only.
+- **An invitation outlives its match**: cancelling a match leaves every invitation `PENDING` for ever
+  with no sweep, so a raw pending count is not "waiting for you". Cards are drawn only for matches
+  still ahead.
+- The BottomNav tab was never missing — it was labelled «کاوش» from the mock-feed days. Renamed
+  «فعالیت‌ها», and its red dot reads the page's own query (one fetch for both) and counts
+  **invitations only**.
+
+### Worth knowing
+- **The hour bug looked fixed on 2026-09-20 and is not** (§0i). `+03:30` is accepted now instead of
+  400, but the on-the-hour rule still runs on UTC and the server **floors** the rest: Tehran ۱۸:۰۰
+  (14:30Z) is stored `14:00Z`, Tehran ۱۸:۳۰ exactly. Every on-the-hour Tehran match silently loses
+  half an hour. `API_SHIFT_MS` is unchanged and still right, but it now compensates for truncation
+  rather than dodging a rejection — **re-probe before removing it.**
+- **`GET /matches` never returns a cancelled match**, so «برگزار نشده» can only reach a details page.
+- **Two things that looked like bugs were not**: a player missing from a match page (a stale cache
+  after joining on the deployed site, gone on reload), and an empty `/activity` (every invitation had
+  been accepted). Check the server's own state before editing — `scripts/api.sh` settled both in a
+  minute.
+- Probe matches are cancelled, not deleted, and the user cancelled every match on the account while
+  testing — an empty `/matches` mid-session was that, not a bug.
+
+### Next
+- **Ask the backend:** the hour in `Asia/Tehran` (truncation is not the fix); document the one-hour
+  lock and say whether invitations belong behind it; a decline verb for the invitee; declare the
+  feed's `type` and `role`; whether invitation rows are coming to the feed (if so, the second call
+  goes); invitations orphaned by a cancelled match; `GET /matches/me` 500s (no such route — it
+  matches `/matches/{id}` with an unparseable id).
+- **The share-link flow is the next feature**: `GET /matches/invite/{token}` and
+  `POST /matches/invite/{token}/join` both exist and every match already carries an `inviteToken`.
+- Still open: CI, the password-login test account, and the visual leftovers (Neshan `Cache-Control`,
+  the dead `bgImage`/`athleteImage` props, the ball behind the first date cell).
+
 ## Session — 2026-09-16: create-match goes live, phone invites, and a visual pass
 All pushed to both remotes (head `2cd250d`). The match-details collapse from 09-14 was confirmed on
 the phone at session start.
