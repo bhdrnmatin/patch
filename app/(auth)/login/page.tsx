@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
@@ -10,6 +10,7 @@ import AuthActions from "../_components/AuthActions";
 import { requestOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useRedirectIfAuthed } from "@/lib/api/useAuth";
+import { withNext } from "@/lib/routes";
 import { isValidMobile, toLatinDigits } from "@/lib/persian";
 
 const BG = "/images/auth-login.webp";
@@ -17,6 +18,9 @@ const BG = "/images/auth-login.webp";
 export default function LoginPage() {
   useRedirectIfAuthed();
   const router = useRouter();
+  // Set when a share link sent a signed-out visitor here — it rides through the
+  // OTP step so they land on the match they were invited to, not on /matches.
+  const next = useSearchParams().get("next");
   const [phone, setPhone] = useState("");
 
   const isValidPhone = isValidMobile(phone);
@@ -27,8 +31,11 @@ export default function LoginPage() {
     mutationFn: () => requestOtp(toLatinDigits(phone)),
     onSuccess: (data) =>
       router.push(
-        `/otp?phone=${encodeURIComponent(toLatinDigits(phone))}` +
-          `&expires=${encodeURIComponent(data.nextResendAllowedAt)}`,
+        withNext(
+          `/otp?phone=${encodeURIComponent(toLatinDigits(phone))}` +
+            `&expires=${encodeURIComponent(data.nextResendAllowedAt)}`,
+          next,
+        ),
       ),
   });
 

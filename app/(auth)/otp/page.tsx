@@ -11,7 +11,7 @@ import { requestOtp, verifyOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { getMe } from "@/lib/api/players";
 import { useRedirectIfAuthed, isProfileComplete } from "@/lib/api/useAuth";
-import { POST_AUTH_ROUTE } from "@/lib/routes";
+import { postAuthRoute, withNext } from "@/lib/routes";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian";
 
 const BG = "/images/auth-otp.webp";
@@ -22,6 +22,9 @@ function OtpContent() {
   const queryClient = useQueryClient();
   const params = useSearchParams();
   const phone = params.get("phone") ?? ""; // Latin digits, from the login page
+  // Where the share link wanted them; carried on to /profile-setup for a brand
+  // new account, so signing up through an invite still ends on the match.
+  const next = params.get("next");
   const [otp, setOtp] = useState("");
 
   // Resend-cooldown deadline; seeded from /otp/request (URL param), then
@@ -82,11 +85,13 @@ function OtpContent() {
       // a complete profile goes home, anything else to /profile-setup.
       try {
         const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
-        router.replace(isProfileComplete(me) ? POST_AUTH_ROUTE : "/profile-setup");
+        router.replace(
+          isProfileComplete(me) ? postAuthRoute(next) : withNext("/profile-setup", next),
+        );
       } catch {
         // Profile fetch failed (e.g. a brand-new user with no profile record
         // yet) — default to setup rather than stranding them on this screen.
-        router.replace("/profile-setup");
+        router.replace(withNext("/profile-setup", next));
       }
     },
   });

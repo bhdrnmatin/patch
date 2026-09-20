@@ -295,6 +295,9 @@ export interface MatchDetails {
   restriction?: string;
   /** Banner text inside the court card. No API field. */
   courtNote?: string;
+  /** The share link's token, from the API. Absent on a match the viewer did not
+   *  create — only the organizer's own fetch carries one worth sharing. */
+  inviteToken?: string;
   /** Court coordinates — drive the map and the مسیریابی link. */
   courtLat?: number;
   courtLng?: number;

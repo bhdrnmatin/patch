@@ -183,6 +183,7 @@ const mockJoinRequest = (id: string) => ({
 
 export const matchDetails: MatchDetails = {
   id: "1",
+  inviteToken: "mock-invite-token",
   title: "راکت طلایی",
   needsApproval: true,
   // Read by the results page, which still uses this record. Any id that is not

@@ -6,8 +6,11 @@ import { ShareNodesIcon } from "./icons";
 interface Props {
   /** Optional: level-based, and levels ship after the MVP. */
   restriction?: string;
-  /** Match id — the invite link is this match's own URL. */
+  /** Match id — the link falls back to the match's own URL without a token. */
   matchId: string;
+  /** The API's share token. The link it makes lets whoever opens it join
+   *  directly, so a match with no token shares a plain link that does not. */
+  inviteToken?: string;
 }
 
 /**
@@ -19,11 +22,15 @@ interface Props {
  * public URL scheme for sending a link to a DM, so the share sheet is the only
  * route to it — and it covers every other app for free.
  */
-export default function ShareCard({ restriction, matchId }: Props) {
+export default function ShareCard({ restriction, matchId, inviteToken }: Props) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
-    const url = `${window.location.origin}/matches/${matchId}`;
+    // /join/{token} joins on one tap, signing the opener in on the way if they
+    // are new. Without a token there is nothing to join with, so share the match.
+    const url = inviteToken
+      ? `${window.location.origin}/join/${inviteToken}`
+      : `${window.location.origin}/matches/${matchId}`;
     const data = { title: "دعوت به مَچ", text: "بیا با هم بازی کنیم:", url };
 
     if (navigator.share) {

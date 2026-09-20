@@ -177,6 +177,30 @@ export function inviteFailureText(message: string | null): string {
   return toPersianDigits(message);
 }
 
+/**
+ * The match behind a share link. Same shape as `GET /matches/{id}`, but
+ * **`participants` comes back empty** — the token names a match to someone who
+ * is not in it yet, so it says nothing about who is.
+ *
+ * Not public: both this and the join below answer 401 without a session
+ * (probed 2026-09-20), which is why `/join/[token]` is a guarded route and the
+ * login it bounces through carries a `next` back to it.
+ */
+export function getMatchByInviteToken(token: string): Promise<MatchResponse> {
+  return apiFetch<MatchResponse>(`/matches/invite/${token}`);
+}
+
+/**
+ * Join through a share link. Auto-confirms **regardless of the match's
+ * visibility or join policy** (the backend's own words), so the link is the
+ * one way past MANUAL_APPROVE — treat it as the capability it is.
+ *
+ * 409 «شما قبلاً در این مچ عضو شده‌اید» when the viewer is already in.
+ */
+export function joinByInviteToken(token: string): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(`/matches/invite/${token}/join`, { method: "POST" });
+}
+
 /** One match, by id. Same shape as create returns, with `participants` filled. */
 export function getMatch(id: string): Promise<MatchResponse> {
   return apiFetch<MatchResponse>(`/matches/${id}`);

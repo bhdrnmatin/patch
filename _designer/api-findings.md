@@ -62,6 +62,29 @@ and deal with the matches stored under it: they will read half an hour early.
 is greyed out in step ۱ behind `COMPETITIVE_ENABLED` (`StepDetails.tsx`) rather than
 letting someone fill five steps to be turned away. Flip that one flag when it's enabled.
 
+### 0j. The share link — probed while building it, 2026-09-20
+`GET /matches/invite/{token}` previews, `POST /matches/invite/{token}/join` joins, and
+`POST /matches/{id}/invite-token/regenerate` rotates the token.
+
+- **Neither is public.** Both answer 401 without a session, so `/join/[token]` is a guarded
+  route and the login it bounces through carries a `next` back to the link. A brand-new
+  account signs up and still lands on the match.
+- **The preview carries no participants** — `participants: []` even when the match has some.
+  Nothing about who is playing leaks to whoever the link is forwarded to. It also means the
+  preview cannot say whether *you* are in the match already.
+- **`GET /matches/{id}` is 404 for an outsider on a `PRIVATE` match**, which is exactly who
+  holds a share link. Anything that reads the match by id on that path must treat the failure
+  as "not a member", not as an error.
+- **Only the organizer gets a token**: `inviteToken` is `null` in everyone else's copy of the
+  match, so a player cannot hand out a working link. `ShareCard` falls back to the match URL.
+- **Joining twice is 409** «شما قبلاً در این مچ عضو شده‌اید», and previewing does **not** join
+  (probed: a match with `organizerJoins: false`, 0 participants before and after a preview).
+- **A `PRIVATE` match can only be `INVITE_LINK_ONLY`** — private + `MANUAL_APPROVE` is refused
+  with «مچ خصوصی فقط می‌تواند نحوه‌ی ورود «فقط با لینک دعوت» داشته باشد».
+- The link auto-confirms **regardless of visibility or join policy** (the backend's own words),
+  so forwarding it is the same as adding a player. That is the feature, but it is the thing to
+  weigh before putting the link anywhere public.
+
 ### 0h. `GET /api/v1/activity` — the feed, shipped 2026-09-20
 Paged (`page`/`size`), rows of `{type, referenceId, relevantAt, detail}`, ordered by
 `relevantAt`. `type` and `detail` are a bare string and an untyped object in the spec; only

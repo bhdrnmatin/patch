@@ -140,6 +140,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       create. Own number and duplicates are refused at the sheet's button; anything the server still
       rejects is listed on the wizard (`InviteFailures`) before رفتن به مَچ. The own-number check needs
       `patch.phone`, saved at OTP verify, so sessions from before that skip it until next login.
+- [x] **The share link works — done 2026-09-20.** `/join/[token]` previews the match and joins in
+      one tap, signing the opener in on the way (`next` survives login *and* signup). Only the
+      organizer's copy carries an `inviteToken`; everyone else's card still shares the match URL.
+      See api-findings §0j for what the endpoints do and don't allow.
 - [ ] The invite link is just the match URL, so it only exists **after** creation (`ShareCard` on
       `/matches/[id]`). If invites need to go out from inside the wizard, the backend has to mint a
       draft/pending-match token first.

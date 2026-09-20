@@ -1,13 +1,13 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { logout as apiLogout } from "./auth";
 import { getMe } from "./players";
 import type { PlayerResponse } from "./types";
 import { hasSession, subscribeSession } from "./session";
-import { POST_AUTH_ROUTE } from "../routes";
+import { loginRoute, POST_AUTH_ROUTE, postAuthRoute } from "../routes";
 
 /**
  * Shared options for the cached /me query. Both useAuth and useRequireAuth
@@ -85,6 +85,9 @@ export function useAuth() {
  */
 export function useRequireAuth(): "checking" | "authed" {
   const router = useRouter();
+  // Where to come back to: a share link lands on a guarded page, and sending
+  // its opener to /matches after signing in loses the match they were invited to.
+  const pathname = usePathname();
   const hydrated = useHydrated();
   const authed = useHasSession();
 
@@ -96,9 +99,9 @@ export function useRequireAuth(): "checking" | "authed" {
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!authed) router.replace("/login");
+    if (!authed) router.replace(loginRoute(pathname));
     else if (incomplete) router.replace("/profile-setup");
-  }, [hydrated, authed, incomplete, router]);
+  }, [hydrated, authed, incomplete, pathname, router]);
 
   if (!(hydrated && authed)) return "checking";
   if (incomplete) return "checking"; // redirecting to /profile-setup
@@ -108,8 +111,11 @@ export function useRequireAuth(): "checking" | "authed" {
 /** For public auth pages (login/otp): send already-signed-in users into the app. */
 export function useRedirectIfAuthed(): void {
   const router = useRouter();
+  // Honours ?next= for the same reason useRequireAuth does: someone already
+  // signed in who lands on /login from a share link still wants the match.
+  const next = useSearchParams().get("next");
 
   useEffect(() => {
-    if (hasSession()) router.replace(POST_AUTH_ROUTE);
-  }, [router]);
+    if (hasSession()) router.replace(postAuthRoute(next));
+  }, [next, router]);
 }

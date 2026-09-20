@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
@@ -14,7 +14,7 @@ import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
 import type { PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
-import { POST_AUTH_ROUTE } from "@/lib/routes";
+import { postAuthRoute } from "@/lib/routes";
 
 const BG = "/images/auth-profile-setup.webp";
 
@@ -31,6 +31,8 @@ const SIDE_OPTIONS: SelectOption[] = [
 
 export default function ProfileSetupPage() {
   const router = useRouter();
+  // Carried from the login step: a share link's target survives signup.
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     firstName: "",
@@ -105,7 +107,8 @@ export default function ProfileSetupPage() {
       // Seed the /me cache with the now-complete profile so AuthGuard doesn't
       // read a stale "incomplete" and bounce us straight back here.
       queryClient.setQueryData(["me"], updated);
-      router.push(POST_AUTH_ROUTE); // TODO: restore "/assessment" when assessment is enabled
+      // TODO: restore "/assessment" when assessment is enabled
+      router.push(postAuthRoute(searchParams.get("next")));
     },
   });
 
