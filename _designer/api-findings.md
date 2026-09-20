@@ -86,16 +86,18 @@ three of them on a phone:
 - **Joining a match closes its invitation.** Answer the card afterwards and the API says 409
   «این دعوت‌نامه قبلاً پذیرفته شده است», though the person never touched the invite. The page
   refetches on any error, so a card the server has closed drops itself.
-- **`joinChannel: DIRECT_INVITE`** is what accepting produces — a third value beside `OPEN`
-  and `REQUEST`. A plain join after an invite still reads `OPEN`.
-- **Invitation `status`** is another bare string: `PENDING` when created, `CANCELLED` once the
-  organizer deletes it, and something we have not seen once accepted (`acceptedAt` fills in).
+- **`joinChannel: DIRECT_INVITE`** is what accepting produces. A plain join after an invite
+  still reads `OPEN`.
+- **Both enums were declared the same day** (asked, answered):
+  `InvitationStatus  PENDING, ACCEPTED, CANCELLED` and
+  `JoinChannel  OPEN, REQUEST, INVITE_LINK, DIRECT_INVITE`. Types in `lib/api/types.ts`;
+  every guess held. `INVITE_LINK` is the share-link flow the app has not built — it is the
+  value to look for when it is.
 - **An invitation outlives its match.** Cancelling a match leaves every invitation to it
   `PENDING` for ever — there is no sweep — so a raw `PENDING` count is not "invitations
   waiting for you". `/activity` drops any whose match is not still upcoming.
 
-**Ask:** declare `InvitationStatus` and `joinChannel` the way `MatchStatus` was, and give the
-invitee a way to say no.
+**Still an ask:** give the invitee a way to say no. (The enums were answered 2026-09-19.)
 
 **Shape cost:** the response carries `matchId` and nothing else about the match, so the page
 spends one `GET /matches/{id}` per pending invitation to name it. Fine at this size; a batch

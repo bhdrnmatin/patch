@@ -106,6 +106,17 @@ export type ApiParticipantStatus =
   | "LEFT"
   | "KICKED";
 
+/**
+ * How a participant got in. Declared 2026-09-19 with the rest; nothing reads it
+ * yet, but it is the only field that can tell an invited player from one who
+ * asked. `INVITE_LINK` is the share-link flow, which the app has not built.
+ */
+export type ApiJoinChannel = "OPEN" | "REQUEST" | "INVITE_LINK" | "DIRECT_INVITE";
+
+/** An invitation's life: created PENDING, then accepted by the invitee or
+ *  cancelled by the organizer. Declared 2026-09-19. */
+export type ApiInvitationStatus = "PENDING" | "ACCEPTED" | "CANCELLED";
+
 export interface CreateMatchRequest {
   format: ApiMatchFormat;
   matchType: ApiMatchType;
@@ -141,8 +152,8 @@ export interface MatchParticipantResponse {
   accountId: string;
   /** Declared 2026-09-19; see `ApiParticipantStatus`. */
   status: ApiParticipantStatus;
-  /** e.g. "OPEN" — how they got in. Also undeclared. */
-  joinChannel: string;
+  /** Declared 2026-09-19; see `ApiJoinChannel`. */
+  joinChannel: ApiJoinChannel;
   requestedAt: string;
   decidedAt: string | null;
   photoUrl: string | null;
@@ -174,14 +185,14 @@ export interface InviteSuggestionResponse {
  * the match, so a list of these needs a `GET /matches/{id}` each to say what
  * they are invitations *to*.
  *
- * `status` is a bare string in the spec; only `PENDING` has been observed
- * (2026-09-19). Accepting is `POST …/{id}/accept`, declining is `DELETE …/{id}`.
+ * Accepting is `POST …/{id}/accept`. `DELETE …/{id}` is the organizer cancelling
+ * one they sent — an invitee who calls it gets 403, so they cannot decline.
  */
 export interface MatchInvitationResponse {
   id: string;
   matchId: string;
   inviteeAccountId: string;
-  status: string;
+  status: ApiInvitationStatus;
   createdAt: string;
   acceptedAt: string | null;
 }
