@@ -160,17 +160,6 @@ export function acceptInvitation(invitationId: string): Promise<MatchParticipant
   });
 }
 
-/**
- * Cancel an invitation **you sent**. Organizer-only: the invitee gets 403
- * «شما برگذار کننده این مچ نیستید» (probed on a phone 2026-09-19), so there is
- * no way for them to decline — the API has no invitee-side verb at all. Unused
- * until the organizer's own invitation list exists; kept so the next person
- * doesn't re-probe it.
- */
-export function cancelInvitation(invitationId: string): Promise<void> {
-  return apiFetch<void>(`/matches/invitations/${invitationId}`, { method: "DELETE" });
-}
-
 /** The raw keys `failureMessage` has been seen returning, in words a player reads. */
 const INVITE_FAILURES: Record<string, string> = {
   "matchmaking.invite.alreadyInvited": "قبلاً به این مچ دعوت شده است.",
