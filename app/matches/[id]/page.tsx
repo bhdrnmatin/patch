@@ -120,7 +120,8 @@ function MatchDetailsContent() {
       queryClient.invalidateQueries({ queryKey: ["matchDetails", id] });
       queryClient.invalidateQueries({ queryKey: ["matches"] });
       // Joining closes any invitation to this match, so /activity's card for it
-      // is stale — and answering a card the server has closed is a 409.
+      // is stale — and answering a card the server has closed is a 409. The
+      // nav's dot reads the same query, so this moves it too.
       queryClient.invalidateQueries({ queryKey: ["activitySections"] });
       if (action === "cancel-match") router.push("/matches");
     },

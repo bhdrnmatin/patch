@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getUnreadCounts } from "@/lib/data";
+import { getActivitySections } from "@/lib/data";
 
 type IconProps = { className?: string };
 
@@ -128,9 +128,17 @@ function isActive(pathname: string, href: string) {
 export default function BottomNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  // Per-route unread counts drive the red dot; empty until a notifications
-  // backend exists, so no dots show today.
-  const { data: unreadCounts } = useQuery({ queryKey: ["unread-counts"], queryFn: getUnreadCounts });
+  // The red dot on «فعالیت‌ها» is that page's own cards, read from that page's
+  // own query — same key, so it is one fetch for both and anything that
+  // invalidates the list moves the dot with it. No other route has a
+  // notifications source, so no other tab gets a dot.
+  const { data: activitySections } = useQuery({
+    queryKey: ["activitySections"],
+    queryFn: getActivitySections,
+  });
+  const unreadCounts = {
+    "/activity": (activitySections ?? []).reduce((n, s) => n + s.items.length, 0),
+  } as Record<string, number>;
   // Set when the menu closes because the user tapped one of its links — that
   // navigation supersedes the history entry we pushed, so skip the rollback.
   const navigatingRef = useRef(false);

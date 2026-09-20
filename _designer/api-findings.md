@@ -90,6 +90,9 @@ three of them on a phone:
   and `REQUEST`. A plain join after an invite still reads `OPEN`.
 - **Invitation `status`** is another bare string: `PENDING` when created, `CANCELLED` once the
   organizer deletes it, and something we have not seen once accepted (`acceptedAt` fills in).
+- **An invitation outlives its match.** Cancelling a match leaves every invitation to it
+  `PENDING` for ever — there is no sweep — so a raw `PENDING` count is not "invitations
+  waiting for you". `/activity` drops any whose match is not still upcoming.
 
 **Ask:** declare `InvitationStatus` and `joinChannel` the way `MatchStatus` was, and give the
 invitee a way to say no.

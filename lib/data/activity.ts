@@ -2,6 +2,7 @@ import { getMatch, getMyInvitations, tehranTimeRange } from "@/lib/api/matches";
 import { getClubs } from "@/lib/api/clubs";
 import { jalaliDayMonth } from "@/lib/jalali";
 import { tehranDateISO } from "@/lib/api/matches";
+import { toDetailsStatus } from "./matches";
 import type { ActivitySection } from "@/lib/types";
 
 /**
@@ -27,7 +28,10 @@ export async function getActivitySections(): Promise<ActivitySection[]> {
   const cards = await Promise.all(
     pending.map(async (invite) => {
       const match = await getMatch(invite.matchId).catch(() => null);
-      if (!match) return null;
+      // An invitation outlives its match: cancelling one leaves every invitation
+      // PENDING for ever, so without this the card — and the nav's dot — sat
+      // there offering to join a match that no longer happens.
+      if (!match || toDetailsStatus(match) !== "upcoming") return null;
       const club = clubs.content.find((c) => c.id === match.clubId);
       return {
         id: invite.id,
