@@ -1,7 +1,7 @@
 # Session State
 
-## Session — 2026-09-17/20: the wizard on a real phone, and /activity becomes real
-Eleven commits, all pushed to both remotes (head `b24a66d`). The session was a phone in the
+## Session — 2026-09-17/20: the wizard on a real phone, /activity, and the share link
+Fourteen commits, all pushed to both remotes (head `685e14a`). The session was a phone in the
 user's hand and a terminal probing the live API — almost nothing here was decided by reading code.
 
 ### The wizard, tested end to end for the first time
@@ -54,6 +54,25 @@ Unknown feed `type`s are skipped, not guessed at.
   «فعالیت‌ها», and its red dot reads the page's own query (one fetch for both) and counts
   **invitations only**.
 
+### The share link, built last
+Sharing a match sent its own URL — a page you could read and not act on. It sends
+**`/join/{token}`** now: preview the match, join in one tap, through the API's own invite-token
+endpoints (§0j). Neither endpoint is public, so the route is guarded and **`next` carries the link
+through login *and* `/profile-setup`** — signing up from an invite still lands on the match. `next`
+is honoured only when it is a path on this app.
+
+The preview shows less than the match page deliberately: the API returns **no participants** for a
+token, so nothing about who is playing reaches whoever the link was forwarded to. Only the
+**organizer's** copy of a match carries an `inviteToken`; `ShareCard` falls back to the match URL for
+everyone else. A second open is a 409 that navigates rather than erroring.
+
+**Both bugs the phone found were in one check — "are you already in this match?"** It read the match
+by id, which is **404 for an outsider on a `PRIVATE` match** (exactly who holds a share link), and
+that reached the app's error screen. Then, fixed to swallow the failure, it **shared the match page's
+query key** while resolving `null` — and that `null` was served to the match page, crashing it on
+`organizerAccountId`. A probe that can fail needs its own key. Neither was visible from reading the
+code; both took a phone and a private match.
+
 ### Worth knowing
 - **The hour bug looked fixed on 2026-09-20 and is not** (§0i). `+03:30` is accepted now instead of
   400, but the on-the-hour rule still runs on UTC and the server **floors** the rest: Tehran ۱۸:۰۰
@@ -74,8 +93,9 @@ Unknown feed `type`s are skipped, not guessed at.
   feed's `type` and `role`; whether invitation rows are coming to the feed (if so, the second call
   goes); invitations orphaned by a cancelled match; `GET /matches/me` 500s (no such route — it
   matches `/matches/{id}` with an unparseable id).
-- **The share-link flow is the next feature**: `GET /matches/invite/{token}` and
-  `POST /matches/invite/{token}/join` both exist and every match already carries an `inviteToken`.
+- **The wizard still cannot share the link** — the token only exists once the match is created, so
+  «رفتن به مَچ» goes to the match page and the sharing happens there. A share button on the wizard's
+  success step is small, and it is the moment an organizer most wants the link.
 - Still open: CI, the password-login test account, and the visual leftovers (Neshan `Cache-Control`,
   the dead `bgImage`/`athleteImage` props, the ball behind the first date cell).
 
