@@ -2,9 +2,9 @@ import { toPersianDigits } from "../../../../lib/persian";
 import type { FailedInvite } from "../../../../lib/data/mutations";
 
 /**
- * Shown in place of the steps when the match was created but some invites
- * weren't. The match exists by then, so this is a report, not a form — the way
- * on is the footer's رفتن به مچ, and the fix is the match's invite link.
+ * The failure half of the success step: the match was created, some invites
+ * weren't sent. A report, not a form — the way on is the footer's رفتن به مچ,
+ * and the fix is the share card sitting right above it.
  */
 export default function InviteFailures({ failed }: { failed: FailedInvite[] }) {
   return (
@@ -12,10 +12,10 @@ export default function InviteFailures({ failed }: { failed: FailedInvite[] }) {
       {/* LTR wrapper so items-end pins right; dir on the text itself. */}
       <div className="flex flex-col items-end text-right gap-1">
         <p dir="rtl" className="text-sm font-bold text-ink">
-          مَچ ثبت شد، اما این دعوت‌ها ارسال نشد
+          این دعوت‌ها ارسال نشد
         </p>
         <p dir="rtl" className="text-xs text-muted leading-5">
-          می‌توانید از صفحه مَچ با لینک دعوت اضافه‌شان کنید.
+          می‌توانید با لینک دعوت بالا اضافه‌شان کنید.
         </p>
       </div>
       <ul className="flex flex-col divide-y divide-divider">

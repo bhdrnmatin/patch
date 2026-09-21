@@ -39,6 +39,9 @@ export interface FailedInvite {
 /**
  * Create a match from the wizard draft, then invite its phone numbers.
  *
+ * `inviteToken` comes straight off the create response, so the wizard's success
+ * step can share the join link without a second read of the match.
+ *
  * Invites can only go to a match that exists, so they're a second request, and
  * a failure there must not read as "the match failed" — it was created. They
  * come back as `failedInvites` for the wizard to show instead.
@@ -52,8 +55,9 @@ export interface FailedInvite {
 export async function createMatch(
   draft: CreateMatchDraft,
   players: MatchPlayer[],
-): Promise<{ id: string; failedInvites: FailedInvite[] }> {
-  const { id } = await apiCreateMatch(draftToCreateRequest(draft));
+): Promise<{ id: string; inviteToken?: string; failedInvites: FailedInvite[] }> {
+  const { id, inviteToken } = await apiCreateMatch(draftToCreateRequest(draft));
+  const created = { id, inviteToken: inviteToken ?? undefined };
 
   const phones = [
     ...new Set(
@@ -62,19 +66,19 @@ export async function createMatch(
       ),
     ),
   ];
-  if (phones.length === 0) return { id, failedInvites: [] };
+  if (phones.length === 0) return { ...created, failedInvites: [] };
 
   try {
     const results = await inviteByPhone(id, phones);
     const failedInvites = results
       .filter((r) => !r.success)
       .map((r) => ({ phone: r.phoneNumber, reason: inviteFailureText(r.failureMessage) }));
-    return { id, failedInvites };
+    return { ...created, failedInvites };
   } catch (e) {
     // The server's own reason when it answered; apiFetch's connection message
     // (status 0) when it didn't. A 2026-09-17 failure said «اتصال» while the
     // invite had in fact been created, so don't guess.
     const reason = e instanceof Error && e.message ? e.message : "دعوت ارسال نشد.";
-    return { id, failedInvites: phones.map((phone) => ({ phone, reason })) };
+    return { ...created, failedInvites: phones.map((phone) => ({ phone, reason })) };
   }
 }

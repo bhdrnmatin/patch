@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-21 — the wizard ends on a share card
+- [Create] **Creating a match now lands on a success step instead of jumping to the match.** It says
+  «مَچ شما ثبت شد» and offers the invite link right there — the moment an organizer most wants it.
+  «رفتن به مَچ» is still the way on.
+- [Create] The step existed already but only appeared when an invite had failed; now it always does,
+  and `InviteFailures` is its failure half (its copy points at the card above instead of the match page).
+- [Data] `createMatch` returns the create response's `inviteToken` alongside the id, so the card
+  shares `/join/{token}` without a second read of the match.
+- [Match] `ShareCard` hides its «محدودیت ورود» line when there is no restriction — levels ship after
+  the MVP, so every real match was rendering the label with nothing after it.
+
 ### 2026-09-16 — match cards: club in the meta row, wider list
 - [Matches] Card meta row (centred over the CTA) gains the **club** (pin icon), ahead of date and players; the CTA gets a
   chevron; card radius `rounded-group`, tighter gaps. The roster grid stays: a compact variant that

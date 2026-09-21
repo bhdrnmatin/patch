@@ -62,10 +62,14 @@ export default function ShareCard({ restriction, matchId, inviteToken }: Props) 
         <span className="text-sm font-bold text-ink-soft" dir="rtl">
           {copied ? "لینک کپی شد" : "به اشتراک گذاری"}
         </span>
-        <span className="text-xs" dir="rtl">
-          <span className="text-muted">محدودیت ورود: </span>
-          <span className="text-ink-soft">{restriction}</span>
-        </span>
+        {/* Levels ship after the MVP, so a real match has no restriction —
+            without this the label sat there with nothing after it. */}
+        {restriction && (
+          <span className="text-xs" dir="rtl">
+            <span className="text-muted">محدودیت ورود: </span>
+            <span className="text-ink-soft">{restriction}</span>
+          </span>
+        )}
       </div>
       <span className="shrink-0 p-4 rounded-full bg-surface text-ink-soft">
         <ShareNodesIcon />

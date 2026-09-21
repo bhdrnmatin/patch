@@ -144,9 +144,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       one tap, signing the opener in on the way (`next` survives login *and* signup). Only the
       organizer's copy carries an `inviteToken`; everyone else's card still shares the match URL.
       See api-findings §0j for what the endpoints do and don't allow.
-- [ ] The invite link is just the match URL, so it only exists **after** creation (`ShareCard` on
-      `/matches/[id]`). If invites need to go out from inside the wizard, the backend has to mint a
-      draft/pending-match token first.
+- [x] **The wizard shares the link — done 2026-09-21.** Create now ends on a success step carrying
+      `ShareCard`, fed by the `inviteToken` on the create response. Still *after* creation: a token
+      can't exist before the match does, so sending invites from mid-wizard would need the backend to
+      mint a draft/pending-match token first.
 - [ ] `navigator.share` + `navigator.clipboard` need a **secure context** — they're unavailable over
       plain `http://<lan-ip>:3000`, so the share card silently no-ops in LAN dev testing. Fine in
       production (https); add a legacy `execCommand("copy")` fallback only if dev testing needs it.

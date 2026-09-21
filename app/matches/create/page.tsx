@@ -14,6 +14,7 @@ import StepPlayers from "./_components/StepPlayers";
 import StepReview from "./_components/StepReview";
 import ResumeDraftBar from "./_components/ResumeDraftBar";
 import InviteFailures from "./_components/InviteFailures";
+import ShareCard from "../[id]/_components/ShareCard";
 import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
 import { autoTitle, isSchedulable } from "@/lib/api/matches";
@@ -99,9 +100,15 @@ function CreateMatchContent() {
     appScrollEl()?.scrollTo({ top: 0 });
   };
 
-  // Set only when the match was created but some invites weren't: the wizard
-  // stays put to say which, instead of jumping to a match that hides it.
-  const [created, setCreated] = useState<{ id: string; failedInvites: FailedInvite[] } | null>(null);
+  // Set once the match exists: the wizard stays put on a success step rather
+  // than jumping straight to the match. It's the moment the organizer most
+  // wants the invite link — and where failed invites are named, instead of on
+  // a match page that hides them.
+  const [created, setCreated] = useState<{
+    id: string;
+    inviteToken?: string;
+    failedInvites: FailedInvite[];
+  } | null>(null);
   const openMatch = (id: string) => router.push(`/matches/${id}?role=creator&status=upcoming`);
 
   const { mutate, isPending, error, reset } = useMutation({
@@ -109,10 +116,8 @@ function CreateMatchContent() {
     onSuccess: (result) => {
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ["matches"] });
-      if (result.failedInvites.length > 0) {
-        setCreated(result);
-        appScrollEl()?.scrollTo({ top: 0 });
-      } else openMatch(result.id);
+      setCreated(result);
+      appScrollEl()?.scrollTo({ top: 0 });
     },
   });
 
@@ -122,7 +127,7 @@ function CreateMatchContent() {
     <main className="relative mx-auto w-full max-w-[430px] min-h-dvh bg-surface">
       <div className="h-11" aria-hidden />
       <WizardHeader
-        subtitle={STEP_SUBTITLES[step]}
+        subtitle={created ? "مَچ ثبت شد" : STEP_SUBTITLES[step]}
         step={step + 1}
         total={STEP_LABELS.length}
         onClose={() => router.push("/matches")}
@@ -153,7 +158,19 @@ function CreateMatchContent() {
           />
         )}
         {created ? (
-          <InviteFailures failed={created.failedInvites} />
+          <>
+            {/* LTR wrapper so items-end pins right; dir on the text itself. */}
+            <div className="flex flex-col items-end text-right gap-1">
+              <p dir="rtl" className="text-base font-bold text-ink">
+                مَچ شما ثبت شد
+              </p>
+              <p dir="rtl" className="text-xs text-muted leading-5">
+                لینک دعوت را بفرستید تا هم‌بازی‌ها با یک ضربه وارد شوند.
+              </p>
+            </div>
+            <ShareCard matchId={created.id} inviteToken={created.inviteToken} />
+            {created.failedInvites.length > 0 && <InviteFailures failed={created.failedInvites} />}
+          </>
         ) : (
           <>
             {step === 0 && <StepDetails draft={draft} patch={patch} />}
