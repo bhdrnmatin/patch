@@ -165,8 +165,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       province→city searchable cascade (same pattern as profile-edit) when multi-city.
 - [x] The court map was a static SF placeholder (`court-map.webp`) — **fixed 2026-09-12**: Neshan static
       map at the club's real coordinates, proxied through `/map/static` so the key stays server-side.
-      The image is hidden (button kept) whenever that request fails. **Needs `NESHAN_API_KEY` set** —
-      until then every court map is blank by design.
+      The image is hidden (button kept) whenever that request fails.
+- [ ] **Production still has no `NESHAN_API_KEY`, so every deployed court map is blank** (found
+      2026-09-21 — it had been blank since the map shipped, and nobody had looked). The deploy
+      workflow passes no `--build-arg` and the container gets no env, so the key reaches neither
+      build nor runtime. It's a **runtime** value now: add it to `/apps/docker-compose.yml` under
+      the frontend service's `environment:` and recreate. Verified end to end against the real
+      production image — `docker run -e NESHAN_API_KEY=…` serves a 148KB PNG, without it Neshan
+      480s and the map hides itself. Nothing in the repo can fix this; the compose file lives on
+      the server.
 - [x] Dedup: the map + مسیریابی button in StepLocation duplicated match-details `CourtCard` —
       **fixed 2026-09-12**, both compose `CourtMap`. That duplication is *why* the bug existed twice.
 - [ ] `MatchDetails.courtLat/courtLng` are mock values (باشگاه انقلاب ≈ 35.7088, 51.3854) — the match

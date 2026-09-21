@@ -8,6 +8,16 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-21 — the deployed court map has never had a key
+- [Deploy] **`NESHAN_API_KEY` reaches neither the build nor the container**, so every court map on
+  the deployed site has been blank since the map shipped on 2026-09-12 — the workflow passes no
+  `--build-arg` and compose sets no env. It degraded exactly as designed (map hidden, مسیریابی kept),
+  which is why it went unnoticed.
+- [Deploy] The key is a **runtime** value now that `/map/static` is a route handler, so the Dockerfile
+  deliberately doesn't bake it: it belongs in the container's `environment:`, where rotating it needs
+  no rebuild and it never ships in an image layer. Both stages' dead `ARG`/`ENV` are gone.
+  **Still needs doing on the server** — nothing in the repo can supply it.
+
 ### 2026-09-21 — the production build was broken, and the map was uncacheable
 - [Build] **`npm run build` has failed since `685e14a`** — `useSearchParams()` on `/login` and
   `/profile-setup` (added to carry `next` through an invite link) needs a Suspense boundary or the
