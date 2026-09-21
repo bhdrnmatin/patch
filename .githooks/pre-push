@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+# Refuse to push code that can't build.
+#
+# `npm run build` is the only check that catches a page opting out of static
+# prerendering — `tsc --noEmit` and eslint both pass on it. On 2026-09-20 that
+# shipped a red build to a deploy nobody watches, and nothing deployed for a day
+# because the failure was only visible as a red tick in Gitea's Actions tab.
+#
+# Skipped when the push carries no code, and `git push --no-verify` skips it
+# outright for the times you know better.
+
+ZERO=0000000000000000000000000000000000000000
+changed=""
+
+# stdin gives one line per ref being pushed: <local ref> <local sha> <remote ref> <remote sha>
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$ZERO" ] && continue  # deleting a branch pushes no code
+  if [ "$remote_sha" = "$ZERO" ]; then
+    # New branch on the remote: no common base to diff, so check its tip commit.
+    files=$(git show --name-only --pretty=format: "$local_sha")
+  else
+    files=$(git diff --name-only "$remote_sha" "$local_sha")
+  fi
+  changed=$(printf '%s\n%s' "$changed" "$files")
+done
+
+# A session write-up is CHANGELOG + TODO + session-state and nothing else; it
+# can't break a build, and this runs on every push.
+#
+# Tested by listing the non-doc files rather than asking `grep -q -v` whether any
+# exist: -q short-circuits on the first selected line, and which line that is
+# depends on the grep. ugrep and GNU grep gave opposite answers here.
+if [ -z "$(printf '%s\n' "$changed" | grep -vE '\.md$|^$')" ]; then
+  exit 0
+fi
+
+echo "pre-push: npm run build…"
+log=$(mktemp)
+if npm run build >"$log" 2>&1; then
+  rm -f "$log"
+  exit 0
+fi
+
+tail -40 "$log"
+rm -f "$log"
+echo
+echo "pre-push: build failed — nothing pushed. Fix it, or 'git push --no-verify' to override."
+exit 1

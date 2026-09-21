@@ -127,6 +127,13 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [x] **`useCollapseHeader(range)` contract is comment-only** — **done 2026-08-12**: the hook takes no
       argument and reads `--hero-max`/`--hero-min` off the element, so the caller can't state a range
       that disagrees with the CSS. Callers just add `.hero-collapse` and a `h-[var(--hero-max)]` spacer.
+- [x] **A red build is caught before it's pushed — done 2026-09-21.** `.githooks/pre-push` runs
+      `npm run build` and refuses the push on failure (enable per clone with
+      `git config core.hooksPath .githooks`; docs-only pushes skip it, `--no-verify` overrides).
+      Verified by reintroducing the 2026-09-20 `/login` prerender bug: the hook fails with Next's
+      own message and exits 1. This is prevention, not CI — the deploy still goes red silently in
+      Gitea, so **a notification on a failed deploy is still worth having** if pushes ever bypass
+      the hook (another clone, a CI-side failure that doesn't reproduce locally).
 - [ ] Smaller: sheet actions into `BottomSheet`'s `footer` (SortSheet/FilterSheet convention), focus the
       phone field on view switch, rename the stale `slotLabel` prop, hook assumes `window` is the scroller.
 - [~] **Device check** — the collapsing header has now been seen in a **desktop headless Chrome** at

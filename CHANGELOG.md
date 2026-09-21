@@ -8,6 +8,15 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-21 — a red build can't be pushed any more
+- [Dev] **`.githooks/pre-push` runs `npm run build` and refuses a push that fails it.** `npm run
+  build` is the only check that catches a page opting out of static prerendering — tsc and eslint
+  both pass on one — and that cost a day of no deploys on 2026-09-20.
+- [Dev] Opt-in per clone (`git config core.hooksPath .githooks`, documented in README), because git
+  never applies a repo's hooks on its own. Docs-only pushes skip the build; `--no-verify` overrides.
+- [Dev] Verified by reintroducing the original `/login` bug: the hook prints Next's own prerender
+  error and exits 1.
+
 ### 2026-09-21 — the deployed court map has never had a key
 - [Deploy] **`NESHAN_API_KEY` reaches neither the build nor the container**, so every court map on
   the deployed site has been blank since the map shipped on 2026-09-12 — the workflow passes no

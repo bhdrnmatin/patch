@@ -32,6 +32,21 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 > Because Patch targets phones, view it in your browser's device/responsive
 > mode at a ~390px width (e.g. iPhone) — desktop is not a supported layout.
 
+### One-time: enable the pre-push build check
+
+```bash
+git config core.hooksPath .githooks
+```
+
+`.githooks/pre-push` runs `npm run build` before a push that carries code, and
+refuses the push if it fails. It's opt-in per clone because git never applies a
+repository's hooks on its own.
+
+It exists because `npm run build` is the only check that catches a page opting
+out of static prerendering — `tsc --noEmit` and eslint both pass on one. That
+shipped a red build to the deploy on 2026-09-20 and nothing deployed for a day.
+Docs-only pushes skip the build; `git push --no-verify` overrides it.
+
 ## Routes — where to look
 
 **Reachable from the bottom nav / UI**
