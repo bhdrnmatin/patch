@@ -1,5 +1,81 @@
 # Session State
 
+## Session — 2026-09-21: the wizard's share card, and a build nobody was watching
+Four commits, all pushed to both remotes (head `7fcf26b`). It started as one small feature and
+turned into finding that the last three days' work had never left the machine.
+
+### The wizard ends on a share card
+The wizard could not share the invite link — the token only exists once the match is created, so
+«رفتن به مَچ» sent the organizer to the match page to find it. Create now lands on a **success step**
+carrying `ShareCard`, which is the moment an organizer most wants the link.
+
+- **The step already existed — it just only appeared when an invite had failed.** A share button
+  there would almost never have rendered, so it always appears now and `InviteFailures` became its
+  failure half (its copy points at the card above it instead of at the match page). Every create
+  stops here now; that was a deliberate flow change, not a side effect.
+- `createMatch` returns the create response's `inviteToken` beside the id. The field was there all
+  along and only the id was being read off it. **Confirmed live** — a fresh match shares
+  `/join/{token}`, not its own URL.
+- `ShareCard` stops drawing «محدودیت ورود» when there is no restriction. Levels ship after the MVP,
+  so that was *every* real match: a label with nothing after it, on the match page too.
+- **Tested on the phone and it works** — the OS share sheet opens, which desktop could never show
+  (Chrome has no `navigator.share`, so localhost only ever exercised the clipboard fallback).
+
+### The production build had been red for a day
+`npm run build` **had been failing since `685e14a`** (2026-09-20). That commit gave `/login` and
+`/profile-setup` a `next` param so an invite link survives signing up, and `useSearchParams` opts a
+page out of static prerendering unless it sits under a Suspense boundary. The build bailed on
+`/login` and **nothing had deployed since** — including that day's share-link work.
+
+Nothing catches this: **`tsc --noEmit` passes, eslint passes, the dev server is fine.** It only shows
+up in a real build, and the only thing that runs one is the deploy, which goes red in a Gitea tab
+nobody opens. Both pages now use the same wrapper `/otp`, `/matches/[id]` and the wizard already had.
+
+**`.githooks/pre-push` now runs the build and refuses a push that fails it** — verified by putting
+the `/login` bug back, not by assuming. Opt-in per clone (`git config core.hooksPath .githooks`,
+in the README), docs-only pushes skip it, `--no-verify` overrides. It is prevention, not CI: a push
+from another clone or a failure that only happens in Docker still goes red silently. **A Telegram
+notification on a failed deploy is the backstop and the user wants it later.**
+
+### The court map has never worked in production
+Chasing the open «what `Cache-Control` does Neshan send» TODO answered it — **none at all.** No
+`Cache-Control`, no `ETag`, no `Last-Modified` on a 148KB PNG, so it was not even heuristically
+cacheable and every return to a club refetched it.
+
+**The fix that TODO proposed cannot work, and that is the durable finding: Next skips `headers()`
+entirely for an *external* rewrite** and passes the upstream response through untouched. Verified,
+not assumed — the identical rule lands on `/matches` and never on `/map/static`. So `/map/static` is
+a **route handler** (`app/map/static/route.ts`) that owns its response: `public, max-age=86400` on a
+hit, `no-store` on a failure, and a server-side `revalidate` so Neshan is hit once per club rather
+than once per visitor.
+
+Which surfaced the real bug: **`NESHAN_API_KEY` reaches neither the build nor the container**, so
+every deployed court map has been blank since the map shipped on 2026-09-12. The deploy workflow
+passes no `--build-arg` and compose sets no env; the Dockerfile comment claiming CI passed it was
+aspirational. It degraded exactly as designed — map hidden, مسیریابی kept — which is why nobody
+noticed. **The key is a runtime value now**, so the Dockerfile deliberately bakes it in neither
+stage. Verified end to end against the real production image: `docker run -e NESHAN_API_KEY=…` serves
+the PNG, the same image without it gets Neshan's 480.
+
+**The user has sent the ask.** The remaining half is one line in `/apps/docker-compose.yml` under the
+frontend service's `environment:`, then recreate — no rebuild, it is read at runtime.
+
+### Worth knowing
+- **`grep` in the Claude terminal is a `ugrep` wrapper**, and it answers `grep -q -v` the *opposite*
+  way to GNU grep — it classified every commit as docs-only. Anything under `sh` gets the real grep,
+  so the hook was never affected, but `-q` stops at the first selected line and greps disagree about
+  which that is. Prefer listing matches over asking `-q` whether any exist.
+- `api.neshan.org` needs `NO_PROXY` like `patchapp.ir` does, or it fails at TLS.
+- The deployed app is **`app.patchapp.ir`**; `patchapp.ir` serves something else.
+
+### Next
+- **Telegram notification on a failed deploy** — ~10 lines of YAML in `.gitea/workflows/deploy.yml`
+  plus a bot token and a chat id. Needs the destination from the user.
+- **Confirm the court maps appear** once the compose env lands.
+- Still open: the audit findings (33 across 22 files, heaviest `ActivityCard` 4 / `TournamentCard` 3
+  / `CourtCard` 3), the dead `bgImage`/`athleteImage` hero props, the ball behind the first date
+  cell, the password-login test account, and last session's backend asks.
+
 ## Session — 2026-09-17/20: the wizard on a real phone, /activity, and the share link
 Fourteen commits, all pushed to both remotes (head `685e14a`). The session was a phone in the
 user's hand and a terminal probing the live API — almost nothing here was decided by reading code.
