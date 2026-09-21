@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
@@ -29,7 +29,7 @@ const SIDE_OPTIONS: SelectOption[] = [
   { value: "LEFT", label: "چپ" },
 ];
 
-export default function ProfileSetupPage() {
+function ProfileSetupContent() {
   const router = useRouter();
   // Carried from the login step: a share link's target survives signup.
   const searchParams = useSearchParams();
@@ -191,5 +191,14 @@ export default function ProfileSetupPage() {
         </AuthSlide>
       </div>
     </div>
+  );
+}
+
+/** Suspense boundary for `useSearchParams` — see the note on /login. */
+export default function ProfileSetupPage() {
+  return (
+    <Suspense>
+      <ProfileSetupContent />
+    </Suspense>
   );
 }

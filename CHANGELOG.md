@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-21 — the production build was broken, and the map was uncacheable
+- [Build] **`npm run build` has failed since `685e14a`** — `useSearchParams()` on `/login` and
+  `/profile-setup` (added to carry `next` through an invite link) needs a Suspense boundary or the
+  page can't be prerendered. Both now use the same wrapper `/otp` and the wizard already had. Nothing
+  had deployed since.
+- [Map] **`/map/static` is a route handler, not a rewrite.** Neshan sends no `Cache-Control`, no
+  `ETag` and no `Last-Modified` (probed), so every return to a club refetched an identical 148KB PNG —
+  and a `headers()` rule can't fix a rewrite, because Next skips `headers()` for external
+  destinations. The handler sets `public, max-age=86400`, `no-store` on a failure, and caches
+  server-side so Neshan is hit once per club rather than once per visitor.
+
 ### 2026-09-21 — the wizard ends on a share card
 - [Create] **Creating a match now lands on a success step instead of jumping to the match.** It says
   «مَچ شما ثبت شد» and offers the invite link right there — the moment an organizer most wants it.

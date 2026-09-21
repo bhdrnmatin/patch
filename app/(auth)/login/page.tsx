@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import AuthSlide from "../_components/AuthSlide";
 import AuthCard from "../_components/AuthCard";
@@ -15,7 +15,7 @@ import { isValidMobile, toLatinDigits } from "@/lib/persian";
 
 const BG = "/images/auth-login.webp";
 
-export default function LoginPage() {
+function LoginContent() {
   useRedirectIfAuthed();
   const router = useRouter();
   // Set when a share link sent a signed-out visitor here — it rides through the
@@ -80,6 +80,20 @@ export default function LoginPage() {
         </AuthSlide>
       </div>
     </div>
+  );
+}
+
+/**
+ * `useSearchParams` opts a page out of static prerendering unless it sits under
+ * a Suspense boundary — without this the production build fails outright on
+ * this page (it did, from the day `next` was added here). Same wrapper /otp,
+ * /matches/[id] and the wizard already use.
+ */
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
 

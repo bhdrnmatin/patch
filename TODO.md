@@ -27,11 +27,13 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       `dayStrip()` derives it from the clock and `MatchListItem.day` (Tehran date) is what a cell
       matches. No day selected on open (user decision); re-tap clears. Tournaments/activity strips
       stay cosmetic — their list items carry no ISO date.
-- [ ] **Check what `Cache-Control` Neshan sends on `/v5/static`.** The `/map/static` rewrite passes
-      the upstream headers straight through, so if they are `no-store` every return to an
-      already-viewed club refetches an identical image. A club's coordinates don't move, so a
-      `headers()` rule in `next.config.ts` would make revisits instant — not added 2026-09-14 because
-      the current headers hadn't been seen. One curl decides it.
+- [x] **Neshan's cache headers — probed 2026-09-21: there are none.** No `Cache-Control`, no `ETag`,
+      no `Last-Modified` on a 148KB PNG, so it wasn't even heuristically cacheable and every return to
+      a club refetched it. The `headers()` rule this item proposed **cannot work** — Next skips
+      `headers()` entirely for an *external* rewrite (verified: the same rule lands on a normal route
+      and never on the rewritten one). `/map/static` is a route handler now (`app/map/static/route.ts`)
+      that owns its response: `public, max-age=86400` on a hit, `no-store` on a failure, plus a
+      server-side `revalidate` so one club's map is fetched from Neshan once for everyone.
 - [ ] FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now unblocked** — `MatchListItem.day`
       is an ISO date, so all three are computable. Left unwired 2026-09-14: the strip already covers
       picking a day, so wire this only if the facet is worth keeping beside it.
