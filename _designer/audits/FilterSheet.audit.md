@@ -10,3 +10,13 @@ Composes [[BottomSheet]] + [[FilterSection]]; levels use `toPersianDigits`.
 
 ### Status
 Open: 1 | Fixed: 1 | Accepted: 1
+
+## v2 — 2026-09-22 | wired
+#3 Closed v2 — وضعیت and لول wired 2026-07-12; **تاریخ** wired today via `dateFacetRange`
+(`lib/jalali.ts`, tested): امروز/این هفته/این ماه as real Jalali ranges — the week ends on جمعه,
+the month on its own last day (29/30/31), and a facet never reaches backwards. **مسافت removed**
+(user). Left open elsewhere, not here: **نوع** still can't narrow — the card carries no
+`matchType`, and رقابتی is refused by the API anyway. Tracked in TODO.md.
+
+### Status
+Open: 0 | Fixed: 2 | Accepted: 1

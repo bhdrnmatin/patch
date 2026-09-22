@@ -10,3 +10,12 @@ Composes [[BottomSheet]] + [[FilterSection]].
 
 ### Status
 Open: 1 | Fixed: 1 | Accepted: 1
+
+## v2 — 2026-09-22 | wired
+#3 Closed v2 — هزینه ورودی wired 2026-07-12; **تاریخ** wired today, sorting on
+`MatchListItem.startMs` (the real Tehran start, so two matches the same afternoon order right).
+**مسافت removed** (user): it needs the viewer's location and the MVP ships one city, so the
+control could only ever have done nothing. `MatchSort` lost its `distance` field with it.
+
+### Status
+Open: 0 | Fixed: 2 | Accepted: 1
