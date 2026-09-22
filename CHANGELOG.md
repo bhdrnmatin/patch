@@ -8,6 +8,17 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-22 — the invite link can be revoked
+- [Match] **`ShareCard` can replace the invite link.** `POST /matches/{id}/invite-token/regenerate`
+  hands back the match with a new `inviteToken` and the old one immediately 404s, so a link that
+  went to the wrong group chat is no longer permanent. Organizer only (`canRevoke`, from
+  `role === "creator"`), and the wizard's success card doesn't show it — a link seconds old has
+  nowhere to have leaked to yet.
+- [Match] **It asks twice.** The first tap arms, the second calls — this is the only irreversible
+  thing in the app that breaks something for *other* people (every copy already sent dies), and
+  there is no way back to the old token. On success it invalidates `["matchDetails", id]`, because
+  the page is holding the token it just killed.
+
 ### 2026-09-22 — a cancelled match was still a joinable invite
 - [Join] **`app/join/[token]` now reads `match.status`.** Deleting a match only *soft*-cancels
   it, and `GET /matches/invite/{token}` keeps answering **200** with the token intact — so the

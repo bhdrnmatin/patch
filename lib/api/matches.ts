@@ -235,6 +235,20 @@ export function cancelMatch(matchId: string): Promise<MatchResponse> {
 }
 
 /**
+ * Replace the match's invite token, which **revokes the old link**: probed
+ * 2026-09-22, `GET /matches/invite/{old}` 404s the moment this returns. The
+ * response is the whole match, carrying the new `inviteToken`.
+ *
+ * Organizer only; the server enforces it. There is no undo — the old token is
+ * gone, so anyone holding that link needs the new one.
+ */
+export function regenerateInviteToken(matchId: string): Promise<MatchResponse> {
+  return apiFetch<MatchResponse>(`/matches/${matchId}/invite-token/regenerate`, {
+    method: "POST",
+  });
+}
+
+/**
  * Approve or reject a pending join request.
  *
  * `participantId` is `MatchParticipantResponse.id`, not an account id. Only the

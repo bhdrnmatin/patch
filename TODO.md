@@ -336,8 +336,10 @@ Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. A
       card shows a map and a name while a logo and a tap-to-call number sit in the payload.
 
 ### Unbuilt endpoints that exist (organizer tools)
-- [ ] `POST /matches/{id}/invite-token/regenerate` — revoke a leaked invite link. Verified: new
-      token, old one 404s. The natural sibling of `ShareCard`.
+- [x] `POST /matches/{id}/invite-token/regenerate` — **built 2026-09-22.** `ShareCard` offers
+      «ساخت لینک تازه» to the organizer (`canRevoke`, `role === "creator"`), two-tap confirmed
+      because it breaks every copy already sent, then invalidates `["matchDetails", id]` so the
+      card shares the new token. Still **untested on a device**.
 - [ ] `DELETE /matches/invitations/{invitationId}` — organizer withdraws an invite they sent.
       Verified working (status → CANCELLED).
 - [ ] `DELETE /matches/{id}/participants/{participantId}` — organizer removes a player. Exists;

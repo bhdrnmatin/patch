@@ -162,7 +162,12 @@ function MatchDetailsContent() {
 
         <PromoCard />
         <CourtCard club={m.club} note={m.courtNote} lat={m.courtLat} lng={m.courtLng} />
-        <ShareCard restriction={m.restriction} matchId={id} inviteToken={m.inviteToken} />
+        <ShareCard
+          restriction={m.restriction}
+          matchId={id}
+          inviteToken={m.inviteToken}
+          canRevoke={role === "creator"}
+        />
         {m.faq.length > 0 && <FaqSection faq={m.faq} />}
       </div>
 
