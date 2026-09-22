@@ -146,15 +146,15 @@ export function ChevronDownIcon({ className }: IconProps) {
   );
 }
 
-/** Chevron pointing left ("همه" link), 16px. */
-export function ChevronLeftIcon({ className }: IconProps) {
+/** Handset, for the club's tap-to-call row. */
+export function PhoneIcon({ className }: IconProps) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={className} aria-hidden>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
       <path
-        d="M10.67 2.25L5.88 7.04C5.35 7.57 5.35 8.43 5.88 8.96L10.67 13.75"
+        d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5Z"
         stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
       />
     </svg>
   );

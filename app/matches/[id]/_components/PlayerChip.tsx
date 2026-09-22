@@ -1,3 +1,4 @@
+import { CloseIcon } from "../../../(main)/_components/icons";
 import { toPersianDigits } from "../../../../lib/persian";
 import type { MatchPlayer } from "../../../../lib/types";
 
@@ -34,8 +35,8 @@ export default function PlayerChip({ player, onRemove, removing }: Props) {
           aria-busy={removing}
           className="absolute -top-2 -left-2 size-11 flex items-center justify-center disabled:opacity-40"
         >
-          <span className="size-5 rounded-full bg-surface border border-edge text-muted flex items-center justify-center text-xs leading-none shadow-card">
-            ✕
+          <span className="size-5 rounded-full bg-surface border border-edge text-muted flex items-center justify-center shadow-card">
+            <CloseIcon className="size-3" />
           </span>
         </button>
       )}
