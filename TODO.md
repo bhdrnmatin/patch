@@ -330,6 +330,14 @@ Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. A
       zoom that crops the racket, so it's accepted; revisit only with a re-framed photo.
 - [ ] Past-day date cells look grey in the collapsed bar over the photo — minor, raised by me, not the user.
 
+## Next session — ds-qa-tw audit (user, 2026-09-22)
+
+- [ ] **Audit the UI that shipped 2026-09-22 before starting anything new.** It was an API-wiring
+      day, so a11y and token checks were skipped: `PlayerChip`'s organizer ✕, `PlayersSection`'s
+      remove mutation, `CourtCard`'s club logo + tap-to-call row, `ShareCard`'s two-tap revoke and
+      copy-failed fallback, `MatchDetailsHeader`'s wired share pill, and the cancelled-match frame
+      (`MatchStageCard` with no dial). Each audit file already flags these as not yet audited.
+
 ## API probe — 2026-09-22 (see `_designer/api-findings.md`, last section)
 
 ### App-side, no backend needed
