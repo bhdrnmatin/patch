@@ -386,7 +386,8 @@ opposed to what its spec claims — is recorded in
   the organizer gets ویرایش + «لغو مَچ», a non-organizer gets «لغو ارسال درخواست ورود».
 - [ ] **Not yet wired, all available today:** `POST /matches/{id}/join`,
   `DELETE /matches/{id}/participants/me`, the approve/reject actions, and the invite-token flow.
-- [ ] **No endpoint exists at all for:** tournaments, activity, notification counts. Those stay on
+- [ ] **No endpoint exists at all for:** tournaments (route parked 2026-09-22, out of MVP),
+      activity, notification counts. Those stay on
   mocks regardless of anything above.
 - (`/otp/request`'s earlier 500 now appears resolved — login completes end-to-end.) See TODO.md.
 

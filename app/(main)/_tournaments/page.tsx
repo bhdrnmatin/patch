@@ -1,3 +1,7 @@
+// PARKED 2026-09-22 — out of the MVP, not deleted. The leading `_` makes this a Next
+// private folder, so /tournaments no longer routes while the page and its
+// `_components/` still compile and type-check. Rename the folder back to
+// `tournaments` to revive it. There is no tournaments API; the list is mock.
 "use client";
 
 import { useState } from "react";

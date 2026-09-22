@@ -1,5 +1,15 @@
 # TODO
 
+## Out of MVP scope (user, 2026-09-22)
+
+- **Tournaments — route parked 2026-09-22.** No backend API exists for them and none is
+  planned for the MVP. The folder is `app/(main)/_tournaments/`; the leading `_` makes it a
+  Next private folder, so nothing routes while the page and its `_components/` still compile
+  and type-check (same treatment as `_onboarding`). Rename it back to revive it. Nothing below
+  is a to-do — don't wire, audit or polish them.
+- **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
+  story on red builds.
+
 ## Token gaps — Matches audit (2026-06-08)
 
 The Matches components use recurring hardcoded grays with no token (consistent
@@ -38,7 +48,8 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       is an ISO date, so all three are computable. Left unwired 2026-09-14: the strip already covers
       picking a day, so wire this only if the facet is worth keeping beside it.
 - [ ] Sort by مسافت/تاریخ and filter by مسافت/نوع select but don't narrow — `MatchListItem` has no
-      distance or match-type field; wire when the API adds them. Same for tournaments/activity lists.
+      distance or match-type field; wire when the API adds them. Same for the activity list
+      (tournaments are out of MVP scope).
 - [ ] MatchCard: consider `<ul>/<li>` list semantics + `<h2>` heading order.
 
 ## Token gaps — Match Details audit (2026-06-10)
@@ -52,10 +63,10 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 - [x] Decision (gray ramp) — **blessed 2026-06-11**: nearest-token mapping is the rule
       (documented in CLAUDE.md Design Tokens); no ramp tokens added.
 
-## Tournaments — audit (2026-06-16)
+## Tournaments — audit (2026-06-16) — **OUT OF MVP SCOPE**
 ### Behavior wiring (post-mock)
-- [ ] TournamentCard: make the "جزئیات تورنومنت" CTA a `<Link href="/tournaments/{id}">`
-      once the detail route exists (currently a dead `<button>`). Same shape as the MatchCard CTA item.
+- [~] TournamentCard CTA → `<Link href="/tournaments/{id}">` — **dropped 2026-09-22**, no
+      tournaments API for the MVP. The dead `<button>` stays dead.
 ### Token gaps
 - [x] Token gap (TournamentPoster): `rounded-[20px]` (20px radius) — **accepted as one-off 2026-06-16**
       (consistent with sheet 40px / close 20px single-use radii). Revisit if a second consumer appears.
@@ -257,8 +268,8 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       the client side (`navigator.credentials.get({ otp })` + `autocomplete="one-time-code"`) is wired.
 - [ ] `username` was dropped from profile-setup on 2026-08-03 on the promise the backend is removing it —
       confirm it's actually gone from the API contract (and that `preferredSide` on display-info is final).
-- [ ] Swap the mock `lib/data/*` accessor bodies to `fetch` as matches/tournaments/courts/activity
-      endpoints ship (the seam is already in place).
+- [ ] Swap the mock `lib/data/*` accessor bodies to `fetch` as matches/courts/activity endpoints
+      ship (the seam is already in place). Not tournaments — out of MVP scope.
 
 ## Activity — audit (2026-06-17)
 ### Behavior wiring (post-mock)

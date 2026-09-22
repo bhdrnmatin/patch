@@ -34,8 +34,9 @@ nobody opens. Both pages now use the same wrapper `/otp`, `/matches/[id]` and th
 **`.githooks/pre-push` now runs the build and refuses a push that fails it** — verified by putting
 the `/login` bug back, not by assuming. Opt-in per clone (`git config core.hooksPath .githooks`,
 in the README), docs-only pushes skip it, `--no-verify` overrides. It is prevention, not CI: a push
-from another clone or a failure that only happens in Docker still goes red silently. **A Telegram
-notification on a failed deploy is the backstop and the user wants it later.**
+from another clone or a failure that only happens in Docker still goes red silently. ~~A Telegram
+notification on a failed deploy is the backstop~~ — **dropped by the user 2026-09-22**; the hook
+is the whole story.
 
 ### The court map has never worked in production
 Chasing the open «what `Cache-Control` does Neshan send» TODO answered it — **none at all.** No
@@ -69,12 +70,13 @@ frontend service's `environment:`, then recreate — no rebuild, it is read at r
 - The deployed app is **`app.patchapp.ir`**; `patchapp.ir` serves something else.
 
 ### Next
-- **Telegram notification on a failed deploy** — ~10 lines of YAML in `.gitea/workflows/deploy.yml`
-  plus a bot token and a chat id. Needs the destination from the user.
+- **Scope cut (user, 2026-09-22):** no Telegram deploy notification, and **tournaments are out of
+  the MVP** — there is no backend API for them and none planned. Their route/mock/components stay
+  compiled but nothing about them is a to-do.
 - **Confirm the court maps appear** once the compose env lands.
-- Still open: the audit findings (33 across 22 files, heaviest `ActivityCard` 4 / `TournamentCard` 3
-  / `CourtCard` 3), the dead `bgImage`/`athleteImage` hero props, the ball behind the first date
-  cell, the password-login test account, and last session's backend asks.
+- Still open: the audit findings (30 across 21 files once `TournamentCard` is set aside, heaviest
+  `ActivityCard` 4 / `CourtCard` 3), the dead `bgImage`/`athleteImage` hero props, the ball behind
+  the first date cell, the password-login test account, and last session's backend asks.
 
 ## Session — 2026-09-17/20: the wizard on a real phone, /activity, and the share link
 Fourteen commits, all pushed to both remotes (head `685e14a`). The session was a phone in the
