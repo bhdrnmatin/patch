@@ -97,6 +97,27 @@ function JoinContent() {
   // member from seeing "you are invited" for a second on the way to the match.
   if (!match || checkingMembership || alreadyIn) return <Spinner />;
 
+  // A cancelled or finished match still answers `GET /matches/invite/{token}`
+  // with 200 and its token intact (probed 2026-09-22) — deleting a match only
+  // soft-cancels it. Without this the page drew the whole invitation and a
+  // «پیوستن به مَچ» button for a match nobody can join. Only OPEN is joinable:
+  // FINISHED and both cancelled kinds are dead ends. It sits *after* the
+  // membership check so someone already in the match still lands on it.
+  if (match.status !== "OPEN") {
+    const finished = match.status === "FINISHED";
+    return (
+      <Message
+        title={finished ? "این مَچ برگزار شده است" : "این مَچ لغو شده است"}
+        text={
+          finished
+            ? "این مَچ تمام شده و دیگر نمی‌توانید به آن بپیوندید."
+            : "برگزارکننده این مَچ را لغو کرده است. برای مَچ تازه با او در تماس باشید."
+        }
+        onBack={() => router.replace("/matches")}
+      />
+    );
+  }
+
   const club = clubs?.content.find((c) => c.id === match.clubId);
   const organizer = `${match.organizer.firstName ?? ""} ${match.organizer.lastName ?? ""}`
     .replace(/\s+/g, " ")

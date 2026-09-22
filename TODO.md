@@ -7,6 +7,9 @@
   Next private folder, so nothing routes while the page and its `_components/` still compile
   and type-check (same treatment as `_onboarding`). Rename it back to revive it. Nothing below
   is a to-do — don't wire, audit or polish them.
+- **Profile privacy toggle.** All profiles are public for the MVP. `PUT /players/me/visibility`
+  and `PlayerResponse.profileVisibility` both work (probed live 2026-09-22, full round trip), but
+  the feature is not wanted — leave the «حریم شخصی» row in `profile/settings/page.tsx` commented out.
 - **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
   story on red builds.
 
@@ -315,3 +318,35 @@ Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. A
 - [ ] The ball in `hero-court.webp` tucks ~5px behind the first date cell. Clearing it needs a ~57px
       zoom that crops the racket, so it's accepted; revisit only with a re-framed photo.
 - [ ] Past-day date cells look grey in the collapsed bar over the photo — minor, raised by me, not the user.
+
+## API probe — 2026-09-22 (see `_designer/api-findings.md`, last section)
+
+### App-side, no backend needed
+- [ ] **A cancelled match still renders as a joinable invite.** `GET /matches/invite/{token}`
+      answers 200 with `status: CANCELLED` after the organizer deletes the match, and
+      `app/join/[token]/page.tsx` only shows «این لینک معتبر نیست» when that GET *errors* —
+      so the page draws the whole invitation and a «پیوستن به مَچ» button. Treat
+      `status !== "OPEN"` as the same dead end the 404 already takes.
+- [ ] **`POST /otp/verify` already returns `profileCompletionStatus`** (`INCOMPLETE`/`COMPLETE`).
+      `app/(auth)/otp/page.tsx:87` throws it away and spends a `fetchQuery(["me"])` to learn the
+      same thing. Declaring it on `VerifyOtpResponse` and routing off it deletes that round trip
+      **and** the account-switch staleness item above.
+- [ ] **Clubs carry `logoUrl`, `bannerUrl` and `contactPhone`** (all 5 seeded, real files on
+      `media.patchapp.ir`). Declared at `lib/api/types.ts:62-65`, rendered nowhere — the court
+      card shows a map and a name while a logo and a tap-to-call number sit in the payload.
+
+### Unbuilt endpoints that exist (organizer tools)
+- [ ] `POST /matches/{id}/invite-token/regenerate` — revoke a leaked invite link. Verified: new
+      token, old one 404s. The natural sibling of `ShareCard`.
+- [ ] `DELETE /matches/invitations/{invitationId}` — organizer withdraws an invite they sent.
+      Verified working (status → CANCELLED).
+- [ ] `DELETE /matches/{id}/participants/{participantId}` — organizer removes a player. Exists;
+      the self-kick guard is verified, the happy path is not (needs a second account).
+- [ ] `POST /auth/logout-all` — "sign out everywhere"; `LogoutRow` ends this session only.
+
+### Backend asks (new)
+- [ ] **A cancelled invitation still blocks the phone.** After `DELETE /matches/invitations/{id}`
+      (→ `CANCELLED`), re-inviting the same number answers `matchmaking.invite.alreadyInvited`,
+      so cancel-then-re-invite is impossible. Either free the number or say it's deliberate.
+- [ ] **A revoked invite link 404s as `مچ یافت نشد`** — indistinguishable from a bad link. A
+      distinct code would let the join page say "this link was replaced, ask for a new one".

@@ -8,6 +8,20 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-22 — a cancelled match was still a joinable invite
+- [Join] **`app/join/[token]` now reads `match.status`.** Deleting a match only *soft*-cancels
+  it, and `GET /matches/invite/{token}` keeps answering **200** with the token intact — so the
+  page, which only showed «این لینک معتبر نیست» when that GET *errored*, drew the full
+  invitation and a «پیوستن به مَچ» button for a match nobody can join. Only `OPEN` is joinable;
+  `FINISHED` and both cancelled kinds now get their own dead-end copy. The guard sits after the
+  membership check, so someone already in the match still lands on the match page.
+- [API] Found by a live probe of the endpoints the app never calls (2026-09-22) — full write-up
+  in `_designer/api-findings.md`. Also confirmed there: `invite-token/regenerate` really revokes
+  (old token 404s), `cancelInvitation` works but does **not** free the phone for a re-invite, and
+  every club now carries a real `logoUrl`/`bannerUrl`/`contactPhone` that nothing renders.
+- [Scope] Tournaments route parked (`app/(main)/_tournaments/`), profile privacy toggle and the
+  Telegram deploy notification dropped — none is in the MVP.
+
 ### 2026-09-21 — a red build can't be pushed any more
 - [Dev] **`.githooks/pre-push` runs `npm run build` and refuses a push that fails it.** `npm run
   build` is the only check that catches a page opting out of static prerendering — tsc and eslint

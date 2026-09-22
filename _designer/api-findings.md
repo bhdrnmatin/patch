@@ -415,3 +415,59 @@ truncated or mistyped link crashes instead of showing a "link not found" page.
 All admin endpoints (no credentials), `POST /players/me/profile-photo` (skipped —
 irreversible, no delete endpoint), club banner/logo upload, `invite/{token}/join` and
 participant approve/reject (need a second account).
+
+---
+
+# Endpoint inventory + destructive probe — 2026-09-22
+
+Spec re-fetched (`GET /v3/api-docs`, unauthenticated): **37 paths / 39 operations**, up from
+34. Probed with a **fresh account** (`09379137806`, `0e824d38…`) — it signed up empty, so
+`PUT /players/me/profile` was called once to make it match-capable (تست پچ, MALE, کرج). Every
+write below was on its own throwaway match, which was deleted at the end.
+
+## The app calls 27 of the 39. The 12 it doesn't:
+
+| Endpoint | Verdict |
+|---|---|
+| `PUT /players/me/visibility` | **works, not wanted** — out of MVP, all profiles public |
+| `PUT /players/me/profile-photo/visibility` | still write-only; `PlayerResponse` has no photo-visibility field |
+| `DELETE /matches/{id}/participants/{participantId}` (`kick`) | exists, **unbuilt** — organizer can't remove a player |
+| `POST /matches/{id}/invite-token/regenerate` | exists, **unbuilt** — no way to revoke a leaked link |
+| `DELETE /matches/invitations/{invitationId}` (`cancelInvitation`) | exists, **unbuilt** — organizer can't withdraw an invite |
+| `POST /auth/logout-all` | exists, unbuilt — `LogoutRow` ends this session only |
+| `GET /clubs/{id}` | works; returns a row identical to the list entry, so no reason to call it |
+| `POST /clubs/{id}/logo`, `/banner` | club-owner uploads, no owner UI |
+| 4 × admin (`/admin/clubs*`, `/auth/admin/login`) | another app's surface; `scripts/api.sh` uses the login |
+
+## What the probe established
+
+- **`profileVisibility` round-trips.** `GET /players/me` returns it; `PUT /players/me/visibility`
+  answers 200 with the **whole updated `PlayerResponse`**, so it could `setQueryData(["me"], …)`
+  like the profile PUTs. Parked by the user, not by the API.
+- **`regenerate` is a real revoke.** New `inviteToken` in a full `MatchResponse`, and the old
+  token then **404s** — but with `مچ یافت نشد`, so a revoked link reads as "no such match".
+- **`cancelInvitation` works for the organizer** — 200, invitation comes back `status: CANCELLED`
+  (soft, like a match delete). **But it does not free the phone:** re-inviting the same number
+  answers `matchmaking.invite.alreadyInvited`, so cancel-then-re-invite is impossible. **Ask.**
+- **`kick` refuses the organizer**, by design and with good copy: 403
+  `برگزارکننده نمی‌تواند خودش را از مچ حذف کند؛ به‌جای آن مچ را لغو کنید`. Kicking a *real*
+  participant is **still unverified** — it needs a second account to accept first.
+- **A match with `profileStatus: INCOMPLETE` can't organize:** `POST /matches` → 403
+  `شما در حال حاضر واجد شرایط برگزاری مچ نیستید`. The app never hits this because its own guard
+  routes an incomplete profile to `/profile-setup`, but any API client will.
+- **`POST /otp/verify` returns `profileCompletionStatus`** (`INCOMPLETE`/`COMPLETE`, in the spec
+  and live). `app/(auth)/otp/page.tsx:87` ignores it and spends a `fetchQuery(["me"])` to learn
+  the same thing — the round trip TODO.md's staleness item is about.
+- **All 5 clubs now carry real `logoUrl`, `bannerUrl` and `contactPhone`** on
+  `media.patchapp.ir`. `lib/api/types.ts:62-65` declares all three; nothing renders any of them.
+- **`GET /matches` hides cancelled matches** — the list read 0 with a CANCELLED match of the
+  viewer's own in the database. It takes only `page`/`size`; whether it is viewer-scoped or
+  global is still unknown (the probe account has no other matches).
+
+## Bug: a cancelled match is still a joinable-looking invite
+
+`DELETE /matches/{id}` soft-cancels, and **`GET /matches/invite/{token}` keeps answering 200**
+for it, `status: CANCELLED`, token intact. `app/join/[token]/page.tsx` only shows
+«این لینک معتبر نیست» when that GET *errors*, so a link to a cancelled match renders the full
+invitation and a «پیوستن به مَچ» button. Client-side fix, no backend change: treat
+`status !== "OPEN"` as the same dead end the 404 takes.
