@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { regenerateInviteToken } from "@/lib/api/matches";
+import { matchShareUrl, shareLink } from "@/lib/share";
 import { ShareNodesIcon } from "./icons";
 
 interface Props {
@@ -54,31 +55,18 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
     },
   });
 
+  // "failed" means no share sheet, no clipboard and no execCommand — then the
+  // only thing left is to show the link so it can be copied by hand.
+  const [fallbackUrl, setFallbackUrl] = useState("");
+
   const share = async () => {
-    // /join/{token} joins on one tap, signing the opener in on the way if they
-    // are new. Without a token there is nothing to join with, so share the match.
-    const url = inviteToken
-      ? `${window.location.origin}/join/${inviteToken}`
-      : `${window.location.origin}/matches/${matchId}`;
-    const data = { title: "دعوت به مَچ", text: "بیا با هم بازی کنیم:", url };
-
-    if (navigator.share) {
-      // Cancelling the sheet rejects — that's not an error worth surfacing.
-      try {
-        await navigator.share(data);
-        return;
-      } catch {
-        return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(url);
+    const url = matchShareUrl(matchId, inviteToken);
+    const result = await shareLink(url, { title: "دعوت به مَچ", text: "بیا با هم بازی کنیم:" });
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard blocked (insecure origin / permission) — nothing else to try.
     }
+    setFallbackUrl(result === "failed" ? url : "");
   };
 
   return (
@@ -105,6 +93,15 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
           <ShareNodesIcon />
         </span>
       </button>
+
+      {fallbackUrl && (
+        <p className="px-5 text-xs text-muted text-right leading-6" dir="rtl">
+          کپی نشد. لینک:{" "}
+          <span dir="ltr" className="select-all break-all text-ink-soft">
+            {fallbackUrl}
+          </span>
+        </p>
+      )}
 
       {canRevoke && (
         <div className="flex flex-col items-end gap-1 px-5 text-right">

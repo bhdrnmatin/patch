@@ -25,6 +25,8 @@ const STAGE = {
   upcoming: { title: "در انتظار شروع بازی", nextLabel: "بازی شروع شده است", stage: 1 },
   live: { title: "بازی شروع شده است", nextLabel: "وارد کردن نتیجه", stage: 2 },
   finished: { title: "بازی تمام شده است", nextLabel: "نهایی کردن نتیجه", stage: 3 },
+  // No next step and no dial: a cancelled match is not partway through anything.
+  cancelled: { title: "این مَچ لغو شده است", nextLabel: undefined, stage: 0 },
 } as const;
 
 /** What the CTA does when tapped. `results` navigates; the rest are mutations. */
@@ -47,6 +49,9 @@ function ctaFor(
   part: ViewerParticipation,
   needsApproval: boolean,
 ): { label: string; caption?: string; action: CtaAction } | null {
+  // Nothing to join, leave, cancel or score. The page renders no bar at all.
+  if (stage === "cancelled") return null;
+
   if (role === "creator") {
     if (stage === "upcoming") return { label: "لغو مَچ", action: "cancel-match" };
     return {
@@ -104,6 +109,8 @@ function MatchDetailsContent() {
       ? statusParam
       : m.stage;
   const stage = STAGE[status];
+  // A cancelled match is read-only: no share link, no edit, no CTA.
+  const cancelled = status === "cancelled";
   const cta = ctaFor(role, status, m.viewerParticipation, m.needsApproval);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -144,10 +151,15 @@ function MatchDetailsContent() {
 
   return (
     <main className="hero-page relative mx-auto w-full max-w-[430px] bg-surface pb-36">
-      <MatchDetailsHeader title={m.title} showEdit={role === "creator"} />
+      <MatchDetailsHeader
+        title={m.title}
+        showEdit={role === "creator" && !cancelled}
+        matchId={cancelled ? undefined : id}
+        inviteToken={m.inviteToken}
+      />
 
       <div className="px-6 pt-4 flex flex-col gap-4">
-        <MatchStageCard {...stage} totalStages={3} />
+        <MatchStageCard {...stage} totalStages={status === "cancelled" ? undefined : 3} />
 
         {joinRequests && <JoinRequestsSection requests={joinRequests} matchId={id} />}
 
@@ -162,12 +174,15 @@ function MatchDetailsContent() {
 
         <PromoCard />
         <CourtCard club={m.club} note={m.courtNote} lat={m.courtLat} lng={m.courtLng} />
-        <ShareCard
-          restriction={m.restriction}
-          matchId={id}
-          inviteToken={m.inviteToken}
-          canRevoke={role === "creator"}
-        />
+        {/* Nothing to invite anyone to, and no link worth replacing. */}
+        {!cancelled && (
+          <ShareCard
+            restriction={m.restriction}
+            matchId={id}
+            inviteToken={m.inviteToken}
+            canRevoke={role === "creator"}
+          />
+        )}
         {m.faq.length > 0 && <FaqSection faq={m.faq} />}
       </div>
 

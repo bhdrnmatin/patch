@@ -174,7 +174,8 @@ export interface Court {
 }
 
 /** Match Details page (/matches/[id]) */
-export type MatchDetailsStatus = "upcoming" | "live" | "finished";
+/** `cancelled` is the match's own status; the other three are clock arithmetic. */
+export type MatchDetailsStatus = "upcoming" | "live" | "finished" | "cancelled";
 export type ViewerRole = "creator" | "player";
 /** Where the viewer stands in the match they're looking at. */
 export type ViewerParticipation = "none" | "requested" | "confirmed";

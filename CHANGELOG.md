@@ -8,6 +8,22 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-22 — what a phone found: a dead share button and a cancelled match with a result to file
+- [Match] **A cancelled match has its own frame now.** `toDetailsStatus` mapped it to `finished`,
+  so the organizer was told «بازی تمام شده است / مرحله بعد: نهایی کردن نتیجه» and offered
+  «نهایی کردن نتیجه» — a result to record for a match that never happened. It now reads
+  «این مَچ لغو شده است», draws no stage dial (it isn't partway through anything), and offers no
+  CTA, no edit pill, no share card. This is also why the join link "redirected to the match":
+  the tester was the organizer, so the membership branch sent them to the page — which then lied.
+- [Match] **The hero's «اشتراک گذاری» pill was never wired.** It had no `onClick` at all, so it
+  looked exactly like the working card below and did nothing. It shares the same link the card
+  does now, or hides itself when there's no match to share.
+- [Share] **Sharing works off a secure origin.** `navigator.share` *and* `navigator.clipboard`
+  are both gated on a secure context, so on `http://192.168.1.x:3000` — the only way this app is
+  tested on a phone — both were undefined and the old `catch {}` swallowed it into silence. New
+  `lib/share.ts` falls back to `execCommand("copy")` (the one path that works over plain http)
+  and, failing even that, shows the link to copy by hand. Production on https never reaches it.
+
 ### 2026-09-22 — the invite link can be revoked
 - [Match] **`ShareCard` can replace the invite link.** `POST /matches/{id}/invite-token/regenerate`
   hands back the match with a new `inviteToken` and the old one immediately 404s, so a link that

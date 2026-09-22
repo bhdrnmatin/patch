@@ -171,7 +171,9 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       `ShareCard`, fed by the `inviteToken` on the create response. Still *after* creation: a token
       can't exist before the match does, so sending invites from mid-wizard would need the backend to
       mint a draft/pending-match token first.
-- [ ] `navigator.share` + `navigator.clipboard` need a **secure context** — they're unavailable over
+- [x] **Secure-context sharing — fixed 2026-09-22.** `lib/share.ts` falls back to
+      `execCommand("copy")`, then to showing the link. Both share buttons use it.
+- [ ] (original note) `navigator.share` + `navigator.clipboard` need a **secure context** — they're unavailable over
       plain `http://<lan-ip>:3000`, so the share card silently no-ops in LAN dev testing. Fine in
       production (https); add a legacy `execCommand("copy")` fallback only if dev testing needs it.
 

@@ -200,12 +200,14 @@ export function viewerRole(organizerAccountId: string, viewerAccountId: string |
  * `toStatus`: the enum is declared now (2026-09-19) but carries no LIVE, so the
  * live/upcoming split is still arithmetic on `scheduledAt + durationHours`.
  *
- * A cancelled match maps to `finished` because there is nothing left to do with
- * it, and the CTA matrix has no cancelled column. Worth revisiting if the design
- * grows one.
+ * A cancelled match is its **own** frame. It used to map to `finished`, which
+ * told the organizer «بازی تمام شده است / مرحله بعد: نهایی کردن نتیجه» and
+ * offered to record a result for a match that never happened — seen on a real
+ * device 2026-09-22.
  */
 export function toDetailsStatus(m: MatchResponse): MatchDetailsStatus {
-  if (isCancelled(m) || m.status === "FINISHED") return "finished";
+  if (isCancelled(m)) return "cancelled";
+  if (m.status === "FINISHED") return "finished";
   const start = matchStartMs(m.scheduledAt);
   const end = start + m.durationHours * 3600_000;
   const now = Date.now();

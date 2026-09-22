@@ -1,15 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCollapseHeader } from "@/lib/useCollapseHeader";
 import CourtBackdrop from "../../../(main)/_components/CourtBackdrop";
 import IconButton from "../../../(main)/_components/IconButton";
 import ActionPill from "./ActionPill";
+import { matchShareUrl, shareLink } from "@/lib/share";
 import { ArrowLeftIcon, SendIcon, EditIcon } from "./icons";
 
 interface Props {
   title: string;
   showEdit?: boolean;
+  /** Wires the اشتراک گذاری pill. Without it the pill is hidden rather than dead. */
+  matchId?: string;
+  /** The invite token, so the pill shares the one-tap join link like the card does. */
+  inviteToken?: string;
   /** Blurred stadium backdrop. Omitted by default — the hero is solid `bg-primary`. */
   bgImage?: string;
   /** Sharp athlete foreground. Omitted by default (no art). */
@@ -28,15 +34,38 @@ interface Props {
  * than stepping by glyph count like the list titles — it truncates instead. It
  * still lands at 19px collapsed, on the same track as the others.
  */
-export default function MatchDetailsHeader({ title, showEdit = true, bgImage, athleteImage }: Props) {
+export default function MatchDetailsHeader({
+  title,
+  showEdit = true,
+  matchId,
+  inviteToken,
+  bgImage,
+  athleteImage,
+}: Props) {
   const router = useRouter();
   const ref = useCollapseHeader<HTMLElement>();
+  const [copied, setCopied] = useState(false);
+
+  // This pill had no `onClick` at all — it looked like the card's share button
+  // and did nothing, which is what a tester finds first. Same helper as the
+  // card, so both degrade the same way off a secure origin.
+  const share = async () => {
+    if (!matchId) return;
+    const result = await shareLink(matchShareUrl(matchId, inviteToken), {
+      title: "دعوت به مَچ",
+      text: "بیا با هم بازی کنیم:",
+    });
+    if (result !== "shared") {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <>
       <header
         ref={ref}
-        className="hero-collapse fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] rounded-b-group overflow-hidden bg-night"
+        className="hero-collapse fixed-bar fixed top-[var(--hero-gap)] left-1/2 -translate-x-1/2 z-30 w-full max-w-[430px] rounded-b-group overflow-hidden bg-night"
       >
         {!bgImage && !athleteImage && <CourtBackdrop />}
 
@@ -74,7 +103,13 @@ export default function MatchDetailsHeader({ title, showEdit = true, bgImage, at
             before the bar lands; the rule takes them to zero scale so the
             invisible buttons can't swallow a tap meant for برگشت. */}
         <div className="hero-collapse-pills absolute bottom-4 inset-x-4 flex gap-3">
-          <ActionPill icon={<SendIcon />} label="اشتراک گذاری" />
+          {matchId && (
+            <ActionPill
+              icon={<SendIcon />}
+              label={copied ? "لینک کپی شد" : "اشتراک گذاری"}
+              onClick={share}
+            />
+          )}
           {showEdit && <ActionPill icon={<EditIcon />} label="ویرایش" />}
         </div>
       </header>
