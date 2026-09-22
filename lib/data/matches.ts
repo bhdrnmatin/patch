@@ -88,6 +88,7 @@ export function toListItem(m: MatchResponse, club?: string): MatchListItem {
     capacity: m.capacity,
     date: jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     day: tehranDateISO(m.scheduledAt),
+    startMs: matchStartMs(m.scheduledAt),
     club,
   };
 }
@@ -140,10 +141,16 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     players: confirmed.map((p) => ({
       name: fullName(p.firstName, p.lastName),
       avatar: p.photoUrl ?? undefined,
+      participantId: p.id,
+      isOrganizer: p.accountId === m.organizer.accountId,
     })),
     inviteToken: m.inviteToken ?? undefined,
     courtLat: club?.latitude,
     courtLng: club?.longitude,
+    // Both come free with the club lookup the map already needs — no extra
+    // round trip, and every seeded club has a logo, a banner and a phone.
+    clubLogo: club?.logoUrl,
+    clubPhone: club?.contactPhone,
     faq: [],
     // `id` is the participant id, which is what approve/reject is addressed to.
     // `level` and `side` have no source — the row omits them.

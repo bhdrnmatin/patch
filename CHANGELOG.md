@@ -8,6 +8,27 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-22 — connecting what the API already serves
+- [Match] **The club is a club now, not a name.** `CourtCard` shows the club's logo and a
+  tap-to-call «تماس با باشگاه» row. `logoUrl`/`bannerUrl`/`contactPhone` have been in every
+  `ClubResponse` all along and `lib/api/types.ts` has declared them since the clubs API landed —
+  nothing rendered them. No extra request: the card already resolves the club for its map.
+- [Match] **The organizer can remove a player** — `DELETE /matches/{id}/participants/{id}`, another
+  endpoint that existed from day one and was never called. A ✕ on each roster chip (44px hit area;
+  a mis-tap throws someone out of a match), never on the organizer's own chip — the server refuses
+  that and says to cancel the match instead.
+- [Auth] **One less round trip after the OTP.** `POST /otp/verify` returns
+  `profileCompletionStatus`, so the page routes on it instead of fetching `/players/me` first. It
+  also drops the cached `["me"]` on the way, which is what made signing into a second account
+  route on the first account's profile.
+- [Match] **«ویرایش», «ویرایش زمین» and «همه» are gone.** All three were buttons with no `onClick`,
+  and the first two can't be built: the API has **no update-match endpoint at all**. The share pill
+  fixed earlier today was the fourth of the set.
+- [List] **مسافت is out of the sort and filter sheets** (user, 2026-09-22) — it needs the viewer's
+  location and the MVP ships one city. **تاریخ works in both now**: sorting by real start time
+  (`MatchListItem.startMs`), and امروز/این هفته/این ماه as Jalali ranges — the week ends on جمعه
+  and the month on the real last day, 29/30/31. `dateFacetRange` in `lib/jalali.ts`, with tests.
+
 ### 2026-09-22 — what a phone found: a dead share button and a cancelled match with a result to file
 - [Match] **A cancelled match has its own frame now.** `toDetailsStatus` mapped it to `finished`,
   so the organizer was told «بازی تمام شده است / مرحله بعد: نهایی کردن نتیجه» and offered

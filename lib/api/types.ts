@@ -8,6 +8,13 @@ export interface RequestOtpResponse {
 export interface VerifyOtpResponse {
   accessToken: string;
   refreshToken: string;
+  /**
+   * Where to send the user next, straight from the verify call — the same
+   * answer `GET /players/me`'s `profileStatus` gives, half a round trip
+   * earlier. Declared in the spec and confirmed live 2026-09-22. Optional
+   * because a deploy that predates it would simply omit it.
+   */
+  profileCompletionStatus?: "INCOMPLETE" | "COMPLETE";
 }
 
 // profileStatus distinguishes a freshly-verified user (needs profile-setup)

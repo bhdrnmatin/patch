@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { dateFacetRange } from "@/lib/jalali";
 import { useQuery } from "@tanstack/react-query";
 import { getMatchDays, getMatchList } from "@/lib/data";
 import MatchesHeader from "./_components/MatchesHeader";
@@ -23,17 +24,30 @@ export default function MatchesPage() {
   const [filter, setFilter] = useState<MatchFilter>(DEFAULT_MATCH_FILTER);
   const [sort, setSort] = useState<MatchSort>(DEFAULT_MATCH_SORT);
 
-  // distance/date/type facets and distance/date sorts have no backing fields
-  // on MatchListItem yet — they select but don't narrow until the API adds data.
+  // The نوع facet still has no backing field (`matchType` isn't on the card, and
+  // رقابتی is refused by the API anyway), and levels only narrow a match that
+  // has one. Everything else here narrows for real.
   const visibleMatches = useMemo(() => {
     let list = selectedDay ? matchList.filter((m) => m.day === selectedDay) : matchList;
     if (filter.status.length > 0) list = list.filter((m) => filter.status.includes(m.status));
+    // امروز / این هفته / این ماه, in the Jalali calendar the user is reading —
+    // several facets at once mean "any of these", so the widest range wins.
+    if (filter.date.length > 0) {
+      const ranges = filter.date.map((f) => dateFacetRange(f as "today" | "week" | "month"));
+      list = list.filter((m) => ranges.some((r) => m.day >= r.start && m.day <= r.end));
+    }
     // A match with no level can't be judged against a level facet, so it stays
     // visible rather than being filtered out. `String(undefined)` matched none
     // of "1".."6", so picking any level emptied the whole list of API matches.
     if (filter.levels.length > 0)
       list = list.filter(
         (m) => m.avgLevel === undefined || filter.levels.includes(String(m.avgLevel)),
+      );
+    // Soonest or latest first. `startMs` is the real Tehran start, so two
+    // matches on the same afternoon order correctly.
+    if (sort.date)
+      list = [...list].sort((a, b) =>
+        sort.date === "near" ? a.startMs - b.startMs : b.startMs - a.startMs,
       );
     if (sort.fee)
       // A match with no price (every API match — there is no such field) sorts as free.

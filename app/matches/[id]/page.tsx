@@ -153,7 +153,6 @@ function MatchDetailsContent() {
     <main className="hero-page relative mx-auto w-full max-w-[430px] bg-surface pb-36">
       <MatchDetailsHeader
         title={m.title}
-        showEdit={role === "creator" && !cancelled}
         matchId={cancelled ? undefined : id}
         inviteToken={m.inviteToken}
       />
@@ -163,17 +162,28 @@ function MatchDetailsContent() {
 
         {joinRequests && <JoinRequestsSection requests={joinRequests} matchId={id} />}
 
-        {playersPlacement === "top" && <PlayersSection players={m.players} />}
+        {playersPlacement === "top" && (
+          <PlayersSection players={m.players} matchId={id} canRemove={role === "creator" && !cancelled} />
+        )}
 
         <MatchInfoCard match={m} />
         <ScheduleCard date={m.date} deadline={m.deadline} timeRange={m.timeRange} />
         <DescriptionCard text={m.description} />
 
-        {playersPlacement === "middle" && <PlayersSection players={m.players} />}
+        {playersPlacement === "middle" && (
+          <PlayersSection players={m.players} matchId={id} canRemove={role === "creator" && !cancelled} />
+        )}
         {m.teamNote && <InfoBanner text={m.teamNote} />}
 
         <PromoCard />
-        <CourtCard club={m.club} note={m.courtNote} lat={m.courtLat} lng={m.courtLng} />
+        <CourtCard
+          club={m.club}
+          note={m.courtNote}
+          lat={m.courtLat}
+          lng={m.courtLng}
+          logo={m.clubLogo}
+          phone={m.clubPhone}
+        />
         {/* Nothing to invite anyone to, and no link worth replacing. */}
         {!cancelled && (
           <ShareCard

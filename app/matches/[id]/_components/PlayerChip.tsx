@@ -3,6 +3,9 @@ import type { MatchPlayer } from "../../../../lib/types";
 
 interface Props {
   player: MatchPlayer;
+  /** Organizer only. Absent on a chip nobody may remove — including their own. */
+  onRemove?: () => void;
+  removing?: boolean;
 }
 
 /**
@@ -14,12 +17,28 @@ interface Props {
  * needs RTL for its column order; this box needs LTR for its alignment
  * utilities. Both are true at once, hence the pin.
  */
-export default function PlayerChip({ player }: Props) {
+export default function PlayerChip({ player, onRemove, removing }: Props) {
   return (
     <div
       dir="ltr"
-      className="bg-white border border-white/15 rounded-2xl pl-3 pr-2 py-2 flex items-center justify-end gap-2 shadow-card"
+      className="relative bg-white border border-white/15 rounded-2xl pl-3 pr-2 py-2 flex items-center justify-end gap-2 shadow-card"
     >
+      {onRemove && (
+        // Small glyph, 44px hit area: it sits on a chip, and a mis-tap here
+        // throws someone out of a match.
+        <button
+          type="button"
+          onClick={onRemove}
+          disabled={removing}
+          aria-label={`حذف ${player.name} از مَچ`}
+          aria-busy={removing}
+          className="absolute -top-2 -left-2 size-11 flex items-center justify-center disabled:opacity-40"
+        >
+          <span className="size-5 rounded-full bg-surface border border-edge text-muted flex items-center justify-center text-xs leading-none shadow-card">
+            ✕
+          </span>
+        </button>
+      )}
       <div className="flex flex-col items-end gap-2 min-w-0">
         <span className="text-xs font-bold leading-[11px] text-ink-soft truncate" dir="rtl">
           {player.name}

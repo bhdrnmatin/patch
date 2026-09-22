@@ -9,6 +9,7 @@
  */
 import assert from "node:assert/strict";
 import { toDetailsStatus, toListItem, toStatus, viewerParticipation, viewerRole } from "./matches";
+import { dateFacetRange } from "../jalali";
 import type { MatchParticipantResponse, MatchResponse } from "../api/types";
 
 const hour = 3600_000;
@@ -106,10 +107,14 @@ assert.equal(toDetailsStatus(m({ scheduledAt: at(2 * hour) })), "upcoming");
 assert.equal(toDetailsStatus(m({ scheduledAt: at(-0.5 * hour), durationHours: 1 })), "live",
   "started but the hour has not elapsed");
 assert.equal(toDetailsStatus(m({ scheduledAt: at(-3 * hour), durationHours: 1 })), "finished");
-assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(2 * hour) })), "finished",
-  "cancelled outranks the clock — there is nothing left to do with it");
-assert.equal(toDetailsStatus(m({ status: "AUTO_CANCELLED", scheduledAt: at(2 * hour) })), "finished",
+// Cancelled is its own frame since 2026-09-22 — it used to map to "finished",
+// which offered the organizer a result to file for a match that never happened.
+assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(2 * hour) })), "cancelled",
+  "cancelled outranks the clock, and is not the same thing as finished");
+assert.equal(toDetailsStatus(m({ status: "AUTO_CANCELLED", scheduledAt: at(2 * hour) })), "cancelled",
   "same as CANCELLED");
+assert.equal(toDetailsStatus(m({ status: "CANCELLED", scheduledAt: at(-3 * hour) })), "cancelled",
+  "a cancelled match whose slot has passed is still cancelled, not finished");
 assert.equal(toDetailsStatus(m({ status: "FINISHED", scheduledAt: at(2 * hour) })), "finished",
   "the server's word beats the clock");
 
@@ -175,3 +180,24 @@ assert.notEqual(viewerRole("acc-1", "acc-2"), "creator",
 }
 
 console.log("matches list mapping: ok");
+
+// --- date facets (lib/jalali) -------------------------------------------------
+// 2025-09-23 is 1404-07-01, a سه‌شنبه (weekday 3). مهر is a 30-day month —
+// only فروردین…شهریور have 31.
+{
+  assert.deepEqual(dateFacetRange("today", "2025-09-23"), {
+    start: "2025-09-23",
+    end: "2025-09-23",
+  });
+  // 3 days left to جمعه.
+  assert.equal(dateFacetRange("week", "2025-09-23").end, "2025-09-26");
+  // 1404-07-30, the last day of مهر = 2025-10-22.
+  assert.equal(dateFacetRange("month", "2025-09-23").end, "2025-10-22");
+  // On the last day of the month the range is that day alone — never backwards.
+  assert.deepEqual(dateFacetRange("month", "2025-10-22"), {
+    start: "2025-10-22",
+    end: "2025-10-22",
+  });
+}
+
+console.log("date facets: ok");

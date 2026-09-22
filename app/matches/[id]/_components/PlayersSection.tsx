@@ -1,20 +1,44 @@
+"use client";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PlayerChip from "./PlayerChip";
-import { ChevronLeftIcon } from "./icons";
+import { removePlayer } from "@/lib/data";
 import type { MatchPlayer } from "../../../../lib/types";
 
 interface Props {
   players: MatchPlayer[];
+  /** Needed to remove anyone; without it the chips carry no ✕. */
+  matchId?: string;
+  /** Organizer only — the server enforces it too. */
+  canRemove?: boolean;
 }
 
-/** بازیکنان header + "همه" link + 2-column grid of player chips. */
-export default function PlayersSection({ players }: Props) {
+/**
+ * بازیکنان header + 2-column grid of player chips.
+ *
+ * The organizer can remove a player here — `DELETE /matches/{id}/participants/
+ * {participantId}`, the endpoint that existed from the start and was never
+ * called. Not their own chip: the server refuses that and says to cancel the
+ * match instead.
+ *
+ * The «همه» link this header used to carry is gone with the other dead buttons:
+ * it had no `onClick` and no roster page to open, and a four-player grid shows
+ * everyone anyway.
+ */
+export default function PlayersSection({ players, matchId, canRemove }: Props) {
+  const queryClient = useQueryClient();
+  const { mutate, isPending, variables } = useMutation({
+    mutationFn: (participantId: string) => removePlayer(matchId!, participantId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["matchDetails", matchId] });
+      // The roster count is on the list card too.
+      queryClient.invalidateQueries({ queryKey: ["matches"] });
+    },
+  });
+
   return (
     <section className="w-full flex flex-col gap-3">
-      <div className="w-full flex items-center justify-between">
-        <button type="button" className="flex items-center text-xs font-bold text-ink-soft active:opacity-70">
-          <ChevronLeftIcon className="size-5" />
-          همه
-        </button>
+      <div className="w-full flex items-center justify-end">
         <h2 className="text-base font-bold leading-4 text-ink-soft" dir="rtl">
           بازیکنان
         </h2>
@@ -24,11 +48,18 @@ export default function PlayersSection({ players }: Props) {
           gap on its left, instead of starting a row on the wrong side.
           `PlayerChip` pins `dir="ltr"` so its own alignment is unaffected. */}
       <ul className="grid grid-cols-2 gap-3" dir="rtl">
-        {players.map((p, i) => (
-          <li key={i}>
-            <PlayerChip player={p} />
-          </li>
-        ))}
+        {players.map((p, i) => {
+          const removable = canRemove && matchId && p.participantId && !p.isOrganizer;
+          return (
+            <li key={p.participantId ?? i}>
+              <PlayerChip
+                player={p}
+                onRemove={removable ? () => mutate(p.participantId!) : undefined}
+                removing={isPending && variables === p.participantId}
+              />
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

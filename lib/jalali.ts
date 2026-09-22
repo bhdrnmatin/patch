@@ -162,3 +162,24 @@ export function dayStrip(back: number, forward: number) {
     };
   });
 }
+
+/**
+ * The ISO date range a list filter's امروز / این هفته / این ماه covers, in the
+ * Jalali calendar the user sees: the week ends on جمعه, and the month ends on
+ * the real last day of the Jalali month (29, 30 or 31), not 30 days out.
+ *
+ * Both ends are inclusive and start at `from`, so a facet never reaches back
+ * over matches that have already happened.
+ */
+export function dateFacetRange(
+  facet: "today" | "week" | "month",
+  from: string = todayISO(),
+): { start: string; end: string } {
+  if (facet === "today") return { start: from, end: from };
+  if (facet === "week") {
+    // 0 = شنبه … 6 = جمعه, so this many days are left in the week.
+    return { start: from, end: addDaysISO(from, 6 - jalaliWeekdayOfISO(from)) };
+  }
+  const { jy, jm } = isoToJalali(from);
+  return { start: from, end: jalaliToISO(jy, jm, jalaaliMonthLength(jy, jm)) };
+}

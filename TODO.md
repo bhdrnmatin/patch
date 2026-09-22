@@ -47,12 +47,15 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
       and never on the rewritten one). `/map/static` is a route handler now (`app/map/static/route.ts`)
       that owns its response: `public, max-age=86400` on a hit, `no-store` on a failure, plus a
       server-side `revalidate` so one club's map is fetched from Neshan once for everyone.
-- [ ] FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now unblocked** — `MatchListItem.day`
+- [x] **FilterSheet's تاریخ facet — wired 2026-09-22** (`dateFacetRange`, Jalali week/month).
+- [~] (original note) FilterSheet's **تاریخ facet (امروز/این هفته/این ماه) is now unblocked** — `MatchListItem.day`
       is an ISO date, so all three are computable. Left unwired 2026-09-14: the strip already covers
       picking a day, so wire this only if the facet is worth keeping beside it.
-- [ ] Sort by مسافت/تاریخ and filter by مسافت/نوع select but don't narrow — `MatchListItem` has no
-      distance or match-type field; wire when the API adds them. Same for the activity list
-      (tournaments are out of MVP scope).
+- [x] **Sort/filter — done 2026-09-22.** مسافت removed from both sheets (needs the viewer's
+      location; one-city MVP). تاریخ wired in both: sort on `MatchListItem.startMs`, filter on
+      Jalali ranges (`dateFacetRange`). Left: the **نوع** facet still can't narrow — the card
+      carries no `matchType`, and رقابتی is refused by the API anyway, so it waits with levels
+      and fees. The activity list's own sheets stay cosmetic.
 - [ ] MatchCard: consider `<ul>/<li>` list semantics + `<h2>` heading order.
 
 ## Token gaps — Match Details audit (2026-06-10)

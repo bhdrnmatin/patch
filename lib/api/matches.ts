@@ -235,6 +235,23 @@ export function cancelMatch(matchId: string): Promise<MatchResponse> {
 }
 
 /**
+ * Remove a confirmed player from the roster (organizer only, enforced server
+ * side). `participantId` is `MatchParticipantResponse.id`, the same id space
+ * approve/reject uses — not an account id.
+ *
+ * The organizer cannot remove themselves: probed 2026-09-22, that answers 403
+ * «برگزارکننده نمی‌تواند خودش را از مچ حذف کند؛ به‌جای آن مچ را لغو کنید».
+ */
+export function removeParticipant(
+  matchId: string,
+  participantId: string,
+): Promise<MatchParticipantResponse> {
+  return apiFetch<MatchParticipantResponse>(`/matches/${matchId}/participants/${participantId}`, {
+    method: "DELETE",
+  });
+}
+
+/**
  * Replace the match's invite token, which **revokes the old link**: probed
  * 2026-09-22, `GET /matches/invite/{old}` 404s the moment this returns. The
  * response is the whole match, carrying the new `inviteToken`.

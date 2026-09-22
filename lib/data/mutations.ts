@@ -4,6 +4,7 @@ import {
   draftToCreateRequest,
   inviteByPhone,
   inviteFailureText,
+  removeParticipant,
 } from "@/lib/api/matches";
 import type { CreateMatchDraft, MatchPlayer } from "@/lib/types";
 
@@ -28,6 +29,14 @@ export async function respondToJoinRequest({
   accept: boolean;
 }): Promise<void> {
   await decideParticipant(matchId, requestId, accept);
+}
+
+/**
+ * Remove a player from the roster (creator action). `participantId` is the same
+ * id space `respondToJoinRequest` uses. The caller invalidates `matchDetails`.
+ */
+export async function removePlayer(matchId: string, participantId: string): Promise<void> {
+  await removeParticipant(matchId, participantId);
 }
 
 /** A phone the wizard couldn't invite, with the reason to show. */

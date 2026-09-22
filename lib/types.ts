@@ -30,6 +30,13 @@ export type MatchStatus = "active" | "held" | "not-held";
 export interface MatchPlayer {
   name: string;
   /**
+   * The **participant** id, which is what removing them is addressed to. Only
+   * a roster player from the API has one; the wizard's pick list doesn't.
+   */
+  participantId?: string;
+  /** The organizer's own row — they can't be removed, so it carries no ✕. */
+  isOrganizer?: boolean;
+  /**
    * Only the wizard's pick list carries one, from the invite suggestions — it is
    * how a picked player is invited, since the API invites by phone alone. Never
    * rendered; a roster player has none.
@@ -58,6 +65,9 @@ export interface MatchListItem {
   date: string;
   /** Tehran calendar date, ISO "YYYY-MM-DD" — matched against the date strip. */
   day: string;
+  /** Real start, epoch ms (the API's stored value plus `API_SHIFT_MS`). Orders
+   *  the list; `day` alone can't separate two matches on the same afternoon. */
+  startMs: number;
   /** Club name, resolved from the clubs list. Undefined if that lookup failed. */
   club?: string;
   /**
@@ -302,6 +312,10 @@ export interface MatchDetails {
   /** Court coordinates — drive the map and the مسیریابی link. */
   courtLat?: number;
   courtLng?: number;
+  /** The club's own logo, from `ClubResponse.logoUrl`. Every seeded club has one. */
+  clubLogo?: string;
+  /** The club's contact number — a tap-to-call row, not a player's number. */
+  clubPhone?: string;
   /** Banner text under the players grid. No API field. */
   teamNote?: string;
   faq: FaqEntry[];

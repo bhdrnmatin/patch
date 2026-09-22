@@ -7,11 +7,10 @@ import CourtBackdrop from "../../../(main)/_components/CourtBackdrop";
 import IconButton from "../../../(main)/_components/IconButton";
 import ActionPill from "./ActionPill";
 import { matchShareUrl, shareLink } from "@/lib/share";
-import { ArrowLeftIcon, SendIcon, EditIcon } from "./icons";
+import { ArrowLeftIcon, SendIcon } from "./icons";
 
 interface Props {
   title: string;
-  showEdit?: boolean;
   /** Wires the اشتراک گذاری pill. Without it the pill is hidden rather than dead. */
   matchId?: string;
   /** The invite token, so the pill shares the one-tap join link like the card does. */
@@ -36,7 +35,6 @@ interface Props {
  */
 export default function MatchDetailsHeader({
   title,
-  showEdit = true,
   matchId,
   inviteToken,
   bgImage,
@@ -110,7 +108,9 @@ export default function MatchDetailsHeader({
               onClick={share}
             />
           )}
-          {showEdit && <ActionPill icon={<EditIcon />} label="ویرایش" />}
+          {/* No «ویرایش» pill: the API has no update-match endpoint at all (no
+              PUT, no PATCH — checked against the live spec 2026-09-22), so it
+              was decoration that had never been wired, and `showEdit` with it. */}
         </div>
       </header>
 

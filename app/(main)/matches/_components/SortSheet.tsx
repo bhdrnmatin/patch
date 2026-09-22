@@ -4,6 +4,7 @@ import BottomSheet from "./BottomSheet";
 import FilterSection, { type ChipOption } from "./FilterSection";
 import { SortIcon } from "../../_components/icons";
 
+// Read as "soonest" / "latest" — the only criterion left that has a field.
 const DIRECTION: ChipOption[] = [
   { id: "near", label: "نزدیک‌ترین" },
   { id: "far", label: "دورترین" },
@@ -13,14 +14,18 @@ const FEE: ChipOption[] = [
   { id: "least", label: "کمترین" },
 ];
 
-/** One direction per criterion; "" = not sorting by it. */
+/**
+ * One direction per criterion; "" = not sorting by it.
+ *
+ * مسافت is gone (user, 2026-09-22): distance needs the viewer's location and
+ * the MVP ships one city, so the control could only ever have done nothing.
+ */
 export interface MatchSort {
-  distance: string;
   date: string;
   fee: string;
 }
 
-export const DEFAULT_MATCH_SORT: MatchSort = { distance: "", date: "", fee: "" };
+export const DEFAULT_MATCH_SORT: MatchSort = { date: "", fee: "" };
 
 interface Props {
   open: boolean;
@@ -55,7 +60,6 @@ export default function SortSheet({ open, onClose, value, onChange }: Props) {
 
   return (
     <BottomSheet open={open} onClose={onClose} title="مرتب‌سازی" icon={<SortIcon className="size-4" />} footer={footer}>
-      <FilterSection label="مسافت" options={DIRECTION} value={value.distance} onChange={set("distance")} />
       <FilterSection label="تاریخ" options={DIRECTION} value={value.date} onChange={set("date")} />
       <FilterSection label="هزینه ورودی" options={FEE} value={value.fee} onChange={set("fee")} />
     </BottomSheet>

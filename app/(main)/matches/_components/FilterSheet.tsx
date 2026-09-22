@@ -14,10 +14,6 @@ const LEVELS: ChipOption[] = [1, 2, 3, 4, 5, 6].map((n) => ({
   id: String(n),
   label: toPersianDigits(String(n)),
 }));
-const DISTANCE: ChipOption[] = [
-  { id: "near", label: "نزدیک من" },
-  { id: "city", label: "شهر من" },
-];
 const DATE: ChipOption[] = [
   { id: "today", label: "امروز" },
   { id: "week", label: "این هفته" },
@@ -32,7 +28,6 @@ const TYPE: ChipOption[] = [
 export interface MatchFilter {
   status: string[];
   levels: string[];
-  distance: string[];
   date: string[];
   type: string[];
 }
@@ -40,7 +35,6 @@ export interface MatchFilter {
 export const DEFAULT_MATCH_FILTER: MatchFilter = {
   status: [],
   levels: [],
-  distance: [],
   date: [],
   type: [],
 };
@@ -85,7 +79,6 @@ export default function FilterSheet({ open, onClose, value, onChange }: Props) {
     <BottomSheet open={open} onClose={onClose} title="فیلتر" icon={<FilterIcon className="size-4" />} footer={footer}>
       <FilterSection label="وضعیت" options={STATUS} value={value.status} onChange={toggle("status")} />
       <FilterSection label="رده‌بندی" options={LEVELS} value={value.levels} onChange={toggle("levels")} />
-      <FilterSection label="مسافت" options={DISTANCE} value={value.distance} onChange={toggle("distance")} />
       <FilterSection label="تاریخ" options={DATE} value={value.date} onChange={toggle("date")} />
       <FilterSection label="نوع مَچ" options={TYPE} value={value.type} onChange={toggle("type")} />
     </BottomSheet>

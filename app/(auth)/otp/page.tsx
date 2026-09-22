@@ -80,9 +80,24 @@ function OtpContent() {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: () => verifyOtp(phone, toLatinDigits(otp)),
-    onSuccess: async () => {
-      // Tokens are now stored; fetch the profile to decide where to land:
-      // a complete profile goes home, anything else to /profile-setup.
+    onSuccess: async (tokens) => {
+      // The verify response already says whether the profile is complete, so
+      // the usual answer costs no request at all. It also can't go stale the
+      // way the old `fetchQuery(["me"])` could: that honoured staleTime, so
+      // signing into a second account could route on the first one's profile.
+      if (tokens.profileCompletionStatus) {
+        // The next screen reads ["me"]; the cached one belongs to whoever was
+        // signed in before.
+        queryClient.removeQueries({ queryKey: ["me"] });
+        router.replace(
+          tokens.profileCompletionStatus === "COMPLETE"
+            ? postAuthRoute(next)
+            : withNext("/profile-setup", next),
+        );
+        return;
+      }
+
+      // Older backend that doesn't send the field: ask, as before.
       try {
         const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
         router.replace(
