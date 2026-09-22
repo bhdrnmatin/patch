@@ -225,10 +225,16 @@ Decide: add semantic tokens to `app/globals.css` `@theme`, adjust the design, or
 
 ## API integration (2026-07-18, branch feat/api-auth-profile)
 ### Blocked on backend
-- [ ] **`POST /matches` — `scheduledAt` must validate in `Asia/Tehran`, not UTC.** Today the
-      "on the hour" check runs on UTC minutes and Iran is +03:30, so no Tehran hour is
-      accepted. Worked around since 2026-09-16 by storing matches 30 min early (`API_SHIFT_MS`);
-      once fixed, set it to 0 and migrate the matches stored shifted. See `_designer/api-findings.md` §0.
+- [ ] **`POST /matches` — `scheduledAt` is handled in UTC, still.** Re-probed 2026-09-22: the
+      400 is gone, but **nothing was fixed — it now floors to the UTC hour and never refuses.**
+      `18:00+03:30` (14:30Z) is stored `14:00Z`; `12:59Z` is stored `12:00Z`. Iran is +03:30, so
+      **every Tehran wall-clock hour is silently moved 30 minutes earlier**, and a typo'd minute
+      is now discarded instead of rejected.
+      **Do not remove `API_SHIFT_MS`** — it is load-bearing now. We send Tehran ۱۸:۰۰ as `14:00Z`
+      and add the 30 back on read, which is *exactly* what the truncation produces anyway, so the
+      app shows the right time. Anything else reading that instant (backend reminders, an admin
+      panel, another client) is 30 minutes early.
+      **Ask:** floor/validate in `Asia/Tehran`, not UTC. See `_designer/api-findings.md` §0.
 - [ ] **The one-hour match lock is undocumented, and invites sit behind it** (probed 2026-09-19,
       api-findings §0e) — every write is refused from an hour before `scheduledAt`, which with
       `API_SHIFT_MS` is 90 minutes before the real start. Step ۳ greys those slots now (`LOCK_MS`

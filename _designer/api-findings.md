@@ -50,6 +50,27 @@ hour, so the accepted set is exactly the set nobody wants.
 already sends the offset, so `18:00+03:30` should be accepted unchanged and no client
 change is needed once this lands.
 
+**Re-probed 2026-09-22 — the rejection is gone and the bug is not.** The "on the hour" rule no
+longer 400s; the server **truncates to the UTC hour** and accepts everything:
+
+| Sent | Stored |
+|---|---|
+| `2026-09-27T18:00:00+03:30` (Tehran ۱۸:۰۰ = 14:30Z) | `14:00Z` — Tehran ۱۷:۳۰ |
+| `2026-09-27T20:00:00+03:30` (16:30Z) | `16:00Z` — Tehran ۱۹:۳۰ |
+| `2026-09-27T12:59:00Z` | `12:00Z` |
+| `2026-09-27T12:20:00Z` | `12:00Z` |
+
+Iran is +03:30, so **every Tehran hour loses 30 minutes**, silently — and a wrong minute is now
+swallowed rather than refused, which is worse for any client that trusts the field.
+
+**This makes `API_SHIFT_MS` load-bearing, not a workaround to retire.** The app sends Tehran ۱۸:۰۰
+as `14:00Z` and adds the 30 back on read — and `14:00Z` is *exactly* what truncating the honest
+`14:30Z` produces, so the stored row is the same either way and only our reader interprets it
+correctly. Set the shift to 0 and the app would show every match 30 minutes early. Everything
+else that reads the instant — reminders, an admin panel, a second client — is already 30 early.
+
+**Ask stands, reworded:** floor and validate in `Asia/Tehran`, not UTC.
+
 **Worked around 2026-09-16 (user decision), create-match is live.** Every match is stored
 30 minutes *early* — Tehran ۱۸:۰۰ goes up as `14:00Z` — and every reader adds it back
 through `matchStartMs` (`API_SHIFT_MS` in `lib/api/matches.ts`). Verified with a real
