@@ -447,8 +447,11 @@ write below was on its own throwaway match, which was deleted at the end.
 - **`regenerate` is a real revoke.** New `inviteToken` in a full `MatchResponse`, and the old
   token then **404s** — but with `مچ یافت نشد`, so a revoked link reads as "no such match".
 - **`cancelInvitation` works for the organizer** — 200, invitation comes back `status: CANCELLED`
-  (soft, like a match delete). **But it does not free the phone:** re-inviting the same number
-  answers `matchmaking.invite.alreadyInvited`, so cancel-then-re-invite is impossible. **Ask.**
+  (soft, like a match delete). It did *not* free the phone at 12:00 — a re-invite answered
+  `matchmaking.invite.alreadyInvited` — and **the backend fixed that the same day**: re-probed
+  14:15 on a fresh match, cancel → re-invite returns a new `PENDING` invitation. The duplicate
+  guard that matters is still there: inviting a number that already has a **PENDING** invitation
+  is refused with the same key. Nothing to ask for.
 - **`kick` refuses the organizer**, by design and with good copy: 403
   `برگزارکننده نمی‌تواند خودش را از مچ حذف کند؛ به‌جای آن مچ را لغو کنید`. Kicking a *real*
   participant is **still unverified** — it needs a second account to accept first.

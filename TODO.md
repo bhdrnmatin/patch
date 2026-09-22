@@ -349,8 +349,8 @@ Audited the new auth/profile components. 0 Critical, 3 Warning, ~5 Suggestion. A
 - [ ] `POST /auth/logout-all` — "sign out everywhere"; `LogoutRow` ends this session only.
 
 ### Backend asks (new)
-- [ ] **A cancelled invitation still blocks the phone.** After `DELETE /matches/invitations/{id}`
-      (→ `CANCELLED`), re-inviting the same number answers `matchmaking.invite.alreadyInvited`,
-      so cancel-then-re-invite is impossible. Either free the number or say it's deliberate.
+- [x] **A cancelled invitation blocked the phone — fixed by the backend 2026-09-22.** Re-probed
+      at 14:15: cancel → re-invite returns a new `PENDING` invitation. Inviting a number that
+      still has a PENDING invitation is refused (`alreadyInvited`), which is the guard we want.
 - [ ] **A revoked invite link 404s as `مچ یافت نشد`** — indistinguishable from a bad link. A
       distinct code would let the join page say "this link was replaced, ask for a new one".
