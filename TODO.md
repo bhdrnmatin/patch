@@ -14,6 +14,7 @@
   and are **removed**, not hidden: `SportPageHeader` now draws a button only when given its
   handler. /matches keeps both (wired 2026-09-22). Reviving means passing `onSort`/`onFilter` and
   giving `ActivityItem` the date/status fields to narrow on.
+- **«خروج از همه دستگاه‌ها»** (user, 2026-09-24). `POST /auth/logout-all` works; not for MVP.
 - **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
   story on red builds.
 
@@ -21,8 +22,6 @@
 
 - [x] **/activity: split current vs past** — built 2026-09-24 on `ActivityItemResponse.active`:
       «مَچ‌های شما» (active) and «مَچ‌های گذشته» (cancelled/finished).
-- [ ] **«خروج از همه دستگاه‌ها».** `POST /auth/logout-all` exists and is unbuilt; `LogoutRow` only
-      ends this session.
 - [x] **Decline an invitation** — built 2026-09-24: «رد کردن» on the /activity invitation card,
       `POST /matches/invitations/{id}/decline`. Awaiting a phone check.
 
