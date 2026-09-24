@@ -83,6 +83,7 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
       // offset stays behind with the card pushed off the top.
       if (h < applied) {
         write(h);
+        reveal();
         return;
       }
       // Growing, which is the ambiguous one. A focus hop between the five OTP
@@ -103,12 +104,33 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
     const unscroll = () => {
       if (window.scrollY !== 0) window.scrollTo(0, 0);
     };
+    // …which also undoes Safari's only attempt to reveal the field, so do it
+    // ourselves, in the scroller: centre the focused field in what's left above
+    // the keyboard. The create wizard's title field sat behind the keyboard until
+    // the first keystroke without this. Done by hand rather than scrollIntoView,
+    // which would scroll the document too and fight `unscroll`. A field already
+    // clear of both edges — every auth card — isn't moved.
+    const reveal = () => {
+      const el = document.activeElement;
+      const sc = appScrollEl();
+      if (!sc || !(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) return;
+      requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        // 96px of margin at the bottom clears the fixed footer bars.
+        if (r.top >= 0 && r.bottom <= vv.height - 96) return;
+        sc.scrollBy({ top: r.top + r.height / 2 - vv.height / 2 });
+      });
+    };
+    const onFocus = () => reveal();
     write(vv.height);
     vv.addEventListener("resize", sync);
     vv.addEventListener("resize", unscroll);
     vv.addEventListener("scroll", unscroll);
     window.addEventListener("scroll", unscroll);
+    // A hop between fields with the keyboard already up fires no resize.
+    document.addEventListener("focusin", onFocus);
     return () => {
+      document.removeEventListener("focusin", onFocus);
       clearTimeout(settle);
       vv.removeEventListener("resize", sync);
       vv.removeEventListener("resize", unscroll);
