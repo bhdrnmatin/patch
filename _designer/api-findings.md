@@ -565,3 +565,15 @@ Still unwired: `GET …/result` (the match page doesn't know a result exists and
   so this matches.
 - Whether a result can be submitted **before the match ends** is still unknown — the organizer
   check answered first. Next: submit as the organizer (سپهر) and read the answer.
+
+**2026-09-24 (afternoon) — the backend's data was reset.** Match `512d9b25` 404s and
+`09379137806` signs up fresh (new account `27e4acde…`, profile INCOMPLETE). Clubs survived. The
+results test has to be set up again.
+
+**`GET /matches` excludes PRIVATE matches, even for their organizer.** Probed with a fresh private
+match and a public control from the same account: `/matches` returned only the public one;
+`/activity` returned both (`ORGANIZER`, `active: true`). The app now adds the viewer's own
+non-cancelled private matches from `/activity` to the list (`getMatchList`). Worth raising with
+the backend: should `/matches` include the viewer's own private matches? If it starts to, the merge
+dedupes by id and needs no change. The app's /activity mapping was run against the live rows and
+does show the private match — no app-side bug there.

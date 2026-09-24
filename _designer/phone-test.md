@@ -4,6 +4,13 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — private matches in the list (verified on iPhone ✓)
+
+- [x] Create a **private** match → it appears in **/matches** (all matches) for you, the organizer.
+- [x] It also appears in **/activity** under «مَچ‌های شما». (The live API returns it and the app's
+      mapping shows it; a match from before the afternoon backend reset is gone for good.)
+- [ ] Someone else who isn't in it does **not** see it in /matches.
+
 ## 2026-09-24 — create-match review avatars (verified on iPhone ✓)
 
 - [x] Review step «اعضا»: the **شما** row shows your own profile photo (if you have one set).
@@ -45,7 +52,8 @@ Needs: an organizer account and an **upcoming** match with at least one other co
 Needs: a match that was **actually played** — 4 confirmed players by start time, otherwise the
 server auto-cancels it. The organizer then gets «نهایی کردن نتیجه».
 
-**Ready to test (2026-09-24):** match `512d9b25-16b4-4e90-b4bc-e3f33e855c8d` — organizer **سپهر**,
+**⚠ The backend was reset on the afternoon of 2026-09-24 — match `512d9b25` no longer exists.**
+Set up a new played 4-player match. (Old note:) match `512d9b25-16b4-4e90-b4bc-e3f33e855c8d` — organizer **سپهر**,
 players سپهر · متیوس · پارسا · تست (the `scripts/api.sh` account). Log in as سپهر. On the dev server
 the page opens directly at `/matches/512d9b25-16b4-4e90-b4bc-e3f33e855c8d/results` even before the
 match ends — which is also how to learn whether the API accepts a result early.

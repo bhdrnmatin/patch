@@ -1,4 +1,5 @@
 import { getClubs } from "@/lib/api/clubs";
+import { getActivity, isMatchActivity } from "@/lib/api/activity";
 import { getAccountId } from "@/lib/api/session";
 import { FORMAT_LABELS, getInviteSuggestions, getMatch, listMatches, matchStartMs, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import type { MatchParticipantResponse, MatchResponse } from "@/lib/api/types";
@@ -43,9 +44,22 @@ export async function getMatchDays(): Promise<DayOption[]> {
 export async function getMatchList(): Promise<MatchListItem[]> {
   // The club name is garnish on a list row: if the clubs call fails, show the
   // matches without it rather than failing the whole list.
-  const [{ content }, clubs] = await Promise.all([listMatches(), getClubs().catch(() => null)]);
+  const [{ content }, feed, clubs] = await Promise.all([
+    listMatches(),
+    getActivity().catch(() => null),
+    getClubs().catch(() => null),
+  ]);
   const clubName = new Map(clubs?.content.map((c) => [c.id, c.name]));
-  return content.map((m) => toListItem(m, clubName.get(m.clubId)));
+  // `GET /matches` leaves out PRIVATE matches — even for their own organizer
+  // (probed 2026-09-24: a private match of mine was in `/activity`, not here).
+  // A private match of your own still belongs in your list, so add the ones the
+  // feed has and the list doesn't. Cancelled ones stay out, as the list does.
+  const listed = new Set(content.map((m) => m.id));
+  const mine = (feed?.content ?? [])
+    .filter(isMatchActivity)
+    .map((row) => row.detail.match)
+    .filter((m) => m.visibility === "PRIVATE" && !listed.has(m.id) && !isCancelled(m));
+  return [...content, ...mine].map((m) => toListItem(m, clubName.get(m.clubId)));
 }
 
 /**
