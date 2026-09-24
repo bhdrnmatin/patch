@@ -93,11 +93,27 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
         if (vv.height > applied) write(vv.height);
       }, 150);
     };
+    // iOS scrolls the *document* to bring a focused input into view, overflow:
+    // hidden or not — and it does it against the full-height frame, before the
+    // shrink above lands. The frame then fits above the keyboard, but the
+    // document stays scrolled by roughly the keyboard's height, so the card sits
+    // off the top of the screen until a keystroke makes Safari re-aim at the
+    // caret (seen on an iPhone, 2026-09-24). Nothing here ever scrolls the
+    // document on purpose, so any offset is Safari's: put it back.
+    const unscroll = () => {
+      if (window.scrollY !== 0) window.scrollTo(0, 0);
+    };
     write(vv.height);
     vv.addEventListener("resize", sync);
+    vv.addEventListener("resize", unscroll);
+    vv.addEventListener("scroll", unscroll);
+    window.addEventListener("scroll", unscroll);
     return () => {
       clearTimeout(settle);
       vv.removeEventListener("resize", sync);
+      vv.removeEventListener("resize", unscroll);
+      vv.removeEventListener("scroll", unscroll);
+      window.removeEventListener("scroll", unscroll);
     };
   }, []);
 
