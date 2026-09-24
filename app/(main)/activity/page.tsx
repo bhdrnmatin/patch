@@ -7,16 +7,9 @@ import { getActivitySections } from "@/lib/data";
 import { acceptInvitation, declineInvitation } from "@/lib/api/matches";
 import type { ActivityAction, ActivityItem } from "@/lib/types";
 import SportPageHeader from "../_components/SportPageHeader";
-import FilterSheet, {
-  DEFAULT_MATCH_FILTER,
-  type MatchFilter,
-} from "../matches/_components/FilterSheet";
-import SortSheet, { DEFAULT_MATCH_SORT, type MatchSort } from "../matches/_components/SortSheet";
 import ActivityCard from "./_components/ActivityCard";
 import SectionDivider from "./_components/SectionDivider";
 import EmptyActivity from "./_components/EmptyActivity";
-
-type Sheet = "sort" | "filter" | null;
 
 export default function ActivityPage() {
   const { data: activitySections = [], isLoading } = useQuery({
@@ -64,19 +57,11 @@ export default function ActivityPage() {
       ? router.push(`/matches/${item.matchId}`)
       : answerInvite({ item, accept: kind === "accept-invite" });
 
-  const [sheet, setSheet] = useState<Sheet>(null);
-  // Sheets are controlled now; activity cards don't consume these yet (ActivityItem
-  // lacks the filterable fields — see TODO.md).
-  const [filter, setFilter] = useState<MatchFilter>(DEFAULT_MATCH_FILTER);
-  const [sort, setSort] = useState<MatchSort>(DEFAULT_MATCH_SORT);
-
   return (
     <div className="w-full hero-page">
-      <SportPageHeader
-        title="فعالیت‌ها"
-        onFilter={() => setSheet("filter")}
-        onSort={() => setSheet("sort")}
-      />
+      {/* No sort/filter here — out of MVP (user, 2026-09-24). The buttons were
+          wired to sheets that never narrowed anything. */}
+      <SportPageHeader title="فعالیت‌ها" />
 
       <div className="flex flex-col gap-6 px-4 py-6">
         {activitySections.length === 0 && !isLoading ? (
@@ -99,13 +84,6 @@ export default function ActivityPage() {
         )}
       </div>
 
-      <SortSheet open={sheet === "sort"} onClose={() => setSheet(null)} value={sort} onChange={setSort} />
-      <FilterSheet
-        open={sheet === "filter"}
-        onClose={() => setSheet(null)}
-        value={filter}
-        onChange={setFilter}
-      />
     </div>
   );
 }

@@ -20,6 +20,8 @@ export interface ActivityItemResponse {
   referenceId: string;
   /** When this matters — the match's own start, for a `MATCH`. Drives the order. */
   relevantAt: string;
+  /** False once the match is cancelled or over (new 2026-09-24) — splits current from past. */
+  active: boolean;
   detail: unknown;
 }
 

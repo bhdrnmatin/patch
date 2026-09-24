@@ -14,8 +14,9 @@ interface Props {
   days?: DayOption[];
   selectedId?: string;
   onSelect?: (id: string) => void;
-  onFilter: () => void;
-  onSort: () => void;
+  /** Omitted → no button. /activity has neither (sort/filter are out of MVP there). */
+  onFilter?: () => void;
+  onSort?: () => void;
   /** Blurred backdrop image. Omitted by default — the hero draws `CourtBackdrop`.
    *  Pass null alongside an opaque `athleteImage` to let that scene fill the header. */
   bgImage?: string | null;
@@ -83,8 +84,8 @@ export default function SportPageHeader({
         {/* Filter + sort buttons (visual left). `top` comes from the collapse
             rules, not a utility, so it can ride up as the header shrinks. */}
         <div className="hero-collapse-actions absolute left-6 flex items-center gap-2">
-          <IconButton label="فیلتر" icon={<FilterIcon />} onClick={onFilter} />
-          <IconButton label="مرتب‌سازی" icon={<SortIcon />} onClick={onSort} />
+          {onFilter && <IconButton label="فیلتر" icon={<FilterIcon />} onClick={onFilter} />}
+          {onSort && <IconButton label="مرتب‌سازی" icon={<SortIcon />} onClick={onSort} />}
         </div>
 
         <h1

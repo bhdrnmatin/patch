@@ -4,6 +4,11 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — /activity current vs past, no sort/filter
+
+- [ ] /activity header has **no** filter/sort buttons (just the title); /matches still has both.
+- [ ] Upcoming matches under «مَچ‌های شما», cancelled/finished under «مَچ‌های گذشته».
+
 ## 2026-09-24 — decline an invitation
 
 Needs: an account with a **pending invitation** (invite its number from another account's wizard).

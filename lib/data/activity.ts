@@ -31,16 +31,21 @@ export async function getActivitySections(): Promise<ActivitySection[]> {
   const clubName = (id: string) => clubs.content.find((c) => c.id === id)?.name ?? "—";
 
   const invites = await invitationCards(invitations?.content ?? [], clubName);
-  const matches = (feed?.content ?? [])
+  const rows = (feed?.content ?? [])
     .filter(isMatchActivity)
-    .map((row) => matchCard(row.detail.match, row.detail.role, clubName))
     // A match you were invited to and have not answered is in neither list
     // twice: the feed only carries matches you are already part of.
-    .filter((card) => !invites.some((i) => i.matchId === card.matchId));
+    .filter((row) => !invites.some((i) => i.matchId === row.detail.match.id));
+  const card = (row: (typeof rows)[number]) => matchCard(row.detail.match, row.detail.role, clubName);
+  // The feed's own `active` decides current vs past: cancelled and finished
+  // matches were piling up among the upcoming ones.
+  const current = rows.filter((r) => r.active).map(card);
+  const past = rows.filter((r) => !r.active).map(card);
 
   return [
     invites.length > 0 ? { heading: { right: "دعوت‌ها" }, items: invites } : null,
-    matches.length > 0 ? { heading: { right: "مَچ‌های شما" }, items: matches } : null,
+    current.length > 0 ? { heading: { right: "مَچ‌های شما" }, items: current } : null,
+    past.length > 0 ? { heading: { right: "مَچ‌های گذشته" }, items: past } : null,
   ].filter((s) => s !== null);
 }
 

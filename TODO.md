@@ -10,16 +10,19 @@
 - **Profile privacy toggle.** All profiles are public for the MVP. `PUT /players/me/visibility`
   and `PlayerResponse.profileVisibility` both work (probed live 2026-09-22, full round trip), but
   the feature is not wanted — leave the «حریم شخصی» row in `profile/settings/page.tsx` commented out.
+- **/activity sort + filter** (user, 2026-09-24). The page's sort/filter buttons were cosmetic
+  and are **removed**, not hidden: `SportPageHeader` now draws a button only when given its
+  handler. /matches keeps both (wired 2026-09-22). Reviving means passing `onSort`/`onFilter` and
+  giving `ActivityItem` the date/status fields to narrow on.
 - **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
   story on red builds.
 
 ## Queued features (user, 2026-09-24) — API already supports them
 
-- [ ] **/activity: split current vs past.** `ActivityItemResponse.active` (new 2026-09-24) is
-      `false` on cancelled/finished rows; today they mix with upcoming ones.
+- [x] **/activity: split current vs past** — built 2026-09-24 on `ActivityItemResponse.active`:
+      «مَچ‌های شما» (active) and «مَچ‌های گذشته» (cancelled/finished).
 - [ ] **«خروج از همه دستگاه‌ها».** `POST /auth/logout-all` exists and is unbuilt; `LogoutRow` only
       ends this session.
-- [ ] **/activity sort + filter.** Its sheets are still cosmetic (unlike /matches, wired 2026-09-22).
 - [x] **Decline an invitation** — built 2026-09-24: «رد کردن» on the /activity invitation card,
       `POST /matches/invitations/{id}/decline`. Awaiting a phone check.
 
