@@ -26,3 +26,8 @@ pixel-identical (24px radius unchanged).
 
 ### Status
 Open: 1 | Fixed: 3 | Accepted: 1
+
+## fix — 2026-09-24 | one game per match
+The API takes one result per match, so `GameCard` lost `number`, `onRemove` and the «بازی N»
+header; `GameEntry` lost `id`. aria-labels no longer name a game number (ست ۱, تیم ۱ …).
+Not re-audited visually: the card now opens straight on the team columns.

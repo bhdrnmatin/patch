@@ -8,6 +8,20 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-24 — results go to the API, one game per match
+- [Results] **«ثبت نهایی نتایج» submits.** `POST /matches/{id}/result` landed on the backend
+  2026-09-24; the button had never had an `onClick`. On success it returns to the match page; a
+  failure shows under the card, with the API's raw keys (`matchmaking.result.matchCancelled`)
+  put into Persian by `resultFailureText`.
+- [Results] **One game per match** (user, 2026-09-24). The page collected any number of games,
+  each with its own pairing; the API takes one result — two teams and their sets — so «+ افزودن
+  بازی», the per-game ✕ and the «بازی N» heading are gone. Teams go up by **account id**
+  (`MatchPlayer.accountId`, new), not participant id. A team may have one player (singles).
+- [Results] The CTA is disabled until each team has a player, and its caption says so.
+  `MatchCtaBar` gained `disabled` for it.
+- [Match] Match page review fixes: remove-player asks twice and only before kick-off; the invite
+  reset disarms on a timer; the hero pill no longer claims a failed copy succeeded.
+
 ### 2026-09-22 — connecting what the API already serves
 - [Match] **The club is a club now, not a name.** `CourtCard` shows the club's logo and a
   tap-to-call «تماس با باشگاه» row. `logoUrl`/`bannerUrl`/`contactPhone` have been in every

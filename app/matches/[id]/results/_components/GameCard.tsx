@@ -12,41 +12,36 @@ export type TeamSlots = [number | null, number | null];
 /** One set's scores: [team 1, team 2]. */
 export type SetScores = [number, number];
 
-/** Client-side state of one 2v2 game being entered. */
+/**
+ * Client-side state of the match's result. One per match — that is all the
+ * API takes (`POST /matches/{id}/result`: two teams and the sets), so the
+ * multi-game «+ افزودن بازی» flow is gone (user, 2026-09-24).
+ */
 export interface GameEntry {
-  id: number;
   teams: [TeamSlots, TeamSlots];
   sets: SetScores[];
 }
 
 interface Props {
-  /** 1-based display number (بازی ۱ …). */
-  number: number;
   game: GameEntry;
   players: MatchPlayer[];
   onPickSlot: (team: 0 | 1, slot: 0 | 1) => void;
   onSetChange: (set: number, team: 0 | 1, value: number) => void;
   onAddSet: () => void;
   onRemoveSet: (set: number) => void;
-  /** Omitted on the only remaining game. */
-  onRemove?: () => void;
 }
 
 const TEAM_LABELS = ["تیم ۱", "تیم ۲"] as const;
 
-/** One game card: two team columns (2 player slots each) + a list of sets with score steppers. */
+/** The result card: two team columns (2 player slots each) + a list of sets with score steppers. */
 export default function GameCard({
-  number,
   game,
   players,
   onPickSlot,
   onSetChange,
   onAddSet,
   onRemoveSet,
-  onRemove,
 }: Props) {
-  const gameNo = toPersianDigits(String(number));
-
   const renderTeam = (team: 0 | 1) => (
     <div className="flex-1 min-w-0 flex flex-col gap-2">
       <span className="text-center text-xs font-bold text-muted" dir="rtl">
@@ -58,7 +53,7 @@ export default function GameCard({
           <PlayerSlotButton
             key={slot}
             player={playerIndex === null ? undefined : players[playerIndex]}
-            slotLabel={`${TEAM_LABELS[team]}، بازی ${gameNo}`}
+            slotLabel={TEAM_LABELS[team]}
             onClick={() => onPickSlot(team, slot)}
           />
         );
@@ -68,24 +63,6 @@ export default function GameCard({
 
   return (
     <section className="w-full bg-white rounded-group p-3 flex flex-col gap-3 shadow-card">
-      <div className="flex items-center justify-between">
-        {onRemove ? (
-          <button
-            type="button"
-            onClick={onRemove}
-            aria-label={`حذف بازی ${gameNo}`}
-            className="size-8 flex items-center justify-center rounded-full border border-white/15 bg-black/[0.08] text-ink-soft active:opacity-80"
-          >
-            <CloseIcon className="size-4" />
-          </button>
-        ) : (
-          <span className="size-8" aria-hidden />
-        )}
-        <h2 className="text-lg font-bold text-ink leading-6" dir="rtl">
-          بازی {gameNo}
-        </h2>
-      </div>
-
       {/* dir=rtl puts تیم ۱ on the right; columns center their content, so the
           RTL justify/items-end trap doesn't apply here. */}
       <div className="flex items-stretch gap-3" dir="rtl">
@@ -106,7 +83,7 @@ export default function GameCard({
                   <button
                     type="button"
                     onClick={() => onRemoveSet(i)}
-                    aria-label={`حذف ست ${setNo} از بازی ${gameNo}`}
+                    aria-label={`حذف ست ${setNo}`}
                     className="size-8 flex items-center justify-center rounded-full border border-white/15 bg-black/[0.08] text-ink-soft active:opacity-80"
                   >
                     <CloseIcon className="size-4" />
@@ -123,7 +100,7 @@ export default function GameCard({
                 {([0, 1] as const).map((team) => (
                   <div key={team} className="flex-1 flex justify-center">
                     <ScoreStepper
-                      label={`${TEAM_LABELS[team]} در ست ${setNo} بازی ${gameNo}`}
+                      label={`${TEAM_LABELS[team]} در ست ${setNo}`}
                       value={scores[team]}
                       onChange={(value) => onSetChange(i, team, value)}
                     />
@@ -137,8 +114,7 @@ export default function GameCard({
         <button
           type="button"
           onClick={onAddSet}
-          aria-label={`افزودن ست به بازی ${gameNo}`}
-          className="w-full h-11 rounded-pill border border-dashed border-primary/40 text-primary text-sm font-bold active:opacity-80"
+                    className="w-full h-11 rounded-pill border border-dashed border-primary/40 text-primary text-sm font-bold active:opacity-80"
           dir="rtl"
         >
           + افزودن ست

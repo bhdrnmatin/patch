@@ -213,6 +213,35 @@ export interface InviteDirectResponse {
   failureMessage: string | null;
 }
 
+/** `POST /matches/{id}/result`. One result per match: two teams and the sets. */
+export interface SubmitMatchResultRequest {
+  /** Account ids, not participant ids. Each team needs at least one. */
+  teamAParticipantIds: string[];
+  teamBParticipantIds: string[];
+  /** In order played. Scores ≥ 0. */
+  sets: { teamAScore: number; teamBScore: number }[];
+}
+
+/**
+ * A submitted result, which the match's confirmed players then vote on
+ * (`POST …/result/vote`, ACCEPT/REJECT). `status` and `myVote` are undeclared
+ * strings — no real result has been seen yet (2026-09-24).
+ */
+export interface MatchResultResponse {
+  id: string;
+  matchId: string;
+  round: number;
+  status: string;
+  teamAParticipantIds: string[];
+  teamBParticipantIds: string[];
+  sets: { teamAScore: number; teamBScore: number }[];
+  totalConfirmedParticipants: number;
+  rejectCount: number;
+  myVote: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MatchResponse {
   id: string;
   organizer: MatchOrganizerResponse;

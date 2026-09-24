@@ -495,3 +495,66 @@ for it, `status: CANCELLED`, token intact. `app/join/[token]/page.tsx` only show
 «این لینک معتبر نیست» when that GET *errors*, so a link to a cancelled match renders the full
 invitation and a «پیوستن به مَچ» button. Client-side fix, no backend change: treat
 `status !== "OPEN"` as the same dead end the 404 takes.
+
+---
+
+# Spec diff + probe — 2026-09-24
+
+Spec re-fetched: **39 paths / 42 operations**, up from 37 / 39 on 2026-09-22. Every schema the app
+already declares is unchanged except the two fields below. Probed with the same throwaway account
+(`scripts/api.sh`, session from 2026-09-22 still valid); nothing was written — every probe was
+an error path on an already-cancelled match.
+
+## New: match results — `GET|POST /matches/{id}/result`, `POST /matches/{id}/result/vote`
+
+- `POST …/result` (201) — `SubmitMatchResultRequest { teamAParticipantIds*, teamBParticipantIds*,
+  sets*: [{teamAScore*, teamBScore*}] }`. **Ids are `accountId`s** (the participant's, not the
+  player-profile id — for this account those differ: player `89b1c3c8…`, account `0e824d38…`).
+- `GET …/result` (200) and `POST …/result/vote` (200) both return `MatchResultResponse`:
+  `id, matchId, round, status, teamA/teamBParticipantIds, sets[], totalConfirmedParticipants,
+  rejectCount, myVote, createdAt, updatedAt`. **`status` and `myVote` are undeclared strings**
+  — enum values unknown until a real result exists.
+- Vote body: `{ choice: "ACCEPT" | "REJECT" }` (declared enum).
+- The shape reads as: one side submits, the confirmed participants vote, enough rejects sends it
+  back (`round` increments?). **Unverified** — the happy path needs a match that was actually
+  played: 4 confirmed players (both 2026-09-22 matches with 2/4 were `AUTO_CANCELLED`), which
+  needs more accounts than we have.
+
+What the error paths establish:
+
+| Probe | Answer |
+|---|---|
+| GET result, match with none | 404 `matchmaking.result.notFound` (raw i18n key) |
+| GET result, unknown match | 404 `مچ یافت نشد` |
+| POST on a cancelled match (valid ids) | 409 `matchmaking.result.matchCancelled` |
+| POST `{}` | 400, names all three empty fields |
+| POST with a negative score | 400 `sets[0].teamAScore must be ≥ 0` |
+| POST with a non-UUID id | 400 `validation.invalidFormat` (no field named) |
+| vote with no result | 409 `matchmaking.result.votingNotOpen` |
+| vote `"MAYBE"` | 400 `validation.invalidFormat` |
+
+### Mismatch with the app's results page
+`app/matches/[id]/results` models **many games per match** (+ افزودن بازی), each with its own
+2v2 teams and sets. The API takes **one** result per match: one team A, one team B, a list of
+sets. Americano/Mexicano rotate partners, which one result can't express. And there is **no voting
+UI** at all — accept/reject, `myVote`, `rejectCount`. Its «ثبت نهایی نتایج» CTA still has no
+`onClick`. Decide the model before wiring.
+
+## New fields on existing schemas
+
+- **`ActivityItemResponse.active: boolean`.** Live: `false` on all four of this account's rows
+  (2 `CANCELLED`, 2 `AUTO_CANCELLED`). The feed **does** return cancelled matches (unlike
+  `GET /matches`), and the app already maps them to "not-held" cards. `active` would let /activity
+  split current from past without re-deriving it from status + time. Not read by the app yet.
+- **`InviteDirectResponse.invitation: MatchInvitationResponse`.** The created invitation now
+  comes back with each successful invite. `lib/api/types.ts:208` doesn't declare it; nothing
+  needs it today (the wizard only reads failures).
+
+## Unchanged
+The other 39 operations, and every other schema the app declares (`MatchResponse`,
+`MatchParticipantResponse`, `ClubResponse`, `PlayerResponse`, `CreateMatchRequest`, enums).
+
+**Wired 2026-09-24:** `POST …/result` from `app/matches/[id]/results` (one game, user decision).
+Still unwired: `GET …/result` (the match page doesn't know a result exists and keeps offering
+«نهایی کردن نتیجه») and `POST …/result/vote` (no voting UI). Both wait on seeing a real result's
+`status`/`myVote` values.

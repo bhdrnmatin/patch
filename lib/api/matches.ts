@@ -8,6 +8,8 @@ import type {
   MatchInvitationResponse,
   MatchParticipantResponse,
   MatchResponse,
+  MatchResultResponse,
+  SubmitMatchResultRequest,
   PageResponse,
 } from "./types";
 
@@ -315,4 +317,27 @@ export function tehranTimeRange(scheduledAt: string, durationHours: number): str
     );
   };
   return `${hhmm(start)} الی ${hhmm(end)}`;
+}
+
+/**
+ * Submit the match's result. Probed 2026-09-24 on error paths only — the happy
+ * path needs a match that was actually played:
+ * a cancelled match answers 409 `matchmaking.result.matchCancelled`, a negative
+ * score 400 naming the set.
+ */
+export function submitMatchResult(
+  matchId: string,
+  body: SubmitMatchResultRequest,
+): Promise<MatchResultResponse> {
+  return apiFetch<MatchResultResponse>(`/matches/${matchId}/result`, { method: "POST", body });
+}
+
+const RESULT_FAILURES: Record<string, string> = {
+  "matchmaking.result.matchCancelled": "این مَچ لغو شده است.",
+};
+
+/** The result endpoints answer in raw keys; never put `matchmaking.…` on screen. */
+export function resultFailureText(message: string): string {
+  if (/^[\w.]+$/.test(message)) return RESULT_FAILURES[message] ?? "ثبت نتیجه انجام نشد. دوباره تلاش کن.";
+  return toPersianDigits(message);
 }

@@ -5,17 +5,19 @@ interface Props {
   caption?: string;
   /** In flight — blocks a second tap and tells assistive tech something is happening. */
   busy?: boolean;
+  /** Not ready yet — the caption says why. */
+  disabled?: boolean;
   onClick?: () => void;
 }
 
 /** Sticky bottom action bar: primary CTA + optional status caption. */
-export default function MatchCtaBar({ label, caption, busy = false, onClick }: Props) {
+export default function MatchCtaBar({ label, caption, busy = false, disabled = false, onClick }: Props) {
   return (
     <BottomBar className="border border-edge pt-4 flex flex-col items-center gap-3">
       <button
         type="button"
         onClick={onClick}
-        disabled={busy}
+        disabled={busy || disabled}
         aria-busy={busy}
         className="w-full bg-primary rounded-card px-4 py-3 text-sm font-bold leading-4 text-white active:opacity-90 disabled:opacity-60"
         dir="rtl"

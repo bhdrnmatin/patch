@@ -50,6 +50,8 @@ export interface MatchPlayer {
    */
   level?: number;
   avatar?: string;
+  /** The **account** id — what a match result names its teams by. Roster players only. */
+  accountId?: string;
 }
 
 /** View-model for a card in the Matches list. */

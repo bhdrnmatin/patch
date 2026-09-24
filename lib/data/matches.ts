@@ -142,6 +142,7 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
       name: fullName(p.firstName, p.lastName),
       avatar: p.photoUrl ?? undefined,
       participantId: p.id,
+      accountId: p.accountId,
       isOrganizer: p.accountId === m.organizer.accountId,
     })),
     inviteToken: m.inviteToken ?? undefined,
