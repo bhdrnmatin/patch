@@ -558,3 +558,10 @@ The other 39 operations, and every other schema the app declares (`MatchResponse
 Still unwired: `GET …/result` (the match page doesn't know a result exists and keeps offering
 «نهایی کردن نتیجه») and `POST …/result/vote` (no voting UI). Both wait on seeing a real result's
 `status`/`myVote` values.
+
+**Probed 2026-09-24 (later), match `512d9b25` (AMERICANO, 4 confirmed, starts 15:00 Tehran):**
+- Submitting is **organizer-only**: a participant gets 403 `شما برگزارکننده‌ی این مچ نیستید`
+  (Persian, passes through `resultFailureText` as-is). The app only shows the CTA to the creator,
+  so this matches.
+- Whether a result can be submitted **before the match ends** is still unknown — the organizer
+  check answered first. Next: submit as the organizer (سپهر) and read the answer.

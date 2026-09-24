@@ -17,6 +17,11 @@ Contrast promoted (anti-patterns #19, token decision in TODO.md). **Results API*
 backend; the results page is now one game per match and submits (`6154dd0`) — GET result and voting
 wait on a real result. Quick-fix batch: stage pill height, optional `stage`, stale header docs,
 ShareCard opacity/timers, one removal at a time.
+iPhone testing over LAN found three keyboard bugs, all fixed and verified on the phone: iOS scrolls
+the document on focus (`AppScroll` now resets it and reveals the field in the scroller itself),
+and `BottomSheet` is sized to `--vvh`. Lesson: reload the phone before judging a fix — the dev
+server didn't always push the change.
+**Next:** the results submit on match `512d9b25` as organizer سپهر (details in phone-test.md).
 **Everything unverified on a device is in `_designer/phone-test.md`** — go through it first.
 Still open (design calls): cancelled-status accent, lone hero pill width, call-row radius, hero
 text-shadow token; plus the older heading-semantics suggestions.

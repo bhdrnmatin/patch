@@ -4,6 +4,13 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — iOS keyboard (verified on iPhone ✓)
+
+- [x] Login/OTP card stays above the keyboard (`0f0acad`).
+- [x] Create-match title field scrolls into view on focus (`5317421`).
+- [x] Add-player sheet sits above the keyboard (`b7b35fe`).
+- [ ] Other sheets (sort / filter / results player picker) still look normal with the new frame.
+
 ## 2026-09-24 — match page review fixes (`bfaffd7`, + follow-ups)
 
 Needs: an organizer account and an **upcoming** match with at least one other confirmed player.
@@ -31,6 +38,12 @@ Needs: an organizer account and an **upcoming** match with at least one other co
 
 Needs: a match that was **actually played** — 4 confirmed players by start time, otherwise the
 server auto-cancels it. The organizer then gets «نهایی کردن نتیجه».
+
+**Ready to test (2026-09-24):** match `512d9b25-16b4-4e90-b4bc-e3f33e855c8d` — organizer **سپهر**,
+players سپهر · متیوس · پارسا · تست (the `scripts/api.sh` account). Log in as سپهر. On the dev server
+the page opens directly at `/matches/512d9b25-16b4-4e90-b4bc-e3f33e855c8d/results` even before the
+match ends — which is also how to learn whether the API accepts a result early.
+After a submit, the developer can vote as «تست» via `scripts/api.sh` to see the vote shape.
 
 - [ ] Results page shows **one** card (no «+ افزودن بازی», no «بازی ۱» heading).
 - [ ] «ثبت نهایی نتایج» is **greyed out** with caption «برای هر تیم دست‌کم یک بازیکن انتخاب کن»
