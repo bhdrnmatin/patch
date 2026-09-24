@@ -86,3 +86,4 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 - 2026-09-24 | **MatchStageCard** | audit | 0 Critical, 0 Warning, 3 Suggestion | 0 fixed, 3 open | [details](audits/MatchStageCard.audit.md)
 - 2026-09-24 | **CourtCard** | audit | 0 Critical, 0 Warning, 2 Suggestion | 0 fixed, 1 open, 1 accepted | [details](audits/CourtCard.audit.md)
 - 2026-09-24 | **Match page fixes (PlayerChip, PlayersSection, ShareCard, MatchDetailsHeader)** | fix | top 6 warnings from today's audit | remove-player asks twice + only before kick-off + reports failure; revoke disarms on a timer; header no longer says «کپی شد» on a failed copy; status text announced | closes PlayerChip #1–2, PlayersSection #3–4, ShareCard #1–2, MatchDetailsHeader #3–4
+- 2026-09-24 | **Contrast (systemic)** | promote | text-muted / text-danger small text under AA | anti-patterns.md #19 added; token decision → TODO.md | [details](audits/ShareCard.audit.md)

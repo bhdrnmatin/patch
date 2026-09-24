@@ -13,6 +13,15 @@
 - **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
   story on red builds.
 
+## Contrast — systemic (promoted 2026-09-24, anti-patterns.md #19)
+
+- [ ] **`text-muted` and `text-danger` fail AA 4.5:1 as small text.** `text-muted` #6783A0 is ~3.9:1
+      on white / ~3.65:1 on `bg-surface`; `text-danger` #FF4869 is ~3.3:1 / ~3.1:1; white on
+      `bg-danger` (PlayerChip's remove confirm) ~3.3:1. Used at 10–12px all over the app. Decide:
+      darken `--color-muted` in place (one-line fix, shifts every secondary label), or add text-only
+      variants (e.g. `--color-danger-text`) and keep the current values for fills/icons. Found by
+      the ShareCard audit (#7).
+
 ## Token gaps — Matches audit (2026-06-08)
 
 The Matches components use recurring hardcoded grays with no token (consistent
