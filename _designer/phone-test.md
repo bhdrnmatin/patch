@@ -4,6 +4,12 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — create-match review avatars (verified on iPhone ✓)
+
+- [x] Review step «اعضا»: the **شما** row shows your own profile photo (if you have one set).
+- [x] A number typed in «دعوت با شماره موبایل» that belongs to someone in the suggestions list
+      shows **their name and photo**; an unknown number still shows the number and a silhouette.
+
 ## 2026-09-24 — iOS keyboard (verified on iPhone ✓)
 
 - [x] Login/OTP card stays above the keyboard (`0f0acad`).

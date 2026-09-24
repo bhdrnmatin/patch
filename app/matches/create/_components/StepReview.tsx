@@ -9,6 +9,7 @@ import ReviewPlayers, { type ReviewRow } from "./ReviewPlayers";
 import { toPersianDigits } from "../../../../lib/persian";
 import { JALALI_MONTHS, isoToJalali } from "../../../../lib/jalali";
 import { autoTitle } from "../../../../lib/api/matches";
+import { useAuth } from "@/lib/api/useAuth";
 import type { CourtOption, CreateMatchDraft, MatchPlayer } from "../../../../lib/types";
 
 const FORMAT_LABELS: Record<NonNullable<CreateMatchDraft["format"]>, string> = {
@@ -61,6 +62,7 @@ interface Props {
  * headers; the only forward action is the footer's.
  */
 export default function StepReview({ draft, courts, players, onEdit }: Props) {
+  const { player: me } = useAuth();
   const court = courts.find((c) => c.id === draft.courtId);
   const note = inviteNote(draft);
   const description = draft.description.trim();
@@ -74,12 +76,25 @@ export default function StepReview({ draft, courts, players, onEdit }: Props) {
     : "—";
 
   const rows: ReviewRow[] = [
-    { name: "شما", role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن" },
+    {
+      name: "شما",
+      role: draft.myRole === "captain" ? "برگزار کننده" : "بازیکن",
+      avatar: me?.avatarUrl ?? undefined,
+    },
     ...draft.teammates.flatMap((t, i): ReviewRow[] => {
       const isCoach = draft.coach === i;
-      // Invited numbers haven't accepted yet, so they carry no level or avatar.
       if (t.kind === "invite") {
-        return [{ name: toPersianDigits(t.phone), role: isCoach ? "برگزار کننده" : "دعوت‌شده" }];
+        // A typed number can still be someone we know: the suggestions carry
+        // phones, so borrow their name and photo. Anyone else is just a number
+        // until they accept.
+        const known = players.find((p) => p.phone === t.phone);
+        return [
+          {
+            name: known?.name ?? toPersianDigits(t.phone),
+            role: isCoach ? "برگزار کننده" : "دعوت‌شده",
+            avatar: known?.avatar,
+          },
+        ];
       }
       const p = players[t.index];
       return p
