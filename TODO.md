@@ -13,6 +13,21 @@
 - **Telegram notification on a failed deploy.** Dropped; `.githooks/pre-push` is the whole
   story on red builds.
 
+## Queued features (user, 2026-09-24) — API already supports them
+
+- [ ] **/activity: split current vs past.** `ActivityItemResponse.active` (new 2026-09-24) is
+      `false` on cancelled/finished rows; today they mix with upcoming ones.
+- [ ] **«خروج از همه دستگاه‌ها».** `POST /auth/logout-all` exists and is unbuilt; `LogoutRow` only
+      ends this session.
+- [ ] **/activity sort + filter.** Its sheets are still cosmetic (unlike /matches, wired 2026-09-22).
+- [ ] **Decline an invitation** — `POST /matches/invitations/{id}/decline` appeared 2026-09-24; the
+      /activity invitation card has no «رد کردن» only because no endpoint existed. Buildable now.
+
+**Blocked on backend:** *withdraw an invitation (organizer).* `DELETE /matches/invitations/{id}`
+works, but nothing lists a match's sent invitations — the id only exists in the invite response,
+inside the wizard. Needs `GET /matches/{id}/invitations` (or pending invites on `MatchResponse`).
+User decision 2026-09-24: don't build around a missing API.
+
 ## Contrast — systemic (promoted 2026-09-24, anti-patterns.md #19)
 
 - [ ] **`text-muted` and `text-danger` fail AA 4.5:1 as small text.** `text-muted` #6783A0 is ~3.9:1

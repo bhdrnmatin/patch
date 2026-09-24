@@ -582,3 +582,8 @@ does show the private match — no app-side bug there.
 `/clubs` **0.85s** (five rows), `/activity` **1.2s**. The Next dev proxy adds ~0.05s. The app now
 fetches clubs once per session and no longer blocks the list on `/activity`; the two slow
 endpoints are worth raising with the backend.
+
+**2026-09-24 — spec is 40 paths:** new `POST /matches/invitations/{invitationId}/decline` (invitee
+declines). Still missing for the organizer: any way to **list a match's sent invitations**, so
+`DELETE /matches/invitations/{id}` (withdraw) can only be addressed from the invite response in
+the wizard. Ask backend for `GET /matches/{id}/invitations`. Not building a workaround (user).
