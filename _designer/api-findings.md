@@ -589,3 +589,11 @@ declines). Still missing for the organizer: any way to **list a match's sent inv
 the wizard. Ask backend for `GET /matches/{id}/invitations`. Not building a workaround (user).
 **Built 2026-09-24:** decline on /activity (`declineInvitation`). The declined `status` value is
 still unseen. `GET /matches/{id}/invitations` promised by the backend; not live yet (405).
+
+
+**2026-09-24 — Tehran-time switch prepared, held for the backend.** Re-probed: `18:00:00+03:30` →
+201, stored `14:00:00Z` (still floored to the UTC hour, no error). Backend says it will validate
+and answer in Tehran time. Branch `feat/tehran-time` sends `…T18:00:00+03:30`, drops
+`API_SHIFT_MS`, reads any offset (none = Tehran), and books from a full hour ahead (8:10 → 10:00).
+**Merge only after** a re-probe stores `18:00+03:30` (or `14:30Z`). Matches created before the
+fix will read 30 min early. Probe match `c6b8e0b0…` left in place for the backend team.

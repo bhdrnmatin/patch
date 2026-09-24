@@ -13,9 +13,8 @@ import { dateFacetRange } from "../jalali";
 import type { MatchParticipantResponse, MatchResponse } from "../api/types";
 
 const hour = 3600_000;
-// A stored `scheduledAt` for a match really starting `ms` from now — the API
-// copy sits 30 minutes early (API_SHIFT_MS in lib/api/matches.ts).
-const at = (ms: number) => new Date(Date.now() + ms - 0.5 * hour).toISOString();
+// A stored `scheduledAt` for a match starting `ms` from now.
+const at = (ms: number) => new Date(Date.now() + ms).toISOString();
 
 const m = (over: Partial<MatchResponse> = {}): MatchResponse => ({
   id: "m1",

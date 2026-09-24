@@ -20,24 +20,17 @@ import type {
 const TEHRAN_OFFSET_MS = 3.5 * 3600_000;
 
 /**
- * **Workaround, not a model of the world.** `POST /matches` checks "on the hour"
- * against *UTC* minutes, and no Tehran hour has zero UTC minutes, so every slot
- * the wizard offers is rejected (`_designer/api-findings.md` §0, still true
- * 2026-09-16). Until the backend validates in Asia/Tehran, a match is stored
- * this much **earlier** than it really starts — Tehran ۱۸:۰۰ goes up as 14:00Z,
- * not 14:30Z — and every reader adds it back through `matchStartMs`.
+ * When the match starts, in epoch ms.
  *
- * Earlier rather than later so anything the server times off `scheduledAt`
- * (the must-be-future check, closing joins) errs early, never after the start.
- *
- * ponytail: when the backend fix lands, set this to 0 — but matches created
- * while it was 30 will then read half an hour early; migrate them or recreate.
+ * Times go over the wire in **Tehran time** (`2026-09-28T18:00:00+03:30`) and
+ * the backend answers in it too (user, 2026-09-24). Until then the backend
+ * floored every start to a whole *UTC* hour, so the app stored matches 30
+ * minutes early and added it back here (`API_SHIFT_MS`, removed). A string
+ * with no offset at all is read as Tehran, not as the device's zone.
  */
-const API_SHIFT_MS = 30 * 60_000;
-
-/** When the match really starts, in epoch ms — `scheduledAt` with the shift undone. */
 export function matchStartMs(scheduledAt: string): number {
-  return new Date(scheduledAt).getTime() + API_SHIFT_MS;
+  const zoned = /(Z|[+-]\d\d:?\d\d)$/.test(scheduledAt) ? scheduledAt : `${scheduledAt}+03:30`;
+  return new Date(zoned).getTime();
 }
 
 /**
@@ -97,32 +90,30 @@ function capacityFor(draft: CreateMatchDraft): number {
 }
 
 /**
- * "2026-09-20" + "18:00" (Tehran) → "2026-09-20T14:00:00Z" — the real instant,
- * 14:30Z, minus `API_SHIFT_MS` so its UTC minutes are zero. A naive local string
- * is unparseable to the API, which is why this always sends a full instant.
+ * "2026-09-20" + "18:00" → "2026-09-20T18:00:00+03:30": the wall-clock time the
+ * player picked, in Tehran time. Always with the offset — a naive string was
+ * unparseable to the API.
  */
 function toInstant(isoDate: string, time: string): string {
   // The picker's last slot is 24:00; an hour overflow rolls into the next day.
   const [h, min] = time.split(":").map(Number);
-  const wallAsUtc = Date.UTC(+isoDate.slice(0, 4), +isoDate.slice(5, 7) - 1, +isoDate.slice(8, 10), h, min);
-  return new Date(wallAsUtc - TEHRAN_OFFSET_MS - API_SHIFT_MS).toISOString().replace(".000Z", "Z");
+  const wall = new Date(Date.UTC(+isoDate.slice(0, 4), +isoDate.slice(5, 7) - 1, +isoDate.slice(8, 10), h, min));
+  return `${wall.toISOString().slice(0, 16)}:00+03:30`;
 }
 
 /**
- * A match **locks one hour before `scheduledAt`** and from then on the API
- * refuses every write touching it — creating it, and inviting anyone to it
- * («زمان قفل این مچ فرارسیده و دیگر هیچ تغییری ممکن نیست», probed 2026-09-19).
- * It's the *shifted* instant that's checked, so in real time a slot closes
- * **90 minutes** before it starts: the hour of lock plus `API_SHIFT_MS`.
+ * The earliest bookable slot is a full hour away: at 8:10 that's **10:00**, at
+ * 8:00 it's 9:00 (user, 2026-09-24). Slots are on the hour, so "starts at least
+ * an hour from now" is the whole rule. It also keeps clear of the API's lock,
+ * which refuses every write to a match from an hour before it starts
+ * («زمان قفل این مچ فرارسیده…», probed 2026-09-19).
  *
- * The wizard greys out anything this rejects. Before 2026-09-19 it only
- * excluded slots already past, so the last two offerable hours took five steps
- * of answers and then a 400 — or, worse, created the match and lost its invites.
+ * The wizard greys out anything this rejects.
  */
-const LOCK_MS = 60 * 60_000;
+const LEAD_MS = 60 * 60_000;
 
 export function isSchedulable(isoDate: string, time: string, now = Date.now()): boolean {
-  return new Date(toInstant(isoDate, time)).getTime() > now + LOCK_MS;
+  return matchStartMs(toInstant(isoDate, time)) >= now + LEAD_MS;
 }
 
 /** Create a match. Returns the created match, whose `id` the wizard routes to. */
