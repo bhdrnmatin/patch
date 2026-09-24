@@ -1,5 +1,17 @@
 # Session State
 
+## Session — 2026-09-24 (afternoon): iPhone fixes, private matches, speed, activity
+- **Backend data was reset** — test match `512d9b25` is gone; «تست» (`09379137806`) is a new account.
+- Shipped: create-review avatars; own private matches in /matches (`GET /matches` omits PRIVATE even
+  for the organizer); clubs fetched once per session + list no longer waits on `/activity`
+  (1.2s); decline an invitation (new endpoint, **untested**); /activity current vs past; /activity
+  sort/filter and logout-all moved **out of MVP**.
+- **Held:** branch `feat/tehran-time` (local only) — sends Tehran time, drops `API_SHIFT_MS`,
+  books from a full hour ahead. Merge only after the backend stores `18:00+03:30` as sent.
+- **Blocked on backend:** withdraw invitation (needs `GET /matches/{id}/invitations`, promised),
+  results/voting (needs a played 4-player match), Americano results, slow `/clubs` + `/activity`.
+- Phone checks pending: `_designer/phone-test.md`.
+
 ## Session — 2026-09-24: ds-qa-tw audit of the 2026-09-22 UI (audit only, no code changed)
 Six components audited; findings appended as new versions in `_designer/audits/` (new files for
 `PlayerChip` and `ShareCard`). 0 Critical, 8 Warning, 13 Suggestion. Warnings worth fixing first:
