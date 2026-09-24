@@ -14,8 +14,8 @@ interface Props {
   footer?: React.ReactNode;
   /**
    * Fixed full height (vs. shrink-to-content). Use for sheets with a search
-   * field so content stays top-anchored and the mobile keyboard just overlays
-   * the bottom of a scrollable list instead of hiding it.
+   * field so content stays top-anchored; with the keyboard up the sheet
+   * shrinks to the space above it and the list scrolls.
    */
   fill?: boolean;
 }
@@ -76,7 +76,11 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center">
+    // Sized to the *visible* viewport (`--vvh`, AppScroll), not inset-0: iOS
+    // never shrinks the layout viewport for the keyboard, so a sheet pinned to
+    // its bottom sat behind the keyboard — the add-player phone field was
+    // unreachable (iPhone, 2026-09-24). The keyboard covers the rest anyway.
+    <div className="fixed inset-x-0 top-0 h-[var(--vvh,100dvh)] z-[60] flex items-end justify-center">
       {/* Dim + blur overlay (click to dismiss; the close button handles keyboard) */}
       <div aria-hidden onClick={onClose} className="animate-fade-in absolute inset-0 bg-black/20 backdrop-blur-sm" />
 
@@ -88,7 +92,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
         aria-labelledby={titleId}
         tabIndex={-1}
         className={`animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 rounded-sheet bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-sheet outline-none ${
-          fill ? "h-[calc(100dvh-32px)]" : "max-h-[calc(100dvh-32px)]"
+          fill ? "h-[calc(var(--vvh,100dvh)-32px)]" : "max-h-[calc(var(--vvh,100dvh)-32px)]"
         }`}
       >
         {/* Header */}

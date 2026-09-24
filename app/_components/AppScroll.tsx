@@ -114,6 +114,9 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
       const el = document.activeElement;
       const sc = appScrollEl();
       if (!sc || !(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) return;
+      // A locked scroller means a sheet is open; it places itself above the
+      // keyboard, and scrolling the page behind it would only move the page.
+      if (sc.style.overflow === "hidden") return;
       requestAnimationFrame(() => {
         const r = el.getBoundingClientRect();
         // 96px of margin at the bottom clears the fixed footer bars.
