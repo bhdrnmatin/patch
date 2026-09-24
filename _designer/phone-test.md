@@ -4,6 +4,14 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — decline an invitation
+
+Needs: an account with a **pending invitation** (invite its number from another account's wizard).
+- [ ] /activity invitation card shows three buttons — مشاهده مَچ · رد کردن · پذیرفتن — all readable, none clipped.
+- [ ] «رد کردن» → the card disappears (and the nav's activity dot drops if it was the last one).
+- [ ] The organizer's side: can they re-invite the same number afterwards? (unknown — note what happens)
+- [ ] Developer: capture the declined invitation's `status` value (`scripts/api.sh GET /api/v1/matches/invitations/me`).
+
 ## 2026-09-24 — speed (clubs cached, list no longer waits on /activity) — faster on LAN dev ✓
 
 - [x] /matches: public matches appear quickly; your private ones may pop in ~1s later (that is

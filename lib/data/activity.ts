@@ -79,11 +79,11 @@ async function invitationCards(
             tone: "faint" as const,
           },
         ],
-        // No «رد کردن»: DELETE on an invitation is the *organizer* cancelling one
-        // they sent (403 for the invitee, probed 2026-09-19), and the API has no
-        // invitee-side decline. Looking before accepting is the honest second action.
+        // «رد کردن» arrived with `POST …/decline` (2026-09-24); before it the
+        // invitee had no way to say no, only to look.
         actions: [
           { label: "مشاهده مَچ", variant: "outline" as const, kind: "open-match" as const },
+          { label: "رد کردن", variant: "outline" as const, kind: "decline-invite" as const },
           { label: "پذیرفتن", variant: "filled" as const, kind: "accept-invite" as const },
         ],
       };

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getActivitySections } from "@/lib/data";
-import { acceptInvitation } from "@/lib/api/matches";
+import { acceptInvitation, declineInvitation } from "@/lib/api/matches";
 import type { ActivityAction, ActivityItem } from "@/lib/types";
 import SportPageHeader from "../_components/SportPageHeader";
 import FilterSheet, {
@@ -30,9 +30,12 @@ export default function ActivityPage() {
   // server said — while the rest of the list stays usable.
   const [busyId, setBusyId] = useState<string | null>(null);
   const [failed, setFailed] = useState<{ id: string; message: string } | null>(null);
-  const { mutate: acceptInvite } = useMutation({
-    mutationFn: (item: ActivityItem) => acceptInvitation(item.id),
-    onMutate: (item) => {
+  const { mutate: answerInvite } = useMutation({
+    // Nothing reads the response; both just answer the invitation.
+    mutationFn: async ({ item, accept }: { item: ActivityItem; accept: boolean }) => {
+      await (accept ? acceptInvitation(item.id) : declineInvitation(item.id));
+    },
+    onMutate: ({ item }) => {
       setBusyId(item.id);
       setFailed(null);
     },
@@ -41,14 +44,15 @@ export default function ActivityPage() {
     // joining the match from anywhere else closes it, and the server answers 409
     // «این دعوت‌نامه قبلاً پذیرفته شده است». Silence read as a dead button, so
     // say it on the card and refetch, which drops a card that is no longer real.
-    onError: (e, item) => {
+    onError: (e, { item }) => {
       setFailed({ id: item.id, message: e.message || "انجام نشد. دوباره تلاش کنید." });
       queryClient.invalidateQueries({ queryKey: ["activitySections"] });
     },
-    onSuccess: (_data, item) => {
-      // The invitation is answered, so it leaves this list, and accepting puts
-      // the viewer on a roster — the match queries are stale too.
+    onSuccess: (_data, { item, accept }) => {
+      // Answered either way, so the card leaves this list (and the nav's dot).
       queryClient.invalidateQueries({ queryKey: ["activitySections"] });
+      if (!accept) return;
+      // Accepting puts the viewer on a roster — the match queries are stale too.
       queryClient.invalidateQueries({ queryKey: ["matches"] });
       queryClient.invalidateQueries({ queryKey: ["matchDetails", item.matchId] });
       router.push(`/matches/${item.matchId}`);
@@ -56,7 +60,9 @@ export default function ActivityPage() {
   });
 
   const onAction = (item: ActivityItem) => (kind: ActivityAction["kind"]) =>
-    kind === "open-match" ? router.push(`/matches/${item.matchId}`) : acceptInvite(item);
+    kind === "open-match"
+      ? router.push(`/matches/${item.matchId}`)
+      : answerInvite({ item, accept: kind === "accept-invite" });
 
   const [sheet, setSheet] = useState<Sheet>(null);
   // Sheets are controlled now; activity cards don't consume these yet (ActivityItem

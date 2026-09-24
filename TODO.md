@@ -20,13 +20,13 @@
 - [ ] **«خروج از همه دستگاه‌ها».** `POST /auth/logout-all` exists and is unbuilt; `LogoutRow` only
       ends this session.
 - [ ] **/activity sort + filter.** Its sheets are still cosmetic (unlike /matches, wired 2026-09-22).
-- [ ] **Decline an invitation** — `POST /matches/invitations/{id}/decline` appeared 2026-09-24; the
-      /activity invitation card has no «رد کردن» only because no endpoint existed. Buildable now.
+- [x] **Decline an invitation** — built 2026-09-24: «رد کردن» on the /activity invitation card,
+      `POST /matches/invitations/{id}/decline`. Awaiting a phone check.
 
 **Blocked on backend:** *withdraw an invitation (organizer).* `DELETE /matches/invitations/{id}`
 works, but nothing lists a match's sent invitations — the id only exists in the invite response,
-inside the wizard. Needs `GET /matches/{id}/invitations` (or pending invites on `MatchResponse`).
-User decision 2026-09-24: don't build around a missing API.
+inside the wizard. `GET /matches/{id}/invitations` is coming from the backend (user, 2026-09-24) — live still
+answers 405 on GET. Build withdraw when it ships.
 
 ## Contrast — systemic (promoted 2026-09-24, anti-patterns.md #19)
 

@@ -192,8 +192,9 @@ export interface InviteSuggestionResponse {
  * the match, so a list of these needs a `GET /matches/{id}` each to say what
  * they are invitations *to*.
  *
- * Accepting is `POST …/{id}/accept`. `DELETE …/{id}` is the organizer cancelling
- * one they sent — an invitee who calls it gets 403, so they cannot decline.
+ * Accepting is `POST …/{id}/accept`, declining `POST …/{id}/decline` (new
+ * 2026-09-24). `DELETE …/{id}` is the organizer cancelling one they sent — an
+ * invitee who calls it gets 403.
  */
 export interface MatchInvitationResponse {
   id: string;

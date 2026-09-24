@@ -162,6 +162,17 @@ export function acceptInvitation(invitationId: string): Promise<MatchParticipant
   });
 }
 
+/**
+ * Decline an invitation. New on the backend 2026-09-24 — until then the invitee
+ * had no way to say no (`DELETE …/{id}` is the organizer's, and 403s for them).
+ * Answers with the invitation; its declined `status` value is not yet seen.
+ */
+export function declineInvitation(invitationId: string): Promise<MatchInvitationResponse> {
+  return apiFetch<MatchInvitationResponse>(`/matches/invitations/${invitationId}/decline`, {
+    method: "POST",
+  });
+}
+
 /** The raw keys `failureMessage` has been seen returning, in words a player reads. */
 const INVITE_FAILURES: Record<string, string> = {
   "matchmaking.invite.alreadyInvited": "قبلاً به این مچ دعوت شده است.",

@@ -587,3 +587,5 @@ endpoints are worth raising with the backend.
 declines). Still missing for the organizer: any way to **list a match's sent invitations**, so
 `DELETE /matches/invitations/{id}` (withdraw) can only be addressed from the invite response in
 the wizard. Ask backend for `GET /matches/{id}/invitations`. Not building a workaround (user).
+**Built 2026-09-24:** decline on /activity (`declineInvitation`). The declined `status` value is
+still unseen. `GET /matches/{id}/invitations` promised by the backend; not live yet (405).

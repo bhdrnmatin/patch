@@ -140,7 +140,7 @@ export interface ActivityAction {
   variant: "outline" | "filled";
   /** What tapping it does. The page owns the mutations; the data layer only
    *  names the intent, so a card stays serialisable. */
-  kind: "accept-invite" | "open-match";
+  kind: "accept-invite" | "decline-invite" | "open-match";
 }
 
 /** One meta line on an Activity card; tone drives its color/weight. */
