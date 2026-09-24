@@ -20,3 +20,11 @@ Regression check against v1: #1 still accepted.
 
 ### Status
 Open: 3 | Fixed: 0 | Accepted: 1
+
+## v3 — 2026-09-24 | fix
+#2 Fixed v3 — `min-h-18` (72px): the dialled pill's real height, so cancelled no longer sits 8px short.
+#4 Fixed v3 — `stage` is optional; the page's cancelled entry passes `undefined`, not a fake `0`.
+#3 still open — design decision (a cancelled accent).
+
+### Status
+Open: 1 | Fixed: 2 | Accepted: 1

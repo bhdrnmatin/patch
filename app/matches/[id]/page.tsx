@@ -26,7 +26,7 @@ const STAGE = {
   live: { title: "بازی شروع شده است", nextLabel: "وارد کردن نتیجه", stage: 2 },
   finished: { title: "بازی تمام شده است", nextLabel: "نهایی کردن نتیجه", stage: 3 },
   // No next step and no dial: a cancelled match is not partway through anything.
-  cancelled: { title: "این مَچ لغو شده است", nextLabel: undefined, stage: 0 },
+  cancelled: { title: "این مَچ لغو شده است", nextLabel: undefined, stage: undefined },
 } as const;
 
 /** What the CTA does when tapped. `results` navigates; the rest are mutations. */

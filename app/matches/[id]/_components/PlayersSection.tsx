@@ -56,6 +56,9 @@ export default function PlayersSection({ players, matchId, canRemove }: Props) {
                 player={p}
                 onRemove={removable ? () => mutate(p.participantId!) : undefined}
                 removing={isPending && variables === p.participantId}
+                // A second removal mid-flight would replace `variables` and
+                // strip the first chip of its busy state.
+                locked={isPending}
               />
             </li>
           );

@@ -15,14 +15,15 @@ interface Props {
   matchId?: string;
   /** The invite token, so the pill shares the one-tap join link like the card does. */
   inviteToken?: string;
-  /** Blurred stadium backdrop. Omitted by default — the hero is solid `bg-primary`. */
+  /** Legacy layered-art path. Omitted by default — the hero is the `CourtBackdrop` photo. */
   bgImage?: string;
   /** Sharp athlete foreground. Omitted by default (no art). */
   athleteImage?: string;
 }
 
 /**
- * Hero header: a drawn padel court, back button, match name, share/edit pills.
+ * Hero header: the shared court photo (`CourtBackdrop`), back button, match
+ * name, and one share pill.
  *
  * Collapses on scroll like every other hero — same `useCollapseHeader`, same
  * `.hero-collapse*` rules, so the geometry stays in globals.css and this file

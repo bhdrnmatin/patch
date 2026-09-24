@@ -44,3 +44,9 @@ Open: 3 | Fixed: 2 | Accepted: 0
 
 ### Status
 Open: 1 | Fixed: 4 | Accepted: 0
+
+## v6 — 2026-09-24 | fix
+#5 Fixed v6 — every chip gets `locked={isPending}`, so only one removal runs at a time.
+
+### Status
+Open: 0 | Fixed: 5 | Accepted: 0

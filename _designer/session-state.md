@@ -13,7 +13,13 @@ Six components audited; findings appended as new versions in `_designer/audits/`
 (4s disarm) and only offered while `upcoming`, and failures show an alert; ShareCard's armed state
 disarms on a 4s timer; the header pill says «کپی نشد» on a failed copy; status labels are `aria-live`.
 tsc + eslint clean. **Not seen on a device** — the chip confirm needs an organizer on a real match.
-Next: check the chip confirm on the phone; decide the contrast PROMOTE; remaining Suggestions.
+Contrast promoted (anti-patterns #19, token decision in TODO.md). **Results API** landed on the
+backend; the results page is now one game per match and submits (`6154dd0`) — GET result and voting
+wait on a real result. Quick-fix batch: stage pill height, optional `stage`, stale header docs,
+ShareCard opacity/timers, one removal at a time.
+**Everything unverified on a device is in `_designer/phone-test.md`** — go through it first.
+Still open (design calls): cancelled-status accent, lone hero pill width, call-row radius, hero
+text-shadow token; plus the older heading-semantics suggestions.
 
 
 ## Session — 2026-09-21: the wizard's share card, and a build nobody was watching

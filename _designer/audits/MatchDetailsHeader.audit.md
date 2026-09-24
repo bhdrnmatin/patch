@@ -39,3 +39,10 @@ Open: 5 | Fixed: 1 | Accepted: 1
 
 ### Status
 Open: 3 | Fixed: 3 | Accepted: 1
+
+## v5 — 2026-09-24 | fix
+#6 Fixed v5 — header comment and `bgImage` doc describe the photo and the single pill.
+#5 (lone full-width pill) and #7 (text-shadow vs token) still open — phone check / design decision.
+
+### Status
+Open: 2 | Fixed: 4 | Accepted: 1

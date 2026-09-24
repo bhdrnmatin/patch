@@ -45,6 +45,17 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
     const t = setTimeout(() => setArmed(false), 4000);
     return () => clearTimeout(t);
   }, [armed]);
+  // The two confirmations clear the same way, so leaving the page cancels them.
+  useEffect(() => {
+    if (!renewed) return;
+    const t = setTimeout(() => setRenewed(false), 4000);
+    return () => clearTimeout(t);
+  }, [renewed]);
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
   const queryClient = useQueryClient();
 
   const {
@@ -56,7 +67,6 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
     onSuccess: () => {
       setArmed(false);
       setRenewed(true);
-      setTimeout(() => setRenewed(false), 4000);
       // The page is holding the old token; only a refetch brings the new one,
       // and sharing the stale one would hand out a link that 404s.
       queryClient.invalidateQueries({ queryKey: ["matchDetails", matchId] });
@@ -70,10 +80,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
   const share = async () => {
     const url = matchShareUrl(matchId, inviteToken);
     const result = await shareLink(url, { title: "دعوت به مَچ", text: "بیا با هم بازی کنیم:" });
-    if (result === "copied") {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    if (result === "copied") setCopied(true);
     setFallbackUrl(result === "failed" ? url : "");
   };
 
@@ -119,7 +126,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
             onBlur={() => setArmed(false)}
             disabled={revoking}
             aria-busy={revoking}
-            className={`min-h-11 text-xs font-bold disabled:opacity-60 ${
+            className={`min-h-11 text-xs font-bold disabled:opacity-40 ${
               armed ? "text-danger" : "text-muted"
             }`}
             dir="rtl"

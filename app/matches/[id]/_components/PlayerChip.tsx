@@ -8,6 +8,8 @@ interface Props {
   /** Organizer only. Absent on a chip nobody may remove — including their own. */
   onRemove?: () => void;
   removing?: boolean;
+  /** Another chip's removal is in flight — one at a time. */
+  locked?: boolean;
 }
 
 /**
@@ -19,7 +21,7 @@ interface Props {
  * needs RTL for its column order; this box needs LTR for its alignment
  * utilities. Both are true at once, hence the pin.
  */
-export default function PlayerChip({ player, onRemove, removing }: Props) {
+export default function PlayerChip({ player, onRemove, removing, locked }: Props) {
   // Removing someone is irreversible for *them*, so it asks twice — the same
   // rule as ShareCard's link reset, and the same 4s disarm (iOS never blurs a
   // tapped button, so a blur can't be what cancels it).
@@ -41,7 +43,7 @@ export default function PlayerChip({ player, onRemove, removing }: Props) {
         <button
           type="button"
           onClick={() => setArmed(true)}
-          disabled={removing}
+          disabled={removing || locked}
           aria-label={`حذف ${player.name} از مَچ`}
           className="absolute -top-2 -left-2 size-11 flex items-center justify-center active:opacity-70 disabled:opacity-40"
         >

@@ -25,3 +25,11 @@ Open: 6 | Fixed: 0 | Accepted: 1 | Systemic: 1 promoted
 
 ### Status
 Open: 4 | Fixed: 2 | Accepted: 1 | Systemic: 1 promoted
+
+## v4 — 2026-09-24 | fix
+#5 Fixed v4 — `disabled:opacity-40`, same as everywhere else.
+#6 Fixed v4 — `copied` and `renewed` clear through effects like `armed`, so unmounting cancels them.
+#3 → TODO.md contrast item; #4 (stale-token window) still open.
+
+### Status
+Open: 1 | Fixed: 4 | Accepted: 1 | Systemic: 1 promoted
