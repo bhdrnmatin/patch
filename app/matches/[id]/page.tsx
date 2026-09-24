@@ -111,6 +111,9 @@ function MatchDetailsContent() {
   const stage = STAGE[status];
   // A cancelled match is read-only: no share link, no edit, no CTA.
   const cancelled = status === "cancelled";
+  // Only before kick-off: once a match is live or played, the roster is the
+  // record of who was there.
+  const canRemove = role === "creator" && status === "upcoming";
   const cta = ctaFor(role, status, m.viewerParticipation, m.needsApproval);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -163,7 +166,7 @@ function MatchDetailsContent() {
         {joinRequests && <JoinRequestsSection requests={joinRequests} matchId={id} />}
 
         {playersPlacement === "top" && (
-          <PlayersSection players={m.players} matchId={id} canRemove={role === "creator" && !cancelled} />
+          <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />
         )}
 
         <MatchInfoCard match={m} />
@@ -171,7 +174,7 @@ function MatchDetailsContent() {
         <DescriptionCard text={m.description} />
 
         {playersPlacement === "middle" && (
-          <PlayersSection players={m.players} matchId={id} canRemove={role === "creator" && !cancelled} />
+          <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />
         )}
         {m.teamNote && <InfoBanner text={m.teamNote} />}
 

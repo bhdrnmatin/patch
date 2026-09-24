@@ -42,7 +42,7 @@ export default function MatchDetailsHeader({
 }: Props) {
   const router = useRouter();
   const ref = useCollapseHeader<HTMLElement>();
-  const [copied, setCopied] = useState(false);
+  const [copyResult, setCopyResult] = useState<"copied" | "failed" | null>(null);
 
   // This pill had no `onClick` at all — it looked like the card's share button
   // and did nothing, which is what a tester finds first. Same helper as the
@@ -53,9 +53,11 @@ export default function MatchDetailsHeader({
       title: "دعوت به مَچ",
       text: "بیا با هم بازی کنیم:",
     });
+    // "failed" must not read as copied — the card below shows the link to copy
+    // by hand; up here there is only room to say it didn't work.
     if (result !== "shared") {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopyResult(result);
+      setTimeout(() => setCopyResult(null), 2000);
     }
   };
 
@@ -104,7 +106,13 @@ export default function MatchDetailsHeader({
           {matchId && (
             <ActionPill
               icon={<SendIcon />}
-              label={copied ? "لینک کپی شد" : "اشتراک گذاری"}
+              label={
+                copyResult === "copied"
+                  ? "لینک کپی شد"
+                  : copyResult === "failed"
+                    ? "کپی نشد"
+                    : "اشتراک گذاری"
+              }
               onClick={share}
             />
           )}

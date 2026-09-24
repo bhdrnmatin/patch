@@ -27,7 +27,7 @@ interface Props {
  */
 export default function PlayersSection({ players, matchId, canRemove }: Props) {
   const queryClient = useQueryClient();
-  const { mutate, isPending, variables } = useMutation({
+  const { mutate, isPending, isError, variables } = useMutation({
     mutationFn: (participantId: string) => removePlayer(matchId!, participantId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["matchDetails", matchId] });
@@ -61,6 +61,13 @@ export default function PlayersSection({ players, matchId, canRemove }: Props) {
           );
         })}
       </ul>
+      {/* Without this a failed removal just un-dimmed the chip — indistinguishable
+          from a refetch that hasn't landed yet. */}
+      {isError && (
+        <p role="alert" className="text-xs text-danger text-right" dir="rtl">
+          حذف بازیکن انجام نشد. دوباره تلاش کن.
+        </p>
+      )}
     </section>
   );
 }

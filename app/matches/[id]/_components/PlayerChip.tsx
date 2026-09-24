@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { CloseIcon } from "../../../(main)/_components/icons";
 import { toPersianDigits } from "../../../../lib/persian";
 import type { MatchPlayer } from "../../../../lib/types";
@@ -19,6 +20,16 @@ interface Props {
  * utilities. Both are true at once, hence the pin.
  */
 export default function PlayerChip({ player, onRemove, removing }: Props) {
+  // Removing someone is irreversible for *them*, so it asks twice — the same
+  // rule as ShareCard's link reset, and the same 4s disarm (iOS never blurs a
+  // tapped button, so a blur can't be what cancels it).
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 4000);
+    return () => clearTimeout(t);
+  }, [armed]);
+
   return (
     <div
       dir="ltr"
@@ -29,15 +40,32 @@ export default function PlayerChip({ player, onRemove, removing }: Props) {
         // throws someone out of a match.
         <button
           type="button"
-          onClick={onRemove}
+          onClick={() => setArmed(true)}
           disabled={removing}
           aria-label={`حذف ${player.name} از مَچ`}
-          aria-busy={removing}
-          className="absolute -top-2 -left-2 size-11 flex items-center justify-center disabled:opacity-40"
+          className="absolute -top-2 -left-2 size-11 flex items-center justify-center active:opacity-70 disabled:opacity-40"
         >
           <span className="size-5 rounded-full bg-surface border border-edge text-muted flex items-center justify-center shadow-card">
             <CloseIcon className="size-3" />
           </span>
+        </button>
+      )}
+      {/* The confirm covers the whole chip: a big, unmistakable second target,
+          and it hides the ✕ so the two taps can't land on the same spot. */}
+      {onRemove && (armed || removing) && (
+        <button
+          type="button"
+          onClick={() => {
+            setArmed(false);
+            onRemove();
+          }}
+          disabled={removing}
+          aria-busy={removing}
+          aria-live="polite"
+          className="absolute inset-0 z-10 rounded-2xl bg-danger px-2 text-white text-xs font-bold leading-4 text-center flex items-center justify-center active:opacity-80 disabled:opacity-40"
+          dir="rtl"
+        >
+          {removing ? "در حال حذف…" : `حذف ${player.name}؟ دوباره بزن`}
         </button>
       )}
       <div className="flex flex-col items-end gap-2 min-w-0">

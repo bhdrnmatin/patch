@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { regenerateInviteToken } from "@/lib/api/matches";
 import { matchShareUrl, shareLink } from "@/lib/share";
@@ -37,6 +37,14 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
   // because nothing else it does is irreversible for other people.
   const [armed, setArmed] = useState(false);
   const [renewed, setRenewed] = useState(false);
+  // `onBlur` alone can't disarm it: iOS Safari never focuses a tapped button, so
+  // it never blurs either, and the armed state would sit there until a stray
+  // tap killed the link.
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 4000);
+    return () => clearTimeout(t);
+  }, [armed]);
   const queryClient = useQueryClient();
 
   const {
@@ -77,7 +85,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
         className="w-full bg-white rounded-full pl-5 pr-1 py-1 flex items-center justify-end gap-4 shadow-card active:opacity-80"
       >
         <div className="flex flex-col items-end gap-1 text-right">
-          <span className="text-sm font-bold text-ink-soft" dir="rtl">
+          <span className="text-sm font-bold text-ink-soft" dir="rtl" aria-live="polite">
             {copied ? "لینک کپی شد" : "به اشتراک گذاری"}
           </span>
           {/* Levels ship after the MVP, so a real match has no restriction —
@@ -95,7 +103,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
       </button>
 
       {fallbackUrl && (
-        <p className="px-5 text-xs text-muted text-right leading-6" dir="rtl">
+        <p className="px-5 text-xs text-muted text-right leading-6" dir="rtl" role="status">
           کپی نشد. لینک:{" "}
           <span dir="ltr" className="select-all break-all text-ink-soft">
             {fallbackUrl}
@@ -115,6 +123,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
               armed ? "text-danger" : "text-muted"
             }`}
             dir="rtl"
+            aria-live="polite"
           >
             {revoking
               ? "در حال ساخت لینک تازه…"

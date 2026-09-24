@@ -26,3 +26,15 @@ fields the app had declared and never rendered.
 
 ### Status
 Open: 0 | Fixed: 3 | Accepted: 0
+
+## v4 — 2026-09-24 | audit (logo + tap-to-call, shipped 2026-09-22)
+| # | Severity | Finding | Status |
+|---|----------|---------|--------|
+| 4 | Suggestion | Call row is `rounded-group` (24px) on a 44px-tall row. Every other full-width tappable row/button in the app is `rounded-pill`. Design call: pill, or keep it as a soft tile. | Open — design decision |
+| 5 | Suggestion | Logo has no `onError`. With `alt=""` a broken URL renders as an empty `bg-edge` circle, which is an acceptable fallback, so this is only noted. | Accepted — degrades to a plain circle |
+
+Clean: `tel:` is a native `<a>` (rule 4.1), `min-h-11` touch target, `PhoneIcon` is `currentColor` + `aria-hidden`, the number goes through `toPersianDigits` inside an LTR span (digits keep their order), and the logo is correctly decorative next to the visible club name.
+Regression check against v3: #1, #2 still clean.
+
+### Status
+Open: 1 | Fixed: 3 | Accepted: 1

@@ -79,3 +79,10 @@ Audit summary. Details in per-component files in `_designer/audits/`.
 
 - 2026-09-22 | **Dead-affordance sweep (MatchDetailsHeader share/ویرایش, CourtCard edit, PlayersSection «همه»)** | fix | four buttons with no `onClick` | share wired, three deleted — two of them unbuildable (no update-match endpoint) | closes CourtCard #3, PlayersSection #2, MatchDetailsHeader #2
 - 2026-09-22 | **Sort/filter wiring (SortSheet, FilterSheet)** | fix | تاریخ wired in both, مسافت removed | `dateFacetRange` tested in `lib/data/matches.test.ts` | closes SortSheet #3, FilterSheet #3
+- 2026-09-24 | **PlayerChip** | audit | 0 Critical, 1 Warning, 1 Suggestion | 0 fixed, 2 open | [details](audits/PlayerChip.audit.md)
+- 2026-09-24 | **PlayersSection** | audit | 0 Critical, 2 Warning, 1 Suggestion | 0 fixed, 3 open | [details](audits/PlayersSection.audit.md)
+- 2026-09-24 | **ShareCard** | audit | 0 Critical, 3 Warning, 3 Suggestion | 0 fixed, 6 open, 1 → PROMOTE | [details](audits/ShareCard.audit.md)
+- 2026-09-24 | **MatchDetailsHeader** | audit | 0 Critical, 2 Warning, 3 Suggestion | 0 fixed, 5 open | [details](audits/MatchDetailsHeader.audit.md)
+- 2026-09-24 | **MatchStageCard** | audit | 0 Critical, 0 Warning, 3 Suggestion | 0 fixed, 3 open | [details](audits/MatchStageCard.audit.md)
+- 2026-09-24 | **CourtCard** | audit | 0 Critical, 0 Warning, 2 Suggestion | 0 fixed, 1 open, 1 accepted | [details](audits/CourtCard.audit.md)
+- 2026-09-24 | **Match page fixes (PlayerChip, PlayersSection, ShareCard, MatchDetailsHeader)** | fix | top 6 warnings from today's audit | remove-player asks twice + only before kick-off + reports failure; revoke disarms on a timer; header no longer says «کپی شد» on a failed copy; status text announced | closes PlayerChip #1–2, PlayersSection #3–4, ShareCard #1–2, MatchDetailsHeader #3–4

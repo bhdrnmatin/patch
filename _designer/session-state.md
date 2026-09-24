@@ -1,5 +1,21 @@
 # Session State
 
+## Session — 2026-09-24: ds-qa-tw audit of the 2026-09-22 UI (audit only, no code changed)
+Six components audited; findings appended as new versions in `_designer/audits/` (new files for
+`PlayerChip` and `ShareCard`). 0 Critical, 8 Warning, 13 Suggestion. Warnings worth fixing first:
+- **MatchDetailsHeader #3:** share pill says «لینک کپی شد» when the copy *failed* (`result !== "shared"`).
+- **ShareCard #1:** the revoke's armed state disarms only on `onBlur`, which iOS never fires on a tapped button. Needs a timeout.
+- **PlayerChip #1:** removing a player is one tap, no confirm (inconsistent with ShareCard's two-tap rule).
+- **PlayersSection #3/#4:** failed removal is silent; ✕ is offered on live/finished matches too.
+- **ShareCard/Header #2/#4:** copied/renewed status not in an `aria-live` region.
+- **Systemic → PROMOTE (awaiting user):** `text-muted` and `text-danger` small text fall under AA 4.5:1 on light surfaces.
+**Fixed the same day** (the six above, not the PROMOTE): remove-player is arm → full-chip red confirm
+(4s disarm) and only offered while `upcoming`, and failures show an alert; ShareCard's armed state
+disarms on a 4s timer; the header pill says «کپی نشد» on a failed copy; status labels are `aria-live`.
+tsc + eslint clean. **Not seen on a device** — the chip confirm needs an organizer on a real match.
+Next: check the chip confirm on the phone; decide the contrast PROMOTE; remaining Suggestions.
+
+
 ## Session — 2026-09-21: the wizard's share card, and a build nobody was watching
 Four commits, all pushed to both remotes (head `7fcf26b`). It started as one small feature and
 turned into finding that the last three days' work had never left the machine.
