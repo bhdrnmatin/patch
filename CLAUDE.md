@@ -79,7 +79,7 @@ keeps the vacated strip as a tap target, so the first tap on any `fixed bottom-0
 (the create wizard's بعدی). A document that never scrolls never triggers it.
 
 **Never read `window.scrollY` / `window.scrollTo` / `document.documentElement.scrollHeight`** — they
-are all frozen. Use `appScrollEl()` from that file. Same for `ResizeObserver`: the scroller's own box
+are all frozen (except `AppScroll`'s own keyboard reset, below). Use `appScrollEl()` from that file. Same for `ResizeObserver`: the scroller's own box
 is a fixed 100% and never resizes, so observe its content (`sc.firstElementChild`), not the scroller.
 
 `position: fixed` is unaffected — `overflow` alone doesn't create a containing block for it, so fixed
@@ -87,6 +87,21 @@ headers and bars still resolve against the viewport. But Safari does stop reliab
 fixed element inside a scroller when its own children reflow, leaving strips of the old paint. Any
 fixed bar whose contents change (a button appearing, a label swapping) needs the **`.fixed-bar`** class
 — `transform: translateZ(0)`, its own layer, whole-layer repaint.
+
+**Users scroll normally — inside `AppScroll`.** The restriction is on the *document*, not on the
+user. Zoom is the thing that's actually locked: `maximumScale: 1` + `userScalable: false` in the
+root `viewport` export, plus a `gesturestart` `preventDefault` in `AppScroll` because iOS Safari
+ignores `user-scalable=no` in a browser tab.
+
+**The keyboard (iPhone-verified 2026-09-24).** iOS scrolls the document to reveal a focused field
+even with `body` `overflow-hidden`, and it does it before `--vvh` shrinks — which left the auth card
+off the top of the screen. So `AppScroll` (1) resets any document scroll (`window.scrollTo(0,0)` —
+the one sanctioned write, since any offset is Safari's), and (2) reveals the focused field itself by
+centring it in the scroller above the keyboard, on keyboard-open and on `focusin`. It skips (2)
+while a sheet has the scroller locked (`overflow: hidden`). **Anything fixed that must stay above the
+keyboard sizes to `--vvh`, not `inset-0`/`dvh`** — iOS never shrinks the layout viewport for it.
+`BottomSheet` does this; a new fixed overlay with an input must too. When testing on a phone, reload
+before calling a fix broken — the LAN dev server doesn't always push the change.
 
 ## Fixed bottom bars
 
