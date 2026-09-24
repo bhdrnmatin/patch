@@ -577,3 +577,8 @@ non-cancelled private matches from `/activity` to the list (`getMatchList`). Wor
 the backend: should `/matches` include the viewer's own private matches? If it starts to, the merge
 dedupes by id and needs no change. The app's /activity mapping was run against the live rows and
 does show the private match — no app-side bug there.
+
+**Timings, 2026-09-24** (authed, from the dev laptop): `/matches` 0.28s, `/players/me` 0.34s,
+`/clubs` **0.85s** (five rows), `/activity` **1.2s**. The Next dev proxy adds ~0.05s. The app now
+fetches clubs once per session and no longer blocks the list on `/activity`; the two slow
+endpoints are worth raising with the backend.

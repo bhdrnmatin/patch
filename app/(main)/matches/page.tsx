@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { dateFacetRange } from "@/lib/jalali";
 import { useQuery } from "@tanstack/react-query";
-import { getMatchDays, getMatchList } from "@/lib/data";
+import { getMatchDays, getMatchList, getMyPrivateMatches } from "@/lib/data";
 import MatchesHeader from "./_components/MatchesHeader";
 import MatchCard from "./_components/MatchCard";
 import SortSheet, { DEFAULT_MATCH_SORT, type MatchSort } from "./_components/SortSheet";
@@ -14,7 +14,16 @@ type Sheet = "sort" | "filter" | null;
 
 export default function MatchesPage() {
   const { data: days = [] } = useQuery({ queryKey: ["matchDays"], queryFn: getMatchDays });
-  const { data: matchList = [], isLoading } = useQuery({ queryKey: ["matches"], queryFn: getMatchList });
+  const { data: publicList = [], isLoading } = useQuery({ queryKey: ["matches"], queryFn: getMatchList });
+  // Under ["matches"] so every invalidation of the list refreshes these too.
+  const { data: privateList = [] } = useQuery({
+    queryKey: ["matches", "private"],
+    queryFn: getMyPrivateMatches,
+  });
+  const matchList = useMemo(() => {
+    const listed = new Set(publicList.map((m) => m.id));
+    return [...publicList, ...privateList.filter((m) => !listed.has(m.id))];
+  }, [publicList, privateList]);
   // No day selected on open: the list shows every match, and the strip narrows
   // only once a cell is tapped (user decision 2026-09-14). Defaulting to today
   // would open the page empty — matches are days out, not hours. Re-tapping the

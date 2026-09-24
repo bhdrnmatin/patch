@@ -4,6 +4,13 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-24 — speed (clubs cached, list no longer waits on /activity) — faster on LAN dev ✓
+
+- [x] /matches: public matches appear quickly; your private ones may pop in ~1s later (that is
+      expected — `/activity` is the slow call).
+- [ ] Opening a match is faster the second time onwards (clubs are fetched once per session).
+- [ ] Judge speed on **patchapp.ir after deploy**, not the LAN dev server — dev mode is much slower.
+
 ## 2026-09-24 — private matches in the list (verified on iPhone ✓)
 
 - [x] Create a **private** match → it appears in **/matches** (all matches) for you, the organizer.

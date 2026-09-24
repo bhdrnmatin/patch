@@ -44,22 +44,28 @@ export async function getMatchDays(): Promise<DayOption[]> {
 export async function getMatchList(): Promise<MatchListItem[]> {
   // The club name is garnish on a list row: if the clubs call fails, show the
   // matches without it rather than failing the whole list.
-  const [{ content }, feed, clubs] = await Promise.all([
-    listMatches(),
-    getActivity().catch(() => null),
-    getClubs().catch(() => null),
-  ]);
+  const [{ content }, clubs] = await Promise.all([listMatches(), getClubs().catch(() => null)]);
   const clubName = new Map(clubs?.content.map((c) => [c.id, c.name]));
-  // `GET /matches` leaves out PRIVATE matches — even for their own organizer
-  // (probed 2026-09-24: a private match of mine was in `/activity`, not here).
-  // A private match of your own still belongs in your list, so add the ones the
-  // feed has and the list doesn't. Cancelled ones stay out, as the list does.
-  const listed = new Set(content.map((m) => m.id));
-  const mine = (feed?.content ?? [])
+  return content.map((m) => toListItem(m, clubName.get(m.clubId)));
+}
+
+/**
+ * Your own private matches, which `GET /matches` leaves out — even for their
+ * organizer (probed 2026-09-24: a private match of mine was in `/activity`, not
+ * in the list). Cancelled ones stay out, as the list does.
+ *
+ * Its own query rather than part of `getMatchList`: `/activity` takes ~1.2s
+ * against the list's ~0.3s, and waiting on it held back every public match.
+ * The page shows the list first and merges these in, deduped by id.
+ */
+export async function getMyPrivateMatches(): Promise<MatchListItem[]> {
+  const [feed, clubs] = await Promise.all([getActivity(), getClubs().catch(() => null)]);
+  const clubName = new Map(clubs?.content.map((c) => [c.id, c.name]));
+  return feed.content
     .filter(isMatchActivity)
     .map((row) => row.detail.match)
-    .filter((m) => m.visibility === "PRIVATE" && !listed.has(m.id) && !isCancelled(m));
-  return [...content, ...mine].map((m) => toListItem(m, clubName.get(m.clubId)));
+    .filter((m) => m.visibility === "PRIVATE" && !isCancelled(m))
+    .map((m) => toListItem(m, clubName.get(m.clubId)));
 }
 
 /**
