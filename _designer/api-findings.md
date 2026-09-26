@@ -589,3 +589,34 @@ declines). Still missing for the organizer: any way to **list a match's sent inv
 the wizard. Ask backend for `GET /matches/{id}/invitations`. Not building a workaround (user).
 **Built 2026-09-24:** decline on /activity (`declineInvitation`). The declined `status` value is
 still unseen. `GET /matches/{id}/invitations` promised by the backend; not live yet (405).
+
+---
+
+# Backend check — 2026-09-26
+
+Spec: **45 operations** (was 43 after decline). Probed as تست (`27e4acde…`).
+
+- **Tehran time is FIXED.** `2026-09-30T18:00:00+03:30` → stored `14:30:00Z` (Tehran ۱۸:۰۰). The held
+  `feat/tehran-time` branch is now correct to merge. Main's shifted send (`14:00Z`) is *also*
+  still accepted (stored as-is = Tehran ۱۷:۳۰), so main isn't broken — it just writes 30-min-early
+  times that only this app knows to correct. The on-the-hour check no longer bites on :30.
+  Both probe matches deleted.
+- **NEW `GET /matches/{id}/invitations`** → `MatchInvitationInviteeResponse[]` (`id, matchId,
+  inviteeAccountId, status, createdAt, acceptedAt, firstName, lastName, photoUrl, phoneNumber`).
+  200 (was 405). **Withdraw-invitation is unblocked.**
+- **NEW `GET /match-formats`** (no params): `OPEN_MATCH` «اوپن مچ» 4–4, `AMERICANO` «امریکانو» 4–12,
+  `MEXICANO` «مکزیکانو» 4–12, each with `active`. Capacity bounds the wizard could read instead of hardcoding.
+- **BREAKING — results changed shape.** `SubmitMatchResultRequest` is now `{games: GameRequest[]}`,
+  `GameRequest = {teamA: TeamRequest, teamB: TeamRequest, sets: SetScore[]}`,
+  `TeamRequest = {name?, participantIds[]}`. `MatchResultResponse` swaps the flat team/sets fields
+  for `games: GameResponse[]`. The app still sends `teamAParticipantIds`/`teamBParticipantIds`/`sets`
+  (`lib/api/types.ts:218`) → submit will fail. Multi-game is back, which undoes the reason for the
+  2026-09-24 "one game per match" cut. Open: are `participantIds` participant ids or account ids now?
+- **New field:** `UpdateProfileRequest.username` (optional, `^[a-zA-Z0-9_]{3,20}$`).
+  `PlayerResponse.username` was already there (null).
+- **Default avatar:** `avatarUrl` / `organizer.photoUrl` now return
+  `https://media.patchapp.ir/defaults/player-avatar.jpg` instead of null (200, 20KB JPEG), so the
+  app's own silhouette fallback won't show any more.
+- **Error bodies are filled in now** — e.g. 404 `{details:[{loc:"match",type:"matchmaking.result.notFound"}], errorMessage:…}`
+  (used to be all-null).
+- **Still slow:** `/activity` 2.15s (was 1.2s), `/clubs` 1.16s (was 0.85s); `/matches` 0.50s.
