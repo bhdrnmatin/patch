@@ -9,6 +9,7 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-26 — backend catch-up
+- [Create] **The schedule step opens on today** (user) — «امروز» is pre-selected; before, no day was.
 - [Time] **Merged `feat/tehran-time`.** The backend now stores `18:00+03:30` as sent, so match
   times go up and come back in Tehran time and `API_SHIFT_MS` is gone. The earliest bookable slot
   is a full hour ahead (8:10 → 10:00). Matches created before today read 30 min early.

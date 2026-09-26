@@ -18,6 +18,7 @@ import ShareCard from "../[id]/_components/ShareCard";
 import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
 import { autoTitle, isSchedulable } from "@/lib/api/matches";
+import { todayISO } from "@/lib/jalali";
 import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
@@ -69,7 +70,9 @@ function CreateMatchContent() {
   const [step, setStep] = useState(0);
   // Furthest step reached — every step up to it stays tappable (jump back AND forward).
   const [maxStep, setMaxStep] = useState(0);
-  const [draft, setDraft] = useState<CreateMatchDraft>(emptyDraft);
+  // The day defaults to today (user, 2026-09-26) — read on open, not at module
+  // load, so a tab left open overnight doesn't start on yesterday.
+  const [draft, setDraft] = useState<CreateMatchDraft>(() => ({ ...emptyDraft, date: todayISO() }));
   const patch = (p: Partial<CreateMatchDraft>) => setDraft((d) => ({ ...d, ...p }));
 
   // A saved draft, offered but not applied — resuming is the user's choice.
@@ -82,7 +85,11 @@ function CreateMatchContent() {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setSaved(readDraft()), []);
 
-  const touched = JSON.stringify(draft) !== JSON.stringify(emptyDraft);
+  // The default day alone isn't work worth saving (or worth overwriting a real
+  // saved draft with), so it doesn't count.
+  const touched =
+    JSON.stringify({ ...draft, date: draft.date === todayISO() ? null : draft.date }) !==
+    JSON.stringify(emptyDraft);
 
   // Autosave rather than asking on the way out: the App Router gives no reliable
   // hook on leaving (hardware back, a nav tap and the edge swipe all bypass the
