@@ -67,7 +67,7 @@ export interface MatchListItem {
   date: string;
   /** Tehran calendar date, ISO "YYYY-MM-DD" — matched against the date strip. */
   day: string;
-  /** Real start, epoch ms (the API's stored value plus `API_SHIFT_MS`). Orders
+  /** Start, epoch ms (`matchStartMs` of the API value). Orders
    *  the list; `day` alone can't separate two matches on the same afternoon. */
   startMs: number;
   /** Club name, resolved from the clubs list. Undefined if that lookup failed. */

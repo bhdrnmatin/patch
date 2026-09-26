@@ -590,14 +590,21 @@ the wizard. Ask backend for `GET /matches/{id}/invitations`. Not building a work
 **Built 2026-09-24:** decline on /activity (`declineInvitation`). The declined `status` value is
 still unseen. `GET /matches/{id}/invitations` promised by the backend; not live yet (405).
 
+
+**2026-09-24 — Tehran-time switch prepared, held for the backend.** Re-probed: `18:00:00+03:30` →
+201, stored `14:00:00Z` (still floored to the UTC hour, no error). Backend says it will validate
+and answer in Tehran time. Branch `feat/tehran-time` sends `…T18:00:00+03:30`, drops
+`API_SHIFT_MS`, reads any offset (none = Tehran), and books from a full hour ahead (8:10 → 10:00).
+**Merge only after** a re-probe stores `18:00+03:30` (or `14:30Z`). Matches created before the
+fix will read 30 min early. Probe match `c6b8e0b0…` left in place for the backend team.
 ---
 
 # Backend check — 2026-09-26
 
 Spec: **45 operations** (was 43 after decline). Probed as تست (`27e4acde…`).
 
-- **Tehran time is FIXED.** `2026-09-30T18:00:00+03:30` → stored `14:30:00Z` (Tehran ۱۸:۰۰). The held
-  `feat/tehran-time` branch is now correct to merge. Main's shifted send (`14:00Z`) is *also*
+- **Tehran time is FIXED.** `2026-09-30T18:00:00+03:30` → stored `14:30:00Z` (Tehran ۱۸:۰۰). `feat/tehran-time`
+  **merged 2026-09-26**. Main's shifted send (`14:00Z`) is *also*
   still accepted (stored as-is = Tehran ۱۷:۳۰), so main isn't broken — it just writes 30-min-early
   times that only this app knows to correct. The on-the-hour check no longer bites on :30.
   Both probe matches deleted.

@@ -62,13 +62,11 @@ assert.equal(draftToCreateRequest(d({ myRole: "captain" })).organizerJoins, fals
 assert.equal(draftToCreateRequest(d({ duration: 60 })).durationHours, 1);
 assert.equal(draftToCreateRequest(d({ duration: 120 })).durationHours, 2);
 
-// scheduledAt is Tehran ۱۸:۰۰ (14:30Z) sent 30 minutes early, so its UTC minutes
-// are zero — the API rejects anything else (API_SHIFT_MS).
-assert.equal(draftToCreateRequest(d()).scheduledAt, "2026-09-20T14:00:00Z");
+// scheduledAt is the picked Tehran wall-clock time, with its offset.
+assert.equal(draftToCreateRequest(d()).scheduledAt, "2026-09-20T18:00:00+03:30");
 // The picker's last slot is midnight, which belongs to the next day.
-assert.equal(draftToCreateRequest(d({ time: "24:00" })).scheduledAt, "2026-09-20T20:00:00Z");
-// Early-morning slots cross back into the previous UTC day.
-assert.equal(draftToCreateRequest(d({ time: "02:00" })).scheduledAt, "2026-09-19T22:00:00Z");
+assert.equal(draftToCreateRequest(d({ time: "24:00" })).scheduledAt, "2026-09-21T00:00:00+03:30");
+assert.equal(draftToCreateRequest(d({ time: "02:00" })).scheduledAt, "2026-09-20T02:00:00+03:30");
 // Round trip: what the wizard sends reads back as what the player picked.
 assert.equal(tehranTimeRange(draftToCreateRequest(d()).scheduledAt, 1), "۱۸:۰۰ الی ۱۹:۰۰");
 assert.equal(tehranDateISO(draftToCreateRequest(d({ time: "24:00" })).scheduledAt), "2026-09-21");
@@ -86,24 +84,30 @@ assert.equal(draftToCreateRequest(d({ description: " بیا " })).description, "
 assert.throws(() => draftToCreateRequest(d({ courtId: null })), /missing a court/);
 assert.throws(() => draftToCreateRequest(d({ time: null })), /missing a court/);
 
-// tehranTimeRange: stored instant + 30min shift + 3:30 offset = +4:00 on the wire.
-assert.equal(tehranTimeRange("2026-09-27T14:00:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
+// tehranTimeRange reads any zone the backend answers in as Tehran wall-clock.
+assert.equal(tehranTimeRange("2026-09-27T18:00:00+03:30", 2), "۱۸:۰۰ الی ۲۰:۰۰");
+assert.equal(tehranTimeRange("2026-09-27T14:30:00Z", 2), "۱۸:۰۰ الی ۲۰:۰۰");
+// No offset at all is Tehran, never the device's zone.
+assert.equal(tehranTimeRange("2026-09-27T18:00:00", 1), "۱۸:۰۰ الی ۱۹:۰۰");
 // Crossing midnight must not wrap to a negative or a 25th hour.
-assert.equal(tehranTimeRange("2026-09-27T20:00:00Z", 1), "۰۰:۰۰ الی ۰۱:۰۰");
+assert.equal(tehranTimeRange("2026-09-27T23:30:00+03:30", 1), "۲۳:۳۰ الی ۰۰:۳۰");
 
-// The Tehran date, not the UTC one: 20:00Z is already the 28th in Tehran, and
-// 21:00 Tehran on the 27th is 17:00Z the same day.
-assert.equal(tehranDateISO("2026-09-27T17:00:00Z"), "2026-09-27");
-assert.equal(tehranDateISO("2026-09-27T20:00:00Z"), "2026-09-28");
+// The Tehran date, not the UTC one: 02:00 Tehran on the 28th is 22:30Z on the 27th.
+assert.equal(tehranDateISO("2026-09-27T22:30:00Z"), "2026-09-28");
+assert.equal(tehranDateISO("2026-09-28T02:00:00+03:30"), "2026-09-28");
+assert.equal(tehranDateISO("2026-09-27T21:00:00+03:30"), "2026-09-27");
 
 assert.equal(FORMAT_LABELS.AMERICANO, "آمریکانو");
 assert.equal(FORMAT_LABELS.OPEN_MATCH, "دوستانه");
 
-// isSchedulable: Tehran 18:00 on 09-20 is stored as 14:00Z, and the API locks a
-// match an hour before that — so the slot closes at 13:00Z, 90 minutes before
-// the match really starts.
-assert.equal(isSchedulable("2026-09-20", "18:00", Date.parse("2026-09-20T12:59:00Z")), true);
-assert.equal(isSchedulable("2026-09-20", "18:00", Date.parse("2026-09-20T13:00:00Z")), false);
+// isSchedulable: a slot must start at least an hour from now.
+const tehran = (hhmm: string) => Date.parse(`2026-09-20T${hhmm}:00+03:30`);
+// At 8:10 the first bookable slot is 10:00 (user's example).
+assert.equal(isSchedulable("2026-09-20", "09:00", tehran("08:10")), false);
+assert.equal(isSchedulable("2026-09-20", "10:00", tehran("08:10")), true);
+// On the hour, the next hour is exactly an hour away — bookable.
+assert.equal(isSchedulable("2026-09-20", "09:00", tehran("08:00")), true);
+assert.equal(isSchedulable("2026-09-20", "09:00", tehran("08:01")), false);
 
 // Invite failures: raw keys never reach the screen; Persian passes, digits converted.
 assert.equal(inviteFailureText("matchmaking.invite.alreadyInvited"), "قبلاً به این مچ دعوت شده است.");
