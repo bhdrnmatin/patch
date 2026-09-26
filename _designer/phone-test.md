@@ -16,6 +16,15 @@ off a secure origin). Tick an item, note the date and device; delete the section
       shows them as «در انتظار پاسخ»; «پس گرفتن» removes the row; the invitee's /activity card goes.
 - [ ] Secondary grey text and red error text look right (slightly darker than before); the login
       error text is still the bright red.
+- [ ] Create actually succeeds at the new sizes: a دوستانه with 3 teammates, and a آمریکانو with
+      5+ teammates (that one used to be sent with no cap — the API now allows up to 12).
+- [ ] «دعوت‌های ارسالی» is **absent** when there's nothing pending, for a non-organizer, and once
+      the match is live/finished.
+- [ ] Players with no photo: the backend now sends its own default avatar
+      (`media.patchapp.ir/defaults/player-avatar.jpg`) instead of nothing, so our silhouette no
+      longer appears. Check it looks OK in player chips, the wizard's review, and /profile.
+- [ ] Results submitted **before the match ends**: note what the API says (still unknown), and
+      that the message under the card is Persian, not a `matchmaking.…` key.
 
 ## 2026-09-24 — /activity current vs past, no sort/filter
 
