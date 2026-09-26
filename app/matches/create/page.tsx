@@ -182,7 +182,7 @@ function CreateMatchContent() {
                 them fix it or retry. ApiError carries the server's Persian
                 message, or a connection one when there was no response. */}
             {step === 4 && error && (
-              <p role="alert" className="text-sm text-danger text-right leading-6" dir="rtl">
+              <p role="alert" className="text-sm text-danger-deep text-right leading-6" dir="rtl">
                 {error.message || "ثبت مَچ انجام نشد. دوباره تلاش کنید."}
               </p>
             )}

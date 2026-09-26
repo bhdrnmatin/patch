@@ -131,7 +131,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
           {photo.isPending ? "در حال آپلود..." : "برای تغییر تصویر بزنید"}
         </span>
         {photoError && (
-          <p className="text-xs text-danger" dir="rtl">
+          <p className="text-xs text-danger-deep" dir="rtl">
             {photoError}
           </p>
         )}
@@ -200,7 +200,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
       {/* Sticky save bar — primary action always reachable */}
       <BottomBar className="border-t border-edge pt-3 flex flex-col items-center gap-2 shadow-sheet">
         {saveError && (
-          <p className="text-xs text-danger" dir="rtl">
+          <p className="text-xs text-danger-deep" dir="rtl">
             {saveError}
           </p>
         )}

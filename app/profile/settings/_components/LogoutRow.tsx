@@ -21,7 +21,7 @@ export default function LogoutRow() {
       aria-busy={pending}
       className="bg-white border border-edge flex items-center justify-between w-full overflow-hidden shadow-card h-14 rounded-full pr-[7px] pl-4 active:opacity-90 disabled:opacity-60"
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="text-danger">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="text-danger-deep">
         <path
           d="M9 12L5 8L9 4"
           stroke="currentColor"
@@ -31,10 +31,10 @@ export default function LogoutRow() {
         />
       </svg>
       <div className="flex items-center gap-3">
-        <span className="text-sm text-danger" dir="rtl">
+        <span className="text-sm text-danger-deep" dir="rtl">
           {pending ? "در حال خروج..." : "خروج از حساب"}
         </span>
-        <div className="bg-surface rounded-full p-2 shrink-0 text-danger">
+        <div className="bg-surface rounded-full p-2 shrink-0 text-danger-deep">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden className="size-6">
             <path
               d="M15 12H3m0 0l4-4m-4 4l4 4M13 4h6a1 1 0 011 1v14a1 1 0 01-1 1h-6"

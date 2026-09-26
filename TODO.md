@@ -32,7 +32,10 @@ answers 405 on GET. Build withdraw when it ships.
 
 ## Contrast — systemic (promoted 2026-09-24, anti-patterns.md #19)
 
-- [ ] **`text-muted` and `text-danger` fail AA 4.5:1 as small text.** `text-muted` #6783A0 is ~3.9:1
+- [x] **Done 2026-09-26:** `--color-muted` darkened in place to #57728E (4.66:1 on surface); new
+      `--color-danger-deep` #D6204A for red text on light surfaces + PlayerChip's confirm fill. `danger`
+      stays #FF4869 for the nav dot, error borders (3:1 non-text) and the dark auth card's errors.
+      (original) **`text-muted` and `text-danger` fail AA 4.5:1 as small text.** `text-muted` #6783A0 is ~3.9:1
       on white / ~3.65:1 on `bg-surface`; `text-danger` #FF4869 is ~3.3:1 / ~3.1:1; white on
       `bg-danger` (PlayerChip's remove confirm) ~3.3:1. Used at 10–12px all over the app. Decide:
       darken `--color-muted` in place (one-line fix, shifts every secondary label), or add text-only

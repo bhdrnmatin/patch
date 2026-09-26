@@ -127,7 +127,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
             disabled={revoking}
             aria-busy={revoking}
             className={`min-h-11 text-xs font-bold disabled:opacity-40 ${
-              armed ? "text-danger" : "text-muted"
+              armed ? "text-danger-deep" : "text-muted"
             }`}
             dir="rtl"
             aria-live="polite"
@@ -146,7 +146,7 @@ export default function ShareCard({ restriction, matchId, inviteToken, canRevoke
             </span>
           )}
           {revokeFailed && (
-            <span role="alert" className="text-tiny text-danger leading-5" dir="rtl">
+            <span role="alert" className="text-tiny text-danger-deep leading-5" dir="rtl">
               ساخت لینک تازه انجام نشد. دوباره تلاش کن.
             </span>
           )}

@@ -64,7 +64,7 @@ export default function PlayerChip({ player, onRemove, removing, locked }: Props
           disabled={removing}
           aria-busy={removing}
           aria-live="polite"
-          className="absolute inset-0 z-10 rounded-2xl bg-danger px-2 text-white text-xs font-bold leading-4 text-center flex items-center justify-center active:opacity-80 disabled:opacity-40"
+          className="absolute inset-0 z-10 rounded-2xl bg-danger-deep px-2 text-white text-xs font-bold leading-4 text-center flex items-center justify-center active:opacity-80 disabled:opacity-40"
           dir="rtl"
         >
           {removing ? "در حال حذف…" : `حذف ${player.name}؟ دوباره بزن`}

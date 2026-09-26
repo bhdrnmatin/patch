@@ -67,7 +67,7 @@ export default function PlayersSection({ players, matchId, canRemove }: Props) {
       {/* Without this a failed removal just un-dimmed the chip — indistinguishable
           from a refetch that hasn't landed yet. */}
       {isError && (
-        <p role="alert" className="text-xs text-danger text-right" dir="rtl">
+        <p role="alert" className="text-xs text-danger-deep text-right" dir="rtl">
           حذف بازیکن انجام نشد. دوباره تلاش کن.
         </p>
       )}

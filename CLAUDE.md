@@ -203,7 +203,7 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Night auth photo edge (login/OTP art fades into it) | `bg-night` | `#020F26` |
 | Headings / primary text | `text-ink` | `#00254D` |
 | Body/meta text, icons | `text-ink-soft` | `#253343` |
-| Secondary text | `text-muted` | `#6783A0` |
+| Secondary text (AA on white/surface) | `text-muted` | `#57728E` |
 | Light card/chip bg | `bg-surface` | `#F5F7FA` |
 | Separator lines | `bg-divider` | `#E5EAF0` |
 | Light borders, avatar bg | `border-edge` / `bg-edge` | `#D0DDEC` |
@@ -225,7 +225,8 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Tiny captions (badges, day strips) | `text-tiny` | `10px` |
 | Success (fills/icons) | `text-success` / `bg-success` | `#00B86B` |
 | Success badge pair | `bg-success-soft` + `text-success-deep` | `#E8F5E9` / `#2E7D32` |
-| Danger accents | `bg-danger` / `text-danger` | `#FF4869` |
+| Danger accents (dots, error borders, text on the dark auth card) | `bg-danger` / `text-danger` | `#FF4869` |
+| Danger text on light surfaces, white-on-red fills (AA) | `text-danger-deep` / `bg-danger-deep` | `#D6204A` |
 | Accent lime (the ball) — selected hero date (border + dot), «جاری» badge dot | `border-accent` / `bg-accent` | `#C7F000` |
 
 **Gray-ramp mapping (blessed 2026-06-11):** Figma grays without a token render with the

@@ -49,7 +49,7 @@ export default function ActivityCard({ item, onAction, busy, error }: Props) {
       </div>
 
       {error && (
-        <p role="alert" dir="rtl" className="px-2 text-tiny leading-5 text-danger text-right">
+        <p role="alert" dir="rtl" className="px-2 text-tiny leading-5 text-danger-deep text-right">
           {error}
         </p>
       )}

@@ -44,7 +44,7 @@ export default function TextField({ label, value, onChange, placeholder, numeric
         }`}
       />
       {error && (
-        <span id={errorId} role="alert" className="text-xs text-danger text-right leading-5" dir="rtl">
+        <span id={errorId} role="alert" className="text-xs text-danger-deep text-right leading-5" dir="rtl">
           {error}
         </span>
       )}

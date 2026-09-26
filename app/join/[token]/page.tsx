@@ -151,7 +151,7 @@ function JoinContent() {
       </section>
 
       {joinError && !(joinError instanceof ApiError && joinError.status === 409) && (
-        <p role="alert" className="px-6 pt-4 text-sm text-danger text-right leading-6" dir="rtl">
+        <p role="alert" className="px-6 pt-4 text-sm text-danger-deep text-right leading-6" dir="rtl">
           {joinError.message || "ورود به مَچ انجام نشد. دوباره تلاش کنید."}
         </p>
       )}

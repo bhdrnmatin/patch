@@ -24,7 +24,7 @@ export default function InviteFailures({ failed }: { failed: FailedInvite[] }) {
             <span dir="ltr" className="text-sm font-bold text-ink-soft">
               {toPersianDigits(f.phone)}
             </span>
-            <span dir="rtl" className="text-xs text-danger leading-5">
+            <span dir="rtl" className="text-xs text-danger-deep leading-5">
               {f.reason}
             </span>
           </li>

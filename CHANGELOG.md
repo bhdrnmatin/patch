@@ -8,6 +8,12 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-26 — small text passes AA
+- [Tokens] `text-muted` is #57728E (was #6783A0, ~3.7:1 on `bg-surface`) — every secondary label
+  shifts one step darker. New `danger-deep` #D6204A for error/destructive text on light surfaces
+  and PlayerChip's white-on-red confirm; `danger` #FF4869 stays for dots, error borders and the
+  login/OTP/profile-setup errors, which sit on the dark card where the bright red reads better.
+
 ### 2026-09-24 — results go to the API, one game per match
 - [Results] **«ثبت نهایی نتایج» submits.** `POST /matches/{id}/result` landed on the backend
   2026-09-24; the button had never had an `onClick`. On success it returns to the match page; a

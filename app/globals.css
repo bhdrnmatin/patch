@@ -29,7 +29,7 @@
   /* Neutral scale (light UI) */
   --color-ink: #00254D;        /* headings, primary text */
   --color-ink-soft: #253343;   /* body/meta text, icons */
-  --color-muted: #6783A0;      /* secondary text (same hex as input-border, different role) */
+  --color-muted: #57728E;      /* secondary text — 4.66:1 on surface (AA); was #6783A0 = input-border */
   --color-surface: #F5F7FA;    /* card/chip light background */
   --color-divider: #E5EAF0;    /* thin separator lines */
   --color-edge: #D0DDEC;       /* light borders, avatar placeholder bg */
@@ -39,6 +39,7 @@
   --color-success-soft: #E8F5E9; /* held-status badge background */
   --color-success-deep: #2E7D32; /* readable green text on success-soft */
   --color-danger: #FF4869;       /* notification dots, destructive accents */
+  --color-danger-deep: #D6204A;  /* red text on light surfaces + white-on-red fills (4.7:1 on surface) */
   --color-accent: #C7F000;       /* ball lime — the selected day in the hero date strip */
 
   --radius-pill: 44px;

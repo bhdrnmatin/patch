@@ -103,7 +103,7 @@ function ResultsContent() {
         />
 
         {submit.isError && (
-          <p role="alert" className="text-xs text-danger text-right" dir="rtl">
+          <p role="alert" className="text-xs text-danger-deep text-right" dir="rtl">
             {submit.error instanceof ApiError
               ? resultFailureText(submit.error.message)
               : "ثبت نتیجه انجام نشد. دوباره تلاش کن."}

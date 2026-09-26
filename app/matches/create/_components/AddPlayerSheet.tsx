@@ -160,7 +160,7 @@ function ClearButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full h-12 rounded-card text-sm font-bold text-danger active:opacity-80"
+      className="w-full h-12 rounded-card text-sm font-bold text-danger-deep active:opacity-80"
       dir="rtl"
     >
       حذف این بازیکن
