@@ -10,6 +10,8 @@ off a secure origin). Tick an item, note the date and device; delete the section
 - [ ] Wizard schedule step opens with «امروز» selected; open the wizard and close it straight
       away → no «مَچ نیمه‌تمام دارید» bar next time; with a real saved
       draft, that bar still shows on open.
+- [ ] Match page برگشت goes to /matches from every way in: the list, /activity, a /join link,
+      the wizard's «رفتن به مَچ».
 - [ ] The wizard's earliest slot is a full hour ahead (at 8:10 the first is ۱۰:۰۰).
 - [ ] Results (needs a match with 4 confirmed players, organizer): add a second game with
       «+ افزودن بازی», swap partners in it, remove one with its ✕. The CTA stays disabled (caption

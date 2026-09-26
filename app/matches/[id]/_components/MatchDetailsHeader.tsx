@@ -90,7 +90,9 @@ export default function MatchDetailsHeader({
         {/* Rides up and shrinks with the collapse, the same rule the list pages'
             filter/sort pair uses. */}
         <div className="hero-collapse-actions absolute left-6">
-          <IconButton icon={<ArrowLeftIcon />} label="برگشت" onClick={() => router.back()} />
+          {/* Always to the list (user, 2026-09-26) — history.back() landed on the
+              wizard, /activity or outside the app, depending on how they came in. */}
+          <IconButton icon={<ArrowLeftIcon />} label="برگشت" onClick={() => router.push("/matches")} />
         </div>
         <h1
           style={{ "--title-open": "32px" } as React.CSSProperties}
