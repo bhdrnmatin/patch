@@ -18,9 +18,9 @@ interface PickerTarget {
 }
 
 /**
- * ثبت نتایج — one result per match, because that is what the API takes: two
- * teams and their sets. It used to collect any number of games, each with its
- * own pairing, which `POST /matches/{id}/result` has nowhere to put.
+ * ثبت نتایج — one game per match (user, 2026-09-24): two teams of two and their
+ * sets, sent as a one-item `games` list. The API has taken several games since
+ * 2026-09-26; the multi-game UI this replaced is at `6154dd0^` if that comes back.
  */
 function ResultsContent() {
   const { id } = useParams<{ id: string }>();
@@ -58,19 +58,23 @@ function ResultsContent() {
     setPicker(null);
   };
 
-  // Account ids per team. A slot left empty is fine — tennis singles is 1v1 —
-  // but each team needs someone, which is also all the API insists on.
+  // Account ids per team. The API wants exactly two a side (doubles only,
+  // since 2026-09-26), so singles can't be recorded.
   const teamIds = game.teams.map((t) =>
     t.map((i) => (i === null ? undefined : m.players[i]?.accountId)).filter((a) => a !== undefined),
   );
-  const ready = teamIds.every((t) => t.length > 0);
+  const ready = teamIds.every((t) => t.length === 2);
 
   const submit = useMutation({
     mutationFn: () =>
       submitMatchResult(id, {
-        teamAParticipantIds: teamIds[0],
-        teamBParticipantIds: teamIds[1],
-        sets: game.sets.map(([a, b]) => ({ teamAScore: a, teamBScore: b })),
+        games: [
+          {
+            teamA: { participantIds: teamIds[0] },
+            teamB: { participantIds: teamIds[1] },
+            sets: game.sets.map(([a, b]) => ({ teamAScore: a, teamBScore: b })),
+          },
+        ],
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["matchDetails", id] });
@@ -116,7 +120,7 @@ function ResultsContent() {
 
       <MatchCtaBar
         label={submit.isPending ? "در حال ثبت…" : "ثبت نهایی نتایج"}
-        caption={ready ? "بازیکنان مَچ نتیجه را تایید یا رد می‌کنند" : "برای هر تیم دست‌کم یک بازیکن انتخاب کن"}
+        caption={ready ? "بازیکنان مَچ نتیجه را تایید یا رد می‌کنند" : "برای هر تیم دو بازیکن انتخاب کن"}
         busy={submit.isPending}
         disabled={!ready}
         onClick={() => submit.mutate()}

@@ -8,6 +8,14 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-26 — backend catch-up
+- [Time] **Merged `feat/tehran-time`.** The backend now stores `18:00+03:30` as sent, so match
+  times go up and come back in Tehran time and `API_SHIFT_MS` is gone. The earliest bookable slot
+  is a full hour ahead (8:10 → 10:00). Matches created before today read 30 min early.
+- [Results] **Submit follows the API's new shape** — `{games:[{teamA, teamB, sets}]}`, each team
+  exactly two account ids. Still one game per match in the UI. Singles can't be recorded any more
+  (the API refuses a one-player team), so the CTA waits for two players a side.
+
 ### 2026-09-26 — small text passes AA
 - [Tokens] `text-muted` is #57728E (was #6783A0, ~3.7:1 on `bg-surface`) — every secondary label
   shifts one step darker. New `danger-deep` #D6204A for error/destructive text on light surfaces

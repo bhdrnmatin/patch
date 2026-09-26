@@ -214,13 +214,23 @@ export interface InviteDirectResponse {
   failureMessage: string | null;
 }
 
-/** `POST /matches/{id}/result`. One result per match: two teams and the sets. */
-export interface SubmitMatchResultRequest {
-  /** Account ids, not participant ids. Each team needs at least one. */
-  teamAParticipantIds: string[];
-  teamBParticipantIds: string[];
-  /** In order played. Scores ≥ 0. */
+/** One team in a game: exactly two **account** ids (not participant ids). */
+export interface ResultTeam {
+  name?: string;
+  participantIds: string[];
+}
+
+/** One game: its two teams and their sets, in order played. Scores ≥ 0. */
+export interface ResultGame {
+  teamA: ResultTeam;
+  teamB: ResultTeam;
   sets: { teamAScore: number; teamBScore: number }[];
+}
+
+/** `POST /matches/{id}/result`. The API takes any number of games (players may
+ *  swap teams between them); the app sends one (user, 2026-09-24). */
+export interface SubmitMatchResultRequest {
+  games: ResultGame[];
 }
 
 /**
@@ -233,9 +243,7 @@ export interface MatchResultResponse {
   matchId: string;
   round: number;
   status: string;
-  teamAParticipantIds: string[];
-  teamBParticipantIds: string[];
-  sets: { teamAScore: number; teamBScore: number }[];
+  games: ResultGame[];
   totalConfirmedParticipants: number;
   rejectCount: number;
   myVote: string | null;

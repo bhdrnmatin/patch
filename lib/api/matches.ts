@@ -336,6 +336,7 @@ export function submitMatchResult(
 
 const RESULT_FAILURES: Record<string, string> = {
   "matchmaking.result.matchCancelled": "این مَچ لغو شده است.",
+  "matchmaking.result.invalidTeamComposition": "هر تیم باید دو بازیکن تاییدشده‌ی همین مَچ باشد.",
 };
 
 /** The result endpoints answer in raw keys; never put `matchmaking.…` on screen. */
