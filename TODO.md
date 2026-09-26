@@ -25,7 +25,7 @@
 - [x] **Decline an invitation** — built 2026-09-24: «رد کردن» on the /activity invitation card,
       `POST /matches/invitations/{id}/decline`. Awaiting a phone check.
 
-**Blocked on backend:** *withdraw an invitation (organizer).* `DELETE /matches/invitations/{id}`
+**Done 2026-09-26:** withdraw an invitation — `InvitationsSection` on the match page. (Was blocked on backend:) `DELETE /matches/invitations/{id}`
 works, but nothing lists a match's sent invitations — the id only exists in the invite response,
 inside the wizard. `GET /matches/{id}/invitations` is coming from the backend (user, 2026-09-24) — live still
 answers 405 on GET. Build withdraw when it ships.

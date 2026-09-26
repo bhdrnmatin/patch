@@ -10,6 +10,8 @@ off a secure origin). Tick an item, note the date and device; delete the section
 - [ ] The wizard's earliest slot is a full hour ahead (at 8:10 the first is ۱۰:۰۰).
 - [ ] Results (needs a match with 4 confirmed players, organizer): CTA stays disabled until both
       teams have two players; submitting returns to the match page.
+- [ ] Withdraw invite (organizer, upcoming match, invite someone from the wizard): «دعوت‌های ارسالی»
+      shows them as «در انتظار پاسخ»; «پس گرفتن» removes the row; the invitee's /activity card goes.
 - [ ] Secondary grey text and red error text look right (slightly darker than before); the login
       error text is still the bright red.
 

@@ -5,6 +5,7 @@ import type {
   CreateMatchRequest,
   InviteDirectResponse,
   InviteSuggestionResponse,
+  MatchInvitationInviteeResponse,
   MatchInvitationResponse,
   MatchParticipantResponse,
   MatchResponse,
@@ -161,6 +162,18 @@ export function acceptInvitation(invitationId: string): Promise<MatchParticipant
 export function declineInvitation(invitationId: string): Promise<MatchInvitationResponse> {
   return apiFetch<MatchInvitationResponse>(`/matches/invitations/${invitationId}/decline`, {
     method: "POST",
+  });
+}
+
+/** The invitations a match's organizer has sent, any status. New 2026-09-26. */
+export function getMatchInvitations(matchId: string): Promise<MatchInvitationInviteeResponse[]> {
+  return apiFetch<MatchInvitationInviteeResponse[]>(`/matches/${matchId}/invitations`);
+}
+
+/** The organizer withdraws an invitation; it comes back `CANCELLED`. */
+export function cancelInvitation(invitationId: string): Promise<MatchInvitationResponse> {
+  return apiFetch<MatchInvitationResponse>(`/matches/invitations/${invitationId}`, {
+    method: "DELETE",
   });
 }
 

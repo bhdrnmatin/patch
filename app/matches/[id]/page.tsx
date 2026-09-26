@@ -15,6 +15,7 @@ import CourtCard from "./_components/CourtCard";
 import ShareCard from "./_components/ShareCard";
 import FaqSection from "./_components/FaqSection";
 import JoinRequestsSection from "./_components/JoinRequestsSection";
+import InvitationsSection from "./_components/InvitationsSection";
 import MatchCtaBar from "./_components/MatchCtaBar";
 import { getMatchDetails, viewerRole } from "@/lib/data";
 import { getAccountId } from "@/lib/api/session";
@@ -176,6 +177,8 @@ function MatchDetailsContent() {
         {playersPlacement === "middle" && (
           <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />
         )}
+        {/* Same window as removing a player: organizer, before kick-off. */}
+        {canRemove && <InvitationsSection matchId={id} />}
         {m.teamNote && <InfoBanner text={m.teamNote} />}
 
         <PromoCard />

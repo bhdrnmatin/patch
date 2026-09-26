@@ -205,6 +205,15 @@ export interface MatchInvitationResponse {
   acceptedAt: string | null;
 }
 
+/** One row of `GET /matches/{id}/invitations` (organizer, new 2026-09-26): the
+ *  invitation plus who it went to. */
+export interface MatchInvitationInviteeResponse extends MatchInvitationResponse {
+  firstName: string | null;
+  lastName: string | null;
+  photoUrl: string | null;
+  phoneNumber: string;
+}
+
 /** One row of `POST /matches/{id}/invitations` — each phone succeeds or fails alone. */
 export interface InviteDirectResponse {
   phoneNumber: string;

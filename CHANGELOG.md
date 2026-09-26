@@ -15,6 +15,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Results] **Submit follows the API's new shape** — `{games:[{teamA, teamB, sets}]}`, each team
   exactly two account ids. Still one game per match in the UI. Singles can't be recorded any more
   (the API refuses a one-player team), so the CTA waits for two players a side.
+- [Match] **The organizer can withdraw an invitation.** «دعوت‌های ارسالی» lists pending invites
+  under the players (name/photo, or the number) with «پس گرفتن» — `GET /matches/{id}/invitations`
+  shipped on the backend today; `DELETE /matches/invitations/{id}` had worked since 09-22.
 
 ### 2026-09-26 — small text passes AA
 - [Tokens] `text-muted` is #57728E (was #6783A0, ~3.7:1 on `bg-surface`) — every secondary label
