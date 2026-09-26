@@ -88,6 +88,11 @@ fixed element inside a scroller when its own children reflow, leaving strips of 
 fixed bar whose contents change (a button appearing, a label swapping) needs the **`.fixed-bar`** class
 — `transform: translateZ(0)`, its own layer, whole-layer repaint.
 
+**Pull to refresh lives in `AppScroll` too (2026-09-26).** The browser's own never fires (the
+document doesn't scroll; the installed PWA has none), so a touch drag from `scrollTop 0` moves a
+fixed indicator by hand and reloads past 70px. Skipped while a sheet locks the scroller and for
+sideways swipes. Don't add a second one per page.
+
 **Users scroll normally — inside `AppScroll`.** The restriction is on the *document*, not on the
 user. Zoom is the thing that's actually locked: `maximumScale: 1` + `userScalable: false` in the
 root `viewport` export, plus a `gesturestart` `preventDefault` in `AppScroll` because iOS Safari

@@ -9,6 +9,8 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-26 — backend catch-up
+- [App] **Pull down to refresh** (user) — from the top of any page, drag down and let go past the
+  spinner to reload. Built into `AppScroll`, since the document never scrolls.
 - [Match] **برگشت on the match page always goes to /matches** (user) — it was `history.back()`,
   which landed on the wizard, /activity, or outside the app depending on the way in.
 - [Create] **The schedule step opens on today** (user) — «امروز» is pre-selected; before, no day was.

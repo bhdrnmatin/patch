@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 export const APP_SCROLL_ID = "app-scroll";
@@ -31,6 +31,7 @@ export function appScrollEl() {
  */
 export default function AppScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const pullEl = useRef<HTMLDivElement>(null);
 
   // Next's scroll restoration targets the document, which no longer moves —
   // without this a route change would land you at the previous page's offset.
@@ -142,11 +143,76 @@ export default function AppScroll({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Pull to refresh (user, 2026-09-26). The browser's own can't fire — the
+  // document never scrolls, and the installed PWA has none anyway — so it's
+  // done here, on the scroller. Only from the very top, never while a sheet
+  // has the scroller locked, and not for a sideways swipe (the day strips).
+  // The indicator is moved by hand, not through state, like `--collapse`.
+  useEffect(() => {
+    const sc = appScrollEl();
+    const ind = pullEl.current;
+    if (!sc || !ind) return;
+    const TRIGGER = 70;
+    let startX = 0;
+    let startY = 0;
+    let pull = -1; // -1: not tracking this touch
+    const show = (px: number, done = false) => {
+      ind.style.transform = `translate3d(-50%, ${px - 48}px, 0) rotate(${px * 3}deg)`;
+      ind.style.opacity = px > 0 ? String(Math.min(1, px / TRIGGER)) : "0";
+      ind.dataset.ready = String(done || px >= TRIGGER);
+    };
+    const onStart = (e: TouchEvent) => {
+      pull = sc.scrollTop <= 0 && sc.style.overflow !== "hidden" ? 0 : -1;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+    const onMove = (e: TouchEvent) => {
+      if (pull < 0) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      if (sc.scrollTop > 0 || (pull === 0 && Math.abs(dx) > Math.abs(dy))) {
+        pull = -1;
+        show(0);
+        return;
+      }
+      // Half the finger's travel, capped — it should feel like a stretch.
+      pull = Math.max(0, Math.min(dy / 2, TRIGGER + 30));
+      show(pull);
+    };
+    const onEnd = () => {
+      if (pull >= TRIGGER) {
+        show(TRIGGER, true);
+        ind.firstElementChild?.classList.add("animate-spin");
+        window.location.reload();
+      } else show(0);
+      pull = -1;
+    };
+    sc.addEventListener("touchstart", onStart, { passive: true });
+    sc.addEventListener("touchmove", onMove, { passive: true });
+    sc.addEventListener("touchend", onEnd);
+    sc.addEventListener("touchcancel", onEnd);
+    return () => {
+      sc.removeEventListener("touchstart", onStart);
+      sc.removeEventListener("touchmove", onMove);
+      sc.removeEventListener("touchend", onEnd);
+      sc.removeEventListener("touchcancel", onEnd);
+    };
+  }, []);
+
   return (
     <div
       id={APP_SCROLL_ID}
       className="h-[var(--vvh,100%)] overflow-y-auto overscroll-y-none"
     >
+      {/* Above every fixed header (z-50) and bar. */}
+      <div
+        ref={pullEl}
+        aria-hidden
+        className="group fixed left-1/2 top-[var(--hero-gap)] z-[60] size-10 rounded-full bg-white shadow-pop flex items-center justify-center pointer-events-none opacity-0 transition-opacity"
+        style={{ transform: "translate3d(-50%, -48px, 0)" }}
+      >
+        <span className="size-5 rounded-full border-2 border-edge border-t-primary group-data-[ready=true]:border-primary group-data-[ready=true]:border-t-transparent" />
+      </div>
       {children}
     </div>
   );
