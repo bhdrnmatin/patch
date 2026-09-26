@@ -13,7 +13,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
   times go up and come back in Tehran time and `API_SHIFT_MS` is gone. The earliest bookable slot
   is a full hour ahead (8:10 → 10:00). Matches created before today read 30 min early.
 - [Results] **Submit follows the API's new shape** — `{games:[{teamA, teamB, sets}]}`, each team
-  exactly two account ids. Still one game per match in the UI. Singles can't be recorded any more
+  exactly two account ids. **Multiple games are back** (user, 2026-09-26): «+ افزودن بازی», a ✕ per
+  game and «بازی N» headings, restored from before `6154dd0`; every game goes up in one submit.
+  The CTA waits until every game has four players and its caption counts complete games. Singles can't be recorded any more
   (the API refuses a one-player team), so the CTA waits for two players a side.
 - [Create] **Roster capped per format** — the API enforces match size since today (OPEN_MATCH
   exactly 4, AMERICANO 4–12), so an uncapped دوستانه with 5+ players now failed to create.
