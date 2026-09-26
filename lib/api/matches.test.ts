@@ -38,11 +38,13 @@ assert.equal(draftToCreateRequest(d()).title, "مچ، ساعت ۱۸:۰۰");
 assert.equal(autoTitle(d(), "باشگاه انقلاب"), "باشگاه انقلاب، ساعت ۱۸:۰۰");
 assert.equal(draftToCreateRequest(d({ title: "  شب پدل  " })).title, "شب پدل");
 
-// capacity: minimum 4, and رقابتی is always 2v2.
+// capacity: OPEN_MATCH (رقابتی, دوستانه) is exactly 4; آمریکانو takes its roster, 4–12.
 assert.equal(draftToCreateRequest(d({ format: "competitive" })).capacity, 4);
+assert.equal(draftToCreateRequest(d({ format: "friendly" })).capacity, 4);
 assert.equal(draftToCreateRequest(d({ teammates: [] })).capacity, 4, "floored at the API minimum");
 assert.equal(
   draftToCreateRequest(d({
+    format: "americano",
     teammates: [
       { kind: "player", index: 0 },
       { kind: "player", index: 1 },

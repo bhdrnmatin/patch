@@ -79,13 +79,12 @@ export function autoTitle(draft: CreateMatchDraft, club?: string): string {
 }
 
 /**
- * `capacity` has a minimum of 4 and the API rejects its absence, but the wizard
- * has no such concept: رقابتی is 2v2, while دوستانه and آمریکانو are deliberately
- * uncapped. The roster it was created with is the only number we can honestly
- * claim, floored at the minimum the API will take.
+ * `capacity` is required and bounded per format: OPEN_MATCH (رقابتی, دوستانه)
+ * is exactly 4, AMERICANO 4–12 (enforced since 2026-09-26). An americano takes
+ * the roster it was created with, floored at 4; `maxTeammates` keeps it ≤ 12.
  */
 function capacityFor(draft: CreateMatchDraft): number {
-  if (draft.format === "competitive") return 4;
+  if (draft.format !== "americano") return 4;
   const onCourt = draft.teammates.length + (draft.myRole === "player" ? 1 : 0);
   return Math.max(4, onCourt);
 }

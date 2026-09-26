@@ -222,15 +222,20 @@ export interface CourtOption {
 /**
  * A teammate added in the create-match wizard: either someone already on Patch
  * (an index into the pickable-players list) or a phone number we'll invite by
- * SMS. Held as a plain list — رقابتی caps it at MAX_TEAMMATES, the other
- * formats don't cap it at all.
+ * SMS. Held as a plain list, capped per format by `maxTeammates`.
  */
 export type Teammate =
   | { kind: "player"; index: number }
   | { kind: "invite"; phone: string };
 
-/** Teammates allowed besides the creator in a رقابتی match (2v2 padel). */
-export const MAX_TEAMMATES = 3;
+/**
+ * Teammates allowed besides the creator. The API enforces each format's size
+ * (`GET /match-formats`, 2026-09-26): OPEN_MATCH — رقابتی and دوستانه — is
+ * exactly 4, AMERICANO at most 12. Counts the creator as on court either way.
+ */
+export function maxTeammates(format: CreateMatchDraft["format"]): number {
+  return format === "americano" ? 11 : 3;
+}
 
 /** Draft state collected across the 5 wizard steps. */
 export interface CreateMatchDraft {

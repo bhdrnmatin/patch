@@ -8,7 +8,7 @@ import OptionSheet from "./OptionSheet";
 import TeamPreview from "./TeamPreview";
 import { toPersianDigits } from "../../../../lib/persian";
 import { getPhone } from "../../../../lib/api/session";
-import { MAX_TEAMMATES, type CreateMatchDraft, type MatchPlayer, type Teammate } from "../../../../lib/types";
+import { maxTeammates, type CreateMatchDraft, type MatchPlayer, type Teammate } from "../../../../lib/types";
 
 const ROLE_OPTIONS: RadioCardOption[] = [
   {
@@ -42,10 +42,10 @@ export default function StepPlayers({ draft, patch, players }: Props) {
   const [activeRow, setActiveRow] = useState<number | null>(null);
   const [sheet, setSheet] = useState<"add" | "coach" | null>(null);
 
-  // رقابتی is 2v2 padel — the creator plus three. دوستانه and آمریکانو (rotating
-  // partners) have no fixed team shape, so they're uncapped.
+  // رقابتی is 2v2 padel — the creator plus three, drawn as a court below.
+  // دوستانه is the same 4 on the API; آمریکانو rotates partners, up to 12.
   const capped = draft.format === "competitive";
-  const canAdd = !capped || draft.teammates.length < MAX_TEAMMATES;
+  const canAdd = draft.teammates.length < maxTeammates(draft.format);
 
   const setRow = (row: number, value: Teammate) => {
     const teammates = [...draft.teammates];
@@ -129,7 +129,9 @@ export default function StepPlayers({ draft, patch, players }: Props) {
       <p className="text-xs text-muted text-right leading-5" dir="rtl">
         {capped
           ? "مچ رقابتی ۲ به ۲ است — با خودتان ۴ بازیکن. جای خالی را بعد از ثبت مچ با لینک دعوت پر کنید."
-          : "برای این نوع مچ محدودیتی در تعداد بازیکنان نیست. بقیه را بعد از ثبت مچ با لینک دعوت اضافه کنید."}
+          : draft.format === "americano"
+            ? "مچ آمریکانو تا ۱۲ بازیکن دارد. بقیه را بعد از ثبت مچ با لینک دعوت اضافه کنید."
+            : "مچ دوستانه ۴ نفره است — با خودتان. جای خالی را بعد از ثبت مچ با لینک دعوت پر کنید."}
       </p>
       {/* The 2×2 court only describes a رقابتی match; آمریکانو rotates partners
           and دوستانه has no fixed shape, so the row list above stands alone. */}

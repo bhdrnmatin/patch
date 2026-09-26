@@ -3,7 +3,7 @@
 import TextField from "./TextField";
 import TextArea from "./TextArea";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
-import { MAX_TEAMMATES, type CreateMatchDraft } from "../../../../lib/types";
+import { maxTeammates, type CreateMatchDraft } from "../../../../lib/types";
 
 /**
  * رقابتی maps to the API's `matchType: COMPETITIVE`, which the backend refuses
@@ -12,7 +12,7 @@ import { MAX_TEAMMATES, type CreateMatchDraft } from "../../../../lib/types";
  * turned away at submit, so it is greyed out until the backend enables it.
  *
  * **To re-enable, flip this one flag.** Everything else about رقابتی — the 2v2
- * team preview, MAX_TEAMMATES, the capacity mapping — is untouched and working.
+ * team preview, the capacity mapping — is untouched and working.
  */
 const COMPETITIVE_ENABLED = false;
 
@@ -70,13 +70,9 @@ export default function StepDetails({ draft, patch }: Props) {
         value={draft.format}
         onChange={(id) => {
           const format = id as CreateMatchDraft["format"];
-          // رقابتی caps the roster, so switching to it from an uncapped format
-          // has to drop anyone past the limit — step ۴ can't show them.
-          patch(
-            format === "competitive"
-              ? { format, teammates: draft.teammates.slice(0, MAX_TEAMMATES) }
-              : { format }
-          );
+          // Switching to a smaller format drops anyone past its limit —
+          // step ۴ can't show them.
+          patch({ format, teammates: draft.teammates.slice(0, maxTeammates(format)) });
         }}
       />
       <RadioCardGroup

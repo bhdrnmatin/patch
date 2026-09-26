@@ -15,6 +15,9 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 - [Results] **Submit follows the API's new shape** — `{games:[{teamA, teamB, sets}]}`, each team
   exactly two account ids. Still one game per match in the UI. Singles can't be recorded any more
   (the API refuses a one-player team), so the CTA waits for two players a side.
+- [Create] **Roster capped per format** — the API enforces match size since today (OPEN_MATCH
+  exactly 4, AMERICANO 4–12), so an uncapped دوستانه with 5+ players now failed to create.
+  دوستانه caps at 3 teammates like رقابتی, آمریکانو at 11; switching format trims the list.
 - [Match] **The organizer can withdraw an invitation.** «دعوت‌های ارسالی» lists pending invites
   under the players (name/photo, or the number) with «پس گرفتن» — `GET /matches/{id}/invitations`
   shipped on the backend today; `DELETE /matches/invitations/{id}` had worked since 09-22.
