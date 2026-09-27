@@ -9,6 +9,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [Create] **The wizard no longer waits on the already-played list** (user). `GET
+  /matches/invitations/suggestions` still starts when the wizard opens, but in the background; step ۱
+  shows at once and step ۴'s «از بین بازیکنان پچ» says «در حال بارگذاری...» if it's still coming.
+  Submit waits for it (`ensureQueryData`), since a picked player is an index into that list.
 - [Profile] **Residence locked to البرز / کرج** (user) — setup and edit both show the two fields
   filled and locked (a lock icon, no picker), and save Karaj's id, over an older profile's city too.
   `getHomeCity()` (lib/api/geo.ts) finds them by name, so a backend reset can't break a stored id.

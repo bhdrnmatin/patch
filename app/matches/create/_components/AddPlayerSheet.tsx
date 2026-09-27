@@ -14,6 +14,8 @@ interface Props {
    *  so a mistyped number can be corrected instead of re-added. */
   invite?: { phone: string };
   players: MatchPlayer[];
+  /** Still fetching — don't claim the list is empty yet. */
+  playersLoading?: boolean;
   /** Player indexes already used by other rows — not selectable. */
   disabledPlayers: number[];
   /** Player index this row currently holds; tapping it clears the row. */
@@ -42,6 +44,7 @@ export default function AddPlayerSheet({
   slotLabel,
   invite,
   players,
+  playersLoading,
   disabledPlayers,
   selectedPlayer,
   onPickPlayer,
@@ -97,7 +100,11 @@ export default function AddPlayerSheet({
         <div className="flex flex-col gap-3">
           {/* The API suggests people you've played with, so a new organizer's
               list is legitimately empty — say so instead of showing nothing. */}
-          {players.length === 0 ? (
+          {playersLoading ? (
+            <p className="text-sm text-muted text-right leading-6" dir="rtl">
+              در حال بارگذاری...
+            </p>
+          ) : players.length === 0 ? (
             <p className="text-sm text-muted text-right leading-6" dir="rtl">
               هنوز کسی برای پیشنهاد نیست. با شماره موبایل دعوت کنید.
             </p>

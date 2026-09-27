@@ -33,10 +33,12 @@ interface Props {
   draft: CreateMatchDraft;
   patch: (p: Partial<CreateMatchDraft>) => void;
   players: MatchPlayer[];
+  /** The already-played list is still loading in the background. */
+  playersLoading?: boolean;
 }
 
 /** Step ۴ بازیکنان: own role + three teammate slots (shared picker) + team preview. */
-export default function StepPlayers({ draft, patch, players }: Props) {
+export default function StepPlayers({ draft, patch, players, playersLoading }: Props) {
   // Which row is being edited (=== teammates.length means "adding a new one"),
   // and which sheet is on top of it.
   const [activeRow, setActiveRow] = useState<number | null>(null);
@@ -148,6 +150,7 @@ export default function StepPlayers({ draft, patch, players }: Props) {
         slotLabel={activeRow === null ? "بازیکن" : rowLabel(activeRow)}
         invite={current?.kind === "invite" ? current : undefined}
         players={players}
+        playersLoading={playersLoading}
         disabledPlayers={pickerDisabled}
         selectedPlayer={pickerSelected}
         onPickPlayer={(playerIndex) => {

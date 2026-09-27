@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { appScrollEl } from "@/app/_components/AppScroll";
 import WizardHeader from "./_components/WizardHeader";
 import StepChips from "./_components/StepChips";
@@ -58,6 +58,8 @@ const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
   () => true,
 ];
 
+const PICKABLE = { queryKey: ["pickablePlayers"], queryFn: getPickablePlayers };
+
 function CreateMatchContent() {
   const router = useRouter();
   // The wizard is the action: an incomplete profile is sent to set up first
@@ -69,10 +71,11 @@ function CreateMatchContent() {
   const queryClient = useQueryClient();
 
   const { data: courts } = useSuspenseQuery({ queryKey: ["courtOptions"], queryFn: getCourtOptions });
-  const { data: players } = useSuspenseQuery({
-    queryKey: ["pickablePlayers"],
-    queryFn: getPickablePlayers,
-  });
+  // Already-played players, for step ۴. Fetched in the background from open
+  // (user, 2026-09-27) — step ۱ used to wait on it, and it's only read three
+  // steps later.
+  const playersQuery = useQuery(PICKABLE);
+  const players = playersQuery.data ?? [];
 
   const [step, setStep] = useState(0);
   // Furthest step reached — every step up to it stays tappable (jump back AND forward).
@@ -126,7 +129,10 @@ function CreateMatchContent() {
   const openMatch = (id: string) => router.push(`/matches/${id}?role=creator&status=upcoming`);
 
   const { mutate, isPending, error, reset } = useMutation({
-    mutationFn: (d: CreateMatchDraft) => createMatch(d, players),
+    // A picked player is an index into the list, so submit on the real one — a
+    // resumed draft can get here before the background fetch lands.
+    mutationFn: async (d: CreateMatchDraft) =>
+      createMatch(d, await queryClient.ensureQueryData(PICKABLE)),
     onSuccess: (result) => {
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ["matches"] });
@@ -190,7 +196,9 @@ function CreateMatchContent() {
             {step === 0 && <StepDetails draft={draft} patch={patch} />}
             {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
             {step === 2 && <StepSchedule draft={draft} patch={patch} />}
-            {step === 3 && <StepPlayers draft={draft} patch={patch} players={players} />}
+            {step === 3 && (
+              <StepPlayers draft={draft} patch={patch} players={players} playersLoading={playersQuery.isPending} />
+            )}
             {step === 4 && <StepReview draft={draft} courts={courts} players={players} onEdit={goTo} />}
             {/* Nothing was created, so the draft is intact — say why and let
                 them fix it or retry. ApiError carries the server's Persian

@@ -34,6 +34,8 @@ off a secure origin). Tick an item, note the date and device; delete the section
 - [ ] Results (needs a match with 4 confirmed players, organizer): add a second game with
       «+ افزودن بازی», swap partners in it, remove one with its ✕. The CTA stays disabled (caption
       «۱ از ۲ بازی کامل شده») until every game has four players; submitting returns to the match page.
+- [ ] The wizard opens quickly (no longer waits for the suggestions list); step ۴ → «از بین
+      بازیکنان پچ» shows your already-played players (or «در حال بارگذاری...» for a moment).
 - [ ] Wizard players step: دوستانه stops adding at 3 teammates (caption «۴ نفره»), آمریکانو at 11;
       switching آمریکانو → دوستانه with 5 teammates keeps the first 3.
 - [ ] Withdraw invite (organizer, upcoming match, invite someone from the wizard): «دعوت‌های ارسالی»
