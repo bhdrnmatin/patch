@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { appScrollEl } from "@/app/_components/AppScroll";
 import WizardHeader from "./_components/WizardHeader";
 import StepChips from "./_components/StepChips";
@@ -17,7 +17,7 @@ import InviteFailures from "./_components/InviteFailures";
 import ShareCard from "../[id]/_components/ShareCard";
 import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } from "@/lib/data";
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
-import { autoTitle, isSchedulable } from "@/lib/api/matches";
+import { autoTitle, getMatchFormats, isSchedulable } from "@/lib/api/matches";
 import { todayISO } from "@/lib/jalali";
 import { useProfileGate } from "@/lib/api/useAuth";
 import type { CreateMatchDraft } from "../../../lib/types";
@@ -70,7 +70,14 @@ function CreateMatchContent() {
   }, [profileReady]);
   const queryClient = useQueryClient();
 
-  const { data: courts } = useSuspenseQuery({ queryKey: ["courtOptions"], queryFn: getCourtOptions });
+  // Side by side, not one suspense query after another: both are needed on
+  // step ۱–۲, and the formats' min–max set the capacity stepper.
+  const [{ data: courts }, { data: formats }] = useSuspenseQueries({
+    queries: [
+      { queryKey: ["courtOptions"], queryFn: getCourtOptions },
+      { queryKey: ["matchFormats"], queryFn: getMatchFormats, staleTime: Infinity },
+    ],
+  });
   // Already-played players, for step ۴. Fetched in the background from open
   // (user, 2026-09-27) — step ۱ used to wait on it, and it's only read three
   // steps later.
@@ -193,7 +200,7 @@ function CreateMatchContent() {
           </>
         ) : (
           <>
-            {step === 0 && <StepDetails draft={draft} patch={patch} />}
+            {step === 0 && <StepDetails draft={draft} patch={patch} formats={formats} />}
             {step === 1 && <StepLocation draft={draft} patch={patch} courts={courts} />}
             {step === 2 && <StepSchedule draft={draft} patch={patch} />}
             {step === 3 && (

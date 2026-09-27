@@ -3,7 +3,11 @@
 import TextField from "./TextField";
 import TextArea from "./TextArea";
 import RadioCardGroup, { type RadioCardOption } from "./RadioCardGroup";
+import ScoreStepper from "../../[id]/results/_components/ScoreStepper";
 import { maxTeammates, type CreateMatchDraft } from "../../../../lib/types";
+import { capacityLimits } from "../../../../lib/api/matches";
+import type { MatchFormatResponse } from "../../../../lib/api/types";
+import { toPersianDigits } from "../../../../lib/persian";
 
 /**
  * رقابتی maps to the API's `matchType: COMPETITIVE`, which the backend refuses
@@ -57,10 +61,17 @@ const INVITE_OPTIONS: RadioCardOption[] = [
 interface Props {
   draft: CreateMatchDraft;
   patch: (p: Partial<CreateMatchDraft>) => void;
+  formats: MatchFormatResponse[];
 }
 
 /** Step ۱ مشخصات: game mode + visibility radio cards, title + description. */
-export default function StepDetails({ draft, patch }: Props) {
+export default function StepDetails({ draft, patch, formats }: Props) {
+  const { min, max } = capacityLimits(formats, draft.format);
+  const capacity = draft.capacity ?? min;
+  // Fewer seats can't hold everyone already added — step ۴ couldn't show them.
+  const setCapacity = (c: number) =>
+    patch({ capacity: c, teammates: draft.teammates.slice(0, maxTeammates(c)) });
+
   return (
     <>
       <RadioCardGroup
@@ -70,11 +81,30 @@ export default function StepDetails({ draft, patch }: Props) {
         value={draft.format}
         onChange={(id) => {
           const format = id as CreateMatchDraft["format"];
-          // Switching to a smaller format drops anyone past its limit —
-          // step ۴ can't show them.
-          patch({ format, teammates: draft.teammates.slice(0, maxTeammates(format)) });
+          // A new format starts at its own minimum (user, 2026-09-27).
+          const c = capacityLimits(formats, format).min;
+          patch({ format, capacity: c, teammates: draft.teammates.slice(0, maxTeammates(c)) });
         }}
       />
+      {draft.format && (
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
+            ظرفیت مَچ
+          </span>
+          <div className="w-full bg-white border border-edge rounded-card px-4 py-3 shadow-card flex items-center justify-between gap-3">
+            {min === max ? (
+              <span className="text-xl font-bold text-ink">{toPersianDigits(String(min))}</span>
+            ) : (
+              <ScoreStepper label="ظرفیت مَچ" value={capacity} min={min} max={max} onChange={setCapacity} />
+            )}
+            <span className="text-xs text-muted text-right leading-5" dir="rtl">
+              {min === max
+                ? `این نوع مَچ همیشه ${toPersianDigits(String(min))} نفره است`
+                : `از ${toPersianDigits(String(min))} تا ${toPersianDigits(String(max))} نفر، با خودتان`}
+            </span>
+          </div>
+        </div>
+      )}
       <RadioCardGroup
         label="نمایش مَچ"
         subtitle="چه کسانی بتوانند مَچ را ببینند؟"

@@ -5,6 +5,7 @@ import type {
   CreateMatchRequest,
   InviteDirectResponse,
   InviteSuggestionResponse,
+  MatchFormatResponse,
   MatchInvitationInviteeResponse,
   MatchInvitationResponse,
   MatchParticipantResponse,
@@ -50,7 +51,7 @@ export function draftToCreateRequest(draft: CreateMatchDraft): CreateMatchReques
   const competitive = draft.format === "competitive";
 
   return {
-    format: draft.format === "americano" ? "AMERICANO" : "OPEN_MATCH",
+    format: apiFormat(draft.format),
     matchType: competitive ? "COMPETITIVE" : "FRIENDLY",
     clubId: draft.courtId,
     scheduledAt: toInstant(draft.date, draft.time),
@@ -79,14 +80,28 @@ export function autoTitle(draft: CreateMatchDraft, club?: string): string {
 }
 
 /**
- * `capacity` is required and bounded per format: OPEN_MATCH (رقابتی, دوستانه)
- * is exactly 4, AMERICANO 4–12 (enforced since 2026-09-26). An americano takes
- * the roster it was created with, floored at 4; `maxTeammates` keeps it ≤ 12.
+ * `capacity` is required and bounded per format (`GET /match-formats`). The
+ * wizard asks for it on step ۱; a draft saved before that falls back to its
+ * roster, floored at the API's minimum of 4.
  */
 function capacityFor(draft: CreateMatchDraft): number {
-  if (draft.format !== "americano") return 4;
-  const onCourt = draft.teammates.length + (draft.myRole === "player" ? 1 : 0);
-  return Math.max(4, onCourt);
+  return draft.capacity ?? Math.max(4, draft.teammates.length + 1);
+}
+
+/** The wizard's format → the API's: رقابتی and دوستانه are both OPEN_MATCH. */
+export function apiFormat(format: CreateMatchDraft["format"]): MatchFormatResponse["code"] {
+  return format === "americano" ? "AMERICANO" : "OPEN_MATCH";
+}
+
+/** Each format's allowed sizes, e.g. OPEN_MATCH 4–4, AMERICANO 4–12. */
+export function getMatchFormats(): Promise<MatchFormatResponse[]> {
+  return apiFetch<MatchFormatResponse[]>("/match-formats");
+}
+
+/** Min–max for a wizard format; 4–4 if the API didn't list it. */
+export function capacityLimits(formats: MatchFormatResponse[], format: CreateMatchDraft["format"]) {
+  const f = formats.find((x) => x.code === apiFormat(format));
+  return { min: f?.minCapacity ?? 4, max: f?.maxCapacity ?? 4 };
 }
 
 /**

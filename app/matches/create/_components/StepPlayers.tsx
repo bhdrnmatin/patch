@@ -47,7 +47,7 @@ export default function StepPlayers({ draft, patch, players, playersLoading }: P
   // رقابتی is 2v2 padel — the creator plus three, drawn as a court below.
   // دوستانه is the same 4 on the API; آمریکانو rotates partners, up to 12.
   const capped = draft.format === "competitive";
-  const canAdd = draft.teammates.length < maxTeammates(draft.format);
+  const canAdd = draft.teammates.length < maxTeammates(draft.capacity ?? null);
 
   const setRow = (row: number, value: Teammate) => {
     const teammates = [...draft.teammates];
@@ -131,9 +131,7 @@ export default function StepPlayers({ draft, patch, players, playersLoading }: P
       <p className="text-xs text-muted text-right leading-5" dir="rtl">
         {capped
           ? "مچ رقابتی ۲ به ۲ است — با خودتان ۴ بازیکن. جای خالی را بعد از ثبت مچ با لینک دعوت پر کنید."
-          : draft.format === "americano"
-            ? "مچ آمریکانو تا ۱۲ بازیکن دارد. بقیه را بعد از ثبت مچ با لینک دعوت اضافه کنید."
-            : "مچ دوستانه ۴ نفره است — با خودتان. جای خالی را بعد از ثبت مچ با لینک دعوت پر کنید."}
+          : `این مَچ ${toPersianDigits(String(draft.capacity ?? 4))} نفره است — با خودتان. جای خالی را بعد از ثبت مَچ با لینک دعوت پر کنید.`}
       </p>
       {/* The 2×2 court only describes a رقابتی match; آمریکانو rotates partners
           and دوستانه has no fixed shape, so the row list above stands alone. */}

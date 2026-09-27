@@ -9,6 +9,11 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [Create] **Capacity on step ۱** (user). Under حالت مَچ, «ظرفیت مَچ»: a −/+ stepper within the
+  format's limits from `GET /match-formats` (آمریکانو 4–12), or a fixed «۴» where min = max
+  (دوستانه, رقابتی = OPEN_MATCH). Starts at the minimum and resets to it on a format change; the
+  players step caps teammates at capacity − 1 and trims them if it shrinks. Sent as `capacity`.
+  `ScoreStepper` gained `min`/`max` for it.
 - [Copy] **«مَچ», not «بازی»/«مسابقه», wherever it means the match** (user): wizard headings and
   role/format descriptions, the match page's stage card, CTA captions, «سازنده مَچ», the promo card.
   Left alone: the verb «بازی کردن» (ungrammatical as مَچ), the numbered games inside one result, the

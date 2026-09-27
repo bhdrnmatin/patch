@@ -260,6 +260,15 @@ export interface MatchResultResponse {
   updatedAt: string;
 }
 
+/** `GET /match-formats` — each format's allowed capacity (new 2026-09-26). */
+export interface MatchFormatResponse {
+  code: ApiMatchFormat;
+  name: string;
+  minCapacity: number;
+  maxCapacity: number;
+  active: boolean;
+}
+
 export interface MatchResponse {
   id: string;
   organizer: MatchOrganizerResponse;

@@ -123,7 +123,7 @@ export default function GameCard({
                 {([0, 1] as const).map((team) => (
                   <div key={team} className="flex-1 flex justify-center">
                     <ScoreStepper
-                      label={`${TEAM_LABELS[team]} در ست ${setNo} بازی ${gameNo}`}
+                      label={`امتیاز ${TEAM_LABELS[team]} در ست ${setNo} بازی ${gameNo}`}
                       value={scores[team]}
                       onChange={(value) => onSetChange(i, team, value)}
                     />

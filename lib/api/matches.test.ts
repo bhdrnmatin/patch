@@ -7,7 +7,7 @@
  * Run: npx tsx lib/api/matches.test.ts
  */
 import assert from "node:assert/strict";
-import { autoTitle, draftToCreateRequest, inviteFailureText, isSchedulable, tehranDateISO, tehranTimeRange, FORMAT_LABELS } from "./matches";
+import { autoTitle, capacityLimits, draftToCreateRequest, inviteFailureText, isSchedulable, tehranDateISO, tehranTimeRange, FORMAT_LABELS } from "./matches";
 import type { CreateMatchDraft } from "../types";
 
 const base: CreateMatchDraft = {
@@ -38,13 +38,14 @@ assert.equal(draftToCreateRequest(d()).title, "مچ، ساعت ۱۸:۰۰");
 assert.equal(autoTitle(d(), "باشگاه انقلاب"), "باشگاه انقلاب، ساعت ۱۸:۰۰");
 assert.equal(draftToCreateRequest(d({ title: "  شب پدل  " })).title, "شب پدل");
 
-// capacity: OPEN_MATCH (رقابتی, دوستانه) is exactly 4; آمریکانو takes its roster, 4–12.
-assert.equal(draftToCreateRequest(d({ format: "competitive" })).capacity, 4);
-assert.equal(draftToCreateRequest(d({ format: "friendly" })).capacity, 4);
-assert.equal(draftToCreateRequest(d({ teammates: [] })).capacity, 4, "floored at the API minimum");
+// capacity: the wizard's pick goes up as is; a draft saved before the stepper
+// existed falls back to its roster, floored at the API's minimum of 4.
+assert.equal(draftToCreateRequest(d({ format: "americano", capacity: 8 })).capacity, 8);
+assert.equal(draftToCreateRequest(d({ capacity: undefined, teammates: [] })).capacity, 4);
 assert.equal(
   draftToCreateRequest(d({
     format: "americano",
+    capacity: undefined,
     teammates: [
       { kind: "player", index: 0 },
       { kind: "player", index: 1 },
@@ -53,8 +54,16 @@ assert.equal(
     ],
   })).capacity,
   5,
-  "four teammates plus the creator on court",
+  "four teammates plus the creator",
 );
+// Limits come from GET /match-formats; رقابتی and دوستانه are both OPEN_MATCH.
+const formats = [
+  { code: "OPEN_MATCH", name: "اوپن مچ", minCapacity: 4, maxCapacity: 4, active: true },
+  { code: "AMERICANO", name: "امریکانو", minCapacity: 4, maxCapacity: 12, active: true },
+] as const;
+assert.deepEqual(capacityLimits([...formats], "friendly"), { min: 4, max: 4 });
+assert.deepEqual(capacityLimits([...formats], "americano"), { min: 4, max: 12 });
+assert.deepEqual(capacityLimits([], "americano"), { min: 4, max: 4 }, "unknown → 4–4");
 
 // The organizer only takes a slot when they are playing.
 assert.equal(draftToCreateRequest(d({ myRole: "player" })).organizerJoins, true);

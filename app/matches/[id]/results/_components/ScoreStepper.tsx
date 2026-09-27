@@ -3,21 +3,24 @@
 import { toPersianDigits } from "../../../../../lib/persian";
 
 interface Props {
-  /** Context for a11y, e.g. "تیم ۱ در ست ۲". */
+  /** What it counts, for a11y, e.g. "امتیاز تیم ۱ در ست ۲". */
   label: string;
   value: number;
   onChange: (value: number) => void;
+  min?: number;
+  max?: number;
 }
 
-/** − / score / + control for one team's score in a set (clamped 0–99). */
-export default function ScoreStepper({ label, value, onChange }: Props) {
+/** − / value / + control, clamped to min–max (a set's score, a match's capacity). */
+export default function ScoreStepper({ label, value, onChange, min = 0, max = 99 }: Props) {
   return (
     <div className="flex items-center gap-1" dir="ltr">
       <button
         type="button"
-        onClick={() => onChange(Math.max(0, value - 1))}
-        aria-label={`کم کردن امتیاز ${label}`}
-        className="size-11 shrink-0 flex items-center justify-center rounded-full bg-surface border border-edge text-ink-soft text-xl font-bold hover:bg-edge active:opacity-80"
+        onClick={() => onChange(Math.max(min, value - 1))}
+        disabled={value <= min}
+        aria-label={`کم کردن ${label}`}
+        className="disabled:opacity-40 size-11 shrink-0 flex items-center justify-center rounded-full bg-surface border border-edge text-ink-soft text-xl font-bold hover:bg-edge active:opacity-80"
       >
         −
       </button>
@@ -26,9 +29,10 @@ export default function ScoreStepper({ label, value, onChange }: Props) {
       </span>
       <button
         type="button"
-        onClick={() => onChange(Math.min(99, value + 1))}
-        aria-label={`زیاد کردن امتیاز ${label}`}
-        className="size-11 shrink-0 flex items-center justify-center rounded-full bg-primary hover:bg-primary-hover text-white text-xl font-bold active:opacity-80"
+        onClick={() => onChange(Math.min(max, value + 1))}
+        disabled={value >= max}
+        aria-label={`زیاد کردن ${label}`}
+        className="disabled:opacity-40 size-11 shrink-0 flex items-center justify-center rounded-full bg-primary hover:bg-primary-hover text-white text-xl font-bold active:opacity-80"
       >
         +
       </button>

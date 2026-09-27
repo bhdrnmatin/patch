@@ -229,12 +229,12 @@ export type Teammate =
   | { kind: "invite"; phone: string };
 
 /**
- * Teammates allowed besides the creator. The API enforces each format's size
- * (`GET /match-formats`, 2026-09-26): OPEN_MATCH — رقابتی and دوستانه — is
- * exactly 4, AMERICANO at most 12. Counts the creator as on court either way.
+ * Teammates allowed besides the creator: the picked capacity less their own
+ * seat (counted either way). Capacity is bounded per format by the API
+ * (`GET /match-formats`) and defaults to the minimum.
  */
-export function maxTeammates(format: CreateMatchDraft["format"]): number {
-  return format === "americano" ? 11 : 3;
+export function maxTeammates(capacity: number | null): number {
+  return (capacity ?? 4) - 1;
 }
 
 /** Draft state collected across the 5 wizard steps. */
@@ -244,6 +244,9 @@ export interface CreateMatchDraft {
   title: string;
   description: string;
   invite: "public" | "private" | null;
+  /** Players the match holds, within the format's min–max. Set with the format
+   *  (to its minimum); null on a draft saved before capacity existed. */
+  capacity?: number | null;
   // ۲ مکان
   /** Whether the user has already reserved a court (required to proceed). */
   reserved: boolean | null;
