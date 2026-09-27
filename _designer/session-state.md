@@ -1,5 +1,20 @@
 # Session State
 
+## Session — 2026-09-27 (later): UX asks, capacity, logo
+All pushed to both remotes (head `d40323c` + this note). Build green.
+- Date strip: past days are dark glass (`bg-black/30`), since grey text read too close to live days.
+- **Profile photo crop** (Telegram-style `PhotoCropper`, `lib/crop.ts`), 512×512 JPEG upload.
+- **Signup deferred:** OTP → straight into the app; `useProfileGate` sends an incomplete profile to
+  /profile-setup only on create / join / accept (with `next`); «بعدا» backs out.
+- Residence **locked to البرز / کرج** in setup + edit (`getHomeCity()`, looked up by name).
+- Wizard: already-played list loads in the background; **capacity on step ۱** from
+  `GET /match-formats` (default = minimum); copy says «مَچ» wherever it means the match.
+- **App icon** = the blue Patch mascot (favicon RGBA, apple-icon, manifest 192/512/maskable).
+- Local branches `feat/onboarding-drawn-art` / `feat/onboarding-generated` kept (user stopped the delete).
+- **Open, user's call:** review-step «ظرفیت» tile; logo inside the app (login art still has the old
+  wordmark); the remaining «بازی» uses (verb, result games, rules definition).
+- **Next:** the 2026-09-26 section of `_designer/phone-test.md` on patchapp.ir.
+
 ## Session — 2026-09-26/27: contrast, backend catch-up, results games, small UX asks
 All pushed to both remotes (head `7c13c68` + this note). Build green via the pre-push hook.
 - **Contrast done:** `text-muted` → #57728E in place; new `danger-deep` #D6204A for red text on light
