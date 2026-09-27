@@ -1,5 +1,22 @@
 # Session State
 
+## Session — 2026-09-26/27: contrast, backend catch-up, results games, small UX asks
+All pushed to both remotes (head `7c13c68` + this note). Build green via the pre-push hook.
+- **Contrast done:** `text-muted` → #57728E in place; new `danger-deep` #D6204A for red text on light
+  surfaces (bright `danger` stays for dots, error borders, the dark auth card).
+- **Backend check** (`_designer/api-findings.md`, 2026-09-26): Tehran time fixed → **`feat/tehran-time`
+  merged** (the local branch can be deleted); `GET /matches/{id}/invitations` live → **withdraw
+  invitation built** (`InvitationsSection`); `GET /match-formats` new and **capacity now enforced**
+  (OPEN_MATCH = 4, AMERICANO 4–12) → wizard caps دوستانه at 3 teammates, آمریکانو at 11;
+  **results API takes `games[]`**, each team exactly 2 account ids → submit fixed and **multi-game
+  UI restored** (user). Backend now sends a default avatar URL instead of null; error bodies filled.
+- **User asks:** wizard schedule defaults to today; match page برگشت always → /matches;
+  **pull-to-refresh** in `AppScroll` (full reload; WebKit-simulated only).
+- **Still backend:** `/activity` 2.15s, `/clubs` 1.16s (both slower than 09-24). Unknown: results
+  before match end, re-submit after rejection (`round`), declined invitation `status` value.
+- **Next:** the 2026-09-26 section of `_designer/phone-test.md` (14 items) on patchapp.ir — the
+  results flow needs a match with 4 confirmed players.
+
 ## Session — 2026-09-24 (afternoon): iPhone fixes, private matches, speed, activity
 - **Backend data was reset** — test match `512d9b25` is gone; «تست» (`09379137806`) is a new account.
 - Shipped: create-review avatars; own private matches in /matches (`GET /matches` omits PRIVATE even
