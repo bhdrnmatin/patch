@@ -155,7 +155,18 @@ export default function AuthSearchSelect({
           aria-hidden
           className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none"
         >
-          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          {/* A lock, not a chevron, when it can't open — the profile's city is fixed. */}
+          {disabled ? (
+            <path
+              d="M7 11V8a5 5 0 0110 0v3M6 11h12v9H6z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ) : (
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          )}
         </svg>
       </div>
 

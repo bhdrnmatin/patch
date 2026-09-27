@@ -96,7 +96,7 @@ export function useRequireAuth(): "checking" | "authed" {
  * For anything that acts — create, join, accept. Returns `ready()`: true when
  * the profile is complete, otherwise it sends them to /profile-setup with a
  * `next` back to this page and returns false. `replace` for a page that is
- * itself the action (/matches/create), so «بعداً» there can't land back on it.
+ * itself the action (/matches/create), so «بعدا» there can't land back on it.
  * An unknown /me (loading, or the
  * backend failed) counts as ready, so a flaky call never blocks an action —
  * the server has the last word anyway.

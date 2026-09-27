@@ -17,8 +17,10 @@ off a secure origin). Tick an item, note the date and device; delete the section
 - [ ] **New account** (a number never used): after the OTP you land on /matches, not the setup form;
       browsing matches and a match page works. Then each of these opens the setup form, and
       «شروع کنیم!» brings you back to where you were: ساخت مَچ (lands in the wizard), پیوستن on a
-      match page, پیوستن on a /join link, پذیرفتن on an invitation. «بعداً» backs out every time
+      match page, پیوستن on a /join link, پذیرفتن on an invitation. «بعدا» backs out every time
       (in the installed app too). رد کردن an invitation works *without* setup.
+- [ ] Setup and profile edit: استان shows البرز and شهر shows کرج, both with a lock, neither opens.
+      Saving either form, then check the profile: city is کرج.
 - [ ] Developer: does the API itself refuse join/create for an incomplete profile? (unknown)
 - [ ] Profile → edit → tap the avatar, pick a photo (camera and library): the cropper opens; one
       finger moves it, **two fingers pinch-zoom**, the slider zooms; the photo can't leave a gap in

@@ -10,7 +10,7 @@ import AuthSelect, { type SelectOption } from "../_components/AuthSelect";
 import AuthSearchSelect from "../_components/AuthSearchSelect";
 import AuthActions from "../_components/AuthActions";
 import { updateDisplayInfo, updateProfile } from "@/lib/api/players";
-import { getCities, getProvinces } from "@/lib/api/geo";
+import { getHomeCity, HOME } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
 import type { PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
@@ -39,51 +39,23 @@ function ProfileSetupContent() {
     lastName: "",
     gender: "",
     side: "",
-    provinceId: "",
-    cityId: "",
   });
 
   const set = (key: keyof typeof form) => (val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
 
-  const provincesQuery = useQuery({ queryKey: ["provinces"], queryFn: getProvinces });
-  const citiesQuery = useQuery({
-    queryKey: ["cities", form.provinceId],
-    queryFn: () => getCities(form.provinceId),
-    enabled: Boolean(form.provinceId),
-  });
-  const provinces = provincesQuery.data ?? [];
-  const cities = citiesQuery.data ?? [];
+  // Residence is locked to Karaj (see `HOME`); the fields only show it.
+  const home = useQuery({ queryKey: ["homeCity"], queryFn: getHomeCity });
+  const provinceOptions: SelectOption[] = home.data ? [{ value: home.data.provinceId, label: HOME.province }] : [];
+  const cityOptions: SelectOption[] = home.data ? [{ value: home.data.cityId, label: HOME.city }] : [];
+  const geoError = home.error ? "شهر پیدا نشد. دوباره تلاش کنید." : null;
 
-  const provinceOptions: SelectOption[] = provinces.map((p) => ({ value: p.id, label: p.name }));
-  const cityOptions: SelectOption[] = cities.map((c) => ({ value: c.id, label: c.name }));
-
-  const provincePlaceholder = provincesQuery.isLoading
-    ? "در حال بارگذاری..."
-    : provinces.length === 0
-      ? "استانی یافت نشد"
-      : "انتخاب";
-  const cityPlaceholder = !form.provinceId
-    ? "ابتدا استان"
-    : citiesQuery.isLoading
-      ? "در حال بارگذاری..."
-      : cities.length === 0
-        ? "شهری یافت نشد"
-        : "انتخاب";
-  const geoError =
-    provincesQuery.error instanceof ApiError
-      ? `استان: ${provincesQuery.error.message}`
-      : citiesQuery.error instanceof ApiError
-        ? `شهر: ${citiesQuery.error.message}`
-        : null;
-
-  // residenceCityId (cityId) is what the API needs; province just scopes the city list.
   const isComplete =
     form.firstName.trim() !== "" &&
     form.lastName.trim() !== "" &&
     form.gender !== "" &&
     form.side !== "" &&
-    form.cityId !== "";
+    Boolean(home.data);
 
   // Submit-time guard: the live filter can slip on some mobile keyboards, so
   // block if a name still contains Latin, and always send the cleaned value.
@@ -98,7 +70,7 @@ function ProfileSetupContent() {
         firstName: toPersianOnly(form.firstName),
         lastName: toPersianOnly(form.lastName),
         gender: form.gender,
-        residenceCityId: form.cityId,
+        residenceCityId: home.data!.cityId,
       });
       // Preferred side lives on display-info (bio stays empty at signup).
       return updateDisplayInfo({ preferredSide: form.side as PreferredSide });
@@ -116,7 +88,6 @@ function ProfileSetupContent() {
   const errorMessage =
     error instanceof ApiError ? error.message : error ? "خطا در ثبت اطلاعات. دوباره تلاش کنید." : null;
 
-  const onProvince = (id: string) => setForm((f) => ({ ...f, provinceId: id, cityId: "" }));
 
   return (
     <div
@@ -156,21 +127,22 @@ function ProfileSetupContent() {
                 <div className="flex gap-4">
                   <AuthSearchSelect
                     label="شهر"
-                    placeholder={cityPlaceholder}
-                    searchPlaceholder="جستجوی شهر..."
-                    value={form.cityId}
-                    onChange={set("cityId")}
+                    placeholder={home.isLoading ? "در حال بارگذاری..." : HOME.city}
+                    searchPlaceholder=""
+                    value={home.data?.cityId ?? ""}
+                    onChange={() => {}}
                     options={cityOptions}
-                    disabled={!form.provinceId}
+                    disabled
                     showLabel
                   />
                   <AuthSearchSelect
                     label="استان"
-                    placeholder={provincePlaceholder}
-                    searchPlaceholder="جستجوی استان..."
-                    value={form.provinceId}
-                    onChange={onProvince}
+                    placeholder={home.isLoading ? "در حال بارگذاری..." : HOME.province}
+                    searchPlaceholder=""
+                    value={home.data?.provinceId ?? ""}
+                    onChange={() => {}}
                     options={provinceOptions}
+                    disabled
                     showLabel
                   />
                 </div>
@@ -187,7 +159,7 @@ function ProfileSetupContent() {
                   // Setup is asked for when they act, not at sign-in (2026-09-27),
                   // so they may back out — and an installed iOS app has no back
                   // gesture. Back to where they were, or into the app.
-                  backLabel="بعداً"
+                  backLabel="بعدا"
                   onBack={() =>
                     window.history.length > 1 ? router.back() : router.replace(POST_AUTH_ROUTE)
                   }

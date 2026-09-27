@@ -262,7 +262,7 @@ Other recurring values (already in Tailwind's default scale):
 /(auth)/login          → phone number entry
 /(auth)/otp            → OTP code entry
 /(auth)/profile-setup  → name / city / gender form — asked on first create/join/accept, not at sign-in
-                         (`useProfileGate`, 2026-09-27); «بعداً» backs out
+                         (`useProfileGate`, 2026-09-27); «بعدا» backs out
 /(auth)/assessment     → 5-step skill survey
 /(main)/               → 307 to /matches (next.config redirects; no discover page)
 /(main)/matches        → placeholder

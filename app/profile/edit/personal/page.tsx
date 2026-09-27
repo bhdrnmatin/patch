@@ -15,7 +15,7 @@ import {
   updateProfile,
   uploadProfilePhoto,
 } from "@/lib/api/players";
-import { getCities, getProvinces } from "@/lib/api/geo";
+import { getHomeCity, HOME } from "@/lib/api/geo";
 import type { PlayerResponse, PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
 import BottomBar from "@/app/_components/BottomBar";
@@ -43,7 +43,7 @@ export default function PersonalInfoPage() {
   );
 }
 
-type SheetName = "side" | "province" | "city" | null;
+type SheetName = "side" | null;
 
 function PersonalInfoForm({ player }: { player: PlayerResponse }) {
   const queryClient = useQueryClient();
@@ -55,24 +55,10 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
   const [lastName, setLastName] = useState(player.lastName ?? "");
   const [bio, setBio] = useState(player.bio ?? "");
   const [side, setSide] = useState<PreferredSide | "">(player.preferredSide ?? "");
-  // Residence: we only have the current cityId (no name/province), so the
-  // pickers start empty and we keep the existing id unless the user changes it.
-  // ponytail: no reverse cityId→name lookup, add if the current city must show.
-  const [provinceId, setProvinceId] = useState("");
-  const [cityId, setCityId] = useState("");
   const [sheet, setSheet] = useState<SheetName>(null);
-
-  const provincesQuery = useQuery({ queryKey: ["provinces"], queryFn: getProvinces });
-  const citiesQuery = useQuery({
-    queryKey: ["cities", provinceId],
-    queryFn: () => getCities(provinceId),
-    enabled: Boolean(provinceId),
-  });
-  const provinces = provincesQuery.data ?? [];
-  const cities = citiesQuery.data ?? [];
-
-  const provinceName = provinces.find((p) => p.id === provinceId)?.name;
-  const cityName = cities.find((c) => c.id === cityId)?.name;
+  // Residence is locked to Karaj (see `HOME`): shown, not editable, and saved
+  // over whatever city an older profile had.
+  const home = useQuery({ queryKey: ["homeCity"], queryFn: getHomeCity });
   const sideLabel = SIDE_OPTIONS.find((o) => o.id === side)?.label;
 
   const photo = useMutation({
@@ -86,7 +72,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
         firstName: toPersianOnly(firstName).trim(),
         lastName: toPersianOnly(lastName).trim(),
         gender: player.gender, // unchanged here, but the endpoint requires it
-        residenceCityId: cityId || player.residenceCityId,
+        residenceCityId: home.data?.cityId ?? player.residenceCityId,
       });
       return updateDisplayInfo({ bio, preferredSide: side || undefined });
     },
@@ -174,27 +160,11 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
         />
       </section>
 
-      {/* Residence: province → city */}
+      {/* Residence: locked to البرز / کرج */}
       <section className="flex flex-col gap-3">
         <SectionHeader title="محل سکونت" icon={<PinIcon />} />
-        <SelectField
-          label="استان"
-          value={provinceName}
-          placeholder={provincesQuery.isLoading ? "در حال بارگذاری..." : "انتخاب کنید"}
-          onClick={() => setSheet("province")}
-        />
-        <SelectField
-          label="شهر"
-          value={cityName}
-          placeholder={
-            !provinceId
-              ? "ابتدا استان را انتخاب کنید"
-              : citiesQuery.isLoading
-                ? "در حال بارگذاری..."
-                : "انتخاب کنید"
-          }
-          onClick={() => provinceId && setSheet("city")}
-        />
+        <SelectField label="استان" value={HOME.province} disabled />
+        <SelectField label="شهر" value={HOME.city} disabled />
       </section>
 
       {/* Bio */}
@@ -241,33 +211,6 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
         value={side || null}
         onSelect={(id) => {
           setSide(id as PreferredSide);
-          setSheet(null);
-        }}
-        onClose={() => setSheet(null)}
-      />
-      <OptionSheet
-        open={sheet === "province"}
-        title="انتخاب استان"
-        searchable
-        searchPlaceholder="جستجوی استان..."
-        options={provinces.map((p) => ({ id: p.id, label: p.name }))}
-        value={provinceId || null}
-        onSelect={(id) => {
-          setProvinceId(id);
-          setCityId(""); // province changed — clear the stale city
-          setSheet(null);
-        }}
-        onClose={() => setSheet(null)}
-      />
-      <OptionSheet
-        open={sheet === "city"}
-        title="انتخاب شهر"
-        searchable
-        searchPlaceholder="جستجوی شهر..."
-        options={cities.map((c) => ({ id: c.id, label: c.name }))}
-        value={cityId || null}
-        onSelect={(id) => {
-          setCityId(id);
           setSheet(null);
         }}
         onClose={() => setSheet(null)}
