@@ -14,6 +14,8 @@ off a secure origin). Tick an item, note the date and device; delete the section
       a match page and /profile, drag down → spinner appears; let go past it → page reloads; a short
       pull springs back. Doesn't fire mid-page, with a sheet open, or when swiping the day strip.
       Watch for any clash with iOS's own pull-to-refresh in the Safari tab.
+- [ ] /matches date strip: yesterday and the day before are dark glass, today onward white — the
+      difference is obvious at a glance, and the past digits are still readable.
 - [ ] Match page برگشت goes to /matches from every way in: the list, /activity, a /join link,
       the wizard's «رفتن به مَچ».
 - [ ] The wizard's earliest slot is a full hour ahead (at 8:10 the first is ۱۰:۰۰).

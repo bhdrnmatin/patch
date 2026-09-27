@@ -16,14 +16,16 @@ export default function DateCell({ day, weekday, selected, past, tone = "glass",
   const skin =
     tone === "glass"
       ? // Over the bright court photo. Selected is dark navy: the brand blue
-        // matched the turf behind it and vanished. Past keeps an opaque cell and
-        // greys only its text — opacity on the whole cell let the photo through
+        // matched the turf behind it and vanished. Past is dark glass, like the
+        // hero's IconButtons (user, 2026-09-27): grey text on the white chip was
+        // one step from the live days once `muted` darkened for AA. Still a
+        // fill of its own, not opacity on the cell, which let the photo through
         // the digits.
         `backdrop-blur-[2px] ${
           selected
             ? "border-accent bg-ink text-white"
             : past
-              ? "border-white/15 bg-white/85 text-muted"
+              ? "border-white/10 bg-black/30 text-white/70"
               : "border-white/15 bg-white/85 text-ink-soft"
         }`
       : selected

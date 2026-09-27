@@ -8,6 +8,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-27 — past days read as past
+- [Hero] **Past days in the date strip are dark glass** (user) — `bg-black/30` + white/70 text instead
+  of the white chip with grey text, which sat one step from the live days once `muted` darkened.
+
 ### 2026-09-26 — backend catch-up
 - [App] **Pull down to refresh** (user) — from the top of any page, drag down and let go past the
   spinner to reload. Built into `AppScroll`, since the document never scrolls.

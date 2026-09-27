@@ -188,8 +188,9 @@ Rules the photo was generated and placed to satisfy:
 - `heroTitleSize()` still steps the open title 62 / 54 / 44px by glyph count; `/matches/[id]`
   truncates at a fixed 32px (user data).
 - Over the photo, `IconButton` is `bg-black/40` and glass `DateCell`s are `bg-white/85`. The selected
-  day is `bg-ink` — `bg-primary` is the turf's own colour and vanished. Past days grey their *text*
-  (`text-muted`), never the cell's opacity, which let the photo through the digits.
+  day is `bg-ink` — `bg-primary` is the turf's own colour and vanished. Past days are dark glass
+  (`bg-black/30` + `text-white/70`, 2026-09-27 — grey text on the white chip was too close to the
+  live days), never the cell's opacity, which let the photo through the digits.
 
 The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still restore the old layered
 cutout path, scrim included; the no-ghost rule applies if you use them.
