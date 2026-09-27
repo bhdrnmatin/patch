@@ -9,6 +9,7 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [Create] Wizard copy says «مَچ», not «بازی»/«مسابقه» (user): حالت مَچ, نمایش مَچ, مدت مَچ and their subtitles.
 - [Create] **The wizard no longer waits on the already-played list** (user). `GET
   /matches/invitations/suggestions` still starts when the wizard opens, but in the background; step ۱
   shows at once and step ۴'s «از بین بازیکنان پچ» says «در حال بارگذاری...» if it's still coming.

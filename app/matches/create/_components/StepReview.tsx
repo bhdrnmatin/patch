@@ -112,7 +112,7 @@ export default function StepReview({ draft, courts, players, onEdit }: Props) {
       <section className="w-full bg-white rounded-group px-3 divide-y divide-divider shadow-card">
         <Group title="مشخصات" onEdit={() => onEdit(0)}>
           {/* نمایش isn't a tile — the banner above already says it, louder. */}
-          <Tile icon={<WhistleIcon className="size-5" />} label="حالت بازی">
+          <Tile icon={<WhistleIcon className="size-5" />} label="حالت مَچ">
             {draft.format ? FORMAT_LABELS[draft.format] : "—"}
           </Tile>
           <Tile icon={<MatchesIcon className="size-5" />} label="عنوان">
@@ -196,7 +196,7 @@ function Group({
  * form. The idiom that works is already in the app: `InfoItem`, the surface
  * tile `/matches/[id]` uses for اطلاعات. At half width there's no gap to jump,
  * so the label/value stack reads at a glance. `wide` spans both columns — نشانی
- * needs it, and حالت بازی takes it when there's no عنوان beside it.
+ * needs it, and حالت مَچ takes it when there's no عنوان beside it.
  */
 function Tile({
   icon,

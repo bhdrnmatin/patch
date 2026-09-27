@@ -64,8 +64,8 @@ export default function StepDetails({ draft, patch }: Props) {
   return (
     <>
       <RadioCardGroup
-        label="حالت بازی"
-        subtitle="نتیجه مسابقه روی رنکینگ اثر داشته باشد؟"
+        label="حالت مَچ"
+        subtitle="نتیجه مَچ روی رنکینگ اثر داشته باشد؟"
         options={FORMAT_OPTIONS}
         value={draft.format}
         onChange={(id) => {
@@ -76,8 +76,8 @@ export default function StepDetails({ draft, patch }: Props) {
         }}
       />
       <RadioCardGroup
-        label="نمایش مسابقه"
-        subtitle="چه کسانی بتوانند مسابقه را ببینند؟"
+        label="نمایش مَچ"
+        subtitle="چه کسانی بتوانند مَچ را ببینند؟"
         options={INVITE_OPTIONS}
         value={draft.invite}
         onChange={(id) => patch({ invite: id as CreateMatchDraft["invite"] })}

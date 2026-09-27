@@ -179,7 +179,7 @@ export default function StepSchedule({ draft, patch }: Props) {
       {/* Duration */}
       <div className="flex flex-col gap-2">
         <span className="text-sm font-bold text-ink-soft text-right" dir="rtl">
-          مدت بازی
+          مدت مَچ
         </span>
         <div className="flex gap-3" dir="rtl">
           {DURATIONS.map((d) => {
