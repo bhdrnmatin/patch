@@ -14,7 +14,7 @@ All pushed to both remotes (head `7c13c68` + this note). Build green via the pre
   **pull-to-refresh** in `AppScroll` (full reload; WebKit-simulated only).
 - **Still backend:** `/activity` 2.15s, `/clubs` 1.16s (both slower than 09-24). Unknown: results
   before match end, re-submit after rejection (`round`), declined invitation `status` value.
-- **Next:** the 2026-09-26 section of `_designer/phone-test.md` (14 items) on patchapp.ir — the
+- **Next:** the 2026-09-26 section of `_designer/phone-test.md` (13 items) on patchapp.ir — the
   results flow needs a match with 4 confirmed players.
 
 ## Session — 2026-09-24 (afternoon): iPhone fixes, private matches, speed, activity
