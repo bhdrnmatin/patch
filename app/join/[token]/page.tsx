@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useProfileGate } from "@/lib/api/useAuth";
 import { getClubs } from "@/lib/api/clubs";
 import { getMatchDetails } from "@/lib/data";
 import { ApiError } from "@/lib/api/client";
@@ -73,6 +74,7 @@ function JoinContent() {
     router.replace(`/matches/${id}`);
   };
 
+  const profileReady = useProfileGate();
   const { mutate: join, isPending, error: joinError } = useMutation({
     mutationFn: () => joinByInviteToken(token),
     onSuccess: () => match && openMatch(match.id),
@@ -156,7 +158,7 @@ function JoinContent() {
         </p>
       )}
 
-      <MatchCtaBar label="پیوستن به مَچ" busy={isPending} onClick={() => join()} />
+      <MatchCtaBar label="پیوستن به مَچ" busy={isPending} onClick={() => profileReady() && join()} />
     </main>
   );
 }

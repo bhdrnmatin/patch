@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getActivitySections } from "@/lib/data";
 import { acceptInvitation, declineInvitation } from "@/lib/api/matches";
+import { useProfileGate } from "@/lib/api/useAuth";
 import type { ActivityAction, ActivityItem } from "@/lib/types";
 import SportPageHeader from "../_components/SportPageHeader";
 import ActivityCard from "./_components/ActivityCard";
@@ -52,10 +53,13 @@ export default function ActivityPage() {
     },
   });
 
-  const onAction = (item: ActivityItem) => (kind: ActivityAction["kind"]) =>
-    kind === "open-match"
-      ? router.push(`/matches/${item.matchId}`)
-      : answerInvite({ item, accept: kind === "accept-invite" });
+  const profileReady = useProfileGate();
+  const onAction = (item: ActivityItem) => (kind: ActivityAction["kind"]) => {
+    if (kind === "open-match") return router.push(`/matches/${item.matchId}`);
+    // Accepting joins the match, so it needs a finished profile; declining doesn't.
+    if (kind === "accept-invite" && !profileReady()) return;
+    answerInvite({ item, accept: kind === "accept-invite" });
+  };
 
   return (
     <div className="w-full hero-page">

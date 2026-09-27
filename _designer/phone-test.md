@@ -14,6 +14,12 @@ off a secure origin). Tick an item, note the date and device; delete the section
       a match page and /profile, drag down → spinner appears; let go past it → page reloads; a short
       pull springs back. Doesn't fire mid-page, with a sheet open, or when swiping the day strip.
       Watch for any clash with iOS's own pull-to-refresh in the Safari tab.
+- [ ] **New account** (a number never used): after the OTP you land on /matches, not the setup form;
+      browsing matches and a match page works. Then each of these opens the setup form, and
+      «شروع کنیم!» brings you back to where you were: ساخت مَچ (lands in the wizard), پیوستن on a
+      match page, پیوستن on a /join link, پذیرفتن on an invitation. «بعداً» backs out every time
+      (in the installed app too). رد کردن an invitation works *without* setup.
+- [ ] Developer: does the API itself refuse join/create for an incomplete profile? (unknown)
 - [ ] Profile → edit → tap the avatar, pick a photo (camera and library): the cropper opens; one
       finger moves it, **two fingers pinch-zoom**, the slider zooms; the photo can't leave a gap in
       the circle; a dragged-down finger doesn't trigger pull-to-refresh. «تایید» → the new avatar is

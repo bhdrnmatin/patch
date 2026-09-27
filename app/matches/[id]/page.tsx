@@ -20,6 +20,7 @@ import MatchCtaBar from "./_components/MatchCtaBar";
 import { getMatchDetails, viewerRole } from "@/lib/data";
 import { getAccountId } from "@/lib/api/session";
 import { cancelMatch, joinMatch, leaveMatch } from "@/lib/api/matches";
+import { useProfileGate } from "@/lib/api/useAuth";
 import type { MatchDetailsStatus, ViewerParticipation, ViewerRole } from "../../../lib/types";
 
 const STAGE = {
@@ -118,6 +119,7 @@ function MatchDetailsContent() {
   const cta = ctaFor(role, status, m.viewerParticipation, m.needsApproval);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const profileReady = useProfileGate();
 
   const { mutate: runCta, isPending: ctaPending } = useMutation({
     mutationFn: async (action: CtaAction) => {
@@ -210,7 +212,8 @@ function MatchDetailsContent() {
           onClick={() =>
             cta.action === "results"
               ? router.push(`/matches/${id}/results`)
-              : runCta(cta.action)
+              : // Joining needs a finished profile; leaving or cancelling doesn't.
+                (cta.action !== "join" || profileReady()) && runCta(cta.action)
           }
         />
       )}

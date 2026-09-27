@@ -9,9 +9,8 @@ import OtpInput, { OTP_LENGTH } from "../_components/OtpInput";
 import AuthActions from "../_components/AuthActions";
 import { requestOtp, verifyOtp } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { getMe } from "@/lib/api/players";
-import { useRedirectIfAuthed, isProfileComplete } from "@/lib/api/useAuth";
-import { postAuthRoute, withNext } from "@/lib/routes";
+import { useRedirectIfAuthed } from "@/lib/api/useAuth";
+import { postAuthRoute } from "@/lib/routes";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian";
 
 const BG = "/images/auth-otp.webp";
@@ -80,34 +79,13 @@ function OtpContent() {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: () => verifyOtp(phone, toLatinDigits(otp)),
-    onSuccess: async (tokens) => {
-      // The verify response already says whether the profile is complete, so
-      // the usual answer costs no request at all. It also can't go stale the
-      // way the old `fetchQuery(["me"])` could: that honoured staleTime, so
-      // signing into a second account could route on the first one's profile.
-      if (tokens.profileCompletionStatus) {
-        // The next screen reads ["me"]; the cached one belongs to whoever was
-        // signed in before.
-        queryClient.removeQueries({ queryKey: ["me"] });
-        router.replace(
-          tokens.profileCompletionStatus === "COMPLETE"
-            ? postAuthRoute(next)
-            : withNext("/profile-setup", next),
-        );
-        return;
-      }
-
-      // Older backend that doesn't send the field: ask, as before.
-      try {
-        const me = await queryClient.fetchQuery({ queryKey: ["me"], queryFn: getMe });
-        router.replace(
-          isProfileComplete(me) ? postAuthRoute(next) : withNext("/profile-setup", next),
-        );
-      } catch {
-        // Profile fetch failed (e.g. a brand-new user with no profile record
-        // yet) — default to setup rather than stranding them on this screen.
-        router.replace(withNext("/profile-setup", next));
-      }
+    onSuccess: () => {
+      // Straight into the app, complete profile or not (user, 2026-09-27): a
+      // new account browses first and is asked for its profile only when it
+      // creates or joins something (`useProfileGate`). The cached ["me"]
+      // belongs to whoever was signed in before.
+      queryClient.removeQueries({ queryKey: ["me"] });
+      router.replace(postAuthRoute(next));
     },
   });
 

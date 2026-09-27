@@ -19,6 +19,7 @@ import { getCourtOptions, getPickablePlayers, createMatch, type FailedInvite } f
 import { readDraft, writeDraft, clearDraft, type SavedDraft } from "@/lib/draft";
 import { autoTitle, isSchedulable } from "@/lib/api/matches";
 import { todayISO } from "@/lib/jalali";
+import { useProfileGate } from "@/lib/api/useAuth";
 import type { CreateMatchDraft } from "../../../lib/types";
 
 const STEP_LABELS = ["مشخصات", "مکان", "زمان‌بندی", "بازیکنان", "اتمام"];
@@ -59,6 +60,12 @@ const isStepValid: ((d: CreateMatchDraft) => boolean)[] = [
 
 function CreateMatchContent() {
   const router = useRouter();
+  // The wizard is the action: an incomplete profile is sent to set up first
+  // (every way in — the nav, the empty list's CTA — lands here).
+  const profileReady = useProfileGate();
+  useEffect(() => {
+    profileReady({ replace: true });
+  }, [profileReady]);
   const queryClient = useQueryClient();
 
   const { data: courts } = useSuspenseQuery({ queryKey: ["courtOptions"], queryFn: getCourtOptions });

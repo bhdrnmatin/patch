@@ -14,7 +14,7 @@ import { getCities, getProvinces } from "@/lib/api/geo";
 import { ApiError } from "@/lib/api/client";
 import type { PreferredSide } from "@/lib/api/types";
 import { toPersianOnly } from "@/lib/persian";
-import { postAuthRoute } from "@/lib/routes";
+import { POST_AUTH_ROUTE, postAuthRoute } from "@/lib/routes";
 
 const BG = "/images/auth-profile-setup.webp";
 
@@ -108,7 +108,8 @@ function ProfileSetupContent() {
       // read a stale "incomplete" and bounce us straight back here.
       queryClient.setQueryData(["me"], updated);
       // TODO: restore "/assessment" when assessment is enabled
-      router.push(postAuthRoute(searchParams.get("next")));
+      // Replace, so back from where they land doesn't reopen the form.
+      router.replace(postAuthRoute(searchParams.get("next")));
     },
   });
 
@@ -183,6 +184,13 @@ function ProfileSetupContent() {
                 <AuthActions
                   nextLabel={isPending ? "در حال ثبت..." : "شروع کنیم!"}
                   onNext={() => mutate()}
+                  // Setup is asked for when they act, not at sign-in (2026-09-27),
+                  // so they may back out — and an installed iOS app has no back
+                  // gesture. Back to where they were, or into the app.
+                  backLabel="بعداً"
+                  onBack={() =>
+                    window.history.length > 1 ? router.back() : router.replace(POST_AUTH_ROUTE)
+                  }
                   disabled={!isComplete || isPending || !!nameError}
                 />
               </div>

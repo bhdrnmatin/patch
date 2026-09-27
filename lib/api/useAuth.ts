@@ -7,7 +7,7 @@ import { logout as apiLogout } from "./auth";
 import { getMe } from "./players";
 import type { PlayerResponse } from "./types";
 import { hasSession, subscribeSession } from "./session";
-import { loginRoute, POST_AUTH_ROUTE, postAuthRoute } from "../routes";
+import { loginRoute, POST_AUTH_ROUTE, postAuthRoute, withNext } from "../routes";
 
 /**
  * Shared options for the cached /me query. Both useAuth and useRequireAuth
@@ -27,7 +27,7 @@ const meQuery = {
   retry: false,
 } as const;
 
-/** A completed profile can use the app; anything else is sent to /profile-setup. */
+/** A completed profile can act (create, join); an incomplete one only browses. */
 export function isProfileComplete(player: Pick<PlayerResponse, "profileStatus">): boolean {
   return player.profileStatus?.toLowerCase() === "complete";
 }
@@ -72,16 +72,10 @@ export function useAuth() {
 /**
  * Gate a protected route. localStorage is client-only, so we stay "checking"
  * through SSR/first paint, then resolve to "authed" or redirect to /login.
- * Also enforces a completed profile: an authenticated user whose /me reports
- * profileStatus !== "complete" is sent to /profile-setup.
  *
- * Holding a token is enough to render — we do NOT wait for /players/me. It only
- * decides whether to bounce an incomplete profile to /profile-setup, and paying
- * for that answer up front means a slow or dead backend holds every guarded
- * page on a spinner for a full request timeout, on every mount (a failed query
- * refetches). The trade is that a genuinely incomplete profile sees the app for
- * a moment before the redirect lands, which only happens right after signup.
- * The only effect is the navigation side-effect — no setState-in-effect.
+ * A token is all it takes: an incomplete profile browses freely (user,
+ * 2026-09-27) and is sent to /profile-setup only when it tries to act — see
+ * `useProfileGate`. The only effect is the navigation side-effect.
  */
 export function useRequireAuth(): "checking" | "authed" {
   const router = useRouter();
@@ -91,21 +85,39 @@ export function useRequireAuth(): "checking" | "authed" {
   const hydrated = useHydrated();
   const authed = useHasSession();
 
-  const { data: player } = useQuery({ ...meQuery, enabled: hydrated && authed });
+  useEffect(() => {
+    if (hydrated && !authed) router.replace(loginRoute(pathname));
+  }, [hydrated, authed, pathname, router]);
 
-  // Only redirect on a definitively-incomplete profile; an errored/absent /me
-  // leaves this false so we don't bounce users on a transient backend failure.
+  return hydrated && authed ? "authed" : "checking";
+}
+
+/**
+ * For anything that acts — create, join, accept. Returns `ready()`: true when
+ * the profile is complete, otherwise it sends them to /profile-setup with a
+ * `next` back to this page and returns false. `replace` for a page that is
+ * itself the action (/matches/create), so «بعداً» there can't land back on it.
+ * An unknown /me (loading, or the
+ * backend failed) counts as ready, so a flaky call never blocks an action —
+ * the server has the last word anyway.
+ */
+export function useProfileGate(): (opts?: { replace?: boolean }) => boolean {
+  const router = useRouter();
+  const pathname = usePathname();
+  const authed = useHasSession();
+  const { data: player } = useQuery({ ...meQuery, enabled: authed });
   const incomplete = player ? !isProfileComplete(player) : false;
 
-  useEffect(() => {
-    if (!hydrated) return;
-    if (!authed) router.replace(loginRoute(pathname));
-    else if (incomplete) router.replace("/profile-setup");
-  }, [hydrated, authed, incomplete, pathname, router]);
-
-  if (!(hydrated && authed)) return "checking";
-  if (incomplete) return "checking"; // redirecting to /profile-setup
-  return "authed";
+  return useCallback(
+    (opts?: { replace?: boolean }) => {
+      if (!incomplete) return true;
+      const to = withNext("/profile-setup", pathname);
+      if (opts?.replace) router.replace(to);
+      else router.push(to);
+      return false;
+    },
+    [incomplete, pathname, router],
+  );
 }
 
 /** For public auth pages (login/otp): send already-signed-in users into the app. */

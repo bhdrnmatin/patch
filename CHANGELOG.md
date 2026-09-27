@@ -9,6 +9,11 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [Auth] **Profile setup waits until you act** (user). After the OTP a new account goes straight into
+  the app and can browse matches and match pages. Creating a match, joining one (match page or
+  invite link) or accepting an invitation first sends an incomplete profile to /profile-setup, which
+  returns to that page when done — or «بعداً» backs out. `useRequireAuth` no longer checks the
+  profile; `useProfileGate` (lib/api/useAuth.ts) does, at each action.
 - [Profile] **Telegram-style photo crop** (user) — picking a photo opens `PhotoCropper`: the
   picture behind a clear circle, the rest dimmed; drag to move, pinch or the slider to zoom, and the
   picture always covers the circle. «تایید» uploads a 512×512 JPEG of the circle, not the original.
