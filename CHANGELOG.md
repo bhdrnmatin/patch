@@ -9,6 +9,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [App] **The Patch logo is the app icon** (user). The blue mascot square (`Colored_LOGO.jpg`) as
+  `app/favicon.ico` (16/32/48, RGBA — Next refuses an RGB .ico and the build fails), `app/icon.png`
+  (192), `app/apple-icon.png` (180, the iPhone home screen), and the manifest's first `icons`: 192 +
+  512, plus a maskable 512 with the mark shrunk to 72% so Android's circle crop keeps all of it.
 - [Create] **Capacity on step ۱** (user). Under حالت مَچ, «ظرفیت مَچ»: a −/+ stepper within the
   format's limits from `GET /match-formats` (آمریکانو 4–12), or a fixed «۴» where min = max
   (دوستانه, رقابتی = OPEN_MATCH). Starts at the minimum and resets to it on a format change; the

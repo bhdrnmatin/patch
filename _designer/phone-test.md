@@ -36,6 +36,8 @@ off a secure origin). Tick an item, note the date and device; delete the section
       «۱ از ۲ بازی کامل شده») until every game has four players; submitting returns to the match page.
 - [ ] The wizard opens quickly (no longer waits for the suggestions list); step ۴ → «از بین
       بازیکنان پچ» shows your already-played players (or «در حال بارگذاری...» for a moment).
+- [ ] App icon: Safari tab shows the blue Patch mark; **remove and re-add** the home-screen app
+      (iOS caches the old icon) → the blue mascot square. On Android, the installed icon isn't clipped.
 - [ ] Wizard step ۱ «ظرفیت مَچ»: دوستانه shows a fixed ۴; آمریکانو starts at ۴ and +/− go 4…12 (the
       buttons fade at each end). Create an آمریکانو at 8 → the match page shows 8 seats. Lowering it
       after adding players on step ۴ drops the extras.
