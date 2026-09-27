@@ -28,7 +28,7 @@ const NAV_ICONS = {
 
 const mockPlayer = {
   name: "سینا عشاقی",
-  city: "تهران",
+  city: "کرج",
   side: "راست",
   level: toPersianDigits("4"),
 };
@@ -75,7 +75,7 @@ export default function ProfilePage() {
         {/* <StatsGrid stats={stats} /> */}
 
         {/* Navigation menu */}
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-2.5 w-full">
           {navItems.map((item) => (
             <NavRow key={item.href} {...item} />
           ))}

@@ -42,7 +42,8 @@ to revive it. The art directions also live on `feat/onboarding-drawn-art` and
 - `BottomNav` — fixed bottom nav, 5 items, 56px tall, active state via `usePathname`
 - `SportPageHeader` — list-page hero (athlete bg + title + filter/sort + date strip), `title` prop; used by /matches (via `MatchesHeader` wrapper) and the parked /tournaments page. **Collapses on scroll**: `useCollapseHeader` (`lib/`) writes `--collapse` 0→1 onto it and the `.hero-collapse-*` rules in `globals.css` shrink every part. Fixed + a same-height spacer, so the page never reflows
 - Collapsing headers: `SportPageHeader` uses `useCollapseHeader()` (`lib/`) — it writes `--collapse` (0 open → 1 collapsed) onto the header element on a rAF, never through React state. **All the geometry lives in `globals.css`**: `--hero-max`/`--hero-min` on `:root` (+ the `.hero-collapse-dates` modifier for a date strip), and the `.hero-collapse*` rules size the title, buttons and photo off `--collapse`. The hook reads those two properties and derives the scroll range, so a caller can't disagree with the CSS. To add one: `fixed` header with `.hero-collapse`, plus an in-flow `h-[var(--hero-max)]` spacer, and **`.hero-page` on the page root** — the page must scroll ≥204px past the viewport or `--collapse` strands part-way and parks every part mid-transition, and `.hero-page` (`min-height: calc(var(--vvh,100dvh) + var(--hero-max) - var(--hero-min))`) guarantees that regardless of how many rows the API returned. **Pair `.hero-page-dates` with `.hero-collapse-dates`** — a page must reserve its own range, and reserving the deeper one buys scroll the header has finished using, so the content rises into the collapsed bar. Without it /tournaments (parked since 2026-09-22) collapsed and the emptier /matches and /activity did not. `profile/_components/ProfileHero` collapses too since `.hero-page` landed — it was static while the short page could only offer ~60px of scroll. Its avatar straddles the header's bottom edge, so `.hero-collapse-avatar` fades and shrinks it out by the halfway point rather than letting it park on the content below the bar. `matches/[id]/_components/MatchDetailsHeader` collapses too since 2026-09-14 — it reuses `.hero-collapse-actions` for its back button and `.hero-collapse-title` with a fixed `--title-open: 32px` (the match name is user data, so it truncates instead of stepping), and its share pill (the edit pill is gone — the API has no update-match endpoint) rides the bottom edge up into that back button, so `.hero-collapse-pills` takes them to **zero scale** by `--collapse` 0.45 — opacity 0 alone stays hit-testable and the invisible pill swallows the tap meant for برگشت. Every hero in the app collapses now
-- `CourtBackdrop` — the shared court photo, held at open height; the art for every hero.
+- `CourtBackdrop` — the drawn court, held at open height; the art for every hero (see "The court" below).
+- `CourtLineup` / `PlayerMark` — the match as it stands on court; a face or an initial.
   Also exports `heroTitleSize(title)` — the open title size, stepped by length
 - **`--hero-gap` (globals.css):** the inset above every hero — **`env(safe-area-inset-top)`, so 0 in a
   Safari tab and 0 in today's standalone PWA.** Heroes are **flush to the top edge and full-bleed**,
@@ -167,36 +168,40 @@ Grid children are **not** exempt from the flex half: the same `dir="rtl"` flips
 step can just set `dir="rtl"` on their grids and stop thinking about it. A new tile
 component for an RTL grid must do the same.
 
-## Hero header art — one court photo
+## The court — one drawing, everywhere (redesign, branch `redesign/showreel`)
 
-All five art headers (`/matches`, `/activity`, `/matches/[id]`, `/profile`, and the parked
-`/tournaments`) render
-`CourtBackdrop` — since 2026-09-16 a **photo**, `/images/hero-court.webp` (a racket and ball against
-the wall, bottom-left, on a bright blue court), shared by all five, plus an oversized white title.
-It was a night shot first; the user had it re-lit to daylight blue the same day, because a dark
-header fought the bright `#33A3FF` brand blue (keep the palette, change the photo). The drawn SVG court it replaced is in git history.
+Padel is doubles, so a match roster *is* a court: four seats, two a side. The app is built on that
+one picture, drawn at three scales:
+- **`CourtLineup`** (`app/(main)/_components/`) — a top-down court with the confirmed players in
+  their four service boxes and the empty seats open. On every `MatchCard` (`size="card"`), on the
+  match page's بازیکنان (`size="hero"`), and as the /matches empty state. Geometry is real (20×10 m,
+  service lines 6.95 m off the net). Over 4 seats (آمریکانو) it shows the first four and a count.
+  Names are **white tags with ink text**, never bare white text: white on `primary` is 2.7:1.
+- **`CourtBackdrop`** — the hero art for every header: the same court, tilted and blown up (net,
+  side wall, centre line, the ball), on a `#1560BE → #33A3FF` gradient. Held at the open height and
+  anchored top, so the collapse clips instead of rescaling. Deep at the top where the title sits
+  (white clears 3:1 for large text), no scrim. It replaced the court photo — `hero-court.webp` is
+  still in `public/` if the photo comes back.
+- **`AuthCourt`** (`app/(auth)/_components/`) — login and OTP: the phone *is* the court, portrait,
+  net across the middle, logo + «پچ» wordmark on the far side, the card on yours. `AuthSlide` draws it
+  whenever no `backgroundImage` is passed; the canvas rule is `body:has(.auth-court)`.
 
-Rules the photo was generated and placed to satisfy:
-- **It clips, it doesn't re-crop.** The image is held at the *open* height (`--hero-max`) and anchored
-  top, so a collapsing header only clips its bottom and the bar keeps the dark sky. Never give it
-  `h-full` — `object-cover` would re-crop into the racket as the header shrinks (why photos were
-  dropped the first time).
-- **Its zones are the header's zones.** Racket bottom-left under the filter/sort buttons, calm right
-  half for the title, plain turf behind the date strip, empty sky on top. A replacement image must
-  keep that layout; the generation prompt is in `_designer/session-state.md` (2026-09-16).
-- **No scrim.** Behind the title the photo averages `#254C7A` (white text ~8.8:1); don't add a
-  `from-black/*` overlay. A replacement must keep that zone at least that dark.
-- Headers use `bg-night` as the fallback while the photo loads. The login/OTP canvas rule is scoped
-  to `.auth-night`, **not** `bg-night`, or every page with a hero would paint its canvas navy.
-- `heroTitleSize()` still steps the open title 62 / 54 / 44px by glyph count; `/matches/[id]`
-  truncates at a fixed 32px (user data).
-- Over the photo, `IconButton` is `bg-black/40` and glass `DateCell`s are `bg-white/85`. The selected
-  day is `bg-ink` — `bg-primary` is the turf's own colour and vanished. Past days are dark glass
-  (`bg-black/30` + `text-white/70`, 2026-09-27 — grey text on the white chip was too close to the
-  live days), never the cell's opacity, which let the photo through the digits.
+**Colour has three jobs** — keep them apart:
+- **Blue (`primary`) = press this.** Buttons, CTAs, the reached wizard steps.
+- **Ink = where you are / what is.** The active nav tab (icon + label), the current wizard step,
+  selected sheet chips, the selected day, the «جاری» badge.
+- **Lime (`accent`) = your move.** An open seat on a court, the add button (drawn as the ball), the
+  live dot, the ball on the stage track. Never text on blue (2.2:1) — lime is a fill with ink on it.
 
-The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still restore the old layered
-cutout path, scrim included; the no-ghost rule applies if you use them.
+**Type:** `font-display` is **Lalezar** (Persian poster face, `app/fonts/Lalezar.woff2`, subset, with a
+zero-width ZWNJ glyph added — the stock font has none and «مچ‌های» rendered with a gap). Titles,
+kick-off times, dates, counts, section headings. Never body copy, never below ~20px. Its descender is
+deep: give the line under it room (see `AuthCourt`).
+
+Other pieces of the redesign: `PlayerMark` (photo or initial; the backend's `/defaults/` stock avatar
+counts as no photo, `ProfileAvatar` does the same), `TicketStub` (activity cards are match tickets:
+day/month/kick-off stub, perforation, slate stub once `used`), the three-step `MatchStageCard` track.
+`heroTitleSize()` steps 80 / 72 / 64px; the match page steps 44 / 36 / 30 by length, then truncates.
 
 ## Design Tokens
 
@@ -214,6 +219,7 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Body/meta text, icons | `text-ink-soft` | `#253343` |
 | Secondary text (AA on white/surface) | `text-muted` | `#57728E` |
 | Light card/chip bg | `bg-surface` | `#F5F7FA` |
+| Page canvas | `bg-background` | `#EEF3F9` |
 | Separator lines | `bg-divider` | `#E5EAF0` |
 | Light borders, avatar bg | `border-edge` / `bg-edge` | `#D0DDEC` |
 | Button radius | `rounded-pill` | `44px` |
@@ -236,7 +242,10 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Success badge pair | `bg-success-soft` + `text-success-deep` | `#E8F5E9` / `#2E7D32` |
 | Danger accents (dots, error borders, text on the dark auth card) | `bg-danger` / `text-danger` | `#FF4869` |
 | Danger text on light surfaces, white-on-red fills (AA) | `text-danger-deep` / `bg-danger-deep` | `#D6204A` |
-| Accent lime (the ball) — selected hero date (border + dot), «جاری» badge dot | `border-accent` / `bg-accent` | `#C7F000` |
+| Accent lime (the ball) — "your move": open seats, add button, live dot | `border-accent` / `bg-accent` | `#C7F000` |
+| Court run-off — hero field, drawn-court frames, ticket stubs (white on it 5:1) | `bg-court-deep` | `#1B6FD1` |
+| Display face (Lalezar) | `font-display` | — |
+| Match-card elevation | `shadow-float` | ink-tinted long fall-off |
 
 **Gray-ramp mapping (blessed 2026-06-11):** Figma grays without a token render with the
 nearest one — Gray/300 `#92A7C1` and Gray/400 `#7B93AF` → `muted`, Gray/600 `#57728E` and

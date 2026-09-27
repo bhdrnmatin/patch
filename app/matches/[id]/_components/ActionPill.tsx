@@ -10,7 +10,7 @@ export default function ActionPill({ icon, label, onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="flex-1 min-w-0 h-10 px-4 flex items-center justify-between rounded-card bg-black/35 border-[1.5px] border-white/15 backdrop-blur-[2px] text-white active:opacity-80"
+      className="flex-1 min-w-0 h-10 px-4 flex items-center justify-between rounded-[16px] bg-white/15 border border-white/25 backdrop-blur-[6px] text-white active:opacity-80"
     >
       {icon}
       {/* The label doubles as the pill's status («لینک کپی شد»), so it is announced. */}

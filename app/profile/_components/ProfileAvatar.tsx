@@ -5,11 +5,26 @@ const DEFAULT_AVATAR = "/images/avatar-placeholder.svg";
 interface Props {
   src?: string;
   alt?: string;
+  /** Drawn as an initial when there is no photo of their own. */
+  name?: string;
 }
 
-export default function ProfileAvatar({ src, alt = "تصویر پروفایل" }: Props) {
+export default function ProfileAvatar({ src, alt = "تصویر پروفایل", name }: Props) {
+  // The backend's stock silhouette counts as no photo (see PlayerMark).
+  const own = src && !src.includes("/defaults/") ? src : undefined;
+  if (!own && name?.trim()) {
+    return (
+      <div
+        role="img"
+        aria-label={alt}
+        className="size-24 rounded-full border-4 border-white shadow-float shrink-0 bg-ink text-white font-display text-[44px] leading-none flex items-center justify-center"
+      >
+        {name.trim().charAt(0)}
+      </div>
+    );
+  }
   return (
-    <div className="size-24 rounded-full overflow-hidden border-2 border-white shadow-card shrink-0 bg-edge">
+    <div className="size-24 rounded-full overflow-hidden border-4 border-white shadow-float shrink-0 bg-edge">
       <img
         src={src || DEFAULT_AVATAR}
         alt={alt}

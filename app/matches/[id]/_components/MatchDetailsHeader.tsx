@@ -34,6 +34,14 @@ interface Props {
  * than stepping by glyph count like the list titles — it truncates instead. It
  * still lands at 19px collapsed, on the same track as the others.
  */
+/** The match name is user data: step it down by length before it truncates. */
+function matchTitleSize(title: string): number {
+  const glyphs = title.replace(/‌/g, "").length;
+  if (glyphs <= 11) return 44;
+  if (glyphs <= 16) return 36;
+  return 30;
+}
+
 export default function MatchDetailsHeader({
   title,
   matchId,
@@ -95,8 +103,8 @@ export default function MatchDetailsHeader({
           <IconButton icon={<ArrowLeftIcon />} label="برگشت" onClick={() => router.push("/matches")} />
         </div>
         <h1
-          style={{ "--title-open": "32px" } as React.CSSProperties}
-          className="hero-collapse-title absolute right-6 -translate-y-1/2 max-w-[calc(100%-96px)] truncate font-bold leading-[1.15] text-white [text-shadow:0_4px_26px_rgba(2,26,55,0.45)]"
+          style={{ "--title-open": `${matchTitleSize(title)}px` } as React.CSSProperties}
+          className="hero-collapse-title absolute right-6 -translate-y-1/2 max-w-[calc(100%-96px)] truncate font-display leading-[1.35] text-white [text-shadow:0_2px_12px_rgba(0,37,77,0.3)]"
           dir="rtl"
         >
           {title}

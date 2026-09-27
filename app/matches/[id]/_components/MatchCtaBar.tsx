@@ -19,7 +19,7 @@ export default function MatchCtaBar({ label, caption, busy = false, disabled = f
         onClick={onClick}
         disabled={busy || disabled}
         aria-busy={busy}
-        className="w-full bg-primary rounded-card px-4 py-3 text-sm font-bold leading-4 text-white active:opacity-90 disabled:opacity-60"
+        className="w-full h-14 bg-primary rounded-[20px] px-4 text-base font-bold leading-4 text-white active:opacity-90 disabled:opacity-60"
         dir="rtl"
       >
         {label}

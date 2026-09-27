@@ -337,15 +337,16 @@ export function tehranDateISO(scheduledAt: string): string {
  * than an Intl timezone lookup because the offset is fixed.
  */
 export function tehranTimeRange(scheduledAt: string, durationHours: number): string {
-  const start = matchStartMs(scheduledAt) + TEHRAN_OFFSET_MS;
-  const end = start + durationHours * 3600_000;
-  const hhmm = (ms: number) => {
-    const d = new Date(ms);
-    return toPersianDigits(
-      `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`,
-    );
-  };
-  return `${hhmm(start)} الی ${hhmm(end)}`;
+  const start = matchStartMs(scheduledAt);
+  return `${tehranClock(start)} الی ${tehranClock(start + durationHours * 3600_000)}`;
+}
+
+/** An instant (epoch ms) as a Tehran wall clock, «۱۸:۰۰». */
+export function tehranClock(ms: number): string {
+  const d = new Date(ms + TEHRAN_OFFSET_MS);
+  return toPersianDigits(
+    `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`,
+  );
 }
 
 /**

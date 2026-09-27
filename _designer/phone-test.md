@@ -4,6 +4,20 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-27 — redesign (branch `redesign/showreel`, not on main)
+
+- [ ] Lalezar loads (hero titles, times, dates are the poster face, not Yekan) and «مچ‌های روز»
+      has no gap in the middle.
+- [ ] Match cards: the court shows everyone in their seat, empty seats are the lime ball with a
+      «جای خالی» tag; an آمریکانو shows «۵ از ۸ نفر» over the net.
+- [ ] Heroes collapse exactly as before (drawn court, no photo); the collapsed bar keeps the deep blue.
+- [ ] Bottom nav: the current tab is the ink pill with its name; the lime ball opens the add menu and
+      its + turns to ×.
+- [ ] /activity tickets: stub shows day / month / kick-off; past matches' stubs are slate.
+- [ ] Login / OTP: the court fills the screen with the keyboard open and closed; the Android nav bar
+      and Safari's toolbar are blue, not white or navy.
+- [ ] Profile with no photo shows your initial; with a photo, the photo.
+
 ## 2026-09-26 — Tehran time, results shape, contrast
 
 - [ ] Create a match at ۱۸:۰۰ → the match page and /matches show ۱۸:۰۰ (not ۱۷:۳۰ or ۱۸:۳۰).

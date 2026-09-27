@@ -34,7 +34,7 @@ export default function PageHeader({ title, onBack }: Props) {
       >
         <ChevronLeft />
       </button>
-      <h1 className="text-2xl font-bold text-ink-soft leading-8" dir="rtl">
+      <h1 className="font-display text-[30px] text-ink leading-[1.3]" dir="rtl">
         {title}
       </h1>
     </div>

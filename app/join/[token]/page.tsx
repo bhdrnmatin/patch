@@ -132,7 +132,7 @@ function JoinContent() {
         <p className="text-sm text-muted" dir="rtl">
           {organizer ? `${organizer} شما را دعوت کرده است` : "شما به این مَچ دعوت شده‌اید"}
         </p>
-        <h1 className="text-title font-bold text-ink" dir="rtl">
+        <h1 className="font-display text-[30px] leading-[1.3] text-ink" dir="rtl">
           {match.title ?? jalaliDayMonth(tehranDateISO(match.scheduledAt))}
         </h1>
       </header>
@@ -174,7 +174,7 @@ function Spinner() {
 function Message({ title, text, onBack }: { title: string; text: string; onBack: () => void }) {
   return (
     <main className="min-h-dvh flex flex-col items-center justify-center gap-3 bg-surface px-10 text-center" dir="rtl">
-      <h1 className="text-base font-bold text-ink">{title}</h1>
+      <h1 className="font-display text-[26px] leading-[1.3] text-ink">{title}</h1>
       <p className="text-sm text-muted leading-6">{text}</p>
       <button type="button" onClick={onBack} className="mt-2 text-sm font-bold text-primary">
         رفتن به مَچ‌ها

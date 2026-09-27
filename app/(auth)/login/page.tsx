@@ -13,7 +13,6 @@ import { useRedirectIfAuthed } from "@/lib/api/useAuth";
 import { withNext } from "@/lib/routes";
 import { isValidMobile, toLatinDigits } from "@/lib/persian";
 
-const BG = "/images/auth-login.webp";
 
 function LoginContent() {
   useRedirectIfAuthed();
@@ -50,7 +49,7 @@ function LoginContent() {
       style={{ fontFamily: "var(--font-yekan-bakh), Arial, sans-serif" }}
     >
       <div className="relative w-full max-w-[430px] h-full">
-        <AuthSlide backgroundImage={BG} pinTop>
+        <AuthSlide>
           <AuthCard
             title="ورود"
             subtitle="شماره موبایل خود را وارد کنید"

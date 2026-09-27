@@ -163,21 +163,34 @@ function MatchDetailsContent() {
         inviteToken={m.inviteToken}
       />
 
-      <div className="px-6 pt-4 flex flex-col gap-4">
+      <div className="px-4 pt-4 flex flex-col gap-4">
         <MatchStageCard {...stage} totalStages={status === "cancelled" ? undefined : 3} />
+        {/* When comes first: it is the one thing everyone opening a match needs. */}
+        <ScheduleCard date={m.date} deadline={m.deadline} timeRange={m.timeRange} />
 
         {joinRequests && <JoinRequestsSection requests={joinRequests} matchId={id} />}
 
         {playersPlacement === "top" && (
-          <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />
+          <PlayersSection
+            players={m.players}
+            matchId={id}
+            canRemove={canRemove}
+            capacity={m.capacity}
+            open={status === "upcoming"}
+          />
         )}
 
         <MatchInfoCard match={m} />
-        <ScheduleCard date={m.date} deadline={m.deadline} timeRange={m.timeRange} />
-        <DescriptionCard text={m.description} />
+        {m.description && <DescriptionCard text={m.description} />}
 
         {playersPlacement === "middle" && (
-          <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />
+          <PlayersSection
+            players={m.players}
+            matchId={id}
+            canRemove={canRemove}
+            capacity={m.capacity}
+            open={status === "upcoming"}
+          />
         )}
         {/* Same window as removing a player: organizer, before kick-off. */}
         {canRemove && <InvitationsSection matchId={id} />}

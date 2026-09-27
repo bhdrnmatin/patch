@@ -159,8 +159,11 @@ export interface ActivityItem {
   id: string;
   /** Where «مشاهده مَچ» goes, and what the card is about. */
   matchId: string;
-  image: string;
-  /** Overlay label on the thumbnail, e.g. "در انتظار واریز". */
+  /** The ticket stub: when the match starts, in Tehran time, Persian digits. */
+  stub: { day: string; month: string; clock: string };
+  /** A match that's over or cancelled — its stub reads as a used ticket. */
+  used?: boolean;
+  /** The label across the stub's foot, e.g. «دعوت به مَچ», «برگزار کننده». */
   status: string;
   /** Title parts; two parts render with a vertical separator between them. */
   title: string[];

@@ -56,16 +56,6 @@ function ProfileIcon({ className }: IconProps) {
   );
 }
 
-function AddIcon({ className }: IconProps) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <path d="M6.6665 10H13.3332" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10 13.3327V6.66602" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M7.49984 18.3327H12.4998C16.6665 18.3327 18.3332 16.666 18.3332 12.4993V7.49935C18.3332 3.33268 16.6665 1.66602 12.4998 1.66602H7.49984C3.33317 1.66602 1.6665 3.33268 1.6665 7.49935V12.4993C1.6665 16.666 3.33317 18.3327 7.49984 18.3327Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export function WhistleIcon({ className }: IconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
@@ -235,8 +225,9 @@ export default function BottomNav() {
           })}
         </div>
       )}
-      {/* Frosted pill with the four section tabs */}
-      <div className="flex-1 flex items-stretch rounded-full border-2 border-white/30 bg-white/35 backdrop-blur-[6px]">
+      {/* The four sections. Solid rather than frosted: over a list of white
+          cards a 35% white pill vanished. */}
+      <div className="flex-1 flex items-stretch gap-1 p-1 rounded-full border border-edge/70 bg-white/90 backdrop-blur-[12px] shadow-float">
         {tabs.map(({ href, Icon, label, comingSoon }) => {
           const active = isActive(pathname, href);
           const hasBadge = (unreadCounts?.[href] ?? 0) > 0;
@@ -272,11 +263,14 @@ export default function BottomNav() {
               href={href}
               aria-label={label}
               aria-current={active ? "page" : undefined}
-              className={cellClass}
+              // The current section names itself: ink (where you are, not a
+              // button to press) and wide enough for its label.
+              className={`${cellClass} ${active ? "flex-[2.1] rounded-full bg-ink" : ""}`}
             >
               {active ? (
-                <span className="absolute inset-1 rounded-full bg-primary flex items-center justify-center">
-                  <Icon className="text-white" />
+                <span className="flex items-center gap-1.5 text-white" dir="rtl">
+                  <Icon className="size-5 shrink-0" />
+                  <span className="text-xs font-bold whitespace-nowrap">{label}</span>
                 </span>
               ) : (
                 <span className="relative">
@@ -291,15 +285,22 @@ export default function BottomNav() {
         })}
       </div>
 
-      {/* Standalone add button — toggles the add menu */}
+      {/* Add — the ball. Lime is the app's "your move" colour (an open seat on
+          a court is the same ball), and serving a new match is the biggest
+          move there is. Turns a quarter as the menu opens. */}
       <button
         type="button"
         onClick={() => setMenuOpen((o) => !o)}
         aria-label="افزودن"
         aria-expanded={menuOpen}
-        className="size-[52px] shrink-0 flex items-center justify-center rounded-full border-2 border-white/15 bg-primary backdrop-blur-[10px]"
+        className="relative size-[60px] shrink-0 flex items-center justify-center rounded-full bg-accent text-ink shadow-float active:scale-95"
       >
-        <AddIcon className="text-white" />
+        <svg aria-hidden viewBox="0 0 60 60" className={`absolute inset-0 transition-transform duration-300 motion-reduce:transition-none ${menuOpen ? "rotate-90" : ""}`}>
+          <path d="M11 13c9 7 9 27 0 34M49 13c-9 7-9 27 0 34" stroke="#fff" strokeOpacity="0.9" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+        </svg>
+        <svg aria-hidden width="22" height="22" viewBox="0 0 22 22" className={`relative transition-transform duration-300 motion-reduce:transition-none ${menuOpen ? "rotate-45" : ""}`}>
+          <path d="M11 3v16M3 11h16" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        </svg>
       </button>
       </nav>
     </>

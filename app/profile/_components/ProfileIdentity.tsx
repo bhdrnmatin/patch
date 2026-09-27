@@ -41,14 +41,14 @@ export default function ProfileIdentity({ fallbackName, city }: Props) {
             aria-label="در حال بارگذاری"
           />
         ) : (
-          <span className="text-2xl font-bold text-ink leading-tight" dir="rtl">
+          <span className="font-display text-[34px] text-ink leading-[1.3]" dir="rtl">
             {name}
           </span>
         )}
       </div>
 
       {/* City + gender + preferred-side chips */}
-      <div className="mt-3.5">
+      <div className="mt-3 w-full">
         <ProfileMeta city={city} gender={gender} side={side} />
       </div>
 

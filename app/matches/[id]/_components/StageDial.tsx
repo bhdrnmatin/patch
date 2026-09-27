@@ -27,13 +27,9 @@ export default function StageDial({ current, total }: Props) {
           strokeDasharray={`${arc} ${CIRCUMFERENCE}`}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-        <span className="text-tiny leading-none text-ink" dir="rtl">
-          مرحله
-        </span>
-        <span className="text-sm leading-none text-primary" dir="rtl">
-          {toPersianDigits(String(current))} از {toPersianDigits(String(total))}
-        </span>
+      <div className="absolute inset-0 flex flex-col items-center justify-center" dir="rtl">
+        <span className="font-display text-[26px] leading-[1.05] text-ink">{toPersianDigits(String(current))}</span>
+        <span className="text-tiny leading-none text-muted">از {toPersianDigits(String(total))}</span>
       </div>
     </div>
   );

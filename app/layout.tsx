@@ -21,6 +21,15 @@ const yekanBakh = localFont({
   declarations: [{ prop: "size-adjust", value: "128%" }],
 });
 
+// Display face: Lalezar (Borna Izadpanah, OFL) — a Persian poster type with
+// condensed, punchy numerals. Used with restraint: hero titles, kick-off
+// times, dates and counts. Subset to Persian + Latin (32KB).
+const lalezar = localFont({
+  src: "./fonts/Lalezar.woff2",
+  variable: "--font-lalezar",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Patch",
   description: "Find padel and tennis matches, leagues, and courts near you",
@@ -29,7 +38,7 @@ export const metadata: Metadata = {
 // Pinned so Safari tints its bars with this instead of sampling the page edge
 // (which gave a black bar on one screen and a blue one on the next).
 export const viewport: Viewport = {
-  themeColor: "#F5F7FA",
+  themeColor: "#EEF3F9",
   // Lets env(safe-area-inset-*) report real numbers — without it they're all 0
   // and the fixed bottom bars sit inside Safari's toolbar tap strip.
   viewportFit: "cover",
@@ -48,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} ${lalezar.variable} h-full antialiased`}>
       <body className="h-full overflow-hidden">
         <Providers>
           <AppScroll>{children}</AppScroll>

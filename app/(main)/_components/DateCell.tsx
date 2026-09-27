@@ -39,9 +39,9 @@ export default function DateCell({ day, weekday, selected, past, tone = "glass",
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`size-[52px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-field border ${skin}`}
+      className={`size-[52px] shrink-0 flex flex-col items-center justify-center gap-0.5 rounded-[16px] border ${skin}`}
     >
-      <span className="text-sm font-bold leading-none">{toPersianDigits(String(day))}</span>
+      <span className="font-display text-xl leading-[0.9]">{toPersianDigits(String(day))}</span>
       <span className="text-tiny leading-none">{weekday}</span>
       {/* The ball's lime marks the pick, with the border (user, 2026-09-16). */}
       {selected && tone === "glass" && <span aria-hidden className="size-1 rounded-full bg-accent" />}

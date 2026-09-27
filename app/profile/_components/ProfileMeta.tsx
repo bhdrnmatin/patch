@@ -40,22 +40,30 @@ function CourtSideIcon() {
   );
 }
 
-function Chip({ icon, value }: { icon: React.ReactNode; value: string }) {
+function Cell({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 bg-white border border-edge rounded-full px-3 py-1.5 text-xs text-ink-soft shadow-card">
+    <div className="flex-1 min-w-0 flex flex-col items-center gap-1.5 py-3">
       {icon}
-      <span dir="rtl">{value}</span>
-    </span>
+      <span className="text-[15px] font-bold leading-none text-ink" dir="rtl">
+        {value}
+      </span>
+      <span className="text-[11px] leading-none text-muted" dir="rtl">
+        {label}
+      </span>
+    </div>
   );
 }
 
-/** City + gender + side as attribute chips (LTR wrapper so justify-end pins them right). */
+/**
+ * City, gender and playing side, as the stat line of a player card: one strip,
+ * three columns, value over label. Read right to left, so the grid is RTL.
+ */
 export default function ProfileMeta({ city, gender, side }: Props) {
   return (
-    <div className="flex justify-end gap-2 w-full">
-      <Chip icon={<CourtSideIcon />} value={side} />
-      <Chip icon={<PersonIcon />} value={gender} />
-      <Chip icon={<PinIcon />} value={city} />
+    <div dir="rtl" className="w-full flex rounded-[20px] bg-white shadow-card [&>*+*]:border-s [&>*+*]:border-divider">
+      <Cell icon={<PinIcon />} label="شهر" value={city} />
+      <Cell icon={<PersonIcon />} label="جنسیت" value={gender} />
+      <Cell icon={<CourtSideIcon />} label="سمت بازی" value={side} />
     </div>
   );
 }

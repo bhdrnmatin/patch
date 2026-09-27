@@ -28,7 +28,7 @@ export default function RadioCardGroup({ label, subtitle, options, value, onChan
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <span id={`${id}-label`} className="text-base font-bold text-ink text-right" dir="rtl">
+        <span id={`${id}-label`} className="font-display text-[22px] leading-[1.3] text-ink text-right" dir="rtl">
           {label}
         </span>
         <span id={`${id}-desc`} className="text-xs text-muted text-right" dir="rtl">
@@ -51,9 +51,9 @@ export default function RadioCardGroup({ label, subtitle, options, value, onChan
               aria-pressed={selected}
               disabled={o.disabled}
               onClick={() => onChange(o.id)}
-              className={`w-full flex items-center gap-3 rounded-group p-4 bg-white border shadow-card ${
+              className={`w-full flex items-center gap-3 rounded-[20px] p-4 bg-white border-2 shadow-card ${
                 o.disabled ? "opacity-50" : "active:opacity-90"
-              } ${selected ? "border-primary" : "border-edge"}`}
+              } ${selected ? "border-primary" : "border-transparent"}`}
             >
               <span
                 aria-hidden

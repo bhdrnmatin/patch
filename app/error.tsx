@@ -19,7 +19,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
     <main className="w-full min-h-dvh bg-surface flex flex-col items-center justify-center gap-6 px-7">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-title font-bold text-ink" dir="rtl">
+        <h1 className="font-display text-[30px] leading-[1.3] text-ink" dir="rtl">
           ارتباط برقرار نشد
         </h1>
         <p className="text-sm text-muted leading-6" dir="rtl">

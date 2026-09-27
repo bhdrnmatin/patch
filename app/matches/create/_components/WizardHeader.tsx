@@ -25,7 +25,7 @@ export default function WizardHeader({ subtitle, step, total, onClose }: Props) 
       </button>
       <div className="flex items-center gap-3 min-w-0">
         <div className="flex flex-col items-end gap-1 min-w-0">
-          <h1 className="text-lg font-bold leading-6 text-ink" dir="rtl">
+          <h1 className="font-display text-[28px] leading-[1.2] text-ink" dir="rtl">
             ساخت مَچ
           </h1>
           <span className="text-xs text-muted truncate" dir="rtl">

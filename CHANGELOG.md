@@ -8,6 +8,22 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-27 — redesign: the court (branch `redesign/showreel`)
+- [Design] **The whole app is built on one drawing: the padel court from above.** Match cards
+  show the roster *as* a court (`CourtLineup`) — four seats, empty ones as the lime ball; the match
+  page shows it large; every hero is that court blown up (`CourtBackdrop`, replacing the photo);
+  login/OTP are a full-screen portrait court (`AuthCourt`) with the logo and «پچ» over the net.
+- [Type] **Lalezar** as the display face (`font-display`): titles, kick-off times, dates, section
+  headings. Yekan Bakh stays for everything else.
+- [Colour] Three jobs: blue = press, ink = where you are (nav tab, current step, selected chip,
+  «جاری»), lime = your move (open seat, add button, live dot). New `court-deep`, `shadow-float`,
+  canvas `#EEF3F9`.
+- [Cards] Match card leads with the kick-off time; activity cards are tickets with a date stub; the
+  match stage is a three-step track with the ball on the current step; profile meta is a player-card
+  strip; initials instead of the stock silhouette.
+- [Fix] Empty «توضیحات» card no longer renders; the dead «اضافه به تقویم» button is gone; the
+  profile city said تهران (mock) though residence is locked to کرج.
+
 ### 2026-09-27 — past days read as past
 - [App] **The Patch logo is the app icon** (user). The blue mascot square (`Colored_LOGO.jpg`) as
   `app/favicon.ico` (16/32/48, RGBA — Next refuses an RGB .ico and the build fails), `app/icon.png`

@@ -13,7 +13,6 @@ import { useRedirectIfAuthed } from "@/lib/api/useAuth";
 import { postAuthRoute } from "@/lib/routes";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian";
 
-const BG = "/images/auth-otp.webp";
 
 function OtpContent() {
   useRedirectIfAuthed();
@@ -105,7 +104,7 @@ function OtpContent() {
         : null;
 
   return (
-    <AuthSlide backgroundImage={BG} pinTop>
+    <AuthSlide>
       <AuthCard
         title="تایید شماره"
         subtitle={`کد ارسال شده به شماره ${toPersianDigits(phone)} را وارد کنید`}

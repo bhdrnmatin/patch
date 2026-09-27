@@ -111,7 +111,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
           aria-label="تغییر تصویر پروفایل"
           className="relative rounded-full disabled:opacity-60 active:opacity-80"
         >
-          <ProfileAvatar src={player.avatarUrl} />
+          <ProfileAvatar src={player.avatarUrl} name={player.firstName} />
           <span className="absolute bottom-0 right-0 size-8 rounded-full bg-primary border-2 border-surface flex items-center justify-center text-white">
             <CameraIcon />
           </span>

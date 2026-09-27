@@ -5,7 +5,7 @@
      overscroll gap with this, so it has to be the app's own background —
      when it was #000 the bars flipped between black and the hero blue
      depending on what Safari happened to sample at the scroll edge. */
-  --background: #F5F7FA;
+  --background: #EEF3F9;
   --foreground: #171717;
   color-scheme: light;
 }
@@ -16,6 +16,9 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-yekan-bakh: var(--font-yekan-bakh);
+  /* Display face (Lalezar) — `font-display`. Titles, kick-off times, dates,
+     counts. Never body copy. */
+  --font-display: var(--font-lalezar);
 
   /* Patch design tokens */
   --color-primary: #33A3FF;
@@ -40,7 +43,13 @@
   --color-success-deep: #2E7D32; /* readable green text on success-soft */
   --color-danger: #FF4869;       /* notification dots, destructive accents */
   --color-danger-deep: #D6204A;  /* red text on light surfaces + white-on-red fills (4.7:1 on surface) */
-  --color-accent: #C7F000;       /* ball lime — the selected day in the hero date strip */
+  --color-accent: #C7F000;       /* ball lime — "your move": an open spot, a live match, create */
+  /* The court. `primary` is the playing surface; `court-deep` is the run-off
+     around it — the hero field and the frame of every drawn court. White on it
+     is 5:1, so hero titles sit on court-deep, never on primary. */
+  --color-court-deep: #1B6FD1;
+  /* The court's painted lines, at the opacity they are drawn with. */
+  --color-line: rgba(255, 255, 255, 0.55);
 
   --radius-pill: 44px;
   --radius-card: 32px;
@@ -61,6 +70,9 @@
   /* Elevation */
   --shadow-card: 0px 2px 3px 0px rgba(0, 0, 0, 0.05);   /* resting cards, chips, rows */
   --shadow-pop: 0px 8px 24px 0px rgba(37, 51, 67, 0.12); /* prominent cards (match list) */
+  /* Match cards: a long soft fall-off tinted with ink, so a white card on the
+     pale canvas reads as lifted rather than outlined. */
+  --shadow-float: 0px 1px 2px 0px rgba(0, 37, 77, 0.06), 0px 14px 32px -14px rgba(0, 37, 77, 0.22);
   --shadow-sheet: 0px 8px 32px 0px rgba(37, 51, 67, 0.16); /* floating bottom sheets */
   --drop-shadow-hero: 0 1px 4px rgba(0, 0, 0, 0.35); /* white hero titles over imagery */
 
@@ -82,6 +94,10 @@ body {
    background, a white strip under the dark art. */
 body:has(.auth-night) {
   background: var(--color-night);
+}
+/* Same for the drawn court on login/OTP: the canvas is its bottom edge. */
+body:has(.auth-court) {
+  background: #2E95F7;
 }
 
 /* Motion: pressed states ease instead of snapping; keyboard focus is visible. */
@@ -225,7 +241,7 @@ body:has(.auth-night) {
      lands at 19px collapsed. Centre stays a single track — 119px → 36px — so
      every title size collapses along the same line, and the bar doesn't keep
      the open layout's status-bar gap as dead space. */
-  font-size: calc(var(--title-open, 62px) - (var(--title-open, 62px) - 19px) * var(--collapse, 0));
+  font-size: calc(var(--title-open, 62px) - (var(--title-open, 62px) - 26px) * var(--collapse, 0));
   top: calc(119px - 83px * var(--collapse, 0));
 }
 .hero-collapse-actions {

@@ -19,7 +19,8 @@ export default function StepChips({ labels, current, maxStep, onJump }: Props) {
       {labels.map((label, i) => {
         const tone =
           i === current
-            ? "bg-primary text-white border-primary"
+            ? // Ink: where you are, not a button (blue is for what you press).
+              "bg-ink text-white border-ink"
             : i <= maxStep
               ? "bg-white text-primary border-primary/40 active:opacity-80"
               : "bg-white text-muted border-edge";

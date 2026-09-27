@@ -82,7 +82,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
     // unreachable (iPhone, 2026-09-24). The keyboard covers the rest anyway.
     <div className="fixed inset-x-0 top-0 h-[var(--vvh,100dvh)] z-[60] flex items-end justify-center">
       {/* Dim + blur overlay (click to dismiss; the close button handles keyboard) */}
-      <div aria-hidden onClick={onClose} className="animate-fade-in absolute inset-0 bg-black/20 backdrop-blur-sm" />
+      <div aria-hidden onClick={onClose} className="animate-fade-in absolute inset-0 bg-ink/30 backdrop-blur-sm" />
 
       {/* Sheet card */}
       <div
@@ -91,7 +91,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={`animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 rounded-sheet bg-white/80 backdrop-blur-[4px] p-6 flex flex-col gap-5 shadow-sheet outline-none ${
+        className={`animate-sheet-in relative w-[calc(100%-32px)] max-w-[398px] mb-4 rounded-sheet bg-white p-6 flex flex-col gap-5 shadow-sheet outline-none ${
           fill ? "h-[calc(var(--vvh,100dvh)-32px)]" : "max-h-[calc(var(--vvh,100dvh)-32px)]"
         }`}
       >
@@ -106,7 +106,7 @@ export default function BottomSheet({ open, title, icon, onClose, children, foot
             <CloseIcon />
           </button>
           <div className="flex items-center gap-2">
-            <h2 id={titleId} className="text-lg font-bold text-ink-soft">
+            <h2 id={titleId} className="font-display text-[26px] leading-[1.3] text-ink">
               {title}
             </h2>
             {icon && (

@@ -81,7 +81,7 @@ export default function GameCard({
         ) : (
           <span className="size-8" aria-hidden />
         )}
-        <h2 className="text-lg font-bold text-ink leading-6" dir="rtl">
+        <h2 className="font-display text-[22px] text-ink leading-[1.3]" dir="rtl">
           بازی {gameNo}
         </h2>
       </div>

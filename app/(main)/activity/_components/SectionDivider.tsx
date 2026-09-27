@@ -8,11 +8,11 @@ interface Props {
 /** Hairline section separator with optional labels on either end. */
 export default function SectionDivider({ right, left }: Props) {
   return (
-    <div className="flex h-6 w-full items-center gap-3">
+    <div className="flex h-8 w-full items-center gap-3">
       {left && <span className="shrink-0 text-sm font-bold text-ink-soft">{left}</span>}
       <span className="h-px flex-1 bg-edge" />
       {right && (
-        <span dir="rtl" className="shrink-0 text-sm font-bold text-ink-soft">
+        <span dir="rtl" className="shrink-0 font-display text-[22px] leading-none text-ink">
           {right}
         </span>
       )}

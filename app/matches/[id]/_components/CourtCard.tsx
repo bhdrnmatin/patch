@@ -24,14 +24,14 @@ interface Props {
  */
 export default function CourtCard({ club, note, lat, lng, logo, phone }: Props) {
   return (
-    <section className="w-full bg-white rounded-group p-3 flex flex-col items-center gap-2 shadow-card">
-      <span className="w-full text-base text-muted text-right" dir="rtl">
+    <section className="w-full bg-white rounded-[24px] p-3 flex flex-col items-center gap-2 shadow-card">
+      <span className="w-full text-xs text-muted text-right" dir="rtl">
         اطلاعات زمین
       </span>
 
       {/* LTR wrapper so items-end pins right; dir on the text only. */}
       <div className="w-full flex items-center justify-end gap-3">
-        <h2 className="text-display font-bold text-ink-soft" dir="rtl">
+        <h2 className="font-display text-[28px] leading-[1.3] text-ink" dir="rtl">
           {club}
         </h2>
         {logo && (

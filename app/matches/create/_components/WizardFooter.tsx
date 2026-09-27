@@ -96,7 +96,7 @@ export default function WizardFooter({
         onClick={onNext}
         disabled={nextDisabled || pending}
         aria-busy={pending}
-        className="flex-1 min-w-0 h-12 rounded-card bg-primary hover:bg-primary-hover text-white text-sm font-bold disabled:opacity-40 active:opacity-90"
+        className="flex-1 min-w-0 h-14 rounded-[20px] bg-primary hover:bg-primary-hover text-white text-base font-bold disabled:opacity-40 active:opacity-90"
         dir="rtl"
       >
         {pending ? "در حال ثبت..." : nextLabel}
@@ -105,7 +105,7 @@ export default function WizardFooter({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 min-w-0 h-12 rounded-card bg-white border border-edge text-ink-soft text-sm font-bold active:opacity-80"
+          className="flex-1 min-w-0 h-14 rounded-[20px] bg-surface text-ink text-base font-bold active:opacity-80"
           dir="rtl"
         >
           {backLabel}

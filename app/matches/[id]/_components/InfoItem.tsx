@@ -16,14 +16,14 @@ interface Props {
  */
 export default function InfoItem({ icon, label, children }: Props) {
   return (
-    <div className="bg-surface rounded-2xl p-3 flex flex-col gap-3 items-end min-w-0" dir="ltr">
+    <div className="bg-surface rounded-[16px] p-3 flex flex-col gap-2.5 items-end min-w-0" dir="ltr">
       <div className="w-full flex items-center justify-between gap-2">
         <span className="shrink-0 text-muted">{icon}</span>
-        <span className="text-sm leading-4 text-muted truncate" dir="rtl">
+        <span className="text-xs leading-4 text-muted truncate" dir="rtl">
           {label}
         </span>
       </div>
-      <div className="text-sm font-bold leading-4 text-ink" dir="rtl">
+      <div className="text-[15px] font-bold leading-5 text-ink" dir="rtl">
         {children}
       </div>
     </div>

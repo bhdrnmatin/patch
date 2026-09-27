@@ -91,7 +91,7 @@ export default function SportPageHeader({
         <h1
           dir="rtl"
           style={{ "--title-open": `${heroTitleSize(title)}px` } as React.CSSProperties}
-          className="hero-collapse-title absolute right-6 -translate-y-1/2 whitespace-nowrap text-white font-bold leading-[1.15] [text-shadow:0_4px_26px_rgba(2,26,55,0.45)]"
+          className="hero-collapse-title absolute right-6 -translate-y-1/2 whitespace-nowrap text-white font-display leading-[1.3] [text-shadow:0_6px_30px_rgba(0,37,77,0.35)]"
         >
           {title}
         </h1>

@@ -1,5 +1,8 @@
+import AuthCourt from "./AuthCourt";
+
 interface AuthSlideProps {
-  backgroundImage: string;
+  /** A photo behind the card. Omitted → the drawn court (`AuthCourt`), which is what login and OTP use. */
+  backgroundImage?: string;
   /** Focal point for the cropped bg, e.g. "30% 50%". Defaults to center. */
   objectPosition?: string;
   /**
@@ -25,7 +28,8 @@ export default function AuthSlide({ backgroundImage, objectPosition = "50% 50%",
           caught up, and re-cropped the photo on the way. `fixed` resolves against
           the layout viewport, which no platform shrinks for the keyboard, so the
           art covers the screen throughout and only the card moves. */}
-      <img
+      {!backgroundImage && <AuthCourt />}
+      {backgroundImage && <img
         src={backgroundImage}
         alt=""
         style={pinTop ? undefined : { objectPosition }}
@@ -34,7 +38,7 @@ export default function AuthSlide({ backgroundImage, objectPosition = "50% 50%",
             ? "fixed inset-x-0 top-0 w-full h-auto pointer-events-none [mask-image:linear-gradient(to_bottom,black_75%,transparent)]"
             : "fixed inset-0 w-full h-full object-cover pointer-events-none"
         }
-      />
+      />}
       {/* status bar spacer */}
       <div className="absolute top-0 left-0 right-0 h-11" />
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-28px)] max-w-[362px]">
