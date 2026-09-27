@@ -14,6 +14,10 @@ off a secure origin). Tick an item, note the date and device; delete the section
       a match page and /profile, drag down → spinner appears; let go past it → page reloads; a short
       pull springs back. Doesn't fire mid-page, with a sheet open, or when swiping the day strip.
       Watch for any clash with iOS's own pull-to-refresh in the Safari tab.
+- [ ] Profile → edit → tap the avatar, pick a photo (camera and library): the cropper opens; one
+      finger moves it, **two fingers pinch-zoom**, the slider zooms; the photo can't leave a gap in
+      the circle; a dragged-down finger doesn't trigger pull-to-refresh. «تایید» → the new avatar is
+      exactly the circled part, upright (check a portrait photo from the camera). «انصراف» uploads nothing.
 - [ ] /matches date strip: yesterday and the day before are dark glass, today onward white — the
       difference is obvious at a glance, and the past digits are still readable.
 - [ ] Match page برگشت goes to /matches from every way in: the list, /activity, a /join link,

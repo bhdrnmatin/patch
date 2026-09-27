@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import SubPageLayout from "../../_components/SubPageLayout";
 import ProfileAvatar from "../../_components/ProfileAvatar";
+import PhotoCropper from "../../_components/PhotoCropper";
 import TextField from "../../../matches/create/_components/TextField";
 import SelectField from "../../../matches/create/_components/SelectField";
 import OptionSheet from "../../../matches/create/_components/OptionSheet";
@@ -47,6 +48,8 @@ type SheetName = "side" | "province" | "city" | null;
 function PersonalInfoForm({ player }: { player: PlayerResponse }) {
   const queryClient = useQueryClient();
   const fileInput = useRef<HTMLInputElement>(null);
+  // The picked photo, held for the cropper; only the crop is uploaded.
+  const [picked, setPicked] = useState<File | null>(null);
 
   const [firstName, setFirstName] = useState(player.firstName ?? "");
   const [lastName, setLastName] = useState(player.lastName ?? "");
@@ -95,7 +98,7 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = ""; // allow re-selecting the same file
-    if (file) photo.mutate(file);
+    if (file) setPicked(file);
   };
 
   const errorOf = (e: unknown) =>
@@ -136,6 +139,17 @@ function PersonalInfoForm({ player }: { player: PlayerResponse }) {
           </p>
         )}
       </div>
+
+      {picked && (
+        <PhotoCropper
+          file={picked}
+          onCancel={() => setPicked(null)}
+          onDone={(cropped) => {
+            setPicked(null);
+            photo.mutate(cropped);
+          }}
+        />
+      )}
 
       {/* Identity */}
       <section className="flex flex-col gap-3">

@@ -9,6 +9,10 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 *(changes not yet tagged/deployed)*
 
 ### 2026-09-27 — past days read as past
+- [Profile] **Telegram-style photo crop** (user) — picking a photo opens `PhotoCropper`: the
+  picture behind a clear circle, the rest dimmed; drag to move, pinch or the slider to zoom, and the
+  picture always covers the circle. «تایید» uploads a 512×512 JPEG of the circle, not the original.
+  Geometry in `lib/crop.ts` (tested); no new dependency.
 - [Hero] **Past days in the date strip are dark glass** (user) — `bg-black/30` + white/70 text instead
   of the white chip with grey text, which sat one step from the live days once `muted` darkened.
 

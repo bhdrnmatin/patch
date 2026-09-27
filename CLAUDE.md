@@ -54,6 +54,9 @@ to revive it. The art directions also live on `feat/onboarding-drawn-art` and
   the knob — don't restore the band.** A new hero still reads the token so a future
   `black-translucent` status bar works: `mt-[var(--hero-gap)]` in flow, or `top-[var(--hero-gap)]`
   plus a fixed `bg-surface` strip and a `calc(var(--hero-max)+var(--hero-gap))` spacer if it's fixed
+- `PhotoCropper` (`app/profile/_components/`) — full-screen circle crop for the avatar: pan, pinch,
+  zoom slider, outputs a 512×512 JPEG `File`. Locks `AppScroll` while open (which also stops
+  pull-to-refresh reading a drag as a pull). Geometry is `lib/crop.ts`
 - `IconButton` — circular glassmorphic icon button, `icon`, `label`, `onClick?`
 - `DateCell` / `DateSelector` — 52px day cell + RTL scrollable day strip
 - `icons` — shared icon set (Filter, Sort, Chart, People, Calendar, Toman, Close, Info)
