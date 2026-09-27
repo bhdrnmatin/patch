@@ -20,7 +20,7 @@ const FORMAT_OPTIONS: RadioCardOption[] = [
   {
     id: "competitive",
     title: "رقابتی",
-    description: "برای بازی جدی با ثبت نتیجه و تأثیر بر رنکینگ",
+    description: "برای مَچ جدی با ثبت نتیجه و تأثیر بر رنکینگ",
     icon: <TrophyIcon />,
     disabled: !COMPETITIVE_ENABLED,
     note: COMPETITIVE_ENABLED ? undefined : "به‌زودی",

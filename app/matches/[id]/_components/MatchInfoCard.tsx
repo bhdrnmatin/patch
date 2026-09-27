@@ -36,7 +36,7 @@ export default function MatchInfoCard({ match }: Props) {
         <InfoItem icon={<TwoUsersIcon />} label="شرکت کنندگان">
           {participants}
         </InfoItem>
-        <InfoItem icon={<MatchesIcon className="size-5" />} label="سازنده بازی">
+        <InfoItem icon={<MatchesIcon className="size-5" />} label="سازنده مَچ">
           {match.creator}
         </InfoItem>
         <InfoItem icon={<CalendarIcon className="size-5" />} label="تاریخ">

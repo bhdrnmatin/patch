@@ -14,7 +14,7 @@ const ROLE_OPTIONS: RadioCardOption[] = [
   {
     id: "captain",
     title: "برگزار کننده (مربی)",
-    description: "مسئول برگزاری و مدیریت مسابقه",
+    description: "مسئول برگزاری و مدیریت مَچ",
     icon: <WhistleIcon />,
   },
   {
@@ -92,7 +92,7 @@ export default function StepPlayers({ draft, patch, players, playersLoading }: P
     <>
       <RadioCardGroup
         label="نقش شما"
-        subtitle="نقش شما در این مسابقه چیست؟"
+        subtitle="نقش شما در این مَچ چیست؟"
         options={ROLE_OPTIONS}
         value={draft.myRole}
         onChange={(id) => {

@@ -14,7 +14,7 @@ export default function PromoCard() {
             رنک پلیر ماه
           </span>
           <p className="w-full text-xs text-ink-soft/60" dir="rtl">
-            با شرکت در این بازی، می‌تونی امتیاز رنک پلیر ماه رو بدست بیاری
+            با شرکت در این مَچ، می‌تونی امتیاز رنک پلیر ماه رو بدست بیاری
           </p>
         </div>
       </div>

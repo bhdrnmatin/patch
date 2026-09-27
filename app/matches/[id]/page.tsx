@@ -24,9 +24,9 @@ import { useProfileGate } from "@/lib/api/useAuth";
 import type { MatchDetailsStatus, ViewerParticipation, ViewerRole } from "../../../lib/types";
 
 const STAGE = {
-  upcoming: { title: "در انتظار شروع بازی", nextLabel: "بازی شروع شده است", stage: 1 },
-  live: { title: "بازی شروع شده است", nextLabel: "وارد کردن نتیجه", stage: 2 },
-  finished: { title: "بازی تمام شده است", nextLabel: "نهایی کردن نتیجه", stage: 3 },
+  upcoming: { title: "در انتظار شروع مَچ", nextLabel: "مَچ شروع شده است", stage: 1 },
+  live: { title: "مَچ شروع شده است", nextLabel: "وارد کردن نتیجه", stage: 2 },
+  finished: { title: "مَچ تمام شده است", nextLabel: "نهایی کردن نتیجه", stage: 3 },
   // No next step and no dial: a cancelled match is not partway through anything.
   cancelled: { title: "این مَچ لغو شده است", nextLabel: undefined, stage: undefined },
 } as const;
@@ -69,11 +69,11 @@ function ctaFor(
   }
 
   if (part === "confirmed")
-    return { label: "ترک مَچ", caption: "شما عضوی از بازی هستید", action: "leave" };
+    return { label: "ترک مَچ", caption: "شما عضوی از مَچ هستید", action: "leave" };
   if (part === "requested")
     return {
       label: "لغو ارسال درخواست ورود",
-      caption: "در انتظار تایید درخواست سازنده بازی",
+      caption: "در انتظار تایید درخواست سازنده مَچ",
       action: "leave",
     };
   // Not involved. Joining a match already under way is not offered.
