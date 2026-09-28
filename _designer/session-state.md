@@ -1,5 +1,30 @@
 # Session State
 
+## Session — 2026-09-27/28: the redesign (parked), activity tickets, add to calendar
+`main` pushed to both remotes (head `14d9d2a` + this note). Build green.
+- **Full redesign built, then parked by the team for after the MVP** — branch `redesign/showreel`
+  (`1b7882b`, pushed to both remotes). The whole app on one drawing, the padel court from above:
+  `CourtLineup` (rosters as four seats, empty ones the lime ball) on cards + match page,
+  `CourtBackdrop` drawn heroes replacing the photo, `AuthCourt` login/OTP, Lalezar display type,
+  blue = press / ink = where you are / lime = your move. Its CLAUDE.md documents the system.
+  Before/after sheet: `_designer/redesign-before-after.png` (on that branch).
+  **Reviving it:** merge `main` into the branch first; where they conflict (activity cards,
+  ScheduleCard, match page, profile page), keep `main`'s fixes. The branch has *no* calendar link.
+- **Shipped to main from that pass:** activity cards as **match tickets** (`TicketStub`: day /
+  month / kick-off on a `court-deep` stub, perforation, slate once `used`), with the Lalezar font
+  and `court-deep` / `shadow-float` tokens — used by the stub only.
+- **«اضافه به تقویم» works** (it had no handler): a link to `/calendar` (`app/calendar/route.ts`)
+  answering an .ics from `lib/calendar.ts` (tested, 1-hour reminder, stable UID). `MatchDetails`
+  gained `startMs` / `endMs`. Hidden on a cancelled match. **Unverified on an iPhone** — the PWA
+  is the case that matters.
+- **Fixes:** empty «توضیحات» card on a match with no description; /profile showed تهران
+  (mock) instead of کرج; a long truncated match name's text-shadow clipped into a visible box.
+- Untracked `_designer/showreel/` (a 36MB showreel video + render scripts) — deliberately not in git.
+- Headless screenshots now run on **Playwright WebKit** (`~/.cache/ms-playwright/webkit-2336`,
+  `executablePath: …/pw_run.sh`); the Firefox cache in the memory note is gone. API faked with
+  `ctx.route("**/api/v1/**")` fixtures, since `/dev-login` alone renders empty lists.
+- **Next:** the 2026-09-28 and 2026-09-26 sections of `_designer/phone-test.md` on patchapp.ir.
+
 ## Session — 2026-09-27 (later): UX asks, capacity, logo
 All pushed to both remotes (head `d40323c` + this note). Build green.
 - Date strip: past days are dark glass (`bg-black/30`), since grey text read too close to live days.
