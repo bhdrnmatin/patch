@@ -157,6 +157,8 @@ export async function getMatchDetails(id: string): Promise<MatchDetails> {
     creator: fullName(m.organizer.firstName, m.organizer.lastName),
     date: jalaliDayMonth(tehranDateISO(m.scheduledAt)),
     timeRange: tehranTimeRange(m.scheduledAt, m.durationHours),
+    startMs: matchStartMs(m.scheduledAt),
+    endMs: matchStartMs(m.scheduledAt) + m.durationHours * 3600_000,
     description: m.description ?? "",
     players: confirmed.map((p) => ({
       name: fullName(p.firstName, p.lastName),

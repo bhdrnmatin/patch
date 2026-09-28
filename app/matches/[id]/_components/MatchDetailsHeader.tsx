@@ -94,9 +94,11 @@ export default function MatchDetailsHeader({
               wizard, /activity or outside the app, depending on how they came in. */}
           <IconButton icon={<ArrowLeftIcon />} label="برگشت" onClick={() => router.push("/matches")} />
         </div>
+        {/* A tight shadow: `truncate` clips to the box, and the old 26px blur
+            showed that box as a lighter band around a long, cut-off name. */}
         <h1
           style={{ "--title-open": "32px" } as React.CSSProperties}
-          className="hero-collapse-title absolute right-6 -translate-y-1/2 max-w-[calc(100%-96px)] truncate font-bold leading-[1.15] text-white [text-shadow:0_4px_26px_rgba(2,26,55,0.45)]"
+          className="hero-collapse-title absolute right-6 -translate-y-1/2 max-w-[calc(100%-96px)] truncate font-bold leading-[1.15] text-white [text-shadow:0_2px_12px_rgba(2,26,55,0.45)]"
           dir="rtl"
         >
           {title}

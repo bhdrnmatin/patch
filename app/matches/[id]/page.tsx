@@ -173,8 +173,18 @@ function MatchDetailsContent() {
         )}
 
         <MatchInfoCard match={m} />
-        <ScheduleCard date={m.date} deadline={m.deadline} timeRange={m.timeRange} />
-        <DescriptionCard text={m.description} />
+        <ScheduleCard
+          date={m.date}
+          deadline={m.deadline}
+          timeRange={m.timeRange}
+          calendar={
+            cancelled
+              ? undefined
+              : { id, title: m.title, location: m.club, startMs: m.startMs, endMs: m.endMs }
+          }
+        />
+        {/* A match with no description drew an empty «توضیحات» card. */}
+        {m.description && <DescriptionCard text={m.description} />}
 
         {playersPlacement === "middle" && (
           <PlayersSection players={m.players} matchId={id} canRemove={canRemove} />

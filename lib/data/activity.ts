@@ -1,7 +1,7 @@
 import { getActivity, isMatchActivity } from "@/lib/api/activity";
-import { getMatch, getMyInvitations, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
+import { getMatch, getMyInvitations, matchStartMs, tehranClock, tehranDateISO, tehranTimeRange } from "@/lib/api/matches";
 import { getClubs } from "@/lib/api/clubs";
-import { jalaliDayMonth } from "@/lib/jalali";
+import { JALALI_MONTHS, isoToJalali, jalaliDayMonth } from "@/lib/jalali";
 import { fullName, toDetailsStatus } from "./matches";
 import type { ActivityItem, ActivitySection } from "@/lib/types";
 import { toPersianDigits } from "@/lib/persian";
@@ -40,7 +40,7 @@ export async function getActivitySections(): Promise<ActivitySection[]> {
   // The feed's own `active` decides current vs past: cancelled and finished
   // matches were piling up among the upcoming ones.
   const current = rows.filter((r) => r.active).map(card);
-  const past = rows.filter((r) => !r.active).map(card);
+  const past = rows.filter((r) => !r.active).map((r) => ({ ...card(r), used: true }));
 
   return [
     invites.length > 0 ? { heading: { right: "دعوت‌ها" }, items: invites } : null,
@@ -73,7 +73,7 @@ async function invitationCards(
         kind: "invitation" as const,
         id: invite.id,
         matchId: match.id,
-        image: "/images/hero-court.webp",
+        stub: stubOf(match),
         status: "دعوت به مَچ",
         title: [matchTitle(match)],
         meta: [
@@ -105,7 +105,7 @@ function matchCard(match: MatchResponse, role: string, clubName: (id: string) =>
     // The feed has no row id of its own, and one match is one card.
     id: match.id,
     matchId: match.id,
-    image: "/images/hero-court.webp",
+    stub: stubOf(match),
     status: role === "ORGANIZER" ? "برگزار کننده" : "بازیکن",
     title: [matchTitle(match)],
     meta: [
@@ -119,5 +119,14 @@ function matchCard(match: MatchResponse, role: string, clubName: (id: string) =>
 
 const matchTitle = (m: MatchResponse) => m.title ?? jalaliDayMonth(tehranDateISO(m.scheduledAt));
 
-const whenLine = (m: MatchResponse) =>
-  `${jalaliDayMonth(tehranDateISO(m.scheduledAt))} · ${tehranTimeRange(m.scheduledAt, m.durationHours)}`;
+// The stub carries the day; this line adds when it ends.
+const whenLine = (m: MatchResponse) => tehranTimeRange(m.scheduledAt, m.durationHours);
+
+function stubOf(m: MatchResponse): ActivityItem["stub"] {
+  const { jd, jm } = isoToJalali(tehranDateISO(m.scheduledAt));
+  return {
+    day: toPersianDigits(String(jd)),
+    month: JALALI_MONTHS[jm - 1],
+    clock: tehranClock(matchStartMs(m.scheduledAt)),
+  };
+}

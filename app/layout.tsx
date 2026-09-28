@@ -21,6 +21,16 @@ const yekanBakh = localFont({
   declarations: [{ prop: "size-adjust", value: "128%" }],
 });
 
+// Display face: Lalezar (Borna Izadpanah, OFL) — a Persian poster type with
+// condensed, punchy numerals. On the MVP it sets only the activity tickets'
+// date stubs (the rest of the display type is the post-MVP redesign, branch
+// `redesign/showreel`). Subset to Persian + Latin (32KB).
+const lalezar = localFont({
+  src: "./fonts/Lalezar.woff2",
+  variable: "--font-lalezar",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Patch",
   description: "Find padel and tennis matches, leagues, and courts near you",
@@ -48,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${yekanBakh.variable} ${lalezar.variable} h-full antialiased`}>
       <body className="h-full overflow-hidden">
         <Providers>
           <AppScroll>{children}</AppScroll>

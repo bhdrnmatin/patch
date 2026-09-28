@@ -28,7 +28,8 @@ const NAV_ICONS = {
 
 const mockPlayer = {
   name: "سینا عشاقی",
-  city: "تهران",
+  // Residence is locked to Karaj for everyone (setup + edit, 2026-09-27).
+  city: "کرج",
   side: "راست",
   level: toPersianDigits("4"),
 };

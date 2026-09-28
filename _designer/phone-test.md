@@ -4,6 +4,16 @@ Things that pass tsc / eslint / `npm run build` but have **never been seen on a 
 Test on the deployed https build (not `http://192.168.x.x` — share/clipboard behave differently
 off a secure origin). Tick an item, note the date and device; delete the section once it's all green.
 
+## 2026-09-28 — tickets, add to calendar
+
+- [ ] /activity: each card is a ticket — blue stub with day, month and time on the right, dashed
+      tear line; the «مَچ‌های گذشته» stubs are grey. Nothing overlaps on a narrow phone.
+- [ ] Match page «اضافه به تقویم», **in Safari and in the installed PWA** (iPhone): the Add to
+      Calendar sheet opens with the match name, the club, the right day and the right Tehran time,
+      and a reminder an hour before. On Android the calendar app opens it. Adding it twice updates
+      one event rather than making two.
+- [ ] A match with no description has no empty «توضیحات» card; profile shows کرج.
+
 ## 2026-09-26 — Tehran time, results shape, contrast
 
 - [ ] Create a match at ۱۸:۰۰ → the match page and /matches show ۱۸:۰۰ (not ۱۷:۳۰ or ۱۸:۳۰).

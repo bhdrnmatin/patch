@@ -8,6 +8,18 @@ Dates are in YYYY-MM-DD format. Newest entries first.
 ## Unreleased
 *(changes not yet tagged/deployed)*
 
+### 2026-09-28 — MVP fixes from the redesign pass
+- [Activity] **Cards are match tickets** (kept from the redesign, team): a blue stub with the day,
+  month and kick-off in Lalezar, torn along a perforation from the details and actions; past
+  matches' stubs are slate. Quieter grey secondary buttons, the blue one is the answer.
+- [Match] **«اضافه به تقویم» works** — it had no handler. It opens an .ics (with a one-hour
+  reminder) through `/calendar`; iOS shows its Add to Calendar sheet, Android its calendar app.
+  Hidden on a cancelled match.
+- [Fix] A match with no description no longer shows an empty «توضیحات» card.
+- [Fix] Profile said تهران (placeholder) — residence is locked to کرج for everyone.
+- [Fix] A long, truncated match name showed its text-shadow clipped into a lighter box.
+- The full redesign is parked on `redesign/showreel` for after the MVP.
+
 ### 2026-09-27 — past days read as past
 - [App] **The Patch logo is the app icon** (user). The blue mascot square (`Colored_LOGO.jpg`) as
   `app/favicon.ico` (16/32/48, RGBA — Next refuses an RGB .ico and the build fails), `app/icon.png`

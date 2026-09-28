@@ -16,6 +16,8 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-yekan-bakh: var(--font-yekan-bakh);
+  /* Display face (Lalezar) — `font-display`. The activity ticket stubs only. */
+  --font-display: var(--font-lalezar);
 
   /* Patch design tokens */
   --color-primary: #33A3FF;
@@ -40,6 +42,8 @@
   --color-success-deep: #2E7D32; /* readable green text on success-soft */
   --color-danger: #FF4869;       /* notification dots, destructive accents */
   --color-danger-deep: #D6204A;  /* red text on light surfaces + white-on-red fills (4.7:1 on surface) */
+  /* The court's run-off blue — the activity tickets' stub. White on it is 5:1. */
+  --color-court-deep: #1B6FD1;
   --color-accent: #C7F000;       /* ball lime — the selected day in the hero date strip */
 
   --radius-pill: 44px;
@@ -61,6 +65,8 @@
   /* Elevation */
   --shadow-card: 0px 2px 3px 0px rgba(0, 0, 0, 0.05);   /* resting cards, chips, rows */
   --shadow-pop: 0px 8px 24px 0px rgba(37, 51, 67, 0.12); /* prominent cards (match list) */
+  /* Activity tickets: a long soft fall-off tinted with ink. */
+  --shadow-float: 0px 1px 2px 0px rgba(0, 37, 77, 0.06), 0px 14px 32px -14px rgba(0, 37, 77, 0.22);
   --shadow-sheet: 0px 8px 32px 0px rgba(37, 51, 67, 0.16); /* floating bottom sheets */
   --drop-shadow-hero: 0 1px 4px rgba(0, 0, 0, 0.35); /* white hero titles over imagery */
 

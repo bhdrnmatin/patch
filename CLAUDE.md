@@ -198,6 +198,21 @@ Rules the photo was generated and placed to satisfy:
 The image props (`bgImage`/`athleteImage`, `bgSrc`/`athleteSrc`) still restore the old layered
 cutout path, scrim included; the no-ghost rule applies if you use them.
 
+## Post-MVP redesign — branch `redesign/showreel`
+
+A full redesign (drawn-court heroes and login, match rosters drawn as a court, Lalezar display type)
+lives on `redesign/showreel`, **parked until after the MVP** (team, 2026-09-28). Only its activity
+ticket cards came to main (`TicketStub`, `ActivityCard`). Main's bug fixes from that pass were ported
+here too, so when the branch is merged, expect conflicts in those files and keep main's fixes.
+
+## Add to calendar
+
+«اضافه به تقویم» on the match page is a plain `<a>` to `/calendar?id&title&start&end&location`
+(`app/calendar/route.ts`), which answers a `text/calendar` file built by `lib/calendar.ts` (tested).
+A link rather than a Blob: a Blob download does nothing in an installed iOS PWA, while a
+`text/calendar` response opens the system "Add to Calendar" sheet. The route can't fetch the match
+itself — the API wants the browser's bearer — so the page passes what the event needs.
+
 ## Design Tokens
 
 Tokens are defined in `app/globals.css` `@theme` block. Always use the token class — never hardcode hex or arbitrary values.
@@ -237,6 +252,9 @@ Tokens are defined in `app/globals.css` `@theme` block. Always use the token cla
 | Danger accents (dots, error borders, text on the dark auth card) | `bg-danger` / `text-danger` | `#FF4869` |
 | Danger text on light surfaces, white-on-red fills (AA) | `text-danger-deep` / `bg-danger-deep` | `#D6204A` |
 | Accent lime (the ball) — selected hero date (border + dot), «جاری» badge dot | `border-accent` / `bg-accent` | `#C7F000` |
+| Activity ticket stub (white on it 5:1) | `bg-court-deep` | `#1B6FD1` |
+| Activity ticket elevation | `shadow-float` | ink-tinted long fall-off |
+| Display face (Lalezar) — **only** the ticket stubs' day and time on the MVP | `font-display` | — |
 
 **Gray-ramp mapping (blessed 2026-06-11):** Figma grays without a token render with the
 nearest one — Gray/300 `#92A7C1` and Gray/400 `#7B93AF` → `muted`, Gray/600 `#57728E` and
