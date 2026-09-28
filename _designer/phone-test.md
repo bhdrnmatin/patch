@@ -6,21 +6,21 @@ off a secure origin). Tick an item, note the date and device; delete the section
 
 ## 2026-09-28 — tickets, add to calendar
 
-- [ ] /activity: each card is a ticket — blue stub with day, month and time on the right, dashed
+- [x] (2026-09-28, Android Chrome, LAN) /activity: each card is a ticket — blue stub with day, month and time on the right, dashed
       tear line; the «مَچ‌های گذشته» stubs are grey. Nothing overlaps on a narrow phone.
-- [ ] Match page «اضافه به تقویم», **in Safari and in the installed PWA** (iPhone): the Add to
-      Calendar sheet opens with the match name, the club, the right day and the right Tehran time,
-      and a reminder an hour before. On Android the calendar app opens it. Adding it twice updates
-      one event rather than making two.
-- [ ] A match with no description has no empty «توضیحات» card; profile shows کرج.
+- [x] (2026-09-28, LAN) «اضافه به تقویم»: iPhone Safari tab → Add to Calendar sheet; Android Chrome →
+      Google Calendar in a new tab (it only downloaded the .ics before the redirect), Patch stays behind.
+- [ ] Still open: the **installed iPhone PWA** (needs https — app.patchapp.ir after deploy), and that
+      adding the same match twice updates one event rather than making two.
+- [x] (2026-09-28, LAN) No empty «توضیحات» card on a match without a description; profile shows کرج.
 
 ## 2026-09-26 — Tehran time, results shape, contrast
 
-- [ ] Create a match at ۱۸:۰۰ → the match page and /matches show ۱۸:۰۰ (not ۱۷:۳۰ or ۱۸:۳۰).
-- [ ] Wizard schedule step opens with «امروز» selected; open the wizard and close it straight
+- [x] (2026-09-28, LAN) Create a match at ۱۸:۰۰ → the match page and /matches show ۱۸:۰۰ (not ۱۷:۳۰ or ۱۸:۳۰).
+- [x] (2026-09-28, LAN) Wizard schedule step opens with «امروز» selected; open the wizard and close it straight
       away → no «مَچ نیمه‌تمام دارید» bar next time; with a real saved
       draft, that bar still shows on open.
-- [ ] Pull to refresh, **in Safari and in the installed PWA**: from the top of /matches, /activity,
+- [x] (2026-09-28, LAN, browser tab only — installed PWA unchecked) Pull to refresh, **in Safari and in the installed PWA**: from the top of /matches, /activity,
       a match page and /profile, drag down → spinner appears; let go past it → page reloads; a short
       pull springs back. Doesn't fire mid-page, with a sheet open, or when swiping the day strip.
       Watch for any clash with iOS's own pull-to-refresh in the Safari tab.
@@ -36,28 +36,28 @@ off a secure origin). Tick an item, note the date and device; delete the section
       finger moves it, **two fingers pinch-zoom**, the slider zooms; the photo can't leave a gap in
       the circle; a dragged-down finger doesn't trigger pull-to-refresh. «تایید» → the new avatar is
       exactly the circled part, upright (check a portrait photo from the camera). «انصراف» uploads nothing.
-- [ ] /matches date strip: yesterday and the day before are dark glass, today onward white — the
+- [x] (2026-09-28, LAN) /matches date strip: yesterday and the day before are dark glass, today onward white — the
       difference is obvious at a glance, and the past digits are still readable.
-- [ ] Match page برگشت goes to /matches from every way in: the list, /activity, a /join link,
+- [x] (2026-09-28, LAN) Match page برگشت goes to /matches from every way in: the list, /activity, a /join link,
       the wizard's «رفتن به مَچ».
-- [ ] The wizard's earliest slot is a full hour ahead (at 8:10 the first is ۱۰:۰۰).
+- [x] (2026-09-28, LAN) The wizard's earliest slot is a full hour ahead (at 8:10 the first is ۱۰:۰۰).
 - [ ] Results (needs a match with 4 confirmed players, organizer): add a second game with
       «+ افزودن بازی», swap partners in it, remove one with its ✕. The CTA stays disabled (caption
       «۱ از ۲ بازی کامل شده») until every game has four players; submitting returns to the match page.
-- [ ] The wizard opens quickly (no longer waits for the suggestions list); step ۴ → «از بین
+- [x] (2026-09-28, LAN) The wizard opens quickly (no longer waits for the suggestions list); step ۴ → «از بین
       بازیکنان پچ» shows your already-played players (or «در حال بارگذاری...» for a moment).
 - [ ] App icon: Safari tab shows the blue Patch mark; **remove and re-add** the home-screen app
       (iOS caches the old icon) → the blue mascot square. On Android, the installed icon isn't clipped.
-- [ ] Wizard step ۱ «ظرفیت مَچ»: دوستانه shows a fixed ۴; آمریکانو starts at ۴ and +/− go 4…12 (the
+- [x] (2026-09-28, LAN — «شرکت کنندگان» ۱/۸ نفر) Wizard step ۱ «ظرفیت مَچ»: دوستانه shows a fixed ۴; آمریکانو starts at ۴ and +/− go 4…12 (the
       buttons fade at each end). Create an آمریکانو at 8 → the match page shows 8 seats. Lowering it
       after adding players on step ۴ drops the extras.
-- [ ] Wizard players step: دوستانه stops adding at 3 teammates (caption «۴ نفره»), آمریکانو at 11;
+- [x] (2026-09-28, LAN) Wizard players step: دوستانه stops adding at 3 teammates (caption «۴ نفره»), آمریکانو at 11;
       switching آمریکانو → دوستانه with 5 teammates keeps the first 3.
 - [ ] Withdraw invite (organizer, upcoming match, invite someone from the wizard): «دعوت‌های ارسالی»
       shows them as «در انتظار پاسخ»; «پس گرفتن» removes the row; the invitee's /activity card goes.
 - [ ] Secondary grey text and red error text look right (slightly darker than before); the login
       error text is still the bright red.
-- [ ] Create actually succeeds at the new sizes: a دوستانه with 3 teammates, and a آمریکانو with
+- [x] (2026-09-28, LAN) Create actually succeeds at the new sizes: a دوستانه with 3 teammates, and a آمریکانو with
       5+ teammates (that one used to be sent with no cap — the API now allows up to 12).
 - [ ] «دعوت‌های ارسالی» is **absent** when there's nothing pending, for a non-organizer, and once
       the match is live/finished.

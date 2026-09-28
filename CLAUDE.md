@@ -210,7 +210,8 @@ here too, so when the branch is merged, expect conflicts in those files and keep
 «اضافه به تقویم» on the match page is a plain `<a>` to `/calendar?id&title&start&end&location`
 (`app/calendar/route.ts`), which answers a `text/calendar` file built by `lib/calendar.ts` (tested).
 A link rather than a Blob: a Blob download does nothing in an installed iOS PWA, while a
-`text/calendar` response opens the system "Add to Calendar" sheet. The route can't fetch the match
+`text/calendar` response opens the system "Add to Calendar" sheet. Android Chrome only *downloads* a
+.ics, so the route 302s an Android user-agent to Google Calendar's pre-filled event link instead. The route can't fetch the match
 itself — the API wants the browser's bearer — so the page passes what the event needs.
 
 ## Design Tokens

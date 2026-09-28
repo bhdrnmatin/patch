@@ -38,6 +38,13 @@ export default function ScheduleCard({ date, deadline, timeRange, calendar }: Pr
         {calendar && (
           <a
             href={calendarHref(calendar)}
+            // Android goes to Google Calendar, so keep Patch open behind it. Not
+            // iOS: the .ics sheet opens over this page, and a new tab would be left blank.
+            onClick={(e) => {
+              if (!/Android/i.test(navigator.userAgent)) return;
+              e.preventDefault();
+              window.open(e.currentTarget.href, "_blank", "noopener");
+            }}
             className="flex-1 min-w-0 h-10 bg-white border border-primary rounded-group flex items-center justify-center text-sm font-bold text-primary active:opacity-80"
             dir="rtl"
           >

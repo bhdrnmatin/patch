@@ -1,8 +1,8 @@
 /**
  * One match as an iCalendar file (RFC 5545) — what «اضافه به تقویم» hands the
- * phone. iOS opens a `text/calendar` response as an "Add to Calendar" sheet and
- * Android hands the file to its calendar app, so no calendar API or permission
- * is involved.
+ * phone. iOS opens a `text/calendar` response as an "Add to Calendar" sheet.
+ * Android Chrome only downloads one, so `/calendar` sends Android to
+ * `googleCalendarUrl` instead, which opens the Calendar app pre-filled.
  */
 export interface CalendarEvent {
   id: string;
@@ -18,7 +18,7 @@ export interface CalendarEvent {
 const stamp = (ms: number) => new Date(ms).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 
 /** RFC 5545 §3.3.11: backslash, semicolon and comma are escaped; newlines become \n. */
-const text = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+const text = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 
 export function buildIcs(e: CalendarEvent, now = Date.now()): string {
   return [
@@ -58,4 +58,16 @@ export function calendarHref(e: CalendarEvent): string {
     ...(e.location ? { location: e.location } : {}),
   });
   return `/calendar?${q}`;
+}
+
+/** Google Calendar's "new event" link — Android's add-to-calendar (see app/calendar/route.ts). */
+export function googleCalendarUrl(e: CalendarEvent): string {
+  const q = new URLSearchParams({
+    action: "TEMPLATE",
+    text: e.title,
+    dates: `${stamp(e.startMs)}/${stamp(e.endMs)}`,
+    ...(e.location ? { location: e.location } : {}),
+    ...(e.url ? { details: e.url } : {}),
+  });
+  return `https://calendar.google.com/calendar/render?${q}`;
 }
